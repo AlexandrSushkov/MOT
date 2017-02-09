@@ -5,10 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-/**
- * Created by Nelson on 2/8/17.
- */
-
 public abstract class SQLiteTableProvider {
     protected final String mName;
 
@@ -24,19 +20,19 @@ public abstract class SQLiteTableProvider {
         return db.query(mName, columns, where, whereArgs, null, null, orderBy);
     }
 
-    public long incert(SQLiteDatabase db, ContentValues contentValues){
+    public long insert(SQLiteDatabase db, ContentValues contentValues){
         return db.insertWithOnConflict(mName, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public int delete(SQLiteDatabase db, String where, String[] whereArgs){
-        return db.delete(mName, where,whereArgs);
+        return db.delete(mName, where, whereArgs);
     }
 
     public int update(SQLiteDatabase db, ContentValues contentValues, String where, String[] whereArgs){
         return db.update(mName, contentValues, where, whereArgs);
     }
 
-    public void onUpdate(SQLiteDatabase db, int oldVersion, int newVersion){
+    public void onUpdate(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS " + mName + ";");
         onCreate(db);
     }

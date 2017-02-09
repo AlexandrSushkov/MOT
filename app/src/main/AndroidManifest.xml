@@ -21,6 +21,14 @@
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"/>
+
+        <provider
+            android:authorities="dev.nelson.mot"
+            android:name=".db.SQLiteContentProvider"
+            android:exported="false"
+            android:syncable="false"/>
+
+        <service android:name=".service.DataOperationService"/>
     </application>
 
 </manifest>

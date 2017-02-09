@@ -2,6 +2,7 @@ package dev.nelson.mot.db;
 
 import android.content.ComponentName;
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -92,9 +93,10 @@ public class SQLiteContentProvider extends ContentProvider {
         if (tableProvider == null){
             throw  new NoSuchTableException(tableName);
         }
-        final long lastId = tableProvider.incert(mHelper.getReadableDatabase(), values);
+        final long lastId = tableProvider.insert(mHelper.getReadableDatabase(), values);
+        Uri resultUri = ContentUris.withAppendedId(uri, lastId);
         getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
-        return uri;
+        return resultUri;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class SQLiteContentProvider extends ContentProvider {
             whereArgs = new String[]{uri.getLastPathSegment()};
         }
         final int affectedRow = tableProvider.update(mHelper.getReadableDatabase(), values, where, whereArgs);
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
         return affectedRow;
     }
 
@@ -133,6 +135,7 @@ public class SQLiteContentProvider extends ContentProvider {
             whereArgs = new String[]{uri.getLastPathSegment()};
         }
         final int affectedRow = tableProvider.delete(mHelper.getReadableDatabase(), where, whereArgs);
+        getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
         return affectedRow;
     }
 

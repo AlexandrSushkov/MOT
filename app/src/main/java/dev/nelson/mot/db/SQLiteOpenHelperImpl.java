@@ -33,7 +33,7 @@ public class SQLiteOpenHelperImpl extends SQLiteOpenHelper {
         db.beginTransactionNonExclusive();
         try{
             for (SQLiteTableProvider provider : SQLiteContentProvider.SCHEMA.values()) {
-                provider.onUpdate(db, oldVersion, newVersion);
+                provider.onUpdate(db);
             }
             db.endTransaction();
         }finally {
