@@ -8,9 +8,6 @@ import dev.nelson.mot.db.model.SpendingProvider;
 import dev.nelson.mot.utils.MyApplication;
 import dev.nelson.mot.utils.SqlUtils;
 
-/**
- * Created by Nelson on 2/9/17.
- */
 
 public class UpdateWasteAction implements DataOperationAction {
 

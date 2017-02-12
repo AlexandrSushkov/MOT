@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MOT</string>
+    <string name="navigation_menu_item_home_title">Home</string>
+    <string name="navigation_menu_item_category_title">Category</string>
+    <string name="navigation_menu_item_statistic_title">Statistic</string>
+    <string name="navigation_menu_item_about_title">About</string>
+    <string name="navigation_view_logo">navigation view logo</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>
