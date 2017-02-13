@@ -9,11 +9,8 @@ import android.view.ViewGroup;
 
 import dev.nelson.mot.R;
 
-/**
- * Created by Nelson on 2/12/17.
- */
 
-public class AboutFargment extends Fragment {
+public class AboutFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

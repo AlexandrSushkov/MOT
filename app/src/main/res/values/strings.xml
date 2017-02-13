@@ -8,4 +8,32 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <!--fragment about-->
+    <string name="about_text">
+        Hello!\n\nThis is education project, the main goal of which is to show my knowledge, skills and techniques in programming android applications.
+        This application is totally free, but If you like it, you can support this project,
+        this shows that i do something useful, increase my motivation to develop this app, and make me a little bit happier.
+    </string>
+    <string name="feedback_text">Contacts for feedback and propositions motappsup@gmail.com</string>
+
+    <!--build in categories section-->
+    <string name="build_in_category_food">Food</string>
+    <string name="build_in_category_communication_services">Communication services</string>
+    <string name="build_in_category_clothing">Clothing</string>
+    <string name="build_in_category_insurance">Insurance</string>
+    <string name="build_in_category_transport">Transport</string>
+    <string name="build_in_category_bills">Bills</string>
+
+    <!--dialog section-->
+    <string name="dialog_positive_button">OK</string>
+    <string name="dialog_negative_button">Cancel</string>
+    <string name="dialog_add_category_title">New category</string>
+    <string name="dialog_add_category_hint">Name</string>
+    <string name="dialog_empty_category_name_title">Invalid name</string>
+    <string name="dialog_empty_category_name_message">Category name cannot be blank</string>
+
+
+    <!--menu section-->
+    <string name="fragment_categories_menu_item_add_title">add</string>
+
 </resources>

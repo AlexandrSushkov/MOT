@@ -12,13 +12,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-import dev.nelson.mot.fragment.AboutFargment;
-import dev.nelson.mot.fragment.CategoryFragment;
+import dev.nelson.mot.dialog.DialogFragmentAddCategory;
+import dev.nelson.mot.fragment.AboutFragment;
+import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.HomeFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
 
@@ -78,13 +80,13 @@ public class MainActivity extends AppCompatActivity{
                 fragmentClass = HomeFragment.class;
                 break;
             case R.id.navigation_menu_item_category:
-                fragmentClass = CategoryFragment.class;
+                fragmentClass = CategoriesFragment.class;
                 break;
             case R.id.navigation_menu_item_statistic:
                 fragmentClass = StatisticFragment.class;
                 break;
             case R.id.navigation_menu_item_about:
-                fragmentClass = AboutFargment.class;
+                fragmentClass = AboutFragment.class;
                 break;
             default:
                 fragmentClass = HomeFragment.class;

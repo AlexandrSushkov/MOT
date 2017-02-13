@@ -2,6 +2,7 @@ package dev.nelson.mot.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import dev.nelson.mot.service.action.DataOperationAction;
@@ -18,9 +19,9 @@ public class DataOperationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if(intent == null){
-            return;}
+            return;
+        }
         Log.d(TAG, "onHandleIntent: " + intent.getAction());
-
         DataOperationAction action = DataOperationFabric.getAction(intent.getAction());
         action.perform(intent.getExtras());
     }

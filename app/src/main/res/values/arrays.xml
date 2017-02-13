@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="build_in_categories">
+        <item>@string/build_in_category_food</item>
+        <item>@string/build_in_category_communication_services</item>
+        <item>@string/build_in_category_clothing</item>
+        <item>@string/build_in_category_transport</item>
+        <item>@string/build_in_category_insurance</item>
+        <item>@string/build_in_category_bills</item>
+    </array>
+</resources>

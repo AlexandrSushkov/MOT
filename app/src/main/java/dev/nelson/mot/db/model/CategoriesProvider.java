@@ -24,7 +24,7 @@ public class CategoriesProvider extends SQLiteTableProvider {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME
                 +"(" + Columns._ID + " INTEGER PRIMARY KEY, "
-                + Columns.CATEGORY_NAME + " varchar(50)"
+                + Columns.CATEGORY_NAME + " varchar(30)"
                 +")");
 
     }
