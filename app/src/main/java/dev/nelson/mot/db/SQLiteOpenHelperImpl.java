@@ -11,7 +11,6 @@ import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.SQLiteTableProvider;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
-import dev.nelson.mot.utils.MyApplication;
 
 public class SQLiteOpenHelperImpl extends SQLiteOpenHelper {
     
@@ -35,6 +34,7 @@ public class SQLiteOpenHelperImpl extends SQLiteOpenHelper {
         }finally {
             db.endTransaction();
         }
+        insertBuildInCategories();
     }
 
     @Override
@@ -50,5 +50,14 @@ public class SQLiteOpenHelperImpl extends SQLiteOpenHelper {
         }
     }
 
-
+    private void insertBuildInCategories(){
+        Resources resources = mContext.getResources();
+        String[] buildInCategories = resources.getStringArray(R.array.build_in_categories);
+        Intent intent = new Intent(mContext, DataOperationService.class);
+        intent.setAction(DataOperationFabric.INSERT_CATEGORY);
+        for (String category : buildInCategories) {
+            intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, category);
+            mContext.startService(intent);
+        }
+    }
 }
