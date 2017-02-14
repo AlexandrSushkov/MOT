@@ -2,24 +2,17 @@ package dev.nelson.mot.fragment;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.DialogFragment;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,22 +22,21 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
-import dev.nelson.mot.activity.MainActivity;
-import dev.nelson.mot.adapter.CategoryAdapter;
+import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.dialog.DialogFabric;
-import dev.nelson.mot.dialog.DialogFragmentAddCategory;
+import dev.nelson.mot.dialog.DialogCategory;
 
 
-public class CategoriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CategoriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 2;
     @BindView(R.id.fragment_categories_recycler_view)
     RecyclerView mRecyclerView;
-    private CategoryAdapter mAdapter;
-
+//    @BindView(R.id.item_fragment_category_recycler_view_image_menu)
+//    ImageView mItemMenu;
+//    private CategoryAdapter mAdapter;
+    private CategoriesAdapter mAdapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +48,8 @@ public class CategoriesFragment extends Fragment implements LoaderManager.Loader
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
-        mAdapter = new CategoryAdapter(view.getContext(), null);
+//        mAdapter = new CategoryAdapter(view.getContext(), null);
+        mAdapter = new CategoriesAdapter(view.getContext(), null);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -87,8 +80,6 @@ public class CategoriesFragment extends Fragment implements LoaderManager.Loader
         mAdapter.notifyDataSetChanged();
     }
 
-
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -106,7 +97,7 @@ public class CategoriesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
-            DialogFragmentAddCategory.newInstance().show(getActivity().getSupportFragmentManager(), "tag");
+            DialogCategory.newInstance(DialogCategory.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "tag");
 
         }
         return super.onOptionsItemSelected(item);

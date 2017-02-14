@@ -23,6 +23,6 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 //        Snackbar.make(view, "fab", Snackbar.LENGTH_LONG).show();
 //        DialogFragment dialog = DialogFabric.getDialog(DialogFabric.DIALOG_ADD_CATEGORY);
 //        dialog.show(getActivity().getSupportFragmentManager(), DialogFabric.DIALOG_ADD_CATEGORY);
-//        DialogFragmentAddCategory.newInstance().show(getActivity().getSupportFragmentManager(), "tag");
+//        DialogCategory.newInstance().show(getActivity().getSupportFragmentManager(), "tag");
 //    }
 }

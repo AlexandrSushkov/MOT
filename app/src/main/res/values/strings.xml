@@ -27,13 +27,19 @@
     <!--dialog section-->
     <string name="dialog_positive_button">OK</string>
     <string name="dialog_negative_button">Cancel</string>
-    <string name="dialog_add_category_title">New category</string>
-    <string name="dialog_add_category_hint">Name</string>
+    <string name="dialog_category_item_menu_title">Category options</string>
+    <string name="dialog_category_add_action_title">New category</string>
+    <string name="dialog_category_hint">Name</string>
+    <string name="dialog_category_edit_action_title">Rename category</string>
     <string name="dialog_empty_category_name_title">Invalid name</string>
     <string name="dialog_empty_category_name_message">Category name cannot be blank</string>
+    <string name="dialog_category_options_item_rename">Rename</string>
+    <string name="dialog_category_options_item_delete">Delete</string>
+
 
 
     <!--menu section-->
     <string name="fragment_categories_menu_item_add_title">add</string>
+    <string name="item_fragment_category_recycler_view_image_menu_description">menu icon</string>
 
 </resources>

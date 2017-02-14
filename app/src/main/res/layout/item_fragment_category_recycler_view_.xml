@@ -2,6 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
     android:orientation="vertical">
 
     <TextView
@@ -11,5 +13,15 @@
         android:layout_margin="5dp"
         android:textSize="@dimen/fragment_categories_recycler_view_item_text_size"
         />
+
+    <ImageView
+        android:id="@+id/item_fragment_category_recycler_view_image_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:clickable="true"
+        android:tint="@color/colorBackground"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:contentDescription="@string/item_fragment_category_recycler_view_image_menu_description" />
 
 </FrameLayout>

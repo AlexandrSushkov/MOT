@@ -12,19 +12,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-import dev.nelson.mot.dialog.DialogFragmentAddCategory;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.HomeFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
 
 public class MainActivity extends AppCompatActivity{
+
+    private static final String SAVE_INSTANCE_STATE_KEY = "save_instance_state_key";
 
     @BindView(R.id.activity_main_drawer)
     DrawerLayout mDrawerLayout;
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity{
     NavigationView mNavView;
 
     private ActionBarDrawerToggle drawerToggle;
+    private Fragment mContentFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,14 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        drawerToggle = setUpDrawerTogle();
+        drawerToggle = setUpDrawerToggle();
         mDrawerLayout.addDrawerListener(drawerToggle);
         setNavDrawer(mNavView);
         mNavView.setCheckedItem(R.id.navigation_menu_item_home);
         mNavView.getMenu().performIdentifierAction(R.id.navigation_menu_item_home, 0);
+        if(savedInstanceState != null){
+            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
+        }
     }
 
     //this method open navigation menu
@@ -73,7 +77,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void selectDrawerItem(MenuItem menuItem){
-        Fragment fragment = null;
         Class fragmentClass;
         switch (menuItem.getItemId()){
             case R.id.navigation_menu_item_home:
@@ -93,13 +96,13 @@ public class MainActivity extends AppCompatActivity{
         }
 
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            mContentFragment = (Fragment) fragmentClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setEnabled(true);
@@ -118,12 +121,18 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, SAVE_INSTANCE_STATE_KEY, mContentFragment);
+    }
+
+    @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
     }
 
-    private ActionBarDrawerToggle setUpDrawerTogle(){
+    private ActionBarDrawerToggle setUpDrawerToggle(){
         return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
     }
 }

@@ -8,4 +8,9 @@
         <item>@string/build_in_category_insurance</item>
         <item>@string/build_in_category_bills</item>
     </array>
+
+    <array name="dialog_category_options">
+        <item>@string/dialog_category_options_item_rename</item>
+        <item>@string/dialog_category_options_item_delete</item>
+    </array>
 </resources>

@@ -1,11 +1,11 @@
 package dev.nelson.mot.dialog;
 
 import android.app.Dialog;
-import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
@@ -21,27 +21,58 @@ import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.service.DataOperationService;
-import dev.nelson.mot.service.action.DataOperationAction;
 import dev.nelson.mot.service.action.DataOperationFabric;
 import dev.nelson.mot.utils.SqlUtils;
 import dev.nelson.mot.utils.StringUtils;
 
 
-public class DialogFragmentAddCategory extends DialogFragment {
+public class DialogCategory extends DialogFragment {
+
+    public static final int ACTION_ADD = 1;
+    public static final int ACTION_EDIT = 2;
+    public static final String ACTION_KEY = "action_key";
+    public static final String ID_KEY = "id_key";
+    public static final String TITLE_KEY = "title_key";
 
     @BindView(R.id.fragment_dialog_add_category_edit_text)
     EditText mEditText;
 
-    public DialogFragmentAddCategory(){
-    }
+    private int mActionState;
+    private int mCategoryId;
+    private String mTitle;
 
-    public static DialogFragmentAddCategory newInstance() {
+    public static DialogCategory newInstance(int action) {
 
         Bundle args = new Bundle();
 
-        DialogFragmentAddCategory fragment = new DialogFragmentAddCategory();
+        DialogCategory fragment = new DialogCategory();
+        args.putInt(ACTION_KEY, action);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static DialogCategory newInstance(int action, int id) {
+
+        Bundle args = new Bundle();
+
+        DialogCategory fragment = new DialogCategory();
+        args.putInt(ACTION_KEY, action);
+        args.putInt(ID_KEY, id);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActionState = getArguments().getInt(ACTION_KEY, -1);
+        mCategoryId = getArguments().getInt(ID_KEY, -1);
+        if (mActionState == ACTION_ADD){
+            mTitle = getResources().getString(R.string.dialog_category_add_action_title);
+        }
+        if(mActionState == ACTION_EDIT){
+            mTitle = getResources().getString(R.string.dialog_category_edit_action_title);
+        }
     }
 
     @NonNull
@@ -54,7 +85,7 @@ public class DialogFragmentAddCategory extends DialogFragment {
         mEditText.requestFocus();
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         dialogBuilder.setView(dialogView);
-        dialogBuilder.setTitle(R.string.dialog_add_category_title);
+        dialogBuilder.setTitle(mTitle);
         dialogBuilder.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -65,7 +96,12 @@ public class DialogFragmentAddCategory extends DialogFragment {
                     alertDialog.show();
                 }else {
                     String categoryName = Character.toUpperCase(editTextData.charAt(0)) + editTextData.substring(1);
-                    insertCategoryIntoDB(categoryName);
+                    if(mActionState == ACTION_ADD){
+                        insertCategoryIntoDB(categoryName);
+                    }
+                    if(mActionState == ACTION_EDIT){
+                        renameCategory(mCategoryId, categoryName);
+                    }
                 }
                 dialog.dismiss();
             }
@@ -86,6 +122,24 @@ public class DialogFragmentAddCategory extends DialogFragment {
             }
         });
         return dialog;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(ACTION_KEY, mActionState);
+        outState.putString(TITLE_KEY, mTitle);
+        outState.putInt(ID_KEY, mCategoryId);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null){
+            mActionState = savedInstanceState.getInt(ACTION_KEY, -1);
+            mTitle = savedInstanceState.getString(TITLE_KEY);
+            mCategoryId = savedInstanceState.getInt(ID_KEY, -1);
+        }
     }
 
     private AlertDialog initCategoryEmptyNameAlertDialog(){
@@ -109,4 +163,14 @@ public class DialogFragmentAddCategory extends DialogFragment {
         intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, categoryName);
         getContext().startService(intent);
     }
+
+    private void renameCategory(int categoryID, String newName){
+        Intent intent = new Intent(getContext(), DataOperationService.class);
+        intent.setAction(DataOperationFabric.UPDATE_CATEGORY);
+        intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, newName);
+        intent.putExtra(SqlUtils.ID_KEY, categoryID);
+        getContext().startService(intent);
+    }
+
+
 }

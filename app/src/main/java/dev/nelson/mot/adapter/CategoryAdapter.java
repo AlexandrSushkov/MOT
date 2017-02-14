@@ -2,29 +2,26 @@ package dev.nelson.mot.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
 
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
 
     private Context mContext;
     private CursorAdapter mCursorAdapter;
-
-    static class ViewHolder extends RecyclerView.ViewHolder{
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
+    private TextView categoryName;
 
     public CategoryAdapter(Context context, Cursor cursor ){
         mContext = context;
@@ -36,8 +33,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                TextView categoryName = (TextView) view.findViewById(R.id.item_fragment_category_recycler_view_text);
+                categoryName = (TextView) view.findViewById(R.id.item_fragment_category_recycler_view_text);
+                ImageView itemMenu = (ImageView) view.findViewById(R.id.item_fragment_category_recycler_view_image_menu);
                 categoryName.setText(cursor.getString(cursor.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)));
+                itemMenu.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(mContext, categoryName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         };
     }
@@ -63,4 +67,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         mCursorAdapter.changeCursor(cursor);
     }
 
+
+
+    //butter knife doesn't work here %(
+    class ViewHolder extends RecyclerView.ViewHolder{
+
+        ViewHolder(View itemView) {
+            super(itemView);
+//            ButterKnife.bind(this, itemView);
+        }
+    }
 }

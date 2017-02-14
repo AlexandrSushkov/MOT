@@ -14,7 +14,7 @@ public class DialogFabric {
     public static DialogFragment getDialog(String dialogType){
         switch (dialogType){
             case DIALOG_ADD_CATEGORY:
-                return new DialogFragmentAddCategory();
+                return new DialogCategory();
             default:
                 throw new IllegalArgumentException("Wrong dialog type: " + dialogType);
         }
