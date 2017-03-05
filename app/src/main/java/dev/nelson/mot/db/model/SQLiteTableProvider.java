@@ -36,5 +36,9 @@ public abstract class SQLiteTableProvider {
         db.execSQL("DROP TABLE IF EXISTS " + mName + ";");
         onCreate(db);
     }
+
+    public Cursor rawQuery(SQLiteDatabase db, String rawQuery, String[] selectionArgs){
+        return db.rawQuery(rawQuery, selectionArgs);
+    }
 }
 

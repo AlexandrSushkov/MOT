@@ -8,8 +8,8 @@
         android:id="@+id/fragment_dialog_add_category_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dialog_vertical_margins"
-        android:layout_marginEnd="@dimen/dialog_vertical_margins"
+        android:layout_marginStart="@dimen/dialog_vertical_margin"
+        android:layout_marginEnd="@dimen/dialog_vertical_margin"
         android:hint="@string/dialog_category_hint"
         android:maxLength="30"
         android:inputType="textAutoCorrect" />

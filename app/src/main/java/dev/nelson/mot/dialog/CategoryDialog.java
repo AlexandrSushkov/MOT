@@ -22,11 +22,11 @@ import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
-import dev.nelson.mot.utils.SqlUtils;
+import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.StringUtils;
 
 
-public class DialogCategory extends DialogFragment {
+public class CategoryDialog extends DialogFragment {
 
     public static final int ACTION_ADD = 1;
     public static final int ACTION_EDIT = 2;
@@ -41,21 +41,21 @@ public class DialogCategory extends DialogFragment {
     private int mCategoryId;
     private String mTitle;
 
-    public static DialogCategory newInstance(int action) {
+    public static CategoryDialog newInstance(int action) {
 
         Bundle args = new Bundle();
 
-        DialogCategory fragment = new DialogCategory();
+        CategoryDialog fragment = new CategoryDialog();
         args.putInt(ACTION_KEY, action);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public static DialogCategory newInstance(int action, int id) {
+    public static CategoryDialog newInstance(int action, int id) {
 
         Bundle args = new Bundle();
 
-        DialogCategory fragment = new DialogCategory();
+        CategoryDialog fragment = new CategoryDialog();
         args.putInt(ACTION_KEY, action);
         args.putInt(ID_KEY, id);
         fragment.setArguments(args);
@@ -168,7 +168,7 @@ public class DialogCategory extends DialogFragment {
         Intent intent = new Intent(getContext(), DataOperationService.class);
         intent.setAction(DataOperationFabric.UPDATE_CATEGORY);
         intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, newName);
-        intent.putExtra(SqlUtils.ID_KEY, categoryID);
+        intent.putExtra(Constants.ID_KEY, categoryID);
         getContext().startService(intent);
     }
 

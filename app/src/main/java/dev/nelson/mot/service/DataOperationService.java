@@ -2,7 +2,6 @@ package dev.nelson.mot.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import dev.nelson.mot.service.action.DataOperationAction;

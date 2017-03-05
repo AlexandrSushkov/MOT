@@ -2,15 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
-    android:orientation="vertical">
+    android:paddingTop="@dimen/item_horizontal_padding"
+    android:paddingBottom="@dimen/item_horizontal_padding">
 
     <TextView
         android:id="@+id/item_fragment_category_recycler_view_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_gravity="center_vertical|start"
         android:textSize="@dimen/fragment_categories_recycler_view_item_text_size"
         />
 

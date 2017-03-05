@@ -1,6 +1,8 @@
 package dev.nelson.mot.activity;
 
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -10,31 +12,38 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.SetDataFromStatisticThisMonthTotalLoader;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
-import dev.nelson.mot.fragment.HomeFragment;
+import dev.nelson.mot.fragment.RecentPaymentsFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
+import dev.nelson.mot.loadercalback.StatisticThisMonthTotalLoaderCallbacks;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity
+//        implements SetDataFromStatisticThisMonthTotalLoader
+{
 
     private static final String SAVE_INSTANCE_STATE_KEY = "save_instance_state_key";
 
     @BindView(R.id.activity_main_drawer)
     DrawerLayout mDrawerLayout;
-    @BindView(R.id.main_activity_toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.main_activity_navigation_view)
     NavigationView mNavView;
-
     private ActionBarDrawerToggle drawerToggle;
     private Fragment mContentFragment = null;
+//    private StatisticThisMonthTotalLoaderCallbacks mStatisticThisMonthTotalLoaderCallbacks;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +56,11 @@ public class MainActivity extends AppCompatActivity{
         setNavDrawer(mNavView);
         mNavView.setCheckedItem(R.id.navigation_menu_item_home);
         mNavView.getMenu().performIdentifierAction(R.id.navigation_menu_item_home, 0);
-        if(savedInstanceState != null){
-            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
-        }
+//        if(savedInstanceState != null){
+//            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
+//        }
+//        mStatisticThisMonthTotalLoaderCallbacks = new StatisticThisMonthTotalLoaderCallbacks(this, this);
+//        getSupportLoaderManager().initLoader(StatisticThisMonthTotalLoaderCallbacks.LOADER_ID, null, mStatisticThisMonthTotalLoaderCallbacks);
     }
 
     //this method open navigation menu
@@ -80,7 +91,7 @@ public class MainActivity extends AppCompatActivity{
         Class fragmentClass;
         switch (menuItem.getItemId()){
             case R.id.navigation_menu_item_home:
-                fragmentClass = HomeFragment.class;
+                fragmentClass = RecentPaymentsFragment.class;
                 break;
             case R.id.navigation_menu_item_category:
                 fragmentClass = CategoriesFragment.class;
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
                 fragmentClass = AboutFragment.class;
                 break;
             default:
-                fragmentClass = HomeFragment.class;
+                fragmentClass = RecentPaymentsFragment.class;
         }
 
         try {
@@ -101,8 +112,8 @@ public class MainActivity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment).commit();
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setEnabled(true);
@@ -121,9 +132,34 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("tag", getClass().getName() + " onResume <==============");
+        mFragmentManager.beginTransaction().detach(mContentFragment).attach(mContentFragment).commit();
+    }
+
+    // method of  SetDataFromStatisticThisMonthTotalLoader interface
+//    @Override
+//    public void setValues(double sumForThisMonth) {
+//        View header = mNavView.getHeaderView(0);
+//        TextView spentThisMonth = (TextView) header.findViewById(R.id.spent_this_month);
+//        spentThisMonth.setText(String.valueOf(sumForThisMonth));
+//    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // do something
+//        if (savedInstanceState != null){
+//            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
+//        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, SAVE_INSTANCE_STATE_KEY, mContentFragment);
+        // do something
+//        getSupportFragmentManager().putFragment(outState, SAVE_INSTANCE_STATE_KEY, mContentFragment);
     }
 
     @Override

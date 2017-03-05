@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <array name="build_in_categories">
         <item>@string/build_in_category_food</item>
         <item>@string/build_in_category_communication_services</item>
@@ -9,8 +10,14 @@
         <item>@string/build_in_category_bills</item>
     </array>
 
-    <array name="dialog_category_options">
+    <array name="category_options_dialog">
         <item>@string/dialog_category_options_item_rename</item>
         <item>@string/dialog_category_options_item_delete</item>
     </array>
+
+    <array name="payment_options_dialog">
+        <item>@string/dialog_payment_options_item_edit</item>
+        <item>@string/dialog_payment_options_item_delete</item>
+    </array>
+
 </resources>

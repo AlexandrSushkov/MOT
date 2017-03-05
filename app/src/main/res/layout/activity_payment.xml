@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/payment_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorBackground"
+        app:theme="@style/MyActionBarTheme"/>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/payment_wrapper"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackground"
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
+
+            <EditText
+                android:id="@+id/item_payment_text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:background="@null"
+                android:hint="@string/payment_title_hint"
+                android:maxLength="@string/payment_title_max_length" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="2dp">
+
+                <TextView
+                    android:id="@+id/payment_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:drawablePadding="5dp"
+                    android:drawableStart="@drawable/ic_category"
+                    android:hint="@string/activity_payment_no_category_hint" />
+
+                <EditText
+                    android:id="@+id/item_payment_text_cost"
+                    android:gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:inputType="numberDecimal"
+                    android:maxLength="@string/payment_coast_max_length"
+                    android:background="@null"
+                    android:hint="@string/payment_cost_hint" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray" />
+
+            <EditText
+                android:id="@+id/payment_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:hint="@string/payment_summary_hint"
+                android:maxLength="@string/payment_summary_max_length" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/payment_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="@dimen/md_keylines"
+            android:layout_marginBottom="@dimen/md_keylines"
+            android:src="@drawable/ic_create_black_24dp"
+            android:tint="@color/colorPrimary"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>
+

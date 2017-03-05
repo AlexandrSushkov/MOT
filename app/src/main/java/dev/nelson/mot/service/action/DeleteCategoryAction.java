@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.utils.MyApplication;
-import dev.nelson.mot.utils.SqlUtils;
 
 public class DeleteCategoryAction implements DataOperationAction {
     @Override

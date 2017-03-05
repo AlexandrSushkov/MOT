@@ -2,14 +2,10 @@ package dev.nelson.mot.fragment;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,19 +20,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.CategoriesAdapter;
-import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.dialog.DialogCategory;
+import dev.nelson.mot.dialog.CategoryDialog;
+import dev.nelson.mot.loadercalback.CategoriesLoaderCallbacks;
 
 
-public class CategoriesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class CategoriesFragment extends Fragment{
 
-    private static final int LOADER_ID = 2;
-    @BindView(R.id.fragment_categories_recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 //    @BindView(R.id.item_fragment_category_recycler_view_image_menu)
 //    ImageView mItemMenu;
 //    private CategoryAdapter mAdapter;
     private CategoriesAdapter mAdapter;
+    private CategoriesLoaderCallbacks mLoaderCallbacks;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,35 +46,15 @@ public class CategoriesFragment extends Fragment implements LoaderManager.Loader
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
 //        mAdapter = new CategoryAdapter(view.getContext(), null);
-        mAdapter = new CategoriesAdapter(view.getContext(), null);
+        mAdapter = new CategoriesAdapter(view.getContext(), null, CategoriesAdapter.FLAG_VIEW_CATEGORIES);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(decoration);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        mLoaderCallbacks = new CategoriesLoaderCallbacks(getContext(), mAdapter);
+        getActivity().getSupportLoaderManager().initLoader(CategoriesLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == LOADER_ID) {
-            return new CursorLoader(getContext(), CategoriesProvider.URI, null, null, null, null);
-        } else {
-            throw new IllegalArgumentException("Wrong loader id: " + id);
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -97,8 +74,7 @@ public class CategoriesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
-            DialogCategory.newInstance(DialogCategory.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "tag");
-
+            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "tag");
         }
         return super.onOptionsItemSelected(item);
     }

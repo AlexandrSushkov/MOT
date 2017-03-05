@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MOT</string>
-    <string name="navigation_menu_item_home_title">Home</string>
-    <string name="navigation_menu_item_category_title">Category</string>
+    <string name="navigation_menu_item_recent_payments_title">Recent payments</string>
+    <string name="navigation_menu_item_categories_title">Categories</string>
     <string name="navigation_menu_item_statistic_title">Statistic</string>
     <string name="navigation_menu_item_about_title">About</string>
     <string name="navigation_view_logo">navigation view logo</string>
@@ -10,7 +10,7 @@
 
     <!--fragment about-->
     <string name="about_text">
-        Hello!\n\nThis is education project, the main goal of which is to show my knowledge, skills and techniques in programming android applications.
+        Hello!\n\nThis is educational project, the main goal of which is to show my knowledge, skills and techniques in programming android applications.
         This application is totally free, but If you like it, you can support this project,
         this shows that i do something useful, increase my motivation to develop this app, and make me a little bit happier.
     </string>
@@ -35,11 +35,34 @@
     <string name="dialog_empty_category_name_message">Category name cannot be blank</string>
     <string name="dialog_category_options_item_rename">Rename</string>
     <string name="dialog_category_options_item_delete">Delete</string>
+    <string name="dialog_payment_options_title">Payment options</string>
+    <string name="dialog_payment_options_item_edit">Edit</string>
+    <string name="dialog_payment_options_item_delete">Delete</string>
+    <string name="dialog_are_you_sure_title">Delete payment?</string>
+
 
 
 
     <!--menu section-->
     <string name="fragment_categories_menu_item_add_title">add</string>
     <string name="item_fragment_category_recycler_view_image_menu_description">menu icon</string>
+    <string name="category_icon_description">category item</string>
+
+    <string name="payment_title_max_length">150</string>
+    <string name="payment_summary_max_length">500</string>
+    <string name="payment_coast_max_length">20</string>
+    <string name="payment_title_hint">Title</string>
+    <string name="payment_cost_hint">Cost</string>
+    <string name="payment_summary_hint">Add your comment here</string>
+    <string name="activity_choose_category_toolbar_title">Choose category</string>
+    <string name="activity_payment_no_category_hint">No category</string>
+
+    
+    <string name="negative_value">- %1$,.2f</string>
+    <string name="welcome_messages">Hello, %1$s! You have %2$d new messages.</string>
+    <string name="no_category_category_name">No category</string>
+    <string name="pie_chart_center_text">Spent in this month:\n</string>
+    <string name="item_payment_settings_description">item payment settings description</string>
+
 
 </resources>

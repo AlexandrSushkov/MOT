@@ -1,12 +1,10 @@
 package dev.nelson.mot.service.action;
 
 import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Bundle;
 
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.utils.MyApplication;
-import dev.nelson.mot.utils.SqlUtils;
 
 class InsertCategoryAction implements DataOperationAction{
 

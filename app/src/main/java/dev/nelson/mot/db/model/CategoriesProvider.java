@@ -4,12 +4,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import dev.nelson.mot.utils.SqlUtils;
+import dev.nelson.mot.utils.Constants;
 
 public class CategoriesProvider extends SQLiteTableProvider {
     public static final String TABLE_NAME = "categories";
 
-    public static final Uri URI = Uri.parse(SqlUtils.SQL_AUTHORITY + "/" + TABLE_NAME);
+    public static final Uri URI = Uri.parse(Constants.SQL_AUTHORITY + "/" + TABLE_NAME);
 
     public CategoriesProvider() {
         super(TABLE_NAME);

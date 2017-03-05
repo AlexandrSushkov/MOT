@@ -15,17 +15,17 @@ import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
 
 
-public class DialogCategoryOptions extends DialogFragment {
+public class CategoryOptionsDialog extends DialogFragment {
 
     public static final String CATEGORY_ID_KEY = "category_id";
 
     private int categoryId;
 
-    public static DialogCategoryOptions newInstance(int id) {
+    public static CategoryOptionsDialog newInstance(int id) {
 
         Bundle args = new Bundle();
 
-        DialogCategoryOptions fragment = new DialogCategoryOptions();
+        CategoryOptionsDialog fragment = new CategoryOptionsDialog();
         args.putInt(CATEGORY_ID_KEY, id);
         fragment.setArguments(args);
         return fragment;
@@ -42,13 +42,13 @@ public class DialogCategoryOptions extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_category_item_menu_title);
-        builder.setItems(R.array.dialog_category_options, new DialogInterface.OnClickListener() {
+        builder.setItems(R.array.category_options_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case 0:
                         //rename category
-                        DialogCategory.newInstance(DialogCategory.ACTION_EDIT, categoryId).show(getActivity().getSupportFragmentManager(), "tag");
+                        CategoryDialog.newInstance(CategoryDialog.ACTION_EDIT, categoryId).show(getActivity().getSupportFragmentManager(), "tag");
                         break;
                     case 1:
                         //delete category
