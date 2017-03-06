@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:text="@string/choose_currency_title"
+            android:textSize="24sp"
+            android:textColor="@color/colorPrimary"
+            android:fontFamily="sans-serif-thin"
+            />
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <RadioButton
+                android:id="@+id/radio_euro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_horizontal_padding"
+                android:layout_marginBottom="@dimen/item_horizontal_padding"
+                android:layoutDirection="rtl"
+                android:text="@string/currency_euro_title"
+                android:textSize="@dimen/currency_title_text_size"
+                android:textColor="@color/colorPrimary"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_pound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_horizontal_padding"
+                android:layout_marginBottom="@dimen/item_horizontal_padding"
+                android:layoutDirection="rtl"
+                android:text="@string/currency_pound_title"
+                android:textSize="@dimen/currency_title_text_size"
+                android:textColor="@color/colorPrimary"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_ruble"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_horizontal_padding"
+                android:layout_marginBottom="@dimen/item_horizontal_padding"
+                android:layoutDirection="rtl"
+                android:text="@string/currency_ruble_title"
+                android:textSize="@dimen/currency_title_text_size"
+                android:textColor="@color/colorPrimary"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_hryvnia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_horizontal_padding"
+                android:layout_marginBottom="@dimen/item_horizontal_padding"
+                android:layoutDirection="rtl"
+                android:text="@string/currency_hryvnia_title"
+                android:textSize="@dimen/currency_title_text_size"
+                android:textColor="@color/colorPrimary"
+                />
+
+            <RadioButton
+                android:id="@+id/radio_dollar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_horizontal_padding"
+                android:layout_marginBottom="@dimen/item_horizontal_padding"
+                android:layoutDirection="rtl"
+                android:text="@string/currency_dollar_title"
+                android:textSize="@dimen/currency_title_text_size"
+                android:textColor="@color/colorPrimary"
+                />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/activity_choose_currency_button_next"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:text="@string/choose_locale_currency_button_text"
+            android:fontFamily="sans-serif-thin"
+            android:textSize="30sp"
+            android:textColor="@color/selector_text_color"
+            android:background="@drawable/text_line"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>

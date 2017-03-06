@@ -21,6 +21,7 @@ import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.dialog.CategoryOptionsDialog;
 import dev.nelson.mot.dialog.PaymentOptionsDialog;
+import dev.nelson.mot.utils.StringUtils;
 
 
 public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewHolder> {
@@ -48,12 +49,7 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
         holder.paymentId = cursor.getInt(cursor.getColumnIndex(PaymentsProvider.Columns._ID));
         holder.mTitle.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.TITLE)));
-
-//        double cost = cursor.getDouble(cursor.getColumnIndex(PaymentsProvider.Columns.COST));
-//        holder.mCost.setText(formattedCost(cost));
-
-        double cost = cursor.getDouble(cursor.getColumnIndex(PaymentsProvider.Columns.COST));
-        holder.mCost.setText(formattedCost(cost));
+        holder.mCost.setText(String.valueOf(cursor.getLong(cursor.getColumnIndex(PaymentsProvider.Columns.COST))));
         holder.mDate.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.DATE)));
 
         if (mFlagStatus.equals(FLAG_RECENT_PAYMENTS)) {
@@ -119,10 +115,5 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
                 mContext.startActivity(intent);
             }
         });
-    }
-
-    //extract into stringUtils
-    private String formattedCost(double cost) {
-        return String.format(mContext.getString(R.string.negative_value), cost);
     }
 }

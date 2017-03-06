@@ -17,5 +17,7 @@
     <dimen name="fragment_categories_recycler_view_item_text_size">15sp</dimen>
     <dimen name="payment_title_text_size">18sp</dimen>
     <dimen name="payment_date_text_size">10sp</dimen>
+    <dimen name="currency_title_text_size">24sp</dimen>
+
 
 </resources>

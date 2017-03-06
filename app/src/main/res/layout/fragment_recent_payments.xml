@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/no_data_announcement" />
+
+    <include layout="@layout/recycler_view" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fragment_home_fab"

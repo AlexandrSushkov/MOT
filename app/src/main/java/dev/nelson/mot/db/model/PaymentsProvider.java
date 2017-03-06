@@ -29,7 +29,7 @@ public class PaymentsProvider extends SQLiteTableProvider {
             + Columns.SUMMARY + " VARCHAR("+ R.string. payment_summary_max_length +"), "
             + Columns.CATEGORY_ID + " INTEGER REFERENCES " + CategoriesProvider.TABLE_NAME + "(" + CategoriesProvider.Columns._ID + "), "
             + Columns.DATE + " DATE DEFAULT CURRENT_DATE, "
-            + Columns.COST + " DOUBLE"
+            + Columns.COST + " LONG"
             + ")");
 
     }

@@ -23,7 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dev.nelson.mot.R;
-import dev.nelson.mot.callback.LastInsertedRowCallback;
 import dev.nelson.mot.callback.SetDataFromPaymentLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -33,8 +32,7 @@ import dev.nelson.mot.observer.DatabaseChangesObserver;
 import dev.nelson.mot.payment.Payment;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
-import dev.nelson.mot.utils.CurrencyFormatTextWatcher;
-import dev.nelson.mot.utils.MoneyTextWatcher;
+import dev.nelson.mot.utils.CurrencyTextWatcher;
 
 
 public class PaymentTestActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks,
@@ -91,7 +89,7 @@ public class PaymentTestActivity extends AppCompatActivity implements SetDataFro
             default:
                 throw new IllegalStateException(getClass().getName() + " Wrong action flag.");
         }
-        mCost.addTextChangedListener(new MoneyTextWatcher(mCost));
+        mCost.addTextChangedListener(new CurrencyTextWatcher(mCost));
         if(paymentInitialState == null && paymentCurrentState == null){
             initPaymentStates();
         }

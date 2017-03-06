@@ -7,6 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import dev.nelson.mot.adapter.PaymentsAdapter;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
@@ -17,11 +18,13 @@ public class RecentPaymentsLoadersCallbacks implements LoaderManager.LoaderCallb
 
     private Context mContext;
     private PaymentsAdapter mAdapter;
+    private EmptyCursorCallback mEmptyCursorCallback;
 
 
-    public RecentPaymentsLoadersCallbacks(Context context, PaymentsAdapter adapter) {
+    public RecentPaymentsLoadersCallbacks(Context context, PaymentsAdapter adapter, EmptyCursorCallback callback) {
         mContext = context;
         mAdapter = adapter;
+        mEmptyCursorCallback = callback;
     }
 
     @Override
@@ -48,6 +51,10 @@ public class RecentPaymentsLoadersCallbacks implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if(!data.moveToFirst()){
+            mEmptyCursorCallback.showNoDataAnnouncement();
+            return;
+        }
         mAdapter.swapCursor(data);
         mAdapter.notifyDataSetChanged();
     }

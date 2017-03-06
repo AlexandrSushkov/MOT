@@ -12,4 +12,11 @@ public class Constants {
     public static final String CATEFORY_KEY = "category";
     public static final String COST_KEY = "cost";
     public static final String SUMMARY_KEY = "summary";
+
+    //shared preferences currency key
+    public static final String SHARED_PREFERENCES_NAME = "CurrencySettings";
+    public static final String LANGUAGE_KEY = "language";
+    public static final String COUNTRY_KEY = "country";
+    public static final String NO_LANGUAGE = "no_language";
+    public static final String NO_COUNTRY = "no_country";
 }

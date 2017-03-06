@@ -9,21 +9,27 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.PaymentsAdapter;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.loadercalback.PaymentsForCategoryLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
 
-public class CategoryContentActivity extends AppCompatActivity {
+public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback{
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @BindView(R.id.no_data_announcement)
+    TextView mNoDataAnnouncement;
     private ActionBar mActonBar;
     private PaymentsAdapter mAdapter;
     private PaymentsForCategoryLoaderCallbacks mLoaderCallbacks;
@@ -38,7 +44,7 @@ public class CategoryContentActivity extends AppCompatActivity {
         mAdapter = new PaymentsAdapter(this, null, PaymentsAdapter.FLAG_PAYMENTS_FOR_CATEGORY);
         initRecyclerView();
         int categoryId = getIntent().getIntExtra(CategoriesProvider.Columns._ID, -1);
-        mLoaderCallbacks = new PaymentsForCategoryLoaderCallbacks(this, mAdapter, categoryId);
+        mLoaderCallbacks = new PaymentsForCategoryLoaderCallbacks(this, mAdapter, categoryId, this);
         getSupportLoaderManager().initLoader(PaymentsForCategoryLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
 
     }
@@ -66,5 +72,10 @@ public class CategoryContentActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration decoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(decoration);
+    }
+
+    @Override
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
     }
 }
