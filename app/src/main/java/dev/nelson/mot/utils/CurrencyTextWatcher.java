@@ -17,6 +17,7 @@ public class CurrencyTextWatcher implements TextWatcher {
     private Locale myLocale;
     private int stringLengthBeforeChanges = 0;
     private int stringLengthAfterChanges = 0;
+    private boolean isLastCharacterDigit;
 
     public CurrencyTextWatcher(EditText editText) {
         editTextWeakReference = new WeakReference<EditText>(editText);
@@ -29,6 +30,9 @@ public class CurrencyTextWatcher implements TextWatcher {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         stringLengthBeforeChanges = s.length();
+        if(s.length() > 0){
+            isLastCharacterDigit = StringUtils.isLastCharacterDigit(s.toString());
+        }
 
     }
 
@@ -44,7 +48,7 @@ public class CurrencyTextWatcher implements TextWatcher {
         stringLengthAfterChanges = s.length();
         editText.removeTextChangedListener(this);
         String cleanString = StringUtils.cleanString(s);
-        if(stringLengthBeforeChanges > stringLengthAfterChanges){
+        if(stringLengthBeforeChanges > stringLengthAfterChanges && !isLastCharacterDigit){
             cleanString = cleanString.substring(0, cleanString.length()-1);
         }
         BigDecimal parsed = new BigDecimal(cleanString).setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
