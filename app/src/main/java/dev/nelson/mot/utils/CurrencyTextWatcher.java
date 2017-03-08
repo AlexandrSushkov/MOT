@@ -48,10 +48,17 @@ public class CurrencyTextWatcher implements TextWatcher {
         stringLengthAfterChanges = s.length();
         editText.removeTextChangedListener(this);
         String cleanString = StringUtils.cleanString(s);
-        if(stringLengthBeforeChanges > stringLengthAfterChanges && !isLastCharacterDigit){
+        //this logic block used to correct removal digits when currency symbol after digits
+        if(stringLengthBeforeChanges > stringLengthAfterChanges && !isLastCharacterDigit && cleanString.length() > 0){
             cleanString = cleanString.substring(0, cleanString.length()-1);
         }
-        BigDecimal parsed = new BigDecimal(cleanString).setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
+        BigDecimal value;
+        if(cleanString != null){
+            value = cleanString.length() == 0 ? BigDecimal.ZERO : new BigDecimal(cleanString);
+        } else {
+            value = BigDecimal.ZERO;
+        }
+        BigDecimal parsed = value.setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
         String formatted = NumberFormat.getCurrencyInstance(myLocale).format(parsed);
         editText.setText(formatted);
         editText.setSelection(formatted.length());
