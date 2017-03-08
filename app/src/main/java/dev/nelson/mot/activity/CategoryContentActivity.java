@@ -77,5 +77,6 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
     @Override
     public void showNoDataAnnouncement() {
         mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 }

@@ -21,10 +21,11 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     public CurrencyTextWatcher(EditText editText) {
         editTextWeakReference = new WeakReference<EditText>(editText);
-        SharedPreferences settings = MyApplication.getContext().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        String language = settings.getString(Constants.LANGUAGE_KEY, Constants.NO_LANGUAGE);
-        String country = settings.getString(Constants.COUNTRY_KEY, Constants.NO_COUNTRY);
-        myLocale = new Locale(language, country);
+//        SharedPreferences settings = MyApplication.getContext().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+//        String language = settings.getString(Constants.LANGUAGE_KEY, Constants.NO_LANGUAGE);
+//        String country = settings.getString(Constants.COUNTRY_KEY, Constants.NO_COUNTRY);
+//        myLocale = new Locale(language, country);
+        myLocale = LocaleUtils.getLocaleForChoosenCurrency();
     }
 
     @Override

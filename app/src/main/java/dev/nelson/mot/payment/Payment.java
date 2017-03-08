@@ -25,7 +25,7 @@ public class Payment implements Parcelable{
     private String mTitle;
     private Integer mCategoryId;
     private String mCategoryName;
-    private Double mCost;
+    private Long mCost;
     private String mSummary;
 
     public Payment(int id) {
@@ -33,7 +33,7 @@ public class Payment implements Parcelable{
         mTitle = "";
         mCategoryId = -1;
         mCategoryName = "";
-        mCost = 0.0;
+        mCost = (long) 0;
         mSummary = "";
     }
 
@@ -62,7 +62,7 @@ public class Payment implements Parcelable{
         return mCategoryName;
     }
 
-    public double getCost() {
+    public long getCost() {
         return mCost;
     }
 
@@ -86,7 +86,7 @@ public class Payment implements Parcelable{
         this.mCategoryName = mCategoryName;
     }
 
-    public void setCost(double mCost) {
+    public void setCost(long mCost) {
         this.mCost = mCost;
     }
 

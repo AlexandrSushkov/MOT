@@ -111,5 +111,6 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
     @Override
     public void showNoDataAnnouncement() {
         mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 }

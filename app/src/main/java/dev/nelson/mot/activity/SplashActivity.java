@@ -23,14 +23,14 @@ public class SplashActivity extends AppCompatActivity {
 //        intent1.putExtra(PaymentsProvider.Columns.COST, 34.50);
 //        startService(intent1);
 
-//        if (isCurrencySet()) {
-//            startMainActivity();
-//        } else {
+        if (isCurrencySet()) {
+            startMainActivity();
+        } else {
 //          start choose currency activity
             Intent intent = new Intent(this, ChooseCurrencyActivity.class);
             startActivity(intent);
             finish();
-//        }
+        }
     }
 
     private void startMainActivity() {

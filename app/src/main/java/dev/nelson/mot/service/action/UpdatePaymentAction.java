@@ -18,10 +18,12 @@ public class UpdatePaymentAction implements DataOperationAction {
             cv.put(PaymentsProvider.Columns.TITLE, bundle.getString(PaymentsProvider.Columns.TITLE));
 //        }
 //        if (bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID, -1) != -1){
+        if(bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) != -1){
             cv.put(PaymentsProvider.Columns.CATEGORY_ID, bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID));
+        }
 //        }
 //        if (bundle.getDouble(PaymentsProvider.Columns.COST, -1) != -1){
-            cv.put(PaymentsProvider.Columns.COST, bundle.getDouble(PaymentsProvider.Columns.COST));
+            cv.put(PaymentsProvider.Columns.COST, bundle.getLong(PaymentsProvider.Columns.COST));
 //        }
 //        if (!bundle.getString(PaymentsProvider.Columns.SUMMARY, "null").equals("null")){
             cv.put(PaymentsProvider.Columns.SUMMARY, bundle.getString(PaymentsProvider.Columns.SUMMARY));

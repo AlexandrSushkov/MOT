@@ -1,5 +1,8 @@
 package dev.nelson.mot.utils;
 
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,5 +22,12 @@ public class StringUtils {
         Pattern pattern = Pattern.compile("[0-9]");
         Matcher matcher = pattern.matcher(lastCharacter);
         return matcher.find();
+    }
+
+    public static String formattedCost(long cost){
+        Locale myLocale = LocaleUtils.getLocaleForChoosenCurrency();
+        BigDecimal costValue = new BigDecimal(cost);
+        BigDecimal parsed = costValue.setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
+        return NumberFormat.getCurrencyInstance(myLocale).format(parsed);
     }
 }

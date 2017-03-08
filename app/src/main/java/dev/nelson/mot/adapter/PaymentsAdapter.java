@@ -49,7 +49,8 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
         holder.paymentId = cursor.getInt(cursor.getColumnIndex(PaymentsProvider.Columns._ID));
         holder.mTitle.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.TITLE)));
-        holder.mCost.setText(String.valueOf(cursor.getLong(cursor.getColumnIndex(PaymentsProvider.Columns.COST))));
+
+        holder.mCost.setText(StringUtils.formattedCost(cursor.getLong(cursor.getColumnIndex(PaymentsProvider.Columns.COST))));
         holder.mDate.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.DATE)));
 
         if (mFlagStatus.equals(FLAG_RECENT_PAYMENTS)) {
@@ -116,4 +117,5 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
             }
         });
     }
+
 }

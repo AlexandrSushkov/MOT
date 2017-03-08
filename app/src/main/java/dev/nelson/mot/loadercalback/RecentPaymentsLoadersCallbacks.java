@@ -51,12 +51,11 @@ public class RecentPaymentsLoadersCallbacks implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(!data.moveToFirst()){
-            mEmptyCursorCallback.showNoDataAnnouncement();
-            return;
-        }
         mAdapter.swapCursor(data);
         mAdapter.notifyDataSetChanged();
+        if(!data.moveToFirst()){
+            mEmptyCursorCallback.showNoDataAnnouncement();
+        }
     }
 
     @Override

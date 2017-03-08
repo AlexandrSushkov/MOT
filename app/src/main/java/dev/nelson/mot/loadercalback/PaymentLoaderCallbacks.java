@@ -54,7 +54,7 @@ public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cur
         String title = "";
         int categoryId = -1;
         String categoryName="";
-        double cost = 0;
+        long cost = 0;
         String summary = "";
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
@@ -63,7 +63,7 @@ public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cur
             if (data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) != null){
                 categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
             }
-            cost = data.getDouble(data.getColumnIndex(PaymentsProvider.Columns.COST));
+            cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
             summary = data.getString(data.getColumnIndex(PaymentsProvider.Columns.SUMMARY));
         }
         mCallbackObj.fillPaymentInitialStateWithData(title, categoryId, categoryName, cost, summary);

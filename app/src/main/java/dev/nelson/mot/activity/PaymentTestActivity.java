@@ -33,6 +33,7 @@ import dev.nelson.mot.payment.Payment;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
 import dev.nelson.mot.utils.CurrencyTextWatcher;
+import dev.nelson.mot.utils.StringUtils;
 
 
 public class PaymentTestActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks,
@@ -165,7 +166,7 @@ public class PaymentTestActivity extends AppCompatActivity implements SetDataFro
     }
 
     @Override
-    public void fillPaymentInitialStateWithData(String title, int categoryId, String categoryName, double cost, String summary) {
+    public void fillPaymentInitialStateWithData(String title, int categoryId, String categoryName, long cost, String summary) {
         paymentInitialState.setTitle(title);
         paymentInitialState.setCategoryId(categoryId);
         paymentInitialState.setCategoryName(categoryName);
@@ -220,7 +221,8 @@ public class PaymentTestActivity extends AppCompatActivity implements SetDataFro
         super.onSaveInstanceState(outState);
         paymentCurrentState.setTitle(mTitle.getText().toString());
         if (mCost.getText().toString().length() > 0){
-            paymentCurrentState.setCost(Double.valueOf(mCost.getText().toString()));
+            // TODO: 3/8/17 currectly format cost whein it = 0.0
+            paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
         }
         paymentCurrentState.setSummary(mSummary.getText().toString());
         outState.putParcelable(PAYMENT_INITIAL_STATE_KEY, paymentInitialState);
@@ -319,7 +321,8 @@ public class PaymentTestActivity extends AppCompatActivity implements SetDataFro
     private void addChangesInPaymentCurrentState() {
         paymentCurrentState.setTitle(mTitle.getText().toString());
         if (mCost.getText().toString().length() > 0){
-            paymentCurrentState.setCost(Double.valueOf(mCost.getText().toString()));
+            // TODO: 3/8/17 currectly format cost whein it = 0.0
+            paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
         }
         paymentCurrentState.setSummary(mSummary.getText().toString());
     }

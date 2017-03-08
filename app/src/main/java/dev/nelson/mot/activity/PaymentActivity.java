@@ -65,7 +65,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     private String mCategoryNameData = "";
     private String mNewCategoryNameData = "";
     private String mTitleData = "";
-    private double mCostData = 0;
+    private long mCostData = 0;
     private String mSummaryData = "";
 
 
@@ -177,7 +177,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     }
 
     @Override
-    public void fillPaymentInitialStateWithData(String title, int categoryId, String categoryName, double cost, String summary) {
+    public void fillPaymentInitialStateWithData(String title, int categoryId, String categoryName, long cost, String summary) {
         mTitleData = title;
         mCategoryId = categoryId;
         mCategoryNameData = categoryName;
@@ -309,7 +309,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         mCategoryId = savedInstanceState.getInt("categoryId", mCategoryId);
         mTitleData = savedInstanceState.getString("title", mTitleData);
         mCategoryNameData = savedInstanceState.getString("categoryName", mCategoryNameData);
-        mCostData = savedInstanceState.getDouble("cost", mCostData);
+        mCostData = savedInstanceState.getLong("cost", mCostData);
         mSummaryData = savedInstanceState.getString("summary", mSummaryData);
     }
 
