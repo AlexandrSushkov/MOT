@@ -14,23 +14,12 @@ public class UpdatePaymentAction implements DataOperationAction {
     public void perform(Bundle bundle) {
         Uri uri = Uri.withAppendedPath(PaymentsProvider.URI, String.valueOf(bundle.getInt(PaymentsProvider.Columns._ID, -1)));
         ContentValues cv = new ContentValues();
-//        if (!bundle.getString(PaymentsProvider.Columns.TITLE, "null").equals("null")){
-            cv.put(PaymentsProvider.Columns.TITLE, bundle.getString(PaymentsProvider.Columns.TITLE));
-//        }
-//        if (bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID, -1) != -1){
-        if(bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) != -1){
+        cv.put(PaymentsProvider.Columns.TITLE, bundle.getString(PaymentsProvider.Columns.TITLE));
+        if (bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) != -1 && bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) != 0) {
             cv.put(PaymentsProvider.Columns.CATEGORY_ID, bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID));
-            // TODO: 3/9/17 rewrite this shit
-        }else if(bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) == 0){
-            cv.put(PaymentsProvider.Columns.CATEGORY_ID, "null");
         }
-//        }
-//        if (bundle.getDouble(PaymentsProvider.Columns.COST, -1) != -1){
-            cv.put(PaymentsProvider.Columns.COST, bundle.getLong(PaymentsProvider.Columns.COST));
-//        }
-//        if (!bundle.getString(PaymentsProvider.Columns.SUMMARY, "null").equals("null")){
-            cv.put(PaymentsProvider.Columns.SUMMARY, bundle.getString(PaymentsProvider.Columns.SUMMARY));
-//        }
+        cv.put(PaymentsProvider.Columns.COST, bundle.getLong(PaymentsProvider.Columns.COST));
+        cv.put(PaymentsProvider.Columns.SUMMARY, bundle.getString(PaymentsProvider.Columns.SUMMARY));
         MyApplication.getContext().getContentResolver().update(uri, cv, null, null);
     }
 }

@@ -190,7 +190,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         for (Long sumOfCategory: mSumPerCategory) {
             sumPerMonth += sumOfCategory;
         }
-        int t = String.valueOf(sumPerMonth).length();
+//        int t = String.valueOf(sumPerMonth).length();
         if(String.valueOf(sumPerMonth).length() < 13){
             s = new SpannableString(getString(R.string.pie_chart_center_text) + StringUtils.formattedCost(sumPerMonth));
         }else {

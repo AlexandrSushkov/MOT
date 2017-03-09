@@ -31,8 +31,6 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
 
     public static final int REQUEST_CODE = 100;
 
-    @BindView(R.id.item_no_category)
-    FrameLayout mItemNoCategory;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.toolbar)
@@ -81,16 +79,6 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
         resultIntent.putExtra(CategoriesProvider.Columns._ID, id);
         resultIntent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, name);
         setResult(RESULT_OK, resultIntent);
-    }
-
-    @OnClick(R.id.item_no_category)
-    void onClickNoCategory(){
-        Toast.makeText(this, "no category", Toast.LENGTH_SHORT).show();
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(CategoriesProvider.Columns._ID, 0);
-        resultIntent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, getString(R.string.no_category_category_name));
-        setResult(RESULT_OK, resultIntent);
-        finish();
     }
 
     private void initToolbar() {
