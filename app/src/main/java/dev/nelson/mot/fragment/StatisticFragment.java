@@ -36,6 +36,7 @@ import dev.nelson.mot.db.SQLiteOpenHelperImpl;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.loadercalback.StatisticLoaderCallbacks;
 import dev.nelson.mot.utils.DateUtils;
+import dev.nelson.mot.utils.StringUtils;
 
 
 public class StatisticFragment extends Fragment implements SetDataFromStatisticLoader, OnChartValueSelectedListener{
@@ -45,7 +46,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
     //xData
     private LinkedList<String> mCategoriesNames = new LinkedList<>();
     //yData
-    private LinkedList<Double> mSumPerCategory = new LinkedList<>();
+    private LinkedList<Long> mSumPerCategory = new LinkedList<>();
 
     @Nullable
     @Override
@@ -64,7 +65,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
     }
 
     @Override
-    public void setDataFromStatisticLoader(LinkedList<String> categoriesNames, LinkedList<Double> sumPerCategory) {
+    public void setDataFromStatisticLoader(LinkedList<String> categoriesNames, LinkedList<Long> sumPerCategory) {
         mCategoriesNames = categoriesNames;
         mSumPerCategory = sumPerCategory;
         mChart.setCenterText(generateCenterCircleText());
@@ -80,7 +81,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         Log.i("VAL SELECTED",
                 "Value: " + e.getY() + ", index: " + h.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
-        Toast.makeText(getActivity(), String.valueOf(e.getY()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), String.valueOf(StringUtils.formattedCost((long)e.getY())), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -111,7 +112,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         mChart.setDrawCenterText(true);
 //        mChart.setCenterText(generateCenterCircleText());
         mChart.setCenterTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        mChart.setCenterTextSize(24);
+        mChart.setCenterTextSize(20);
 
         //categories text color
         mChart.setEntryLabelColor(Color.BLACK);
@@ -129,8 +130,8 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         ArrayList<PieEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < mSumPerCategory.size(); i++) {
-            //convert double sum into float
-            double d = mSumPerCategory.get(i);
+            //convert long sum into float
+            long d = mSumPerCategory.get(i);
             float f = (float)d;
             entries.add(new PieEntry(f, mCategoriesNames.get(i)));
         }
@@ -184,35 +185,19 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
     }
 
     private SpannableString generateCenterCircleText(){
-        double sumPerMonth = 0;
-        for (Double sumOfCategory: mSumPerCategory) {
+        long sumPerMonth = 0;
+        SpannableString s;
+        for (Long sumOfCategory: mSumPerCategory) {
             sumPerMonth += sumOfCategory;
         }
-        SpannableString s = new SpannableString(getString(R.string.pie_chart_center_text) + sumPerMonth);
+        int t = String.valueOf(sumPerMonth).length();
+        if(String.valueOf(sumPerMonth).length() < 13){
+            s = new SpannableString(getString(R.string.pie_chart_center_text) + StringUtils.formattedCost(sumPerMonth));
+        }else {
+            // TODO: 3/9/17 extract string resource
+            s = new SpannableString(getString(R.string.pie_chart_center_text) + "Too Much");
+        }
         s.setSpan(new RelativeSizeSpan(0.6f), 0, 20, 0);
         return s;
-    }
-
-    private void queryTest(){
-        SQLiteOpenHelperImpl helper = new SQLiteOpenHelperImpl(getContext());
-        SQLiteDatabase db = helper.getReadableDatabase();
-
-//        String rawQuery = "SELECT " + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
-//                + " SUM(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")"
-//                + " FROM " + PaymentsProvider.TABLE_NAME
-//                + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
-//                + " ON " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=" + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID
-//                + " GROUP BY " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID;
-//        String rawQuery = "select sum(cost) from payments where category_id = 1 ";
-        String rawQuery = "select categories.category_name, sum(cost) from payments left join categories on payments.category_id = categories._id group by payments.category_id ";
-        Cursor cursor = db.rawQuery(rawQuery, null);
-        LinkedList<String> categoryNames = new LinkedList<>();
-        LinkedList<Double> categorySum = new LinkedList<>();
-            while (cursor.moveToNext()) {
-                mCategoriesNames.add(cursor.getString(cursor.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)));
-                mSumPerCategory.add(cursor.getDouble(cursor.getColumnIndex("sum(cost)")));
-            }
-        cursor.close();
-        setData();
     }
 }

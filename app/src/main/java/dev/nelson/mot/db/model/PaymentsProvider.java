@@ -27,7 +27,7 @@ public class PaymentsProvider extends SQLiteTableProvider {
             +"(" + Columns._ID + " INTEGER PRIMARY KEY, "
             + Columns.TITLE + " VARCHAR("+ R.string.payment_title_max_length +"), "
             + Columns.SUMMARY + " VARCHAR("+ R.string. payment_summary_max_length +"), "
-            + Columns.CATEGORY_ID + " INTEGER REFERENCES " + CategoriesProvider.TABLE_NAME + "(" + CategoriesProvider.Columns._ID + "), "
+            + Columns.CATEGORY_ID + " INTEGER REFERENCES " + CategoriesProvider.TABLE_NAME + "(" + CategoriesProvider.Columns._ID + ") ON DELETE SET NULL, "
             + Columns.DATE + " DATE DEFAULT CURRENT_DATE, "
             + Columns.COST + " LONG"
             + ")");

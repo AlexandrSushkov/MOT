@@ -58,7 +58,7 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
     public void onLoadFinished(Loader loader, Cursor data) {
         if (data != null) {
             LinkedList<String> categoryNames = new LinkedList<>();
-            LinkedList<Double> categorySum = new LinkedList<>();
+            LinkedList<Long> categorySum = new LinkedList<>();
             String categoryName;
             Log.d("tag", "CURSOR DATA");
             while (data.moveToNext()) {
@@ -68,7 +68,7 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
                 } else {
                     categoryNames.add(categoryName);
                 }
-                categorySum.add(data.getDouble(data.getColumnIndex("sum(" + PaymentsProvider.Columns.COST + ")")));
+                categorySum.add(data.getLong(data.getColumnIndex("sum(" + PaymentsProvider.Columns.COST + ")")));
 //                Log.d("tag", "id: " + data.getInt(data.getColumnIndex(PaymentsProvider.Columns._ID)));
 //                Log.d("tag", "title: " + data.getString(data.getColumnIndex(PaymentsProvider.Columns.TITLE)));
 //                Log.d("tag", "sum: " + data.getDouble(data.getColumnIndex(PaymentsProvider.Columns.COST)));

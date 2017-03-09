@@ -1,10 +1,12 @@
 package dev.nelson.mot.db;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
@@ -21,6 +23,12 @@ public class SQLiteOpenHelperImpl extends SQLiteOpenHelper {
     public SQLiteOpenHelperImpl(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);;
         mContext = context;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        db.setForeignKeyConstraintsEnabled(true);
     }
 
     @Override

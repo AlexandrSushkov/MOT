@@ -52,7 +52,7 @@
             android:clickable="true"
             android:contentDescription="@string/item_payment_settings_description"
             android:src="@drawable/ic_more_vert_black_24dp"
-            android:tint="@color/colorBackground" />
+            android:tint="@color/colorGray" />
 
     </LinearLayout>
 

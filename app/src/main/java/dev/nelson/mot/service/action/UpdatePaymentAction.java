@@ -20,6 +20,9 @@ public class UpdatePaymentAction implements DataOperationAction {
 //        if (bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID, -1) != -1){
         if(bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) != -1){
             cv.put(PaymentsProvider.Columns.CATEGORY_ID, bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID));
+            // TODO: 3/9/17 rewrite this shit
+        }else if(bundle.getInt(PaymentsProvider.Columns.CATEGORY_ID) == 0){
+            cv.put(PaymentsProvider.Columns.CATEGORY_ID, "null");
         }
 //        }
 //        if (bundle.getDouble(PaymentsProvider.Columns.COST, -1) != -1){

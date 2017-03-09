@@ -2,10 +2,8 @@ package dev.nelson.mot.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +26,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         mCursorAdapter = new CursorAdapter(mContext, cursor, 0) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_fragment_category_recycler_view_, parent, false);
+                return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
             }
 
             @Override

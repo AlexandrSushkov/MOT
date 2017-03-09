@@ -59,7 +59,9 @@ public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cur
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
             title = data.getString(data.getColumnIndex(PaymentsProvider.Columns.TITLE));
-            categoryId = data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID));
+            if(data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID)) != 0){
+                categoryId = data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID));
+            }
             if (data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) != null){
                 categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
             }

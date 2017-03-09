@@ -1,5 +1,6 @@
 package dev.nelson.mot.fragment;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,17 +16,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dev.nelson.mot.R;
+import dev.nelson.mot.activity.CategoryContentActivity;
 import dev.nelson.mot.adapter.CategoriesAdapter;
+import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.dialog.CategoryDialog;
 import dev.nelson.mot.loadercalback.CategoriesLoaderCallbacks;
 
 
 public class CategoriesFragment extends Fragment{
 
+    @BindView(R.id.item_no_category)
+    FrameLayout mItemNoCategory;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 //    @BindView(R.id.item_fragment_category_recycler_view_image_menu)
@@ -77,6 +85,14 @@ public class CategoriesFragment extends Fragment{
             CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "tag");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.item_no_category)
+    void onClickNoCategory(){
+        Intent intent = new Intent(getContext(), CategoryContentActivity.class);
+        intent.putExtra(CategoriesProvider.Columns._ID, -1);
+        intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, getString(R.string.no_category_category_name));
+        getContext().startActivity(intent);
     }
 
 }

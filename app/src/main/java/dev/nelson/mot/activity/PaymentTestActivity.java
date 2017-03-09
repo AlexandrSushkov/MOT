@@ -193,7 +193,7 @@ public class PaymentTestActivity extends AppCompatActivity implements SetDataFro
     public void lastInsertedRow(int lastInsertedRow) {
         paymentInitialState = new Payment(paymentCurrentState);
         paymentInitialState.setId(lastInsertedRow);
-        Toast.makeText(this, "new payment has been sadded", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "new payment has been added row_id = " + lastInsertedRow, Toast.LENGTH_SHORT).show();
     }
 
     @Override

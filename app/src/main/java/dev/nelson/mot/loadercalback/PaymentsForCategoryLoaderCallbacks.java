@@ -37,9 +37,16 @@ public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderC
                     PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE,
                     PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.SUMMARY,
             };
-            String selection1 = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=?";
-            String[] selectionArgs1 = {String.valueOf(mCategoryId)};
-            return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection1, selectionArgs1, null);
+            String selection1;
+            String[] selectionArgs1 ;
+            if (mCategoryId == -1){
+                selection1 = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + " is null";
+                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection1, null, null);
+            } else {
+                selection1 = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=?";
+                selectionArgs1 = new String[]{String.valueOf(mCategoryId)};
+                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection1, selectionArgs1, null);
+            }
         }else {
             throw new IllegalArgumentException(getClass().getName() + " Wrong loader id: " + id);
         }

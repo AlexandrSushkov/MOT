@@ -75,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@null"
+                android:inputType="textMultiLine"
                 android:hint="@string/payment_summary_hint"
                 android:maxLength="@string/payment_summary_max_length" />
 
