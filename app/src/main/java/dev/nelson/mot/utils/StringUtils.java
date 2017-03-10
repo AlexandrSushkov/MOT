@@ -17,6 +17,7 @@ public class StringUtils {
     public static String cleanString(String string){
         return string.replaceAll("[,.$€£₴\\sa-zA-Zа-яА-Я]", "");
     }
+
     public static boolean isLastCharacterDigit(String string){
         String lastCharacter = string.substring(string.length()-1, string.length());
         Pattern pattern = Pattern.compile("[0-9]");

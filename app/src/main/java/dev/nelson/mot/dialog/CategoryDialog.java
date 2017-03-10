@@ -36,15 +36,12 @@ public class CategoryDialog extends DialogFragment {
 
     @BindView(R.id.fragment_dialog_add_category_edit_text)
     EditText mEditText;
-
     private int mActionState;
     private int mCategoryId;
     private String mTitle;
 
     public static CategoryDialog newInstance(int action) {
-
         Bundle args = new Bundle();
-
         CategoryDialog fragment = new CategoryDialog();
         args.putInt(ACTION_KEY, action);
         fragment.setArguments(args);
@@ -52,9 +49,7 @@ public class CategoryDialog extends DialogFragment {
     }
 
     public static CategoryDialog newInstance(int action, int id) {
-
         Bundle args = new Bundle();
-
         CategoryDialog fragment = new CategoryDialog();
         args.putInt(ACTION_KEY, action);
         args.putInt(ID_KEY, id);
@@ -171,6 +166,4 @@ public class CategoryDialog extends DialogFragment {
         intent.putExtra(Constants.ID_KEY, categoryID);
         getContext().startService(intent);
     }
-
-
 }

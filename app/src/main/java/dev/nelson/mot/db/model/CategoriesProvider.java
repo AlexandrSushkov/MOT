@@ -7,8 +7,8 @@ import android.provider.BaseColumns;
 import dev.nelson.mot.utils.Constants;
 
 public class CategoriesProvider extends SQLiteTableProvider {
-    public static final String TABLE_NAME = "categories";
 
+    public static final String TABLE_NAME = "categories";
     public static final Uri URI = Uri.parse(Constants.SQL_AUTHORITY + "/" + TABLE_NAME);
 
     public CategoriesProvider() {
@@ -26,7 +26,6 @@ public class CategoriesProvider extends SQLiteTableProvider {
                 +"(" + Columns._ID + " INTEGER PRIMARY KEY, "
                 + Columns.CATEGORY_NAME + " varchar(30)"
                 +")");
-
     }
 
     public interface Columns extends BaseColumns{

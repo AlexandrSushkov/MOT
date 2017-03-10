@@ -3,16 +3,13 @@ package dev.nelson.mot.observer;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import dev.nelson.mot.callback.DatabaseChangesCallback;
-import dev.nelson.mot.callback.LastInsertedRowCallback;
 
 public class DatabaseChangesObserver extends ContentObserver {
 
     private DatabaseChangesCallback mDatabaseChangesCallback;
-    private LastInsertedRowCallback mLastInsertedRowCallback;
     /**
      * Creates a content observer.
      *
@@ -25,12 +22,6 @@ public class DatabaseChangesObserver extends ContentObserver {
     public DatabaseChangesObserver(Handler handler, DatabaseChangesCallback callback) {
         super(handler);
         mDatabaseChangesCallback = callback;
-    }
-
-    public DatabaseChangesObserver(Handler handler, DatabaseChangesCallback databaseChangesCallback, LastInsertedRowCallback lastInsertedRowCallback) {
-        super(handler);
-        mDatabaseChangesCallback = databaseChangesCallback;
-        mLastInsertedRowCallback = lastInsertedRowCallback;
     }
 
     @Override
@@ -46,7 +37,6 @@ public class DatabaseChangesObserver extends ContentObserver {
             mDatabaseChangesCallback.updateDataFromDB();
         }else {
             mDatabaseChangesCallback.lastInsertedRow(Integer.valueOf(lastPathSegment));
-//            mLastInsertedRowCallback.setLastInsertedRow(Integer.valueOf(uri.getLastPathSegment()));
         }
         Log.d("tag", "===================> Last path segment: " + uri.getLastPathSegment());
     }

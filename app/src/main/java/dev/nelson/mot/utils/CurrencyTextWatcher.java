@@ -1,7 +1,5 @@
 package dev.nelson.mot.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -21,10 +19,6 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     public CurrencyTextWatcher(EditText editText) {
         editTextWeakReference = new WeakReference<EditText>(editText);
-//        SharedPreferences settings = MyApplication.getContext().getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-//        String language = settings.getString(Constants.LANGUAGE_KEY, Constants.NO_LANGUAGE);
-//        String country = settings.getString(Constants.COUNTRY_KEY, Constants.NO_COUNTRY);
-//        myLocale = new Locale(language, country);
         myLocale = LocaleUtils.getLocaleForChoosenCurrency();
     }
 
@@ -34,7 +28,6 @@ public class CurrencyTextWatcher implements TextWatcher {
         if(s.length() > 0){
             isLastCharacterDigit = StringUtils.isLastCharacterDigit(s.toString());
         }
-
     }
 
     @Override

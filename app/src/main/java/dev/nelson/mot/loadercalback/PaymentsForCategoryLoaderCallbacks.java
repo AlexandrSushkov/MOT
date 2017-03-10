@@ -13,6 +13,7 @@ import dev.nelson.mot.db.model.PaymentsProvider;
 
 
 public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+
     public static final int LOADER_ID = 12;
 
     private Context mContext;

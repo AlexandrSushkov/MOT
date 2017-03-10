@@ -5,10 +5,6 @@ import android.content.SharedPreferences;
 
 import java.util.Locale;
 
-/**
- * Created by Nelson on 3/8/17.
- */
-
 public class LocaleUtils {
 
     public static Locale getLocaleForChoosenCurrency(){

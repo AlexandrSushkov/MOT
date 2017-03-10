@@ -1,6 +1,5 @@
 package dev.nelson.mot.activity;
 
-import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,26 +12,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-import dev.nelson.mot.callback.SetDataFromStatisticThisMonthTotalLoader;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.RecentPaymentsFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
-import dev.nelson.mot.loadercalback.StatisticThisMonthTotalLoaderCallbacks;
 
-public class MainActivity extends AppCompatActivity
-//        implements SetDataFromStatisticThisMonthTotalLoader
-{
-
-    private static final String SAVE_INSTANCE_STATE_KEY = "save_instance_state_key";
+public class MainActivity extends AppCompatActivity{
 
     @BindView(R.id.activity_main_drawer)
     DrawerLayout mDrawerLayout;
@@ -42,7 +32,6 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavView;
     private ActionBarDrawerToggle drawerToggle;
     private Fragment mContentFragment = null;
-//    private StatisticThisMonthTotalLoaderCallbacks mStatisticThisMonthTotalLoaderCallbacks;
     private FragmentManager mFragmentManager;
 
     @Override
@@ -56,11 +45,6 @@ public class MainActivity extends AppCompatActivity
         setNavDrawer(mNavView);
         mNavView.setCheckedItem(R.id.navigation_menu_item_home);
         mNavView.getMenu().performIdentifierAction(R.id.navigation_menu_item_home, 0);
-//        if(savedInstanceState != null){
-//            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
-//        }
-//        mStatisticThisMonthTotalLoaderCallbacks = new StatisticThisMonthTotalLoaderCallbacks(this, this);
-//        getSupportLoaderManager().initLoader(StatisticThisMonthTotalLoaderCallbacks.LOADER_ID, null, mStatisticThisMonthTotalLoaderCallbacks);
     }
 
     //this method open navigation menu
@@ -75,16 +59,6 @@ public class MainActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setNavDrawer(NavigationView navigationView){
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectDrawerItem(item);
-                return true;
-            }
-        });
     }
 
     public void selectDrawerItem(MenuItem menuItem){
@@ -134,32 +108,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("tag", getClass().getName() + " onResume <==============");
         mFragmentManager.beginTransaction().detach(mContentFragment).attach(mContentFragment).commit();
-    }
-
-    // method of  SetDataFromStatisticThisMonthTotalLoader interface
-//    @Override
-//    public void setValues(double sumForThisMonth) {
-//        View header = mNavView.getHeaderView(0);
-//        TextView spentThisMonth = (TextView) header.findViewById(R.id.spent_this_month);
-//        spentThisMonth.setText(String.valueOf(sumForThisMonth));
-//    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // do something
-//        if (savedInstanceState != null){
-//            mContentFragment = getSupportFragmentManager().getFragment(savedInstanceState, SAVE_INSTANCE_STATE_KEY);
-//        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // do something
-//        getSupportFragmentManager().putFragment(outState, SAVE_INSTANCE_STATE_KEY, mContentFragment);
     }
 
     @Override
@@ -170,5 +119,15 @@ public class MainActivity extends AppCompatActivity
 
     private ActionBarDrawerToggle setUpDrawerToggle(){
         return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
+    }
+
+    private void setNavDrawer(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectDrawerItem(item);
+                return true;
+            }
+        });
     }
 }

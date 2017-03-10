@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -18,9 +17,8 @@ import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
-import dev.nelson.mot.loadercalback.PaymentsForCategoryLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
+import dev.nelson.mot.loadercalback.PaymentsForCategoryLoaderCallbacks;
 
 public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback{
 
@@ -34,7 +32,6 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
     private PaymentsAdapter mAdapter;
     private PaymentsForCategoryLoaderCallbacks mLoaderCallbacks;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +43,6 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
         int categoryId = getIntent().getIntExtra(CategoriesProvider.Columns._ID, -1);
         mLoaderCallbacks = new PaymentsForCategoryLoaderCallbacks(this, mAdapter, categoryId, this);
         getSupportLoaderManager().initLoader(PaymentsForCategoryLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-
     }
 
     @Override
@@ -55,6 +51,12 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     private void initToolbar() {
@@ -74,9 +76,4 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
         mRecyclerView.addItemDecoration(decoration);
     }
 
-    @Override
-    public void showNoDataAnnouncement() {
-        mNoDataAnnouncement.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-    }
 }

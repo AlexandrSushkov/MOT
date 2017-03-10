@@ -3,10 +3,10 @@ package dev.nelson.mot.activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.callback.SetDataFromCategoriesLoaderCallbacks;
@@ -31,10 +28,10 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
 
     public static final int REQUEST_CODE = 100;
 
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.recycler_view)
+    RecyclerView mRecyclerView;
     private CategoriesAdapter mAdapter;
     private CategoriesLoaderCallbacks mLoaderCallbacks;
     private ActionBar mActonBar;
@@ -68,7 +65,7 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
-            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getSupportFragmentManager(), "tag");
+            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getSupportFragmentManager(), "Add new category dialog");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -84,8 +81,6 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         if ((mActonBar = getSupportActionBar()) != null) {
-//            mActonBar.setDisplayHomeAsUpEnabled(true);
-//            mActonBar.setDisplayShowHomeEnabled(true);
             mActonBar.setTitle(R.string.activity_choose_category_toolbar_title);
         }
     }

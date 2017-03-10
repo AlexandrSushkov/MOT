@@ -58,8 +58,15 @@
     <string name="negative_value">- %1$,.2f</string>
     <string name="no_category_category_name">No category</string>
     <string name="pie_chart_center_text">Spent in this month:\n</string>
+    <string name="too_much">Too much</string>
     <string name="item_payment_settings_description">item payment settings description</string>
     <string name="no_data_announcement">No data, yet</string>
+
+    <!--Toasts text-->
+    <string name="title_and_cost_should_not_be_empty">Fields title and cost should not be empty</string>
+    <string name="payment_has_not_changed">No changes</string>
+    <string name="payment_has_been_updated">Payment has been updated</string>
+    <string name="new_payment_has_been_added">New payment has been added</string>
 
 
     <!--locale for currencyInstance-->

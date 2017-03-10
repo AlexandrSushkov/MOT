@@ -36,9 +36,6 @@ public class CategoriesFragment extends Fragment{
     FrameLayout mItemNoCategory;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-//    @BindView(R.id.item_fragment_category_recycler_view_image_menu)
-//    ImageView mItemMenu;
-//    private CategoryAdapter mAdapter;
     private CategoriesAdapter mAdapter;
     private CategoriesLoaderCallbacks mLoaderCallbacks;
 
@@ -53,7 +50,6 @@ public class CategoriesFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
         ButterKnife.bind(this, view);
-//        mAdapter = new CategoryAdapter(view.getContext(), null);
         mAdapter = new CategoriesAdapter(view.getContext(), null, CategoriesAdapter.FLAG_VIEW_CATEGORIES);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -82,7 +78,7 @@ public class CategoriesFragment extends Fragment{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
-            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "tag");
+            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "Category option dialog");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -94,5 +90,4 @@ public class CategoriesFragment extends Fragment{
         intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, getString(R.string.no_category_category_name));
         getContext().startActivity(intent);
     }
-
 }

@@ -4,17 +4,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import dev.nelson.mot.callback.SetDataFromStatisticLoader;
-import dev.nelson.mot.callback.SetDataFromStatisticThisMonthTotalLoader;
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.db.model.MultipleTablesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 import dev.nelson.mot.utils.DateUtils;
@@ -39,7 +35,7 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
 //        from payments
 //        left join categories on payments.category_id = categories._id
 //        group by payments.category_id
-// IMPORTANT use sum() not SUM(). I don't know why, but when I used SUM() I couldn't get data from cursor with cursor.getColumnIndex SUM(cost).
+//        IMPORTANT use sum() not SUM(). I don't know why, but when I used SUM() I couldn't get data from cursor with cursor.getColumnIndex SUM(cost).
             String rawQuery = "select " + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
                     + " sum(" + PaymentsProvider.Columns.COST + ")"
                     + " from " + PaymentsProvider.TABLE_NAME
@@ -69,10 +65,6 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
                     categoryNames.add(categoryName);
                 }
                 categorySum.add(data.getLong(data.getColumnIndex("sum(" + PaymentsProvider.Columns.COST + ")")));
-//                Log.d("tag", "id: " + data.getInt(data.getColumnIndex(PaymentsProvider.Columns._ID)));
-//                Log.d("tag", "title: " + data.getString(data.getColumnIndex(PaymentsProvider.Columns.TITLE)));
-//                Log.d("tag", "sum: " + data.getDouble(data.getColumnIndex(PaymentsProvider.Columns.COST)));
-//                Log.d("tag", "date: " + data.getString(data.getColumnIndex(PaymentsProvider.Columns.DATE)));
             }
             mCallbackObj.setDataFromStatisticLoader(categoryNames, categorySum);
         }

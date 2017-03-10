@@ -12,7 +12,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import dev.nelson.mot.R;
-import dev.nelson.mot.activity.PaymentTestActivity;
+import dev.nelson.mot.activity.PaymentActivity;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
@@ -25,9 +25,7 @@ public class PaymentOptionsDialog extends DialogFragment{
     private int paymentId;
 
     public static PaymentOptionsDialog newInstance(int id) {
-
         Bundle args = new Bundle();
-
         PaymentOptionsDialog fragment = new PaymentOptionsDialog();
         args.putInt(PAYMENT_ID_KEY, id);
         fragment.setArguments(args);
@@ -52,14 +50,14 @@ public class PaymentOptionsDialog extends DialogFragment{
                 switch (which){
                     case 0:
                         //edit payment
-                        Intent editIntent = new Intent(mContext, PaymentTestActivity.class);
-                        editIntent.setAction(PaymentTestActivity.ACTION_EDIT);
+                        Intent editIntent = new Intent(mContext, PaymentActivity.class);
+                        editIntent.setAction(PaymentActivity.ACTION_EDIT);
                         editIntent.putExtra(PaymentsProvider.Columns._ID, paymentId);
                         mContext.startActivity(editIntent);
                         break;
                     case 1:
                         //delete payment
-                        showAreYouSureDialog();
+                        showConfirmDialog();
                         break;
                 }
             }
@@ -81,7 +79,7 @@ public class PaymentOptionsDialog extends DialogFragment{
         }
     }
     
-    private void showAreYouSureDialog(){
+    private void showConfirmDialog(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
         dialogBuilder.setTitle(R.string.dialog_are_you_sure_title);
         dialogBuilder.setPositiveButton(R.string.dialog_positive_button, new DialogInterface.OnClickListener() {

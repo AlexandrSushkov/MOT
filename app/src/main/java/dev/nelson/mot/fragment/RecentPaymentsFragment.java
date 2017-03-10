@@ -12,14 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dev.nelson.mot.R;
-import dev.nelson.mot.activity.PaymentTestActivity;
+import dev.nelson.mot.activity.PaymentActivity;
 import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.DatabaseChangesCallback;
 import dev.nelson.mot.callback.EmptyCursorCallback;
@@ -29,7 +28,7 @@ import dev.nelson.mot.loadercalback.RecentPaymentsLoadersCallbacks;
 import dev.nelson.mot.observer.DatabaseChangesObserver;
 
 
-public class RecentPaymentsFragment extends android.support.v4.app.Fragment implements DatabaseChangesCallback, EmptyCursorCallback{
+public class RecentPaymentsFragment extends android.support.v4.app.Fragment implements DatabaseChangesCallback, EmptyCursorCallback {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -42,7 +41,6 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
     private RecentPaymentsLoadersCallbacks mLoaderCallbacks;
     private DatabaseChangesObserver mDatabaseChangesObserver;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,24 +51,22 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
         initRecyclerView();
         mLoaderCallbacks = new RecentPaymentsLoadersCallbacks(mContext, mAdapter, this);
         if (getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID) != null &&
-                getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID).isStarted()){
+                getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID).isStarted()) {
             getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-        }else {
+        } else {
             getActivity().getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         }
         return view;
-
     }
 
-        @OnClick(R.id.fragment_home_fab)
-        void onClickFab(){
-            // TODO: 2/27/17 change back to payment activity
-            Intent intent = new Intent(mContext, PaymentTestActivity.class);
-            intent.setAction(PaymentTestActivity.ACTION_EDIT);
-            mContext.startActivity(intent);
+    @OnClick(R.id.fragment_home_fab)
+    void onClickFab() {
+        Intent intent = new Intent(mContext, PaymentActivity.class);
+        intent.setAction(PaymentActivity.ACTION_EDIT);
+        mContext.startActivity(intent);
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -80,19 +76,11 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
 
     @Override
     public void updateDataFromDB() {
-        //copy paste row 45
-//        if (getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID) != null &&
-//                getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID).isStarted()){
-            getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-//        }else {
-//            getActivity().getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-//        }
+        getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
     }
 
     @Override
-    public void lastInsertedRow(int lastInsertedRow) {
-
-    }
+    public void lastInsertedRow(int lastInsertedRow) {}
 
     @Override
     public void onAttach(Context context) {
@@ -105,7 +93,6 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
     public void onDetach() {
         super.onDetach();
         getActivity().getContentResolver().unregisterContentObserver(mDatabaseChangesObserver);
-
     }
 
     @Override

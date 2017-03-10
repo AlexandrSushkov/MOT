@@ -90,7 +90,7 @@
         </RadioGroup>
 
         <TextView
-            android:id="@+id/activity_choose_currency_button_next"
+            android:id="@+id/activity_choose_currency_button_choose"
             android:layout_marginTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

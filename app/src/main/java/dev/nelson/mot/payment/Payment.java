@@ -110,7 +110,6 @@ public class Payment implements Parcelable{
                 && mCategoryName.equals(currentState.getCategoryName())
                 && mCost == currentState.getCost()
                 && mSummary.equals(currentState.getSummary())
-
         );
     }
 

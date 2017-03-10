@@ -32,7 +32,6 @@ public class RawQueryCursorLoader extends AsyncTaskLoader<Cursor> {
         return mCursor;
     }
 
-
     @Override
     public void deliverResult(Cursor cursor) {
         if (isReset()) {
@@ -53,7 +52,6 @@ public class RawQueryCursorLoader extends AsyncTaskLoader<Cursor> {
             oldCursor.close();
         }
     }
-
 
     @Override
     protected void onStartLoading() {

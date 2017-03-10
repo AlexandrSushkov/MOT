@@ -8,8 +8,8 @@ import dev.nelson.mot.R;
 import dev.nelson.mot.utils.Constants;
 
 public class PaymentsProvider extends SQLiteTableProvider {
-    public static final String TABLE_NAME = "payments";
 
+    public static final String TABLE_NAME = "payments";
     public static final Uri URI = Uri.parse(Constants.SQL_AUTHORITY + "/" + TABLE_NAME);
 
     public PaymentsProvider() {
@@ -31,7 +31,6 @@ public class PaymentsProvider extends SQLiteTableProvider {
             + Columns.DATE + " DATE DEFAULT CURRENT_DATE, "
             + Columns.COST + " LONG"
             + ")");
-
     }
 
     public interface Columns extends BaseColumns{

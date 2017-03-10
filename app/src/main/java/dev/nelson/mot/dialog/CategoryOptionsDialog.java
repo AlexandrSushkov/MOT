@@ -22,9 +22,7 @@ public class CategoryOptionsDialog extends DialogFragment {
     private int categoryId;
 
     public static CategoryOptionsDialog newInstance(int id) {
-
         Bundle args = new Bundle();
-
         CategoryOptionsDialog fragment = new CategoryOptionsDialog();
         args.putInt(CATEGORY_ID_KEY, id);
         fragment.setArguments(args);

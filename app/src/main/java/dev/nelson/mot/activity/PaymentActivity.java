@@ -1,18 +1,16 @@
 package dev.nelson.mot.activity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,19 +24,28 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.SetDataFromPaymentLoaderCallbacks;
-import dev.nelson.mot.db.SQLiteOpenHelperImpl;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
+import dev.nelson.mot.callback.DatabaseChangesCallback;
 import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
+import dev.nelson.mot.observer.DatabaseChangesObserver;
+import dev.nelson.mot.payment.Payment;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
+import dev.nelson.mot.utils.CurrencyTextWatcher;
+import dev.nelson.mot.utils.StringUtils;
 
 
-public class PaymentActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks {
+public class PaymentActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks,
+        DatabaseChangesCallback {
 
+    //actions for intent
     public static final String ACTION_PREVIEW = "preview";
     public static final String ACTION_EDIT = "edit";
-    private static final String FLAG_KEY = "flag_key";
+
+    //saveInstanceState keys
+    private static final String PAYMENT_INITIAL_STATE_KEY = "payment_initial_state";
+    private static final String PAYMENT_CURRENT_STATE_KEY = "payment_current_state";
 
     @BindView(R.id.payment_toolbar)
     Toolbar mToolbar;
@@ -56,20 +63,13 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     LinearLayout mPaymentWrapper;
     private ActionBar mActonBar;
     private String mActionStatus;
-    private PaymentLoaderCallbacks mLoaderCallbacks;
+    private PaymentLoaderCallbacks mPaymentLoaderCallbacks;
 
     //payment data
-    private int mPaymentId = -1;
-    private int mCategoryId = -1;
-    private int mNewCategoryId = -1;
-    private String mCategoryNameData = "";
-    private String mNewCategoryNameData = "";
-    private String mTitleData = "";
-    private long mCostData = 0;
-    private String mSummaryData = "";
+    private Payment paymentInitialState;
+    private Payment paymentCurrentState;
+    private DatabaseChangesObserver mDatabaseChangesObserver;
 
-
-// TODO: 2/26/17 save instance state
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,8 +78,6 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         ButterKnife.bind(this);
         initToolbar();
         mActionStatus = getIntent().getAction();
-        mPaymentId = getIntent().getIntExtra(PaymentsProvider.Columns._ID, -1);
-
         switch (mActionStatus) {
             case ACTION_PREVIEW:
                 initPreviewMode();
@@ -90,71 +88,30 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
             default:
                 throw new IllegalStateException(getClass().getName() + " Wrong action flag.");
         }
-        initLoader();
-//        mCost.setFilters(new InputFilter[]{new CurrencyFormatInputFilter()});
-//        mCost.addTextChangedListener(new CurrencyFormatTextWatcher(mCost));
-
-
-    }
-
-    @OnClick(R.id.payment_category)
-    void onClickCategory(){
-        Intent intent = new Intent(this, ChooseCategoryActivity.class);
-        startActivityForResult(intent, ChooseCategoryActivity.REQUEST_CODE);
-    }
-
-    @OnClick(R.id.payment_wrapper)
-    void onClickPaymentWrapper(){
-        mSummary.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mSummary, 0);
-    }
-
-    @OnClick(R.id.payment_fab)
-    void onClickFab(){
-        initEditMode();
-        mActionStatus = ACTION_EDIT;
+        mCost.addTextChangedListener(new CurrencyTextWatcher(mCost));
+        if(paymentInitialState == null && paymentCurrentState == null){
+            initPaymentStates();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // TODO: 2/26/17  check all fields are empty
-                switch (mActionStatus){
+                switch (mActionStatus) {
                     case ACTION_EDIT:
-//                        Toast.makeText(this, ACTION_EDIT, Toast.LENGTH_SHORT).show();
-                        // update data in db
-                        if(isPaymentDataChanged()){
-                            // TODO: 2/26/17 change message, payments data hasn't changed
-                            Toast.makeText(this, "There are no changes", Toast.LENGTH_SHORT).show();
+                        addChangesInPaymentCurrentState();
+                        if (isRequiredFieldsEmpty()) {
+                            Toast.makeText(this, getString(R.string.title_and_cost_should_not_be_empty), Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        if (!isPaymentChanged()) {
+                            Toast.makeText(this, getString(R.string.payment_has_not_changed), Toast.LENGTH_SHORT).show();
                         } else {
-                            if(mCategoryId == -1){
-                                //insert new payment
-                                Intent intent = new Intent(this, DataOperationService.class);
-                                intent.setAction(DataOperationFabric.INSERT_PAYMENT);
-                                intent.putExtra(PaymentsProvider.Columns._ID, mPaymentId);
-                                intent.putExtra(PaymentsProvider.Columns.TITLE, mTitle.getText().toString());
-                                if(mNewCategoryId != -1){
-                                    intent.putExtra(PaymentsProvider.Columns.CATEGORY_ID, mNewCategoryId);
-                                }
-                                intent.putExtra(PaymentsProvider.Columns.COST, Double.valueOf(mCost.getText().toString()));
-                                intent.putExtra(PaymentsProvider.Columns.SUMMARY, mSummary.getText().toString());
-                                startService(intent);
-                                // TODO: 2/26/17 paymentId = get last inserted ID , refresh loader
-                                mPaymentId = getLastInsertedId();
-                            }else{
-                                //update existing payment
-                                Intent intent = new Intent(this, DataOperationService.class);
-                                intent.setAction(DataOperationFabric.UPDATE_PAYMENT);
-                                intent.putExtra(PaymentsProvider.Columns._ID, mPaymentId);
-                                intent.putExtra(PaymentsProvider.Columns.TITLE, mTitle.getText().toString());
-                                if(mNewCategoryId != -1){
-                                    intent.putExtra(PaymentsProvider.Columns.CATEGORY_ID, mNewCategoryId);
-                                }
-                                intent.putExtra(PaymentsProvider.Columns.COST, Double.valueOf(mCost.getText().toString()));
-                                intent.putExtra(PaymentsProvider.Columns.SUMMARY, mSummary.getText().toString());
-                                startService(intent);
+                            if (paymentInitialState.getId() == -1) {
+                                insertNewPayment();
+                            } else {
+                                updatePayment();
                             }
                         }
                         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -162,15 +119,12 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
                         mFab.setVisibility(View.VISIBLE);
                         mActionStatus = ACTION_PREVIEW;
                         initPreviewMode();
-                        //or restart loader
-                        initLoader();
                         break;
                     case ACTION_PREVIEW:
                         finish();
                         break;
                 }
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -178,24 +132,90 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
 
     @Override
     public void fillPaymentInitialStateWithData(String title, int categoryId, String categoryName, long cost, String summary) {
-        mTitleData = title;
-        mCategoryId = categoryId;
-        mCategoryNameData = categoryName;
-        mCostData = cost;
-        mSummaryData = summary;
+        paymentInitialState.setTitle(title);
+        paymentInitialState.setCategoryId(categoryId);
+        paymentInitialState.setCategoryName(categoryName);
+        paymentInitialState.setCost(cost);
+        paymentInitialState.setSummary(summary);
+        initPaymentCurrentState();
         fillFields();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ChooseCategoryActivity.REQUEST_CODE ){
-            if (resultCode == RESULT_OK){
-                mNewCategoryId = data.getIntExtra(CategoriesProvider.Columns._ID, -1);
-                mNewCategoryNameData = data.getStringExtra(CategoriesProvider.Columns.CATEGORY_NAME);
-                mCategoryName.setText(mNewCategoryNameData);
-            }
+    public void updateDataFromDB() {
+        paymentInitialState = new Payment(paymentCurrentState);
+        Toast.makeText(this, getString(R.string.payment_has_been_updated), Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void lastInsertedRow(int lastInsertedRow) {
+        paymentInitialState = new Payment(paymentCurrentState);
+        paymentInitialState.setId(lastInsertedRow);
+        Toast.makeText(this, getString(R.string.new_payment_has_been_added), Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.payment_category)
+    void onClickCategory() {
+        Intent intent = new Intent(this, ChooseCategoryActivity.class);
+        startActivityForResult(intent, ChooseCategoryActivity.REQUEST_CODE);
+    }
+
+    @OnClick(R.id.payment_wrapper)
+    void onClickPaymentWrapper() {
+        mSummary.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mSummary, 0);
+    }
+
+    @OnClick(R.id.payment_fab)
+    void onClickFab() {
+        initEditMode();
+        mActionStatus = ACTION_EDIT;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDatabaseChangesObserver = new DatabaseChangesObserver(new Handler(), this);
+        getContentResolver().registerContentObserver(PaymentsProvider.URI, true, mDatabaseChangesObserver);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getContentResolver().unregisterContentObserver(mDatabaseChangesObserver);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ChooseCategoryActivity.REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                paymentCurrentState.setCategoryId(data.getIntExtra(CategoriesProvider.Columns._ID, -1));
+                paymentCurrentState.setCategoryName(data.getStringExtra(CategoriesProvider.Columns.CATEGORY_NAME));
+                mCategoryName.setText(paymentCurrentState.getCategoryName());
+            }
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null){
+            paymentInitialState = savedInstanceState.getParcelable(PAYMENT_INITIAL_STATE_KEY);
+            paymentCurrentState = savedInstanceState.getParcelable(PAYMENT_CURRENT_STATE_KEY);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        paymentCurrentState.setTitle(mTitle.getText().toString());
+        if (mCost.getText().toString().length() > 0){
+            paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
+        }
+        paymentCurrentState.setSummary(mSummary.getText().toString());
+        outState.putParcelable(PAYMENT_INITIAL_STATE_KEY, paymentInitialState);
+        outState.putParcelable(PAYMENT_CURRENT_STATE_KEY, paymentCurrentState);
     }
 
     private void initToolbar() {
@@ -207,20 +227,11 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         }
     }
 
-    private void initLoader(){
-        if(mPaymentId != -1){
-            mLoaderCallbacks = new PaymentLoaderCallbacks(this, this, mPaymentId);
-            getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-        }
-
-    }
-
     private void initPreviewMode() {
         final Drawable iconBack = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp);
         iconBack.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
         mActonBar.setHomeAsUpIndicator(iconBack);
         setFieldsEnabled(false);
-//        fillFields(getIntent());
     }
 
     private void initEditMode() {
@@ -234,7 +245,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    private void setFieldsEnabled(boolean enabled){
+    private void setFieldsEnabled(boolean enabled) {
         mTitle.setEnabled(enabled);
         mCost.setEnabled(enabled);
         mSummary.setEnabled(enabled);
@@ -242,85 +253,63 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         mPaymentWrapper.setClickable(enabled);
     }
 
-    private void fillFields(){
-//        mTitle.setText(intent.getStringExtra(Constants.TITLE_KEY));
-//        mCategoryName.setText(intent.getStringExtra(Constants.CATEFORY_KEY));
-//        mCost.setText(intent.getStringExtra(Constants.COST_KEY));
-//        mSummary.setText(intent.getStringExtra(Constants.SUMMARY_KEY));
-        mTitle.setText(mTitleData);
-        if(mSummaryData.length()<= 0){
-            mCategoryName.setText("Category");
-        }else {
-            mCategoryName.setText(mCategoryNameData);
-        }
-        mCost.setText(String.valueOf(mCostData));
-        mSummary.setText(mSummaryData);
+    private void fillFields() {
+        mTitle.setText(paymentCurrentState.getTitle());
+        mCost.setText(String.valueOf(paymentCurrentState.getCost()));
+        mCategoryName.setText(paymentCurrentState.getCategoryName());
+        mSummary.setText(paymentCurrentState.getSummary());
     }
 
-    private boolean isPaymentDataChanged(){
-        if(mTitleData.equals(mTitle.getText().toString())){
-            Log.d("tag", "data = " + mTitleData + " title = "+mTitle.getText().toString()+" status: true");
-        }else {
-            Log.d("tag", "data = " + mTitleData + " title = "+mTitle.getText().toString()+" status: false");
-
-        }
-        if (mCostData == Double.valueOf(mCost.getText().toString())){
-            Log.d("tag", "data = " + mCostData + " cost = "+mCost.getText().toString()+" status: true");
-        }else {
-            Log.d("tag", "data = " + mCostData + " cost = "+mCost.getText().toString()+" status: false");
-        }
-        if (mCategoryNameData.equals(mCategoryName.getText().toString())){
-            Log.d("tag", "data = " + mCategoryNameData + " category name = "+ mCategoryName.getText().toString()+" status: true");
-        }else {
-            Log.d("tag", "data = " + mCategoryNameData + " category name = "+ mCategoryName.getText().toString()+" status: false");
-        }
-        if (mSummaryData.equals(mSummary.getText().toString())){
-            Log.d("tag", "data = " + mSummaryData + " title = "+mSummary.getText().toString()+" status: true");
-        }else {
-            Log.d("tag", "data = " + mSummaryData + " title = "+mSummary.getText().toString()+" status: false");
-        }
-
-        return mTitleData.equals(mTitle.getText().toString())
-                && mCostData == Double.valueOf(mCost.getText().toString())
-                && mCategoryNameData.equals(mCategoryName.getText().toString())
-                && mSummaryData.equals(mSummary.getText().toString());
+    private boolean isPaymentChanged() {
+//        if object equals  ==> return false - payment doesn't changed
+//        if not equals ===> return true - payment has been changed
+        return !paymentInitialState.equals(paymentCurrentState);
     }
 
-    private int getLastInsertedId(){
-        SQLiteOpenHelperImpl helper = new SQLiteOpenHelperImpl(this);
-        SQLiteDatabase db = helper.getReadableDatabase();
-//        select _id from payments order by _id desc limit 1
-        String rawQuery = "select " + PaymentsProvider.Columns._ID + " from " + PaymentsProvider.TABLE_NAME
-                + " order by " + PaymentsProvider.Columns._ID + " desc limit 1";
-        Cursor cursor = db.rawQuery(rawQuery, null);
-        int lastInsertedId = 0;
-        if(cursor != null){
-            cursor.moveToFirst();
-            lastInsertedId = cursor.getInt(cursor.getColumnIndex(PaymentsProvider.Columns._ID));
-            cursor.close();
+    private void initPaymentStates() {
+        paymentInitialState = new Payment(getIntent().getIntExtra(PaymentsProvider.Columns._ID, -1));
+        if (paymentInitialState.getId() != -1) {
+            mPaymentLoaderCallbacks = new PaymentLoaderCallbacks(this, this, paymentInitialState.getId());
+            getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mPaymentLoaderCallbacks);
+        } else {
+            initPaymentCurrentState();
         }
-        return lastInsertedId;
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mPaymentId = savedInstanceState.getInt("paymentId", mPaymentId);
-        mCategoryId = savedInstanceState.getInt("categoryId", mCategoryId);
-        mTitleData = savedInstanceState.getString("title", mTitleData);
-        mCategoryNameData = savedInstanceState.getString("categoryName", mCategoryNameData);
-        mCostData = savedInstanceState.getLong("cost", mCostData);
-        mSummaryData = savedInstanceState.getString("summary", mSummaryData);
+    private void initPaymentCurrentState() {
+        paymentCurrentState = new Payment(paymentInitialState);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("paymentId", mPaymentId);
-        outState.putInt("categoryId", mCategoryId);
-        outState.putString("title", mTitleData);
-        outState.putString("categoryName", mCategoryNameData);
-        outState.putDouble("cost", mCostData);
-        outState.putString("summary", mSummaryData);
+    private void insertNewPayment() {
+        Intent intent = new Intent(this, DataOperationService.class);
+        intent.setAction(DataOperationFabric.INSERT_PAYMENT);
+        intent.putExtra(PaymentsProvider.Columns.TITLE, paymentCurrentState.getTitle());
+        intent.putExtra(PaymentsProvider.Columns.CATEGORY_ID, paymentCurrentState.getCategoryId());
+        intent.putExtra(PaymentsProvider.Columns.COST, paymentCurrentState.getCost());
+        intent.putExtra(PaymentsProvider.Columns.SUMMARY, paymentCurrentState.getSummary());
+        startService(intent);
+    }
+
+    private void updatePayment() {
+        Intent intent = new Intent(this, DataOperationService.class);
+        intent.setAction(DataOperationFabric.UPDATE_PAYMENT);
+        intent.putExtra(PaymentsProvider.Columns._ID, paymentCurrentState.getId());
+        intent.putExtra(PaymentsProvider.Columns.TITLE, paymentCurrentState.getTitle());
+        intent.putExtra(PaymentsProvider.Columns.CATEGORY_ID, paymentCurrentState.getCategoryId());
+        intent.putExtra(PaymentsProvider.Columns.COST, paymentCurrentState.getCost());
+        intent.putExtra(PaymentsProvider.Columns.SUMMARY, mSummary.getText().toString());
+        startService(intent);
+    }
+
+    private boolean isRequiredFieldsEmpty() {
+        return (paymentCurrentState.getTitle().length() <= 0 || paymentCurrentState.getCost() == 0);
+    }
+
+    private void addChangesInPaymentCurrentState() {
+        paymentCurrentState.setTitle(mTitle.getText().toString());
+        if (mCost.getText().toString().length() > 0){
+            paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
+        }
+        paymentCurrentState.setSummary(mSummary.getText().toString());
     }
 }

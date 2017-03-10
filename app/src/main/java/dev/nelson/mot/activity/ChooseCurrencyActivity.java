@@ -17,7 +17,7 @@ import dev.nelson.mot.utils.Constants;
 
 public class ChooseCurrencyActivity extends AppCompatActivity {
 
-    public static final String LANGUAGE_KEY = "locale_key";
+    public static final String LANGUAGE_KEY = "language_key";
     public static final String COUNTRY_KEY = "country_key";
 
     @BindView(R.id.radio_euro)
@@ -30,7 +30,7 @@ public class ChooseCurrencyActivity extends AppCompatActivity {
     RadioButton mHryvnia;
     @BindView(R.id.radio_dollar)
     RadioButton mDollar;
-    @BindView(R.id.activity_choose_currency_button_next)
+    @BindView(R.id.activity_choose_currency_button_choose)
     TextView mBtnNext;
 
     private String mLanguage = null;
@@ -44,36 +44,36 @@ public class ChooseCurrencyActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.radio_euro)
-    void onClickmEuro(){
+    void onClickEuro(){
         mLanguage = getString(R.string.currency_locale_euro_language);
         mCountry = getString(R.string.currency_locale_euro_country);
     }
 
     @OnClick(R.id.radio_pound)
-    void onClickmPound(){
+    void onClickPound(){
         mLanguage = getString(R.string.currency_locale_pound_language);
         mCountry = getString(R.string.currency_locale_pound_country);
     }
 
     @OnClick(R.id.radio_ruble)
-    void onClickmRuble(){
+    void onClickRuble(){
         mLanguage = getString(R.string.currency_locale_ruble_language);
         mCountry = getString(R.string.currency_locale_ruble_country);
     }
 
     @OnClick(R.id.radio_hryvnia)
-    void onClickmHryvnia(){
+    void onClickHryvnia(){
         mLanguage = getString(R.string.currency_locale_hryvnia_language);
         mCountry = getString(R.string.currency_locale_hryvnia_country);
     }
 
     @OnClick(R.id.radio_dollar)
-    void onClickmDollar(){
+    void onClickDollar(){
         mLanguage = getString(R.string.currency_locale_dollar_language);
         mCountry = getString(R.string.currency_locale_dollar_county);
     }
 
-    @OnClick(R.id.activity_choose_currency_button_next)
+    @OnClick(R.id.activity_choose_currency_button_choose)
     void onClickBtnNext(){
         if(mLanguage != null && mCountry != null){
             SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);

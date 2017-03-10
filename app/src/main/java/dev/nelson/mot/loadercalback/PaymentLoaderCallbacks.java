@@ -12,6 +12,7 @@ import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 
 public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+
     public static final int LOADER_ID = 11;
 
     private Context mContext;
@@ -44,7 +45,7 @@ public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cur
 
             String[] selectedArgs = new String[]{String.valueOf(mPaymentId)};
             return new RawQueryCursorLoader(mContext, rawQuery, selectedArgs);
-        }else {
+        } else {
             throw new IllegalArgumentException(getClass().getName() + " Wrong loader id: " + id);
         }
     }
@@ -53,16 +54,16 @@ public class PaymentLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cur
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         String title = "";
         int categoryId = -1;
-        String categoryName="";
+        String categoryName = "";
         long cost = 0;
         String summary = "";
         if (data != null && data.getCount() > 0) {
             data.moveToFirst();
             title = data.getString(data.getColumnIndex(PaymentsProvider.Columns.TITLE));
-            if(data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID)) != 0){
+            if (data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID)) != 0) {
                 categoryId = data.getInt(data.getColumnIndex(PaymentsProvider.Columns.CATEGORY_ID));
             }
-            if (data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) != null){
+            if (data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) != null) {
                 categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
             }
             cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));

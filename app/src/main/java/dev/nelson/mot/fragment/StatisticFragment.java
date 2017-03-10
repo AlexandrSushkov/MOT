@@ -1,7 +1,5 @@
 package dev.nelson.mot.fragment;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,10 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.SetDataFromStatisticLoader;
-import dev.nelson.mot.db.SQLiteOpenHelperImpl;
-import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.loadercalback.StatisticLoaderCallbacks;
-import dev.nelson.mot.utils.DateUtils;
 import dev.nelson.mot.utils.StringUtils;
 
 
@@ -82,7 +77,6 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
                 "Value: " + e.getY() + ", index: " + h.getX()
                         + ", DataSet index: " + h.getDataSetIndex());
         Toast.makeText(getActivity(), String.valueOf(StringUtils.formattedCost((long)e.getY())), Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -190,12 +184,10 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         for (Long sumOfCategory: mSumPerCategory) {
             sumPerMonth += sumOfCategory;
         }
-//        int t = String.valueOf(sumPerMonth).length();
         if(String.valueOf(sumPerMonth).length() < 13){
             s = new SpannableString(getString(R.string.pie_chart_center_text) + StringUtils.formattedCost(sumPerMonth));
         }else {
-            // TODO: 3/9/17 extract string resource
-            s = new SpannableString(getString(R.string.pie_chart_center_text) + "Too Much");
+            s = new SpannableString(getString(R.string.pie_chart_center_text) + getString(R.string.too_much));
         }
         s.setSpan(new RelativeSizeSpan(0.6f), 0, 20, 0);
         return s;

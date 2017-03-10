@@ -10,7 +10,6 @@ public class MultipleTablesProvider extends SQLiteTableProvider {
     public static final String MULTIPLE_TABLES = PaymentsProvider.TABLE_NAME + ", " + CategoriesProvider.TABLE_NAME;
     public static final Uri URI = Uri.parse(Constants.SQL_AUTHORITY + "/" + MULTIPLE_TABLES);
 
-
     public MultipleTablesProvider() {
         super(MULTIPLE_TABLES);
     }
