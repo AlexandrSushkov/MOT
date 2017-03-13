@@ -48,7 +48,8 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
         holder.paymentId = cursor.getInt(cursor.getColumnIndex(PaymentsProvider.Columns._ID));
         holder.mTitle.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.TITLE)));
 
-        holder.mCost.setText(StringUtils.formattedCost(cursor.getLong(cursor.getColumnIndex(PaymentsProvider.Columns.COST))));
+        String formattedCost = StringUtils.formattedCost(cursor.getLong(cursor.getColumnIndex(PaymentsProvider.Columns.COST)));
+        holder.mCost.setText(StringUtils.makeCostNegative(formattedCost));
         holder.mDate.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.DATE)));
 
         if (mFlagStatus.equals(FLAG_RECENT_PAYMENTS)) {

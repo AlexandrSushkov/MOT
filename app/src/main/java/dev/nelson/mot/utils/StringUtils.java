@@ -31,4 +31,8 @@ public class StringUtils {
         BigDecimal parsed = costValue.setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
         return NumberFormat.getCurrencyInstance(myLocale).format(parsed);
     }
+
+    public static String makeCostNegative(String cost){
+        return "- " + cost;
+    }
 }
