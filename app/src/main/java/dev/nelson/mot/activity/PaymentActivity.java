@@ -149,8 +149,8 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
 
     @Override
     public void lastInsertedRow(int lastInsertedRow) {
+        paymentCurrentState.setId(lastInsertedRow);
         paymentInitialState = new Payment(paymentCurrentState);
-        paymentInitialState.setId(lastInsertedRow);
         Toast.makeText(this, getString(R.string.new_payment_has_been_added), Toast.LENGTH_SHORT).show();
     }
 
