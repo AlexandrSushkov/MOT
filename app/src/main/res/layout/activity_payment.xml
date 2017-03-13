@@ -47,6 +47,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
                     android:drawablePadding="5dp"
                     android:drawableStart="@drawable/ic_category"
                     android:hint="@string/activity_payment_no_category_hint" />
@@ -57,6 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_alignBaseline="@id/payment_category"
                     android:inputType="numberDecimal"
                     android:maxLength="@string/payment_coast_max_length"
                     android:background="@null"

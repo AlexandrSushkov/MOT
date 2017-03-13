@@ -161,7 +161,8 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         dataSet.setValueLinePart1OffsetPercentage(80.f);
         dataSet.setValueLinePart1Length(0.2f);
         dataSet.setValueLinePart2Length(0.4f);
-//        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        // position of category names and percentage value
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 //        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
         dataSet.setValueTextColor(Color.BLACK);
 
