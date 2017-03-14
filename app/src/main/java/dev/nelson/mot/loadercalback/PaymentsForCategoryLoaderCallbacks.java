@@ -38,15 +38,17 @@ public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderC
                     PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE,
                     PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.SUMMARY,
             };
-            String selection1;
-            String[] selectionArgs1 ;
+            String selection;
+            String[] selectionArgs;
+            String order = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + " DESC";
             if (mCategoryId == -1){
-                selection1 = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + " is null";
-                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection1, null, null);
+                selection = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + " is null";
+
+                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection, null, order);
             } else {
-                selection1 = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=?";
-                selectionArgs1 = new String[]{String.valueOf(mCategoryId)};
-                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection1, selectionArgs1, null);
+                selection = PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=?";
+                selectionArgs = new String[]{String.valueOf(mCategoryId)};
+                return new CursorLoader(mContext, PaymentsProvider.URI, projection1, selection, selectionArgs, order);
             }
         }else {
             throw new IllegalArgumentException(getClass().getName() + " Wrong loader id: " + id);
