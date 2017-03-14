@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,7 +36,8 @@ public class AboutFragment extends Fragment {
     void onClickEasternEgg(){
         counter++;
         if(counter == 8){
-            Toast.makeText(view.getContext(), "Congratulation!!! You have found eastern egg 19/25", Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "Congratulation!!! You have found easter egg 19/25", Toast.LENGTH_SHORT).show();
+            FirebaseCrash.report(new Exception("Easter egg has been found"));
             counter = 3;
         }
     }
