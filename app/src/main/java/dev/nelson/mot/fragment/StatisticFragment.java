@@ -39,9 +39,9 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
     @BindView(R.id.pie_chart)
     PieChart mChart;
     //xData
-    private LinkedList<String> mCategoriesNames = new LinkedList<>();
+    private ArrayList<String> mCategoriesNames = new ArrayList<>();
     //yData
-    private LinkedList<Long> mSumPerCategory = new LinkedList<>();
+    private ArrayList<Long> mSumPerCategory = new ArrayList<>();
 
     @Nullable
     @Override
@@ -60,7 +60,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
     }
 
     @Override
-    public void setDataFromStatisticLoader(LinkedList<String> categoriesNames, LinkedList<Long> sumPerCategory) {
+    public void setDataFromStatisticLoader(ArrayList<String> categoriesNames, ArrayList<Long> sumPerCategory) {
         mCategoriesNames = categoriesNames;
         mSumPerCategory = sumPerCategory;
         mChart.setCenterText(generateCenterCircleText());
@@ -73,10 +73,12 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         if (e == null){
             return;
         }
-        Log.i("VAL SELECTED",
-                "Value: " + e.getY() + ", index: " + h.getX()
-                        + ", DataSet index: " + h.getDataSetIndex());
-        Toast.makeText(getActivity(), String.valueOf(StringUtils.formattedCost((long)e.getY())), Toast.LENGTH_SHORT).show();
+//        Log.i("VAL SELECTED",
+//                "Value: " + e.getY() + ", index: " + h.getX()
+//                        + ", DataSet index: " + h.getDataSetIndex());
+        String formattedCost = String.valueOf(StringUtils.formattedCost((long)e.getY()));
+        int categoryIndex = (int) h.getX();
+        Toast.makeText(getActivity(), mCategoriesNames.get(categoryIndex) + ": " + formattedCost, Toast.LENGTH_SHORT).show();
     }
 
     @Override

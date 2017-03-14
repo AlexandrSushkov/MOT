@@ -1,7 +1,8 @@
 package dev.nelson.mot.callback;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public interface SetDataFromStatisticLoader {
-    public void setDataFromStatisticLoader(LinkedList<String> categoriesNames, LinkedList<Long> sumPerCategory);
+    public void setDataFromStatisticLoader(ArrayList<String> categoriesNames, ArrayList<Long> sumPerCategory);
 }

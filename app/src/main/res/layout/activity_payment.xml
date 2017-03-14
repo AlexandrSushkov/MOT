@@ -33,13 +33,15 @@
                 android:layout_height="wrap_content"
                 android:focusable="true"
                 android:background="@null"
+                android:gravity="top"
+                android:lines="2"
                 android:hint="@string/payment_title_hint"
                 android:maxLength="@string/payment_title_max_length" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp">
 
                 <TextView

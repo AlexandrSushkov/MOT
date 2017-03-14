@@ -7,8 +7,10 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
+import dev.nelson.mot.R;
 import dev.nelson.mot.callback.SetDataFromStatisticLoader;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -53,14 +55,14 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
         if (data != null) {
-            LinkedList<String> categoryNames = new LinkedList<>();
-            LinkedList<Long> categorySum = new LinkedList<>();
+            ArrayList<String> categoryNames = new ArrayList<>();
+            ArrayList<Long> categorySum = new ArrayList<>();
             String categoryName;
             Log.d("tag", "CURSOR DATA");
             while (data.moveToNext()) {
                 categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
                 if (categoryName == null) {
-                    categoryNames.add("No category");
+                    categoryNames.add(mContext.getString(R.string.no_category_category_name));
                 } else {
                     categoryNames.add(categoryName);
                 }

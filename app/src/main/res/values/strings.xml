@@ -17,6 +17,7 @@
     <string name="feedback_text">Contacts for feedback and propositions: \nmotappsup@gmail.com</string>
 
     <!--build in categories section-->
+    <string name="no_category_category_name">No category</string>
     <string name="build_in_category_food">Food</string>
     <string name="build_in_category_communication_services">Communication services</string>
     <string name="build_in_category_clothing">Clothing</string>
@@ -57,7 +58,6 @@
 
 
     <string name="negative_value">- %1$,.2f</string>
-    <string name="no_category_category_name">No category</string>
     <string name="pie_chart_center_text">Spent in this month:\n</string>
     <string name="too_much">Too much</string>
     <string name="item_payment_settings_description">item payment settings description</string>
