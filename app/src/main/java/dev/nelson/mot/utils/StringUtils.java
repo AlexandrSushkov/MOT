@@ -35,4 +35,15 @@ public class StringUtils {
     public static String makeCostNegative(String cost){
         return "- " + cost;
     }
+
+    public static String capitalizeFirstCharacter(String string){
+        if(string.length() > 0){
+            String firstCharacter = String.valueOf(Character.toUpperCase(string.charAt(0)));
+            String restOfString = string.substring(1);
+            return firstCharacter + restOfString;
+        }else {
+            return string;
+        }
+
+    }
 }

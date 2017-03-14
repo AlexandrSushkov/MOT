@@ -90,12 +90,11 @@ public class CategoryDialog extends DialogFragment {
                     AlertDialog alertDialog = initCategoryEmptyNameAlertDialog();
                     alertDialog.show();
                 }else {
-                    String categoryName = Character.toUpperCase(editTextData.charAt(0)) + editTextData.substring(1);
                     if(mActionState == ACTION_ADD){
-                        insertCategoryIntoDB(categoryName);
+                        insertCategoryIntoDB(editTextData);
                     }
                     if(mActionState == ACTION_EDIT){
-                        renameCategory(mCategoryId, categoryName);
+                        renameCategory(mCategoryId, editTextData);
                     }
                 }
                 dialog.dismiss();
