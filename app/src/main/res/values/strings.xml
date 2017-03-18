@@ -99,6 +99,10 @@
     <string name="choose_currency_toast_message">You have to choose currency</string>
     <string name="choose_locale_currency_button_text">Choose</string>
 
+    <!--statistic fragment-->
+    <string name="statistic_month_menu_title">Month</string>
+    <string name="statistic_year_menu_title">Year</string>
+    <string name="statistic_categories_menu_title">Categories</string>
 
 
 

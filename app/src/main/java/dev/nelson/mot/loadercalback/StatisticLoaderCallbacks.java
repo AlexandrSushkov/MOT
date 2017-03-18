@@ -8,7 +8,6 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.SetDataFromStatisticLoader;
@@ -20,7 +19,7 @@ import dev.nelson.mot.utils.DateUtils;
 
 public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final int LOADER_ID = 31;
+    public static final int LOADER_ID = 30;
 
     private Context mContext;
     private SetDataFromStatisticLoader mCallbackObj;
@@ -33,13 +32,12 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         if (id == LOADER_ID) {
-//        select categories.category_name, sum(payments.cost)
+//        select categories.category_name, sum(payments.cost) as cost
 //        from payments
 //        left join categories on payments.category_id = categories._id
 //        group by payments.category_id
-//        IMPORTANT use sum() not SUM(). I don't know why, but when I used SUM() I couldn't get data from cursor with cursor.getColumnIndex SUM(cost).
             String rawQuery = "select " + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
-                    + " sum(" + PaymentsProvider.Columns.COST + ")"
+                    + " sum(" + PaymentsProvider.Columns.COST + ")" + " as " + PaymentsProvider.Columns.COST
                     + " from " + PaymentsProvider.TABLE_NAME
                     + " left join " + CategoriesProvider.TABLE_NAME
                     + " on " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=" + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID
@@ -66,7 +64,7 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
                 } else {
                     categoryNames.add(categoryName);
                 }
-                categorySum.add(data.getLong(data.getColumnIndex("sum(" + PaymentsProvider.Columns.COST + ")")));
+                categorySum.add(data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST)));
             }
             mCallbackObj.setDataFromStatisticLoader(categoryNames, categorySum);
         }

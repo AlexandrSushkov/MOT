@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools">
+
+
+    <item android:id="@+id/fragment_statistic_menu_item_month"
+        android:title="@string/statistic_month_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_year"
+        android:title="@string/statistic_year_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_categories"
+        android:title="@string/statistic_categories_menu_title"
+        app:showAsAction="never"
+        />
+</menu>
