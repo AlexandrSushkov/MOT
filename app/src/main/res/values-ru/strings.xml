@@ -36,14 +36,14 @@
     <string name="navigation_menu_item_statistic_title">Статистика</string>
     <string name="new_payment_has_been_added">Платеж был добавлен</string>
     <string name="no_category_category_name">Без категории</string>
-    <string name="no_data_announcement">Данных пока еще нет</string>
+    <string name="no_data_announcement">Данных еще нет</string>
     <string name="payment_cost_hint">Цена</string>
     <string name="payment_has_been_updated">Платеж был обновлен</string>
     <string name="payment_has_not_changed">Без изменений</string>
     <string name="payment_summary_hint">Добавьте комментарий здесь</string>
     <string name="payment_title_hint">Название</string>
-    <string name="pie_chart_center_text">Потрачено в этом месяце</string>
-    <string name="title_and_cost_should_not_be_empty">Поля название и цена не должны быть пустыми</string>
+    <string name="pie_chart_center_text">Потрачено в этом месяце:\n</string>
+    <string name="title_and_cost_should_not_be_empty">Поля "название" и "цена" не должны быть пустыми</string>
     <string name="too_much">Слишком много</string>
-    <string name="about_text">Здравствуйте! Это обечающий проект, основная цель которого - показать свои знания, навыки и приемы приминяемые мной в программировании приложений для Android.</string>
+    <string name="about_text">Здравствуйте! \nЭто обучающий проект, основная цель которого - показать знания и навыки приминяемые мной в разработке приложений под Android.</string>
 </resources>

@@ -192,7 +192,7 @@ public class StatisticFragment extends Fragment implements SetDataFromStatisticL
         }else {
             s = new SpannableString(getString(R.string.pie_chart_center_text) + getString(R.string.too_much));
         }
-        s.setSpan(new RelativeSizeSpan(0.6f), 0, 20, 0);
+        s.setSpan(new RelativeSizeSpan(0.6f), 0, getString(R.string.pie_chart_center_text).length(), 0);
         return s;
     }
 }
