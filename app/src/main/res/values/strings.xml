@@ -5,9 +5,9 @@
     <string name="navigation_menu_item_categories_title">Categories</string>
     <string name="navigation_menu_item_statistic_title">Statistic</string>
     <string name="navigation_menu_item_about_title">About</string>
-    <string name="navigation_view_logo">navigation view logo</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <string name="navigation_view_logo" translatable="false">navigation view logo</string>
+    <string name="drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="drawer_close" translatable="false">Close navigation drawer</string>
 
     <!--fragment about-->
     <string name="about_text">
@@ -44,12 +44,12 @@
 
     <!--menu section-->
     <string name="fragment_categories_menu_item_add_title">add</string>
-    <string name="item_fragment_category_recycler_view_image_menu_description">menu icon</string>
+    <string name="item_fragment_category_recycler_view_image_menu_description" translatable="false">menu icon</string>
     <string name="category_icon_description">category item</string>
 
-    <string name="payment_title_max_length">150</string>
-    <string name="payment_summary_max_length">500</string>
-    <string name="payment_coast_max_length">15</string>
+    <string name="payment_title_max_length" translatable="false">150</string>
+    <string name="payment_summary_max_length" translatable="false">500</string>
+    <string name="payment_coast_max_length" translatable="false">15</string>
     <string name="payment_title_hint">Title</string>
     <string name="payment_cost_hint">Cost</string>
     <string name="payment_summary_hint">Add your comment here</string>
@@ -57,10 +57,10 @@
     <string name="activity_payment_no_category_hint">No category</string>
 
 
-    <string name="negative_value">- %1$,.2f</string>
+    <string name="negative_value" translatable="false">- %1$,.2f</string>
     <string name="pie_chart_center_text">Spent in this month:\n</string>
     <string name="too_much">Too much</string>
-    <string name="item_payment_settings_description">item payment settings description</string>
+    <string name="item_payment_settings_description" translatable="false">item payment settings description</string>
     <string name="no_data_announcement">No data, yet</string>
 
     <!--Toasts text-->
@@ -72,26 +72,26 @@
 
     <!--locale for currencyInstance-->
     <!--euro-->
-    <string name="currency_locale_euro_language">fr</string>
-    <string name="currency_locale_euro_country">FR</string>
+    <string name="currency_locale_euro_language" translatable="false">fr</string>
+    <string name="currency_locale_euro_country" translatable="false">FR</string>
     <!--pound-->
-    <string name="currency_locale_pound_language">en</string>
-    <string name="currency_locale_pound_country">GB</string>
+    <string name="currency_locale_pound_language" translatable="false">en</string>
+    <string name="currency_locale_pound_country" translatable="false">GB</string>
     <!--ruble-->
-    <string name="currency_locale_ruble_language">ru</string>
-    <string name="currency_locale_ruble_country">RU</string>
+    <string name="currency_locale_ruble_language" translatable="false">ru</string>
+    <string name="currency_locale_ruble_country" translatable="false">RU</string>
     <!--hryvnia-->
-    <string name="currency_locale_hryvnia_language">uk</string>
-    <string name="currency_locale_hryvnia_country">UA</string>
+    <string name="currency_locale_hryvnia_language" translatable="false">uk</string>
+    <string name="currency_locale_hryvnia_country" translatable="false">UA</string>
     <!--dollar-->
-    <string name="currency_locale_dollar_language">en</string>
-    <string name="currency_locale_dollar_county">US</string>
+    <string name="currency_locale_dollar_language" translatable="false">en</string>
+    <string name="currency_locale_dollar_county" translatable="false">US</string>
 
-    <string name="currency_euro_title">EUR  €</string>
-    <string name="currency_pound_title">GBP  £</string>
-    <string name="currency_ruble_title">RUB  ₽</string>
-    <string name="currency_hryvnia_title">UAH  ₴</string>
-    <string name="currency_dollar_title">USD  $</string>
+    <string name="currency_euro_title" translatable="false">EUR  €</string>
+    <string name="currency_pound_title" translatable="false">GBP  £</string>
+    <string name="currency_ruble_title" translatable="false">RUB  ₽</string>
+    <string name="currency_hryvnia_title" translatable="false">UAH  ₴</string>
+    <string name="currency_dollar_title" translatable="false">USD  $</string>
 
     <!--choose currency activity-->
 
