@@ -101,7 +101,6 @@ public class SQLiteContentProvider extends ContentProvider {
         }
         final long lastId = tableProvider.insert(mHelper.getReadableDatabase(), values);
         Uri resultUri = ContentUris.withAppendedId(uri, lastId);
-//        you has to use tableProvider.getBaseUri()
 //        getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
         getContext().getContentResolver().notifyChange(resultUri, null);
         return resultUri;
@@ -124,8 +123,8 @@ public class SQLiteContentProvider extends ContentProvider {
             whereArgs = new String[]{uri.getLastPathSegment()};
         }
         final int affectedRow = tableProvider.update(mHelper.getReadableDatabase(), values, where, whereArgs);
-        // you has to use tableProvider.getBaseUri()
         getContext().getContentResolver().notifyChange(Uri.withAppendedPath(tableProvider.getBaseUri(), "updated"), null);
+//        getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
         return affectedRow;
     }
 
@@ -146,8 +145,9 @@ public class SQLiteContentProvider extends ContentProvider {
             whereArgs = new String[]{uri.getLastPathSegment()};
         }
         final int affectedRow = tableProvider.delete(mHelper.getReadableDatabase(), where, whereArgs);
-        // you has to use tableProvider.getBaseUri()
         getContext().getContentResolver().notifyChange(Uri.withAppendedPath(tableProvider.getBaseUri(), "deleted"), null);
+//        getContext().getContentResolver().notifyChange(tableProvider.getBaseUri(), null);
+
         return affectedRow;
     }
 

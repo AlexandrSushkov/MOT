@@ -5,17 +5,16 @@
     android:orientation="vertical"
     >
 
-    <TextView
-        android:text="statistic"
-        android:textColor="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"/>
+    <!--<TextView-->
+        <!--android:text="statistic"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorAccent"/>-->
 
     <FrameLayout
         android:id="@+id/statistic_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
 </LinearLayout>

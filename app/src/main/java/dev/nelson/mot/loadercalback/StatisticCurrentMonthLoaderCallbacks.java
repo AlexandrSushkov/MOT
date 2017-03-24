@@ -7,24 +7,34 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
+
 import java.util.ArrayList;
 
 import dev.nelson.mot.R;
-import dev.nelson.mot.callback.SetDataFromStatisticLoader;
+import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 import dev.nelson.mot.utils.DateUtils;
+import dev.nelson.mot.utils.StringUtils;
 
 
-public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StatisticCurrentMonthLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int LOADER_ID = 30;
 
     private Context mContext;
-    private SetDataFromStatisticLoader mCallbackObj;
+    private StatisticCurrentMonthCallback mCallbackObj;
 
-    public StatisticLoaderCallbacks(Context context, SetDataFromStatisticLoader callbackObj) {
+    public StatisticCurrentMonthLoaderCallbacks(Context context, StatisticCurrentMonthCallback callbackObj) {
         mContext = context;
         mCallbackObj = callbackObj;
     }
@@ -35,6 +45,7 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
 //        select categories.category_name, sum(payments.cost) as cost
 //        from payments
 //        left join categories on payments.category_id = categories._id
+//        where payments.date between ? and ?
 //        group by payments.category_id
             String rawQuery = "select " + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
                     + " sum(" + PaymentsProvider.Columns.COST + ")" + " as " + PaymentsProvider.Columns.COST
@@ -52,21 +63,27 @@ public class StatisticLoaderCallbacks implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
-        if (data != null) {
-            ArrayList<String> categoryNames = new ArrayList<>();
-            ArrayList<Long> categorySum = new ArrayList<>();
+        if (data != null && data.moveToFirst()) {
+            ArrayList<PieEntry> entries = new ArrayList<>();
             String categoryName;
+            long cost;
+            long totalCost = 0;
             Log.d("tag", "CURSOR DATA");
-            while (data.moveToNext()) {
-                categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
-                if (categoryName == null) {
-                    categoryNames.add(mContext.getString(R.string.no_category_category_name));
-                } else {
-                    categoryNames.add(categoryName);
+            while (!data.isAfterLast()) {
+                if(data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) == null){
+                    categoryName = mContext.getString(R.string.no_category_category_name);
+                }else {
+                    categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
                 }
-                categorySum.add(data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST)));
+                cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
+                entries.add(new PieEntry(cost, categoryName));
+                totalCost += cost;
+                data.moveToNext();
             }
-            mCallbackObj.setDataFromStatisticLoader(categoryNames, categorySum);
+            PieDataSet dataSet = new PieDataSet(entries, StringUtils.formattedCost(totalCost));
+            PieData pieData = new PieData(dataSet);
+
+            mCallbackObj.setDataFromStatisticCurrentMonthLoaderCallbacks(pieData);
         }
     }
 
