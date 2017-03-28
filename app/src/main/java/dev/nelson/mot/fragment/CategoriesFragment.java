@@ -32,6 +32,9 @@ import dev.nelson.mot.loadercalback.CategoriesLoaderCallbacks;
 
 public class CategoriesFragment extends Fragment{
 
+    public static final String FRAGMENT_TAG = CategoriesFragment.class.getName();
+
+
     @BindView(R.id.item_no_category)
     FrameLayout mItemNoCategory;
     @BindView(R.id.recycler_view)
@@ -73,14 +76,6 @@ public class CategoriesFragment extends Fragment{
                 drawable.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
             }
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
-            CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getActivity().getSupportFragmentManager(), "Category option dialog");
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @OnClick(R.id.item_no_category)

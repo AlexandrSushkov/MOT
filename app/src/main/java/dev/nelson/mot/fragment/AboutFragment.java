@@ -19,6 +19,8 @@ import dev.nelson.mot.R;
 
 public class AboutFragment extends Fragment {
 
+    public static final String FRAGMENT_TAG = AboutFragment.class.getName();
+
     @BindView(R.id.eastern_egg_19)
     TextView mEasternEgg;
     private int counter = 0;

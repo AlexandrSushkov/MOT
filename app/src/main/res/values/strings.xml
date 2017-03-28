@@ -99,8 +99,26 @@
     <string name="choose_currency_toast_message">You have to choose currency</string>
     <string name="choose_locale_currency_button_text">Choose</string>
 
+    <!--statistic fragment-->
+    <string name="statistic_current_month_menu_title">Current month</string>
+    <string name="statistic_by_months_menu_title">By months</string>
+    <string name="statistic_by_months_with_categories_menu_title">By months with categories</string>
+    <string name="statistic_by_years_menu_title">By years</string>
+    <string name="statistic_categories_menu_title">Categories</string>
 
+    <!--months-->
 
-
+    <string name="january">Jan</string>
+    <string name="february">Feb</string>
+    <string name="march">Mar</string>
+    <string name="april">Apr</string>
+    <string name="may">May</string>
+    <string name="june">June</string>
+    <string name="july">July</string>
+    <string name="august">Aug</string>
+    <string name="september">Sep</string>
+    <string name="october">Oct</string>
+    <string name="november">Nov</string>
+    <string name="december">Dec</string>
 
 </resources>

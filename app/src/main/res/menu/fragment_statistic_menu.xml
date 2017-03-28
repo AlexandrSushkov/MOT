@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools">
+
+    <item android:id="@+id/fragment_statistic_menu_item_current_month"
+        android:title="@string/statistic_current_month_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_by_months"
+        android:title="@string/statistic_by_months_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_by_months_with_categories"
+        android:title="@string/statistic_by_months_with_categories_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_by_years"
+        android:title="@string/statistic_by_years_menu_title"
+        app:showAsAction="never"
+        />
+
+    <item android:id="@+id/fragment_statistic_menu_item_categories"
+        android:title="@string/statistic_categories_menu_title"
+        app:showAsAction="never"
+        />
+
+</menu>

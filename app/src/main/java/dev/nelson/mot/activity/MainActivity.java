@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
+import dev.nelson.mot.dialog.CategoryDialog;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.RecentPaymentsFragment;
@@ -57,27 +58,36 @@ public class MainActivity extends AppCompatActivity{
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.fragment_categories_menu_item_add:
+              CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getSupportFragmentManager(), "Category option dialog");
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void selectDrawerItem(MenuItem menuItem){
         Class fragmentClass;
+        String tag;
         switch (menuItem.getItemId()){
             case R.id.navigation_menu_item_home:
                 fragmentClass = RecentPaymentsFragment.class;
+                tag = RecentPaymentsFragment.FRAGMENT_TAG;
                 break;
             case R.id.navigation_menu_item_category:
                 fragmentClass = CategoriesFragment.class;
+                tag = CategoriesFragment.FRAGMENT_TAG;
                 break;
             case R.id.navigation_menu_item_statistic:
                 fragmentClass = StatisticFragment.class;
+                tag = StatisticFragment.FRAGMENT_TAG;
                 break;
             case R.id.navigation_menu_item_about:
                 fragmentClass = AboutFragment.class;
+                tag = AboutFragment.FRAGMENT_TAG;
                 break;
             default:
                 fragmentClass = RecentPaymentsFragment.class;
+                tag = RecentPaymentsFragment.FRAGMENT_TAG;
         }
 
         try {
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity{
         }
 
         mFragmentManager = getSupportFragmentManager();
-        mFragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment).commit();
+        mFragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment, tag).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setEnabled(true);
@@ -108,6 +118,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        // TODO: 3/28/17 rewrite. crush java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState after notification from timer
         mFragmentManager.beginTransaction().detach(mContentFragment).attach(mContentFragment).commit();
     }
 

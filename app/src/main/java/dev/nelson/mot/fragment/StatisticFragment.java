@@ -1,198 +1,121 @@
 package dev.nelson.mot.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
+import android.widget.FrameLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-import dev.nelson.mot.callback.SetDataFromStatisticLoader;
-import dev.nelson.mot.loadercalback.StatisticLoaderCallbacks;
-import dev.nelson.mot.utils.StringUtils;
 
+public class StatisticFragment extends Fragment {
 
-public class StatisticFragment extends Fragment implements SetDataFromStatisticLoader, OnChartValueSelectedListener{
+    public static final String FRAGMENT_TAG = StatisticFragment.class.getName();
 
-    @BindView(R.id.pie_chart)
-    PieChart mChart;
-    //xData
-    private ArrayList<String> mCategoriesNames = new ArrayList<>();
-    //yData
-    private ArrayList<Long> mSumPerCategory = new ArrayList<>();
+    @BindView(R.id.statistic_wrapper)
+    FrameLayout mWrapper;
+
+    private FragmentManager mFragmentManager;
+    private Fragment mCurrentFragment;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            mCurrentFragment = getChildFragmentManager().getFragment(savedInstanceState, "key");
+            mFragmentManager.beginTransaction().replace(R.id.statistic_wrapper, mCurrentFragment).commit();
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
         ButterKnife.bind(this, view);
-        StatisticLoaderCallbacks mLoaderCallbacks = new StatisticLoaderCallbacks(getContext(), this);
-        getActivity().getSupportLoaderManager().initLoader(StatisticLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-        initPieChart();
-        // i don't like this, it looks like crunch, but i don't know how to fix this in other way.
-        // without this check after changing fragment xData and yData arrays are empty. and loader doesn't load data automatically
-        if (mSumPerCategory.size() == 0 && mCategoriesNames.size() == 0){
-            getActivity().getSupportLoaderManager().restartLoader(StatisticLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
+        mFragmentManager = this.getChildFragmentManager();
+        if (mCurrentFragment == null) {
+            Fragment f = new StatisticCurrentMonthFragment();
+            mFragmentManager.beginTransaction().replace(R.id.statistic_wrapper, f, StatisticCurrentMonthFragment.FRAGMENT_TAG).commit();
+            mCurrentFragment = f;
         }
         return view;
     }
 
     @Override
-    public void setDataFromStatisticLoader(ArrayList<String> categoriesNames, ArrayList<Long> sumPerCategory) {
-        mCategoriesNames = categoriesNames;
-        mSumPerCategory = sumPerCategory;
-        mChart.setCenterText(generateCenterCircleText());
-        setData();
-    }
-
-    // OnChartValueSelectedListener methods
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null){
-            return;
-        }
-//        Log.i("VAL SELECTED",
-//                "Value: " + e.getY() + ", index: " + h.getX()
-//                        + ", DataSet index: " + h.getDataSetIndex());
-        String formattedCost = String.valueOf(StringUtils.formattedCost((long)e.getY()));
-        int categoryIndex = (int) h.getX();
-        Toast.makeText(getActivity(), mCategoriesNames.get(categoryIndex) + ": " + formattedCost, Toast.LENGTH_SHORT).show();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_statistic_menu, menu);
     }
 
     @Override
-    public void onNothingSelected() {
-        Log.i("PieChart", "nothing selected");
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.fragment_statistic_menu_item_current_month:
+                if (!(mCurrentFragment instanceof StatisticCurrentMonthFragment)) {
+                    mCurrentFragment = new StatisticCurrentMonthFragment();
+                    mFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticCurrentMonthFragment.FRAGMENT_TAG)
+                            .commit();
+                }
+                break;
+            case R.id.fragment_statistic_menu_item_by_months:
+                if (!(mCurrentFragment instanceof StatisticByMonthsFragment)) {
+                    mCurrentFragment = new StatisticByMonthsFragment();
+                    mFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByMonthsFragment.FRAGMENT_TAG)
+                            .commit();
+                }
+                break;
+            case R.id.fragment_statistic_menu_item_by_months_with_categories:
+                if (!(mCurrentFragment instanceof StatisticByMonthsWithCategoriesFragment)) {
+                    mCurrentFragment = new StatisticByMonthsWithCategoriesFragment();
+                    mFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByMonthsWithCategoriesFragment.FRAGMENT_TAG)
+                            .commit();
+                }
+                break;
+            case R.id.fragment_statistic_menu_item_by_years:
+                if (!(mCurrentFragment instanceof StatisticByYearFragment)) {
+                    mCurrentFragment = new StatisticByYearFragment();
+                    mFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByYearFragment.FRAGMENT_TAG)
+                            .commit();
+                }
+                break;
+            case R.id.fragment_statistic_menu_item_categories:
+                if (!(mCurrentFragment instanceof StatisticByCategoriesFragment)) {
+                    mCurrentFragment = new StatisticByCategoriesFragment();
+                    mFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByCategoriesFragment.FRAGMENT_TAG)
+                            .commit();
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void initPieChart(){
-        mChart.setUsePercentValues(true);
-        mChart.setDragDecelerationFrictionCoef(0.95f);
-        mChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
-//        mChart.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mChart.getDescription().setEnabled(false);
-
-        //setup inner circle
-        //main circle
-        mChart.setDrawHoleEnabled(true);
-        mChart.setHoleRadius(58f);
-        mChart.setHoleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-
-        //transparent circle
-        mChart.setTransparentCircleRadius(61f);
-        mChart.setTransparentCircleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mChart.setTransparentCircleAlpha(110);
-
-        //inner circle text
-        mChart.setDrawCenterText(true);
-//        mChart.setCenterText(generateCenterCircleText());
-        mChart.setCenterTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        mChart.setCenterTextSize(20);
-
-        //categories text color
-        mChart.setEntryLabelColor(Color.BLACK);
-
-        // add a selection listener
-        mChart.setOnChartValueSelectedListener(this);
-
-        // enable rotation of the chart by touch
-        mChart.setRotationAngle(0);
-        mChart.setRotationEnabled(true);
-        mChart.setHighlightPerTapEnabled(true);
-    }
-
-    private void setData(){
-        ArrayList<PieEntry> entries = new ArrayList<>();
-
-        for (int i = 0; i < mSumPerCategory.size(); i++) {
-            //convert long sum into float
-            long d = mSumPerCategory.get(i);
-            float f = (float)d;
-            entries.add(new PieEntry(f, mCategoriesNames.get(i)));
-        }
-
-        PieDataSet dataSet = new PieDataSet(entries, "My Data set string label");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-
-        //legend turned off
-        mChart.getLegend().setEnabled(false);
-
-        // add a lot of colors
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        colors.add(ColorTemplate.getHoloBlue());
-        dataSet.setColors(colors);
-
-        dataSet.setValueLinePart1OffsetPercentage(80.f);
-        dataSet.setValueLinePart1Length(0.2f);
-        dataSet.setValueLinePart2Length(0.4f);
-        // position of category names and percentage value
-        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-//        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setValueTextColor(Color.BLACK);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.BLACK);
-        mChart.setData(data);
-
-        // undo all highlights
-        mChart.highlightValues(null);
-
-        mChart.animateXY(1400, 1400);
-        mChart.invalidate();
-    }
-
-    private SpannableString generateCenterCircleText(){
-        long sumPerMonth = 0;
-        SpannableString s;
-        for (Long sumOfCategory: mSumPerCategory) {
-            sumPerMonth += sumOfCategory;
-        }
-        if(String.valueOf(sumPerMonth).length() < 13){
-            s = new SpannableString(getString(R.string.pie_chart_center_text) + StringUtils.formattedCost(sumPerMonth));
-        }else {
-            s = new SpannableString(getString(R.string.pie_chart_center_text) + getString(R.string.too_much));
-        }
-        s.setSpan(new RelativeSizeSpan(0.6f), 0, getString(R.string.pie_chart_center_text).length(), 0);
-        return s;
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getChildFragmentManager().putFragment(outState, "key", mCurrentFragment);
     }
 }

@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pie_chart"
+    <!--<TextView-->
+        <!--android:text="statistic"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorAccent"/>-->
+
+    <FrameLayout
+        android:id="@+id/statistic_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-
-</RelativeLayout>
+</LinearLayout>
