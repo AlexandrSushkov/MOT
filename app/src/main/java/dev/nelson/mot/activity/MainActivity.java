@@ -23,7 +23,7 @@ import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.RecentPaymentsFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_main_drawer)
     DrawerLayout mDrawerLayout;
@@ -113,13 +113,6 @@ public class MainActivity extends AppCompatActivity{
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // TODO: 3/28/17 rewrite. crush java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState after notification from timer
-        mFragmentManager.beginTransaction().detach(mContentFragment).attach(mContentFragment).commit();
     }
 
     @Override

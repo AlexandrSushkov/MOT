@@ -32,8 +32,6 @@ public class StatisticByMonthsWithCategoriesFragment extends Fragment implements
         View view = inflater.inflate(R.layout.fragment_satistic_by_months_with_categories, container, false);
         ButterKnife.bind(this, view);
         StatisticByMonthWithCategoriesLoaderCallbacks mLoaderCallbacks = new StatisticByMonthWithCategoriesLoaderCallbacks(getContext(), this);
-//        rewrite database observer, change notification by uri, use init loader instead of restart
-//        getActivity().getSupportLoaderManager().initLoader(StatisticByMonthWithCategoriesLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         getActivity().getSupportLoaderManager().restartLoader(StatisticByMonthWithCategoriesLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
     }

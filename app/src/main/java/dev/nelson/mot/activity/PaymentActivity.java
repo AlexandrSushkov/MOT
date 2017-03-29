@@ -142,16 +142,15 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     }
 
     @Override
-    public void updateDataFromDB() {
-        paymentInitialState = new Payment(paymentCurrentState);
-        Toast.makeText(this, getString(R.string.payment_has_been_updated), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void lastInsertedRow(int lastInsertedRow) {
-        paymentCurrentState.setId(lastInsertedRow);
-        paymentInitialState = new Payment(paymentCurrentState);
-        Toast.makeText(this, getString(R.string.new_payment_has_been_added), Toast.LENGTH_SHORT).show();
+    public void dataBaseChanged(int lastAffectedRow) {
+        if(lastAffectedRow > 0){
+            Toast.makeText(this, getString(R.string.new_payment_has_been_added), Toast.LENGTH_SHORT).show();
+            paymentCurrentState.setId(lastAffectedRow);
+            paymentInitialState = new Payment(paymentCurrentState);
+        }else {
+            paymentInitialState = new Payment(paymentCurrentState);
+            Toast.makeText(this, getString(R.string.payment_has_been_updated), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.payment_category)

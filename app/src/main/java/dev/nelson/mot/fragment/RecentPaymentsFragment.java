@@ -54,12 +54,7 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
         mAdapter = new PaymentsAdapter(mContext, null, PaymentsAdapter.FLAG_RECENT_PAYMENTS);
         initRecyclerView();
         mLoaderCallbacks = new RecentPaymentsLoadersCallbacks(mContext, mAdapter, this);
-        if (getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID) != null &&
-                getActivity().getSupportLoaderManager().getLoader(PaymentLoaderCallbacks.LOADER_ID).isStarted()) {
-            getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-        } else {
-            getActivity().getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-        }
+        getActivity().getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
     }
 
@@ -69,22 +64,6 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
         intent.setAction(PaymentActivity.ACTION_EDIT);
         mContext.startActivity(intent);
     }
-
-    private void initRecyclerView() {
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        DividerItemDecoration decoration = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
-        mRecyclerView.addItemDecoration(decoration);
-    }
-
-    @Override
-    public void updateDataFromDB() {
-        getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
-    }
-
-    @Override
-    public void lastInsertedRow(int lastInsertedRow) {}
 
     @Override
     public void onAttach(Context context) {
@@ -97,6 +76,19 @@ public class RecentPaymentsFragment extends android.support.v4.app.Fragment impl
     public void onDetach() {
         super.onDetach();
         getActivity().getContentResolver().unregisterContentObserver(mDatabaseChangesObserver);
+    }
+
+    private void initRecyclerView() {
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        DividerItemDecoration decoration = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(decoration);
+    }
+
+    @Override
+    public void dataBaseChanged(int lastAffectedRow) {
+        getActivity().getSupportLoaderManager().restartLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
     }
 
     @Override

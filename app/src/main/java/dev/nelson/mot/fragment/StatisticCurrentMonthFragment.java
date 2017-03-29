@@ -17,13 +17,10 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +29,8 @@ import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
 import dev.nelson.mot.loadercalback.StatisticCurrentMonthLoaderCallbacks;
 import dev.nelson.mot.utils.StringUtils;
 
-public class StatisticCurrentMonthFragment extends Fragment implements StatisticCurrentMonthCallback, OnChartValueSelectedListener {
+public class StatisticCurrentMonthFragment extends Fragment implements StatisticCurrentMonthCallback,
+        OnChartValueSelectedListener {
 
     public static final String FRAGMENT_TAG = StatisticCurrentMonthFragment.class.getName();
 
@@ -44,8 +42,8 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_month, container, false);
         ButterKnife.bind(this, view);
-        StatisticCurrentMonthLoaderCallbacks loaderCallbacks = new StatisticCurrentMonthLoaderCallbacks(getContext(), this);
-        getActivity().getSupportLoaderManager().restartLoader(StatisticCurrentMonthLoaderCallbacks.LOADER_ID, null, loaderCallbacks);
+        StatisticCurrentMonthLoaderCallbacks mLoaderCallbacks = new StatisticCurrentMonthLoaderCallbacks(getContext(), this);
+        getActivity().getSupportLoaderManager().restartLoader(StatisticCurrentMonthLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
     }
 
