@@ -17,6 +17,7 @@ import dev.nelson.mot.callback.StatisticByMonthsCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
+import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
 import dev.nelson.mot.utils.StringUtils;
 
@@ -43,8 +44,8 @@ public class StatisticByMonthsLoaderCallbacks implements LoaderManager.LoaderCal
 //            ORDER BY  strftime('%Y', payments.date) DESC, strftime('%m', payments.date) DESC
 
             String rawQuery = "SELECT "
-                    + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS year, "
-                    + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS month, "
+                    + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.YEAR + ", "
+                    + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.MONTH + ", "
                     + "sum(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")" + " AS " + PaymentsProvider.Columns.COST
                     + " FROM " + PaymentsProvider.TABLE_NAME
                     + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
@@ -70,8 +71,8 @@ public class StatisticByMonthsLoaderCallbacks implements LoaderManager.LoaderCal
             long cost;
             while (!data.isAfterLast()) {
                 //get data from cursor
-                year = data.getString(data.getColumnIndex("year"));
-                month = data.getString(data.getColumnIndex("month"));
+                year = data.getString(data.getColumnIndex(Constants.YEAR));
+                month = data.getString(data.getColumnIndex(Constants.MONTH));
                 cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
 
                 entries.add(new Entry(xAxis, cost, DateUtils.months.get(month) + " " + year));

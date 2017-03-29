@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import dev.nelson.mot.payment.Payment;
-
 public class StringUtils {
 
     public static boolean isEmpty(String string){
@@ -26,7 +24,7 @@ public class StringUtils {
     }
 
     public static String formattedCost(long cost){
-        Locale myLocale = LocaleUtils.getLocaleForChoosenCurrency();
+        Locale myLocale = LocaleUtils.getLocaleForChosenCurrency();
         BigDecimal costValue = new BigDecimal(cost);
         BigDecimal parsed = costValue.setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
         return NumberFormat.getCurrencyInstance(myLocale).format(parsed);
@@ -44,6 +42,5 @@ public class StringUtils {
         }else {
             return string;
         }
-
     }
 }

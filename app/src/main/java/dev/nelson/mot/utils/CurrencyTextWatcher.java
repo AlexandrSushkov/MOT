@@ -19,7 +19,7 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     public CurrencyTextWatcher(EditText editText) {
         editTextWeakReference = new WeakReference<EditText>(editText);
-        myLocale = LocaleUtils.getLocaleForChoosenCurrency();
+        myLocale = LocaleUtils.getLocaleForChosenCurrency();
     }
 
     @Override

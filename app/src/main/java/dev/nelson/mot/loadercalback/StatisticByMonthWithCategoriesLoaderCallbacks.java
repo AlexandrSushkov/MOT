@@ -1,6 +1,5 @@
 package dev.nelson.mot.loadercalback;
 
-
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import dev.nelson.mot.callback.StatisticByMonthWithCategoriesCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
+import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
 import dev.nelson.mot.utils.StringUtils;
 
@@ -45,8 +45,8 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
             String rawQuery =
                     "SELECT " + CategoriesProvider.TABLE_NAME + "." +CategoriesProvider.Columns._ID + ", "
                         + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
-                        + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS year, "
-                        + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS month, "
+                        + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.YEAR + ", "
+                        + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.MONTH + ", "
                         + "sum(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")" + " AS " + PaymentsProvider.Columns.COST
                     + " FROM " + PaymentsProvider.TABLE_NAME
                     + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
@@ -85,8 +85,8 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                 }else {
                     categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
                 }
-                year = data.getInt(data.getColumnIndex("year"));
-                month = data.getString(data.getColumnIndex("month"));
+                year = data.getInt(data.getColumnIndex(Constants.YEAR));
+                month = data.getString(data.getColumnIndex(Constants.MONTH));
                 cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
 
                 //fill up months with data
@@ -123,7 +123,6 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                 data.moveToNext();
             }
                 BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year + "   Total: " + StringUtils.formattedCost(totalCost));
-//                BarDataSet set = new BarDataSet(entries, monthKeeper + " " + year);
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set);
                 BarData barData = new BarData(dataSets);

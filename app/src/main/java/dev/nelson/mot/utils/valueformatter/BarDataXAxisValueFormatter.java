@@ -16,7 +16,5 @@ public class BarDataXAxisValueFormatter implements IAxisValueFormatter {
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
         return (String) mDataSet.getEntryForXValue(value, value).getData();
-
-
     }
 }

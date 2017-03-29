@@ -10,7 +10,6 @@ import android.support.v4.content.Loader;
 import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.db.model.CategoriesProvider;
 
-
 public class CategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int LOADER_ID = 20;

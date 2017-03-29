@@ -19,6 +19,7 @@ import dev.nelson.mot.callback.StatisticByYearsCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
+import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
 import dev.nelson.mot.utils.StringUtils;
 
@@ -45,17 +46,17 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
 //        GROUP BY strftime('%Y', payments.date), categories._id
 //        ORDER BY  strftime('%Y', payments.date) DESC
 
-        String rawQuery =
-                "SELECT " + CategoriesProvider.TABLE_NAME + "." +CategoriesProvider.Columns._ID + ", "
-                        + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
-                        + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS year, "
-                        + "sum(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")" + " AS " + PaymentsProvider.Columns.COST
-                        + " FROM " + PaymentsProvider.TABLE_NAME
-                        + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
-                        + " ON " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=" + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID
-                        + " GROUP BY " + "strftime('%Y'," + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + "), "
-                        + CategoriesProvider.TABLE_NAME + "." +CategoriesProvider.Columns._ID
-                        + " ORDER BY " + "strftime('%Y'," + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") DESC";
+            String rawQuery =
+                    "SELECT " + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID + ", "
+                            + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
+                            + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.YEAR + ", "
+                            + "sum(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")" + " AS " + PaymentsProvider.Columns.COST
+                            + " FROM " + PaymentsProvider.TABLE_NAME
+                            + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
+                            + " ON " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.CATEGORY_ID + "=" + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID
+                            + " GROUP BY " + "strftime('%Y'," + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + "), "
+                            + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID
+                            + " ORDER BY " + "strftime('%Y'," + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") DESC";
             return new RawQueryCursorLoader(mContext, rawQuery, null);
         } else {
             throw new IllegalArgumentException(getClass().getName() + " Wrong loader id: " + id);
@@ -64,7 +65,7 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data != null && data.moveToFirst()){
+        if (data != null && data.moveToFirst()) {
             //initial data
             float xAxis = 0;
             int yearKeeper = 0;
@@ -75,29 +76,29 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
             String categoryName;
             int year = -1;
             long cost;
-            while (!data.isAfterLast()){
+            while (!data.isAfterLast()) {
                 //get data from cursor
-                if(data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) == null){
+                if (data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) == null) {
                     categoryName = mContext.getString(R.string.no_category_category_name);
-                }else {
+                } else {
                     categoryName = data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
                 }
-                year = data.getInt(data.getColumnIndex("year"));
+                year = data.getInt(data.getColumnIndex(Constants.YEAR));
                 cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
 
                 //fill up years with data
-                if(yearKeeper == 0){
+                if (yearKeeper == 0) {
                     yearKeeper = year;
                     entries = new ArrayList<>();
-                    entries.add(new BarEntry(xAxis, (float)cost, categoryName));
+                    entries.add(new BarEntry(xAxis, (float) cost, categoryName));
                     totalCost += cost;
                     xAxis++;
-                }else {
-                    if (yearKeeper == year){
-                        entries.add(new BarEntry(xAxis, (float)cost, categoryName));
+                } else {
+                    if (yearKeeper == year) {
+                        entries.add(new BarEntry(xAxis, (float) cost, categoryName));
                         totalCost += cost;
                         xAxis++;
-                    }else {
+                    } else {
                         //add entries into months list
                         BarDataSet set = new BarDataSet(entries, year + " Total: " + StringUtils.formattedCost(totalCost));
                         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
@@ -124,7 +125,7 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
 
             mCallback.getDataFromStatisticByYearsLoaderCallbacks(years);
         }
-}
+    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

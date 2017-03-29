@@ -6,13 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
@@ -22,13 +18,9 @@ import dev.nelson.mot.callback.StatisticByCategoriesCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
+import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
-import dev.nelson.mot.utils.LocaleUtils;
 import dev.nelson.mot.utils.StringUtils;
-
-import static android.R.attr.commitIcon;
-import static android.R.attr.contextClickable;
-import static android.R.attr.id;
 
 public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,8 +47,8 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
             String rawQuery = "SELECT "
                     + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns._ID + ", "
                     + CategoriesProvider.TABLE_NAME + "." + CategoriesProvider.Columns.CATEGORY_NAME + ", "
-                    + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS year, "
-                    + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS month, "
+                    + "strftime('%Y', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.YEAR + ", "
+                    + "strftime('%m', " + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.DATE + ") AS " + Constants.MONTH + ", "
                     + "sum(" + PaymentsProvider.TABLE_NAME + "." + PaymentsProvider.Columns.COST + ")" + " AS " + PaymentsProvider.Columns.COST
                     + " FROM " + PaymentsProvider.TABLE_NAME
                     + " LEFT JOIN " + CategoriesProvider.TABLE_NAME
@@ -100,8 +92,8 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
                 } else {
                     categoryId = data.getInt(data.getColumnIndex(CategoriesProvider.Columns._ID));
                 }
-                year = data.getInt(data.getColumnIndex("year"));
-                month = data.getString(data.getColumnIndex("month"));
+                year = data.getInt(data.getColumnIndex(Constants.YEAR));
+                month = data.getString(data.getColumnIndex(Constants.MONTH));
                 cost = data.getLong(data.getColumnIndex(PaymentsProvider.Columns.COST));
 
                 //fill up months with data

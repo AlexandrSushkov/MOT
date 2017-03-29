@@ -11,7 +11,6 @@ import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.db.model.PaymentsProvider;
 
-
 public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int LOADER_ID = 12;

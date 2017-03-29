@@ -4,7 +4,6 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-
 public class LineDataXAxisValueFormatter implements IAxisValueFormatter {
 
     private ILineDataSet mDataSet;
