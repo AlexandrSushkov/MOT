@@ -3,7 +3,6 @@
     <string name="app_name">MOT</string>
     <string name="activity_choose_category_toolbar_title">Выберите категорию</string>
     <string name="activity_payment_no_category_hint">Без категории</string>
-    <string name="app_version">Бета версия 1.0</string>
     <string name="build_in_category_bills">Счета</string>
     <string name="build_in_category_clothing">Одежда</string>
     <string name="build_in_category_communication_services">Услуги связи</string>
