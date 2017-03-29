@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByMonthsCallback;
 import dev.nelson.mot.loadercalback.StatisticByMonthsLoaderCallbacks;
 import dev.nelson.mot.utils.StringUtils;
@@ -31,19 +33,23 @@ import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.LineDataXAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
 
-public class StatisticByMonthsFragment extends Fragment implements StatisticByMonthsCallback, OnChartValueSelectedListener {
+public class StatisticByMonthsFragment extends Fragment implements StatisticByMonthsCallback,
+        OnChartValueSelectedListener,
+        EmptyCursorCallback {
 
     public static final String FRAGMENT_TAG = StatisticByMonthsFragment.class.getName();
 
     @BindView(R.id.line_chart)
     LineChart mChart;
+    @BindView(R.id.no_data_announcement)
+    TextView mNoDataAnnouncement;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_by_months, container, false);
         ButterKnife.bind(this, view);
-        StatisticByMonthsLoaderCallbacks loadersCallback = new StatisticByMonthsLoaderCallbacks(getContext(), this);
+        StatisticByMonthsLoaderCallbacks loadersCallback = new StatisticByMonthsLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticByMonthsLoaderCallbacks.LOADER_ID, null, loadersCallback);
         return view;
     }
@@ -111,5 +117,11 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
 
         mChart.setData(data);
 
+    }
+
+    @Override
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mChart.setVisibility(View.GONE);
     }
 }

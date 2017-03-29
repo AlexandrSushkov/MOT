@@ -15,25 +15,26 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByYearsCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 import dev.nelson.mot.utils.Constants;
-import dev.nelson.mot.utils.DateUtils;
 import dev.nelson.mot.utils.StringUtils;
 
 public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final int LOADER_ID = 33;
 
-
     private Context mContext;
-    private StatisticByYearsCallback mCallback;
+    private StatisticByYearsCallback mStatisticByYearCallback;
+    private EmptyCursorCallback mEmptyCursorCallback;
 
-    public StatisticByYearsLoaderCallbacks(Context context, StatisticByYearsCallback callback) {
+    public StatisticByYearsLoaderCallbacks(Context context, StatisticByYearsCallback statisticByYearCallback, EmptyCursorCallback emptyCursorCallback) {
         mContext = context;
-        mCallback = callback;
+        mStatisticByYearCallback = statisticByYearCallback;
+        mEmptyCursorCallback = emptyCursorCallback;
     }
 
     @Override
@@ -123,7 +124,9 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
             BarData barData = new BarData(dataSets);
             years.add(barData);
 
-            mCallback.getDataFromStatisticByYearsLoaderCallbacks(years);
+            mStatisticByYearCallback.getDataFromStatisticByYearsLoaderCallbacks(years);
+        }else {
+            mEmptyCursorCallback.showNoDataAnnouncement();
         }
     }
 

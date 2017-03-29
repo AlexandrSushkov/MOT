@@ -29,7 +29,6 @@ import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
 import dev.nelson.mot.loadercalback.RecentPaymentsLoadersCallbacks;
 import dev.nelson.mot.observer.DatabaseChangesObserver;
 
-
 public class RecentPaymentsFragment extends android.support.v4.app.Fragment implements DatabaseChangesCallback, EmptyCursorCallback {
 
     public static final String FRAGMENT_TAG = RecentPaymentsFragment.class.getName();

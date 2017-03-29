@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -25,24 +26,28 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
 import dev.nelson.mot.loadercalback.StatisticCurrentMonthLoaderCallbacks;
 import dev.nelson.mot.utils.StringUtils;
 
 public class StatisticCurrentMonthFragment extends Fragment implements StatisticCurrentMonthCallback,
-        OnChartValueSelectedListener {
+        OnChartValueSelectedListener,
+        EmptyCursorCallback{
 
     public static final String FRAGMENT_TAG = StatisticCurrentMonthFragment.class.getName();
 
     @BindView(R.id.pie_chart)
     PieChart mChart;
+    @BindView(R.id.no_data_announcement)
+    TextView mNoDataAnnouncement;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_month, container, false);
         ButterKnife.bind(this, view);
-        StatisticCurrentMonthLoaderCallbacks mLoaderCallbacks = new StatisticCurrentMonthLoaderCallbacks(getContext(), this);
+        StatisticCurrentMonthLoaderCallbacks mLoaderCallbacks = new StatisticCurrentMonthLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticCurrentMonthLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
     }
@@ -143,5 +148,11 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         SpannableString s = new SpannableString(getString(R.string.pie_chart_center_text) + totalCost);
         s.setSpan(new RelativeSizeSpan(0.6f), 0, getString(R.string.pie_chart_center_text).length(), 0);
         return s;
+    }
+
+    @Override
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mChart.setVisibility(View.GONE);
     }
 }

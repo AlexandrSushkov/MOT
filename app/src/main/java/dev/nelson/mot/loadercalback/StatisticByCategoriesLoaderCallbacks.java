@@ -14,6 +14,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByCategoriesCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -27,11 +28,13 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
     public static final int LOADER_ID = 34;
 
     private Context mContext;
-    private StatisticByCategoriesCallback mCallback;
+    private StatisticByCategoriesCallback mStatisticByCategoriesCallback;
+    private EmptyCursorCallback mEmptyCursorCallback;
 
-    public StatisticByCategoriesLoaderCallbacks(Context context, StatisticByCategoriesCallback callback) {
+    public StatisticByCategoriesLoaderCallbacks(Context context, StatisticByCategoriesCallback statisticByCategoriesCallback, EmptyCursorCallback emptyCursorCallback) {
         mContext = context;
-        mCallback = callback;
+        mStatisticByCategoriesCallback = statisticByCategoriesCallback;
+        mEmptyCursorCallback = emptyCursorCallback;
     }
 
     @Override
@@ -135,7 +138,9 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
             LineData barData = new LineData(dataSets);
             categories.add(barData);
 
-            mCallback.getDataFromStatisticByCategoriesLoaderCallback(categories);
+            mStatisticByCategoriesCallback.getDataFromStatisticByCategoriesLoaderCallback(categories);
+        }else {
+            mEmptyCursorCallback.showNoDataAnnouncement();
         }
     }
 

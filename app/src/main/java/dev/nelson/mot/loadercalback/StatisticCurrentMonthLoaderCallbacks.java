@@ -7,18 +7,14 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IPieDataSet;
 
 import java.util.ArrayList;
 
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -32,11 +28,14 @@ public class StatisticCurrentMonthLoaderCallbacks implements LoaderManager.Loade
     public static final int LOADER_ID = 30;
 
     private Context mContext;
-    private StatisticCurrentMonthCallback mCallbackObj;
+    private StatisticCurrentMonthCallback mStatisticCurrentMonthCallback;
+    private EmptyCursorCallback mEmptyCursorCallback;
 
-    public StatisticCurrentMonthLoaderCallbacks(Context context, StatisticCurrentMonthCallback callbackObj) {
+    public StatisticCurrentMonthLoaderCallbacks(Context context, StatisticCurrentMonthCallback statisticCurrentMonthCallback, EmptyCursorCallback emptyCursorCallback) {
         mContext = context;
-        mCallbackObj = callbackObj;
+        mStatisticCurrentMonthCallback = statisticCurrentMonthCallback;
+        this.mEmptyCursorCallback = emptyCursorCallback;
+
     }
 
     @Override
@@ -83,7 +82,9 @@ public class StatisticCurrentMonthLoaderCallbacks implements LoaderManager.Loade
             PieDataSet dataSet = new PieDataSet(entries, StringUtils.formattedCost(totalCost));
             PieData pieData = new PieData(dataSet);
 
-            mCallbackObj.setDataFromStatisticCurrentMonthLoaderCallbacks(pieData);
+            mStatisticCurrentMonthCallback.setDataFromStatisticCurrentMonthLoaderCallbacks(pieData);
+        }else {
+            mEmptyCursorCallback.showNoDataAnnouncement();
         }
     }
 

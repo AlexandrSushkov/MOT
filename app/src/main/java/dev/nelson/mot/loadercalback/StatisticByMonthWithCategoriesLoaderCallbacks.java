@@ -14,6 +14,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 
 import dev.nelson.mot.R;
+import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByMonthWithCategoriesCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -26,11 +27,13 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
 
     public static final int LOADER_ID = 32;
     private Context mContext;
-    private StatisticByMonthWithCategoriesCallback mCallback;
+    private StatisticByMonthWithCategoriesCallback mStatisticByMonthWithCategoriesCallback;
+    private EmptyCursorCallback mEmptyCursorCallback;
 
-    public StatisticByMonthWithCategoriesLoaderCallbacks(Context context, StatisticByMonthWithCategoriesCallback callback) {
+    public StatisticByMonthWithCategoriesLoaderCallbacks(Context context, StatisticByMonthWithCategoriesCallback statisticByMonthWithCategoriesCallback, EmptyCursorCallback emptyCursorCallback) {
         mContext = context;
-        mCallback = callback;
+        mStatisticByMonthWithCategoriesCallback = statisticByMonthWithCategoriesCallback;
+        mEmptyCursorCallback = emptyCursorCallback;
     }
 
     @Override
@@ -128,7 +131,9 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                 BarData barData = new BarData(dataSets);
                 months.add(barData);
 
-            mCallback.getDataFromStatisticLoaderCallbacks(months);
+            mStatisticByMonthWithCategoriesCallback.getDataFromStatisticLoaderCallbacks(months);
+        }else {
+            mEmptyCursorCallback.showNoDataAnnouncement();
         }
     }
 

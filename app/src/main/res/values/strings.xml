@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MOT</string>
-    <string name="app_version">Beta version 1.0</string>
     <string name="navigation_menu_item_recent_payments_title">Recent payments</string>
     <string name="navigation_menu_item_categories_title">Categories</string>
     <string name="navigation_menu_item_statistic_title">Statistic</string>

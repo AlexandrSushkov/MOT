@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dev.nelson.mot.R;
 
-
 public class AboutFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = AboutFragment.class.getName();
