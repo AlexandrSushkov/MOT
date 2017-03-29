@@ -45,5 +45,22 @@
     <string name="pie_chart_center_text">Потрачено в этом месяце:\n</string>
     <string name="title_and_cost_should_not_be_empty">Поля "название" и "цена" не должны быть пустыми</string>
     <string name="too_much">Слишком много</string>
-    <string name="about_text">Здравствуйте! \nЭто обучающий проект, основная цель которого - показать знания и навыки приминяемые мной в разработке приложений под Android.</string>
+    <string name="about_text">Здравствуйте!\n\nЭто обучающий проект, основная цель которого - показать знания и навыки приминяемые мной в разработке приложений под Android.\n\n\nВ этом приложении используеться библиотека MPChart Android разработаеная Филлипом Джаходой, распространяется по лицензии Apache версия 2.0</string>
+    <string name="april">Апр</string>
+    <string name="august">Авг</string>
+    <string name="december">Дек</string>
+    <string name="february">Фев</string>
+    <string name="january">Янв</string>
+    <string name="july">Июнь</string>
+    <string name="june">Июль</string>
+    <string name="march">Март</string>
+    <string name="may">Май</string>
+    <string name="november">Ноя</string>
+    <string name="october">Дек</string>
+    <string name="september">Сен</string>
+    <string name="statistic_by_months_menu_title">По месяцам</string>
+    <string name="statistic_by_months_with_categories_menu_title">По месяцам с категориями</string>
+    <string name="statistic_by_years_menu_title">По годам</string>
+    <string name="statistic_categories_menu_title">По категориям</string>
+    <string name="statistic_current_month_menu_title">Текущий месяц</string>
 </resources>
