@@ -74,7 +74,6 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
             float xAxis = 0;
             int categoryIdKeeper = -1;
             String categoryNameKeeper = "";
-            long totalCost = 0;
 
             ArrayList<LineData> categories = new ArrayList<>();
             ArrayList<Entry> entries = null;
@@ -105,34 +104,30 @@ public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.Loade
                     categoryNameKeeper = categoryName;
                     entries = new ArrayList<>();
                     entries.add(new Entry(xAxis, (float) cost, DateUtils.months.get(month) + " " + year));
-                    totalCost += cost;
                     xAxis++;
                 } else {
                     if (categoryIdKeeper == categoryId) {
                         entries.add(new Entry(xAxis, (float) cost, DateUtils.months.get(month) + " " + year));
-                        totalCost += cost;
                         xAxis++;
                     } else {
                         //add entries into months list
-                        LineDataSet set = new LineDataSet(entries, categoryNameKeeper + " Total: " + StringUtils.formattedCost(totalCost));
+                        LineDataSet set = new LineDataSet(entries, categoryNameKeeper);
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(set);
                         LineData barData = new LineData(dataSets);
                         categories.add(barData);
-                        totalCost = 0;
                         xAxis = 0;
                         //create new entries
                         categoryIdKeeper = categoryId;
                         categoryNameKeeper = categoryName;
                         entries = new ArrayList<>();
                         entries.add(new Entry(xAxis, cost, DateUtils.months.get(month) + " " + year));
-                        totalCost += cost;
                         xAxis++;
                     }
                 }
                 data.moveToNext();
             }
-            LineDataSet set = new LineDataSet(entries, categoryNameKeeper + "   Total: " + StringUtils.formattedCost(totalCost));
+            LineDataSet set = new LineDataSet(entries, categoryNameKeeper);
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
             LineData barData = new LineData(dataSets);

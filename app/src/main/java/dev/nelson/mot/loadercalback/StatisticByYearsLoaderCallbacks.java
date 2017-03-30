@@ -70,7 +70,6 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
             //initial data
             float xAxis = 0;
             int yearKeeper = 0;
-            long totalCost = 0;
 
             ArrayList<BarData> years = new ArrayList<>();
             ArrayList<BarEntry> entries = null;
@@ -92,33 +91,29 @@ public class StatisticByYearsLoaderCallbacks implements LoaderManager.LoaderCall
                     yearKeeper = year;
                     entries = new ArrayList<>();
                     entries.add(new BarEntry(xAxis, (float) cost, categoryName));
-                    totalCost += cost;
                     xAxis++;
                 } else {
                     if (yearKeeper == year) {
                         entries.add(new BarEntry(xAxis, (float) cost, categoryName));
-                        totalCost += cost;
                         xAxis++;
                     } else {
                         //add entries into months list
-                        BarDataSet set = new BarDataSet(entries, year + " Total: " + StringUtils.formattedCost(totalCost));
+                        BarDataSet set = new BarDataSet(entries, String.valueOf(year));
                         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                         dataSets.add(set);
                         BarData barData = new BarData(dataSets);
                         years.add(barData);
-                        totalCost = 0;
                         xAxis = 0;
                         //create new entries
                         yearKeeper = year;
                         entries = new ArrayList<>();
                         entries.add(new BarEntry(xAxis, cost, categoryName));
-                        totalCost += cost;
                         xAxis++;
                     }
                 }
                 data.moveToNext();
             }
-            BarDataSet set = new BarDataSet(entries, year + "   Total: " + StringUtils.formattedCost(totalCost));
+            BarDataSet set = new BarDataSet(entries, String.valueOf(year));
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
             BarData barData = new BarData(dataSets);

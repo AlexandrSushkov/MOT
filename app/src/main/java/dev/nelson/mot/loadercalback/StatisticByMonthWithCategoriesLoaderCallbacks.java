@@ -73,7 +73,6 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
             float xAxis = 0;
             int yearKeeper = 0;
             String monthKeeper = "";
-            long totalCost = 0;
 
             ArrayList<BarData> months = new ArrayList<>();
             ArrayList<BarEntry> entries = null;
@@ -98,34 +97,30 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                     monthKeeper = month;
                     entries = new ArrayList<>();
                     entries.add(new BarEntry(xAxis, (float)cost, categoryName));
-                    totalCost += cost;
                     xAxis++;
                 }else {
                     if (yearKeeper == year && monthKeeper.equals(month)){
                         entries.add(new BarEntry(xAxis, (float)cost, categoryName));
-                        totalCost += cost;
                         xAxis++;
                     }else {
                         //add entries into months list
-                        BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year + " Total: " + StringUtils.formattedCost(totalCost));
+                        BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year);
                         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                         dataSets.add(set);
                         BarData barData = new BarData(dataSets);
                         months.add(barData);
-                        totalCost = 0;
                         xAxis = 0;
                         //create new entries
                         yearKeeper = year;
                         monthKeeper = month;
                         entries = new ArrayList<>();
                         entries.add(new BarEntry(xAxis, cost, categoryName));
-                        totalCost += cost;
                         xAxis++;
                     }
                 }
                 data.moveToNext();
             }
-                BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year + "   Total: " + StringUtils.formattedCost(totalCost));
+                BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year);
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set);
                 BarData barData = new BarData(dataSets);

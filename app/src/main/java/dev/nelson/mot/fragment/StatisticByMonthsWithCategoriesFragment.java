@@ -3,6 +3,7 @@ package dev.nelson.mot.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import dev.nelson.mot.callback.StatisticByMonthWithCategoriesCallback;
 import dev.nelson.mot.loadercalback.StatisticByMonthWithCategoriesLoaderCallbacks;
 
 public class StatisticByMonthsWithCategoriesFragment extends Fragment implements StatisticByMonthWithCategoriesCallback,
-        EmptyCursorCallback{
+        EmptyCursorCallback {
 
     public static final String FRAGMENT_TAG = StatisticByMonthsWithCategoriesFragment.class.getName();
 

@@ -15,10 +15,23 @@
     <dimen name="md_keylines">16dp</dimen>
 
     <!--text sizes-->
+    <dimen name="normal_text_size">12sp</dimen>
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="small_text_size">10sp</dimen>
     <dimen name="fragment_categories_recycler_view_item_text_size">15sp</dimen>
     <dimen name="payment_title_text_size">18sp</dimen>
     <dimen name="payment_date_text_size">10sp</dimen>
     <dimen name="currency_title_text_size">24sp</dimen>
+
+    <!--statistic list view item dimentions-->
+    <dimen name="item_margin_top">24dp</dimen>
+    <dimen name="item_margin_bottom">12dp</dimen>
+    <dimen name="card_view_margin">10dp</dimen>
+    <dimen name="item_text_margin_start">24dp</dimen>
+    <dimen name="cost_top_margin">2dp</dimen>
+    <dimen name="item_chart_height">200dp</dimen>
+
+
 
 
 </resources>
