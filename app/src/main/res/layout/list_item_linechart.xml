@@ -14,13 +14,15 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/item_margin_top"
             android:layout_marginBottom="@dimen/item_margin_bottom"
+            android:layout_marginStart="@dimen/item_vertical_margin"
+            android:layout_marginEnd="@dimen/item_vertical_margin"
             >
 
             <TextView
                 android:id="@+id/item_chart_title"
-                android:layout_marginStart="@dimen/item_text_margin_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_text_margin_start"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/title_text_size"/>
 

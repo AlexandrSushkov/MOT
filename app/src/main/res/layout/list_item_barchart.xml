@@ -17,6 +17,8 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/item_margin_top"
             android:layout_marginBottom="@dimen/item_margin_bottom"
+            android:layout_marginStart="@dimen/item_vertical_margin"
+            android:layout_marginEnd="@dimen/item_vertical_margin"
             >
 
             <TextView

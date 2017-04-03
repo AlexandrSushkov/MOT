@@ -104,7 +104,7 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                         xAxis++;
                     }else {
                         //add entries into months list
-                        BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year);
+                        BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + yearKeeper);
                         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                         dataSets.add(set);
                         BarData barData = new BarData(dataSets);
@@ -120,7 +120,7 @@ public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderMana
                 }
                 data.moveToNext();
             }
-                BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + year);
+                BarDataSet set = new BarDataSet(entries, DateUtils.months.get(monthKeeper) + " " + yearKeeper);
                 ArrayList<IBarDataSet> dataSets = new ArrayList<>();
                 dataSets.add(set);
                 BarData barData = new BarData(dataSets);

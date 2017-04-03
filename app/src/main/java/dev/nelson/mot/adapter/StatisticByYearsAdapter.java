@@ -33,10 +33,7 @@ import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
 
 public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements OnChartValueSelectedListener {
 
-
     private ViewHolder holder = null;
-    private TextView mTitle;
-    private TextView mTotalCost;
 
     public StatisticByYearsAdapter(Context context, List<BarData> objects) {
         super(context, 0, objects);
@@ -44,8 +41,9 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements On
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         BarData data = getItem(position);
+        assert data != null;
+        IBarDataSet dataSet = data.getDataSetByIndex(0);
 
         if (convertView == null) {
 
@@ -53,8 +51,8 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements On
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_barchart, null);
             holder.chart = (BarChart) convertView.findViewById(R.id.item_bar_chart);
-            mTitle = (TextView) convertView.findViewById(R.id.item_chart_title);
-            mTotalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
+            holder.title = (TextView) convertView.findViewById(R.id.item_chart_title);
+            holder.totalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
 
             convertView.setTag(holder);
 
@@ -62,9 +60,9 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements On
             holder = (ViewHolder) convertView.getTag();
         }
 
-        mTitle.setText(data.getDataSetByIndex(0).getLabel());
-        String total = getContext().getString(R.string.total) + getTotalCost(data);
-        mTotalCost.setText(total);
+        holder.title.setText(dataSet.getLabel());
+        String total = getContext().getString(R.string.total) + getTotalCost(dataSet);
+        holder.totalCost.setText(total);
 
         // apply styling
         holder.chart.setDrawBarShadow(false);
@@ -106,15 +104,13 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements On
         rightAxis.setLabelCount(5, false);
         rightAxis.setSpaceTop(15f);
 
-        data.setValueTextColor(Color.BLACK);
         // set data
+        data.setValueTextColor(Color.BLACK);
         BarDataSet set = (BarDataSet) data.getDataSets().get(0);
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         // yAxis value formatter
         set.setValueFormatter(new YAxisValueFormatter());
         set.setValueTextSize(11f);
-        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
 
         holder.chart.setData(data);
         holder.chart.setFitBars(true);
@@ -138,17 +134,17 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> implements On
 
     }
 
-    private String getTotalCost(BarData data){
+    private String getTotalCost(IBarDataSet dataSet){
         long totalCost = 0;
-        for (int j = 0; j < data.getEntryCount(); j++) {
-            totalCost += data.getDataSetByIndex(0).getEntryForIndex(j).getY();
+        for (int j = 0; j < dataSet.getEntryCount(); j++) {
+            totalCost += dataSet.getEntryForIndex(j).getY();
         }
         return StringUtils.formattedCost(totalCost);
     }
 
-
     private class ViewHolder {
-
         BarChart chart;
+        TextView title;
+        TextView totalCost;
     }
 }

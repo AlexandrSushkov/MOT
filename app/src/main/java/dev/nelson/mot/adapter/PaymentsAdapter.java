@@ -53,7 +53,12 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
         holder.mDate.setText(cursor.getString(cursor.getColumnIndex(PaymentsProvider.Columns.DATE)));
 
         if (mFlagStatus.equals(FLAG_RECENT_PAYMENTS)) {
-            holder.mCategory.setText(cursor.getString(cursor.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)));
+            String categoryName = cursor.getString(cursor.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
+            if(categoryName == null){
+               holder.mCategory.setText(mContext.getString(R.string.no_category_category_name));
+            }else {
+                holder.mCategory.setText(categoryName);
+            }
         }
 
         if (mFlagStatus.equals(FLAG_PAYMENTS_FOR_CATEGORY)) {

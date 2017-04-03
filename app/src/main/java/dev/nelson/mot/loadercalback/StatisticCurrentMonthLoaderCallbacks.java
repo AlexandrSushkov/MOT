@@ -67,7 +67,6 @@ public class StatisticCurrentMonthLoaderCallbacks implements LoaderManager.Loade
             String categoryName;
             long cost;
             long totalCost = 0;
-            Log.d("tag", "CURSOR DATA");
             while (!data.isAfterLast()) {
                 if(data.getString(data.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME)) == null){
                     categoryName = mContext.getString(R.string.no_category_category_name);

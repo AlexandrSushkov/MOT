@@ -43,6 +43,10 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
     LineChart mChart;
     @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
+    @BindView(R.id.statistic_by_months_title)
+    TextView mTitle;
+    @BindView(R.id.statistic_by_months_total_cost)
+    TextView mTotalCost;
 
     @Nullable
     @Override
@@ -73,13 +77,21 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
     }
 
     private void initChart(LineData data) {
+        String firstMonth = (String) data.getDataSetByIndex(0).getEntryForIndex(0).getData();
+        String lastMonth = (String) data.getDataSetByIndex(0).getEntryForIndex(data.getDataSetByIndex(0).getEntryCount() - 1).getData();
+        mTitle.setText(firstMonth + " - " + lastMonth);
+
+        //turn off legend
+        mChart.getLegend().setEnabled(false);
+        mTotalCost.setText(data.getDataSetByIndex(0).getLabel());
+
         mChart.setOnChartValueSelectedListener(this);
         //disable description
         mChart.getDescription().setEnabled(false);
         //set up gestures
         mChart.setScaleXEnabled(true);
-        mChart.setDragEnabled(false);
-        mChart.setScaleEnabled(false);
+//        mChart.setDragEnabled(false);
+//        mChart.setScaleEnabled(false);
         mChart.setPinchZoom(false);
 
         //set xAxis

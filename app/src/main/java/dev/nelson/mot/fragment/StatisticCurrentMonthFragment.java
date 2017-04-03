@@ -18,6 +18,7 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -65,7 +66,7 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
 //        Log.i("VAL SELECTED",
 //                "Value: " + e.getY() + ", index: " + h.getX()
 //                        + ", DataSet index: " + h.getDataSetIndex());
-        Toast.makeText(getContext(), e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), ((PieEntry) e).getLabel() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
     }
 
     @Override
