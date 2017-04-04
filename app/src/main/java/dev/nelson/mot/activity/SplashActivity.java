@@ -13,15 +13,15 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isCurrencySet()) {
+//        if (isCurrencySet()) {
 //          start main activity
-            startMainActivity();
-        } else {
+//            startMainActivity();
+//        } else {
 //          start choose currency activity
             Intent intent = new Intent(this, ChooseCurrencyActivity.class);
             startActivity(intent);
             finish();
-        }
+//        }
     }
 
     private void startMainActivity() {

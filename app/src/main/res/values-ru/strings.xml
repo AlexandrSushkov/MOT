@@ -62,4 +62,5 @@
     <string name="statistic_by_years_menu_title">По годам</string>
     <string name="statistic_categories_menu_title">По категориям</string>
     <string name="statistic_current_month_menu_title">Текущий месяц</string>
+    <string name="total">Всего:\u0020</string>
 </resources>
