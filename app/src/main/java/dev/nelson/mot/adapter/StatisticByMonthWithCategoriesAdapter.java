@@ -29,12 +29,13 @@ import java.util.List;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.StringUtils;
+import dev.nelson.mot.utils.marker.CustomMarker;
 import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.BarDataXAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
 
 
-public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData> implements OnChartValueSelectedListener{
+public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData> {
 
     private ViewHolder holder = null;
 
@@ -50,7 +51,6 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
         IBarDataSet dataSet = data.getDataSetByIndex(0);
 
         if (convertView == null) {
-
             holder = new ViewHolder();
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_barchart, null);
@@ -59,7 +59,6 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
             holder.totalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
 
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -71,8 +70,6 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
         // apply styling
         holder.chart.setDrawBarShadow(false);
         holder.chart.setDrawValueAboveBar(true);
-        //place for on click listener
-        holder.chart.setOnChartValueSelectedListener(this);
         //disable some gestures
         holder.chart.setPinchZoom(false);
         holder.chart.setDoubleTapToZoomEnabled(false);
@@ -115,43 +112,16 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
         set.setValueFormatter(new YAxisValueFormatter());
         set.setValueTextSize(11f);
 
-        holder.chart.setData(data);
-        holder.chart.setFitBars(true);
+        //set up marker view
+        CustomMarker mv = new CustomMarker(getContext());
+        mv.setChartView(holder.chart); // For bounds control
+        holder.chart.setMarker(mv); // Set the marker to the chart
 
-        // do not forget to refresh the chart
+        holder.chart.setFitBars(true);
+        holder.chart.setData(data);
         holder.chart.invalidate();
         holder.chart.animateY(1400);
-
         return convertView;
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-        // TODO: 3/28/17 rewrite with in chart labels
-//        RectF bounds = new RectF();
-//        holder.chart.getBarBounds((BarEntry) e, bounds);
-//        MPPointF position = holder.chart.getPosition(e, YAxis.AxisDependency.LEFT);
-
-//        Log.d("tag", "bounds ========" + bounds.toString());
-//        Log.d("tag", "position =========" + position.toString());
-//
-//        Log.d("tag",
-//                "low: ========== " + holder.chart.getLowestVisibleX() + ", high: ============= "
-//                        + holder.chart.getHighestVisibleX());
-
-        Log.d("tag","===========" + e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())));
-
-        Toast.makeText(getContext(), e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
-
-//        MPPointF.recycleInstance(position);
-    }
-
-    @Override
-    public void onNothingSelected() {
-
     }
 
     private String getTotalCost(IBarDataSet dataSet){

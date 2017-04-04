@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/item_text_margin_start"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/title_text_size"/>
+                android:textSize="@dimen/text_size_large"/>
 
             <TextView
                 android:id="@+id/item_chart_total_cost"
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/small_text_size"/>
+                android:textSize="@dimen/text_size_small"/>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/item_line_chart"

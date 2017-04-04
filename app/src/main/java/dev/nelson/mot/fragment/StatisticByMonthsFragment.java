@@ -8,19 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,13 +22,12 @@ import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByMonthsCallback;
 import dev.nelson.mot.loadercalback.StatisticByMonthsLoaderCallbacks;
-import dev.nelson.mot.utils.StringUtils;
-import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
+import dev.nelson.mot.utils.marker.CustomMarker;
 import dev.nelson.mot.utils.valueformatter.LineDataXAxisValueFormatter;
+import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
 
 public class StatisticByMonthsFragment extends Fragment implements StatisticByMonthsCallback,
-        OnChartValueSelectedListener,
         EmptyCursorCallback {
 
     public static final String FRAGMENT_TAG = StatisticByMonthsFragment.class.getName();
@@ -65,34 +58,31 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
     }
 
     @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-        Toast.makeText(getContext(), e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected() {
-
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mChart.setVisibility(View.GONE);
     }
 
     private void initChart(LineData data) {
-        String firstMonth = (String) data.getDataSetByIndex(0).getEntryForIndex(0).getData();
-        String lastMonth = (String) data.getDataSetByIndex(0).getEntryForIndex(data.getDataSetByIndex(0).getEntryCount() - 1).getData();
+        assert data != null;
+        ILineDataSet iLineDataSet = data.getDataSetByIndex(0);
+
+        String firstMonth = (String) iLineDataSet.getEntryForIndex(0).getData();
+        String lastMonth = (String) iLineDataSet.getEntryForIndex(iLineDataSet.getEntryCount() - 1).getData();
         mTitle.setText(firstMonth + " - " + lastMonth);
+        mTotalCost.setText(iLineDataSet.getLabel());
 
-        //turn off legend
+        //set up legend
         mChart.getLegend().setEnabled(false);
-        mTotalCost.setText(data.getDataSetByIndex(0).getLabel());
 
-        mChart.setOnChartValueSelectedListener(this);
-        //disable description
+        //set up description
         mChart.getDescription().setEnabled(false);
+
         //set up gestures
         mChart.setScaleXEnabled(true);
-//        mChart.setDragEnabled(false);
-//        mChart.setScaleEnabled(false);
+        mChart.setScaleYEnabled(false);
         mChart.setPinchZoom(false);
+        mChart.setDoubleTapToZoomEnabled(false);
 
         //set xAxis
         XAxis xAxis = mChart.getXAxis();
@@ -100,40 +90,35 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
         xAxis.setGranularity(1f);
         xAxis.setDrawGridLines(false);
         xAxis.setLabelCount(3);
-        xAxis.setValueFormatter(new LineDataXAxisValueFormatter(data.getDataSetByIndex(0)));
+        xAxis.setValueFormatter(new LineDataXAxisValueFormatter(iLineDataSet)); //xAxis value formatter
 
         //set leftyAxis
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setValueFormatter(new SideYAxisValueFormatter());
+        leftAxis.setValueFormatter(new SideYAxisValueFormatter());// side yAxis value formatter
         leftAxis.setLabelCount(5, false);
         leftAxis.setSpaceTop(15f);
 
         //set rightAxis
         YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setValueFormatter(new SideYAxisValueFormatter());
+        rightAxis.setValueFormatter(new SideYAxisValueFormatter());// side yAxis value formatter
         rightAxis.setLabelCount(5, false);
         rightAxis.setSpaceTop(15f);
 
-        data.setValueTextColor(Color.BLACK);
-        // set data
-        LineDataSet set = (LineDataSet) data.getDataSets().get(0);
-        // yAxis value formatter
+        //set data
+        LineDataSet set = (LineDataSet) iLineDataSet;
         set.setColor(R.color.colorPrimary);
         set.setCircleColor(R.color.colorPrimary);
-        set.setValueFormatter(new YAxisValueFormatter());
+        set.setValueTextColor(Color.BLACK);
+        set.setValueFormatter(new YAxisValueFormatter()); // yAxis value formatter
         set.setValueTextSize(11f);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set);
 
-        mChart.animateX(800);
+        //set up marker view
+        CustomMarker mv = new CustomMarker(getContext());
+        mv.setChartView(mChart); // For bounds control
+        mChart.setMarker(mv); // Set the marker to the chart
 
         mChart.setData(data);
-
-    }
-
-    @Override
-    public void showNoDataAnnouncement() {
-        mNoDataAnnouncement.setVisibility(View.VISIBLE);
-        mChart.setVisibility(View.GONE);
+        mChart.invalidate();
+        mChart.animateX(1400);
     }
 }

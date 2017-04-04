@@ -63,9 +63,7 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         if (e == null) {
             return;
         }
-//        Log.i("VAL SELECTED",
-//                "Value: " + e.getY() + ", index: " + h.getX()
-//                        + ", DataSet index: " + h.getDataSetIndex());
+//        Log.i("VAL SELECTED", "Value: " + e.getY() + ", index: " + h.getX() + ", DataSet index: " + h.getDataSetIndex());
         Toast.makeText(getContext(), ((PieEntry) e).getLabel() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
     }
 
@@ -74,22 +72,20 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         Log.i("PieChart", "nothing selected");
     }
 
+    @Override
+    public void showNoDataAnnouncement() {
+        mNoDataAnnouncement.setVisibility(View.VISIBLE);
+        mChart.setVisibility(View.GONE);
+    }
+
     private void initPieChart(PieData pieData) {
-
         String totalCost = pieData.getDataSet().getLabel();
-
-        mChart.setUsePercentValues(true);
-        mChart.setDragDecelerationFrictionCoef(0.95f);
-        mChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
-//        mChart.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        mChart.getDescription().setEnabled(false);
 
         //setup inner circle
         //main circle
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleRadius(58f);
         mChart.setHoleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-
         //transparent circle
         mChart.setTransparentCircleRadius(61f);
         mChart.setTransparentCircleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
@@ -115,17 +111,14 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         //legend turned off
         mChart.getLegend().setEnabled(false);
 
-        //set Data
+        //set up dataSet
         PieDataSet dataSet = (PieDataSet) pieData.getDataSet();
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-
         dataSet.setValueLinePart1OffsetPercentage(80.f);
         dataSet.setValueLinePart1Length(0.2f);
         dataSet.setValueLinePart2Length(0.4f);
-        
         // position of category names and percentage value
         dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 //        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
@@ -134,13 +127,17 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new PercentFormatter());
         data.setValueTextSize(11f);
-
         data.setValueTextColor(Color.BLACK);
-        mChart.setData(data);
 
+        mChart.setUsePercentValues(true);
+        mChart.setDragDecelerationFrictionCoef(0.95f);
+        mChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
+//        mChart.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        mChart.getDescription().setEnabled(false);
         // undo all highlights
         mChart.highlightValues(null);
 
+        mChart.setData(data);
         mChart.animateXY(1400, 1400);
         mChart.invalidate();
     }
@@ -149,11 +146,5 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
         SpannableString s = new SpannableString(getString(R.string.pie_chart_center_text) + totalCost);
         s.setSpan(new RelativeSizeSpan(0.6f), 0, getString(R.string.pie_chart_center_text).length(), 0);
         return s;
-    }
-
-    @Override
-    public void showNoDataAnnouncement() {
-        mNoDataAnnouncement.setVisibility(View.VISIBLE);
-        mChart.setVisibility(View.GONE);
     }
 }

@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.dialog.CategoryDialog;
+import dev.nelson.mot.dialog.TestDialog;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.RecentPaymentsFragment;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mFragmentManager = getSupportFragmentManager();
         setSupportActionBar(mToolbar);
         drawerToggle = setUpDrawerToggle();
         mDrawerLayout.addDrawerListener(drawerToggle);
@@ -59,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.fragment_categories_menu_item_add:
-              CategoryDialog.newInstance(CategoryDialog.ACTION_ADD).show(getSupportFragmentManager(), "Category option dialog");
+              CategoryDialog
+                      .newInstance(CategoryDialog.ACTION_ADD)
+                      .show(getSupportFragmentManager(), "Category option dialog");
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -96,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mFragmentManager = getSupportFragmentManager();
         mFragmentManager.beginTransaction().replace(R.id.fragment_container, mContentFragment, tag).commit();
 
         // Highlight the selected item has been done by NavigationView

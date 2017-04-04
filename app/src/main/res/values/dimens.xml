@@ -15,9 +15,9 @@
     <dimen name="md_keylines">16dp</dimen>
 
     <!--text sizes-->
-    <dimen name="normal_text_size">12sp</dimen>
-    <dimen name="title_text_size">16sp</dimen>
-    <dimen name="small_text_size">10sp</dimen>
+    <dimen name="text_size_large">16sp</dimen>
+    <dimen name="text_size_normal">12sp</dimen>
+    <dimen name="text_size_small">10sp</dimen>
     <dimen name="fragment_categories_recycler_view_item_text_size">15sp</dimen>
     <dimen name="payment_title_text_size">18sp</dimen>
     <dimen name="payment_date_text_size">10sp</dimen>

@@ -27,12 +27,13 @@ import java.util.List;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.StringUtils;
+import dev.nelson.mot.utils.marker.CustomMarker;
 import dev.nelson.mot.utils.valueformatter.LineDataXAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
 
 
-public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> implements OnChartValueSelectedListener {
+public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> {
 
     private ViewHolder holder = null;
 
@@ -48,7 +49,6 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> impleme
         ILineDataSet dataSet = data.getDataSetByIndex(0);
 
         if (convertView == null) {
-
             holder = new ViewHolder();
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_linechart, null);
@@ -57,7 +57,6 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> impleme
             holder.totalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
 
             convertView.setTag(holder);
-
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -66,19 +65,17 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> impleme
         String total = getContext().getString(R.string.total) + getTotalCost(dataSet);
         holder.totalCost.setText(total);
 
-        // apply styling
-        //place for on click listener
-        holder.chart.setOnChartValueSelectedListener(this);
-        //disable some gestures
-        holder.chart.setPinchZoom(false);
-        holder.chart.setDoubleTapToZoomEnabled(false);
-        holder.chart.setScaleYEnabled(false);
+        //set up legend
+        holder.chart.getLegend().setEnabled(false);
 
-        holder.chart.setDrawGridBackground(false);
+        //set up description
         holder.chart.getDescription().setEnabled(false);
 
-        //disable legend
-        holder.chart.getLegend().setEnabled(false);
+        //set up gestures
+        holder.chart.setScaleXEnabled(true);
+        holder.chart.setScaleYEnabled(false);
+        holder.chart.setPinchZoom(false);
+        holder.chart.setDoubleTapToZoomEnabled(false);
 
         //set xAxis
         XAxis xAxis = holder.chart.getXAxis();
@@ -102,32 +99,23 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> impleme
         rightAxis.setSpaceTop(15f);
 
         // set data
-        data.setValueTextColor(Color.BLACK);
         LineDataSet set = (LineDataSet) dataSet;
+        set.setValueTextColor(Color.BLACK);
         set.setColors(R.color.colorPrimary);
         set.setCircleColor(R.color.colorPrimary);
-        // yAxis value formatter
-        set.setValueFormatter(new YAxisValueFormatter());
+        set.setValueFormatter(new YAxisValueFormatter());// yAxis value formatter
         set.setValueTextSize(11f);
 
-        holder.chart.setData(data);
-        // do not forget to refresh the chart
+        //set up marker view
+        CustomMarker mv = new CustomMarker(getContext());
+        mv.setChartView(holder.chart); // For bounds control
+        holder.chart.setMarker(mv); // Set the marker to the chart
+
         holder.chart.invalidate();
         holder.chart.animateY(1400);
-
+        holder.chart.setDrawGridBackground(false);
+        holder.chart.setData(data);
         return convertView;
-    }
-
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        if (e == null)
-            return;
-        Toast.makeText(getContext(), e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected() {
-
     }
 
     private String getTotalCost(ILineDataSet dataSet){
