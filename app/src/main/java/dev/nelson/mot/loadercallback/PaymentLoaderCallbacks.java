@@ -1,4 +1,4 @@
-package dev.nelson.mot.loadercalback;
+package dev.nelson.mot.loadercallback;
 
 import android.content.Context;
 import android.database.Cursor;

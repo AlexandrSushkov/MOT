@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByMonthsCallback;
-import dev.nelson.mot.loadercalback.StatisticByMonthsLoaderCallbacks;
+import dev.nelson.mot.loadercallback.StatisticByMonthsLoaderCallbacks;
 import dev.nelson.mot.utils.marker.CustomMarker;
 import dev.nelson.mot.utils.valueformatter.LineDataXAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;

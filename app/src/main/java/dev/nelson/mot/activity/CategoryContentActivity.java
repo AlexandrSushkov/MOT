@@ -18,7 +18,7 @@ import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.loadercalback.PaymentsForCategoryLoaderCallbacks;
+import dev.nelson.mot.loadercallback.PaymentsForCategoryLoaderCallbacks;
 
 public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback{
 

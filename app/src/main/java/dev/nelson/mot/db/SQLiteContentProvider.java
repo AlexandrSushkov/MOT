@@ -22,8 +22,8 @@ import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.MultipleTablesProvider;
 import dev.nelson.mot.db.model.SQLiteTableProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
-import dev.nelson.mot.exeption.NoSuchTableException;
-import dev.nelson.mot.exeption.UnknownUriException;
+import dev.nelson.mot.exception.NoSuchTableException;
+import dev.nelson.mot.exception.UnknownUriException;
 
 public class SQLiteContentProvider extends ContentProvider {
 

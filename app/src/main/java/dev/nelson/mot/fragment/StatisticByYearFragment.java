@@ -16,12 +16,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-import dev.nelson.mot.adapter.StatisticByMonthWithCategoriesAdapter;
 import dev.nelson.mot.adapter.StatisticByYearsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByYearsCallback;
-import dev.nelson.mot.loadercalback.StatisticByMonthWithCategoriesLoaderCallbacks;
-import dev.nelson.mot.loadercalback.StatisticByYearsLoaderCallbacks;
+import dev.nelson.mot.loadercallback.StatisticByYearsLoaderCallbacks;
 
 
 public class StatisticByYearFragment extends Fragment implements StatisticByYearsCallback,

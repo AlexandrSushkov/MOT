@@ -13,11 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,8 +24,7 @@ import dev.nelson.mot.R;
 import dev.nelson.mot.activity.CategoryContentActivity;
 import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.dialog.CategoryDialog;
-import dev.nelson.mot.loadercalback.CategoriesLoaderCallbacks;
+import dev.nelson.mot.loadercallback.CategoriesLoaderCallbacks;
 
 
 public class CategoriesFragment extends Fragment{

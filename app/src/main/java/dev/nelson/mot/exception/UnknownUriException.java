@@ -1,4 +1,4 @@
-package dev.nelson.mot.exeption;
+package dev.nelson.mot.exception;
 
 import android.database.SQLException;
 

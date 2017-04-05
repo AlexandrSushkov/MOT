@@ -17,11 +17,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.StatisticByCategoriesAdapter;
-import dev.nelson.mot.adapter.StatisticByMonthWithCategoriesAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByCategoriesCallback;
-import dev.nelson.mot.loadercalback.StatisticByCategoriesLoaderCallbacks;
-import dev.nelson.mot.loadercalback.StatisticByMonthWithCategoriesLoaderCallbacks;
+import dev.nelson.mot.loadercallback.StatisticByCategoriesLoaderCallbacks;
 
 
 public class StatisticByCategoriesFragment extends Fragment implements StatisticByCategoriesCallback,

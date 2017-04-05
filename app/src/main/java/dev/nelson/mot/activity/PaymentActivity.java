@@ -27,7 +27,7 @@ import dev.nelson.mot.callback.SetDataFromPaymentLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.callback.DatabaseChangesCallback;
-import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
+import dev.nelson.mot.loadercallback.PaymentLoaderCallbacks;
 import dev.nelson.mot.observer.DatabaseChangesObserver;
 import dev.nelson.mot.payment.Payment;
 import dev.nelson.mot.service.DataOperationService;

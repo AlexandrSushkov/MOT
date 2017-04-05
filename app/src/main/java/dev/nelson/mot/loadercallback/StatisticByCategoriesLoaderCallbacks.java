@@ -1,12 +1,10 @@
-package dev.nelson.mot.loadercalback;
+package dev.nelson.mot.loadercallback;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -23,7 +21,6 @@ import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
-import dev.nelson.mot.utils.StringUtils;
 
 public class StatisticByCategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 

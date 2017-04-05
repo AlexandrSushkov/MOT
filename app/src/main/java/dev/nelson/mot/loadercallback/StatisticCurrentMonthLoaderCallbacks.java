@@ -1,11 +1,10 @@
-package dev.nelson.mot.loadercalback;
+package dev.nelson.mot.loadercallback;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;

@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
-import dev.nelson.mot.loadercalback.StatisticCurrentMonthLoaderCallbacks;
+import dev.nelson.mot.loadercallback.StatisticCurrentMonthLoaderCallbacks;
 import dev.nelson.mot.utils.StringUtils;
 
 public class StatisticCurrentMonthFragment extends Fragment implements StatisticCurrentMonthCallback,

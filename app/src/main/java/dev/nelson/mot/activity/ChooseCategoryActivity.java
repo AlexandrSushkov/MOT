@@ -22,7 +22,7 @@ import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.callback.SetDataFromCategoriesLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.dialog.CategoryDialog;
-import dev.nelson.mot.loadercalback.CategoriesLoaderCallbacks;
+import dev.nelson.mot.loadercallback.CategoriesLoaderCallbacks;
 
 public class ChooseCategoryActivity extends AppCompatActivity implements SetDataFromCategoriesLoaderCallbacks {
 

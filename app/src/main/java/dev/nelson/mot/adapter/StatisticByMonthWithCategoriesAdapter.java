@@ -1,44 +1,33 @@
 package dev.nelson.mot.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.StringUtils;
 import dev.nelson.mot.utils.marker.CustomMarker;
-import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.BarDataXAxisValueFormatter;
+import dev.nelson.mot.utils.valueformatter.SideYAxisValueFormatter;
 import dev.nelson.mot.utils.valueformatter.YAxisValueFormatter;
-
 
 public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData> {
 
     private ViewHolder holder = null;
-
 
     public StatisticByMonthWithCategoriesAdapter(Context context, List<BarData> objects) {
         super(context, 0, objects);
@@ -122,6 +111,11 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
         holder.chart.invalidate();
         holder.chart.animateY(1400);
         return convertView;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
     }
 
     private String getTotalCost(IBarDataSet dataSet){

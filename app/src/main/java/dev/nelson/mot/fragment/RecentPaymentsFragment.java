@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -25,8 +23,8 @@ import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.DatabaseChangesCallback;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.db.model.PaymentsProvider;
-import dev.nelson.mot.loadercalback.PaymentLoaderCallbacks;
-import dev.nelson.mot.loadercalback.RecentPaymentsLoadersCallbacks;
+import dev.nelson.mot.loadercallback.PaymentLoaderCallbacks;
+import dev.nelson.mot.loadercallback.RecentPaymentsLoadersCallbacks;
 import dev.nelson.mot.observer.DatabaseChangesObserver;
 
 public class RecentPaymentsFragment extends android.support.v4.app.Fragment implements DatabaseChangesCallback, EmptyCursorCallback {

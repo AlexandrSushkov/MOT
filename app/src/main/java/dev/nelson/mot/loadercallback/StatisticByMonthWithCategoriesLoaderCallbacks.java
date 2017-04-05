@@ -1,4 +1,4 @@
-package dev.nelson.mot.loadercalback;
+package dev.nelson.mot.loadercallback;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,7 +21,6 @@ import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.loader.RawQueryCursorLoader;
 import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.DateUtils;
-import dev.nelson.mot.utils.StringUtils;
 
 public class StatisticByMonthWithCategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 

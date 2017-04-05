@@ -112,6 +112,11 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> {
         return convertView;
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
     private String getTotalCost(IBarDataSet dataSet){
         long totalCost = 0;
         for (int j = 0; j < dataSet.getEntryCount(); j++) {

@@ -118,6 +118,11 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> {
         return convertView;
     }
 
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
     private String getTotalCost(ILineDataSet dataSet){
         long totalCost = 0;
         for (int j = 0; j < dataSet.getEntryCount(); j++) {
