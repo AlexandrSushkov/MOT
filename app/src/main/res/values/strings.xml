@@ -9,7 +9,7 @@
     <string name="drawer_close" translatable="false">Close navigation drawer</string>
 
     <!--fragment about-->
-    <string name="about_text">"\nHello!\n\nThis is educational project, the main goal of which is to show my knowledge, skills and techniques in programming android applications.\n\n\nIn this application uses MPChart Android library developed by Phillip Jahoda, renders under license Apache version 2.0"</string>
+    <string name="about_text">"\nHello!\n\nThis is educational project, the main goal of which is to show my knowledge, skills and techniques in programming android applications.\n\n\nThis application uses MPChart Android library developed by Phillip Jahoda. Distributed under license Apache version 2.0"</string>
     <string name="feedback_text">Contacts for feedback and propositions: \nmotappsup@gmail.com</string>
 
     <!--build in categories section-->
