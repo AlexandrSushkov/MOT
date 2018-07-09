@@ -1,23 +1,10 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
- @AlexandrSushkov
- Watch 1,944
-  Star 46,137
-  Fork 19,066 github/gitignore
- Code  Pull requests 112  Projects 0  Pulse  Graphs
-Branch: master Find file Copy pathgitignore/Android.gitignore
-e67fbf8  22 days ago
-@msdx msdx Add freeline rules.
-30 contributors @arcresu @tral @friederbluemle @callingshotgun @AdrianVovk @Zarkopafilis @whoshuu @evorion @szpssky @SamWhited @exarus @mquigley @kevinmost @vitorprado @jshou @HIPERCUBE @jschmid @PR3x @izuzak @FionaHagen @linterpreteur @baudm @mrtazz @shiftkey @gbaron @allonhadaya and others
-RawBlameHistory     
-55 lines (40 sloc)  740 Bytes
+# Created by https://www.gitignore.io/api/androidstudio
+
+### AndroidStudio ###
+# Covers files to be ignored for android development using Android Studio.
+
 # Built application files
 *.apk
-*.ap_
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -25,14 +12,12 @@ RawBlameHistory
 # Java class files
 *.class
 
-# Generated files
-bin/
-gen/
-out/
-
 # Gradle files
-.gradle/
+.gradle
 build/
+
+# Signing files
+.signing/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -43,31 +28,51 @@ proguard/
 # Log Files
 *.log
 
-# Android Studio Navigation editor temp files
-.navigation/
-
-# Android Studio captures folder
-captures/
-
-# Intellij
-*.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/libraries
-
-# Keystore files
-*.jks
+# Android Patch
+gen-external-apklibs
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# IntelliJ IDEA
+*.iml
+*.iws
+/out/
 
-#Freeline
-freeline.py
-freeline/
-freeline_project_description.json
-Contact GitHub API Training Shop Blog About
-© 2017 GitHub, Inc. Terms Privacy Security Status Help
+# User-specific configurations
+/.idea/
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.war
+*.ear
+
+# virtual machine crash logs (Reference: http://www.java.com/en/download/help/error_hotspot.xml)
+hs_err_pid*
+
+## Plugin-specific files:
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Mongo Explorer plugin
+.idea/mongoSettings.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
