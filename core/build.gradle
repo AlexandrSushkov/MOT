@@ -4,16 +4,18 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    def config = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion             config["compile_sdk"]
+    buildToolsVersion             config["build_tools"]
 
     defaultConfig {
-        applicationId "dev.nelson.mot"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        applicationId             config["application_id"]
+        minSdkVersion             config["min_sdk"]
+        targetSdkVersion          config["target_sdk"]
+        versionCode               config["version_code"]
+        versionName               config["version_name"]
+        testInstrumentationRunner config["test_runner"]
     }
 
     buildTypes {
