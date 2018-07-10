@@ -1,0 +1,90 @@
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        google()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
+    }
+}
+
+ext {
+    //Android SDK
+    buildToolsVersion = "27.0.3"
+    compileSdkVersion = 26
+    minSdkVersion = 26
+    targetSdkVersion = 28
+
+    //Kotlin
+    kotlinLanguage = '1.2.50'
+    javaxAnnotation = '1.0'
+    javaxInject = '1'
+
+    //1. android support libs
+    //2. architecture and DI libs
+    //3. rx libs
+    //4. network libs
+    //5. debug libs
+    //5. other libs
+    //6. tests libs
+
+    //Libraries
+    //support
+    supportLibraryVersion = '27.0.2'
+    constraintLayoutVersion = '1.1.0-beta5'
+    lifecycleVersion = '1.1.0'
+
+    //architecture
+    archComponents = '1.0.0'
+
+    //DI
+    daggerVersion = '2.11'
+
+    //rx
+    rxKotlin = '2.1.0'
+    rxAndroid = '2.0.1'
+    rxRelay = '2.0.0'
+    rxBindingVersion = '2.0.0'
+    rxDataBinding = '1.1.1'
+
+    //debug
+    stetho = '1.5.0'
+    timber = '4.6.1'
+
+    coreDependencies = [
+            //Kotlin
+            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinLanguage",
+            kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlinLanguage",
+
+            //support
+            cardViewV7              : "com.android.support:cardview-v7:$supportLibraryVersion",
+            recyclerViewV7          : "com.android.support:recyclerview-v7:$supportLibraryVersion",
+            supportLibV4            : "com.android.support:support-v4:$supportLibraryVersion",
+            supportDesign           : "com.android.support:design:$supportLibraryVersion",
+            customTabs              : "com.android.support:customtabs:$supportLibraryVersion",
+            constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayoutVersion",
+
+            //architecture
+            archComponentsRuntime   : "android.arch.lifecycle:runtime:$archComponents",
+            archComponentsExtensions: "android.arch.lifecycle:extensions:$archComponents",
+            archComponentsCompiler  : "android.arch.lifecycle:compiler:$archComponents",
+
+            //DI
+            dagger                  : "com.google.dagger:dagger:$daggerVersion",
+            daggerAndroid           : "com.google.dagger:dagger-android:$daggerVersion",
+            daggerAndroidSupport    : "com.google.dagger:dagger-android-support:$daggerVersion",
+            daggerCompiler          : "com.google.dagger:dagger-compiler:$daggerVersion",
+            daggerAndroidProcessor  : "com.google.dagger:dagger-android-processor:$daggerVersion",
+
+            //rx
+            rxKotlin                : "io.reactivex.rxjava2:rxkotlin:$rxKotlin",
+            rxAndroid               : "io.reactivex.rxjava2:rxandroid:$rxAndroid",
+            rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay",
+    ]
+
+    developmentDependencies = [
+            //debug
+            stetho                  : "com.facebook.stetho:stetho:$stetho",
+            timber                  : "com.jakewharton.timber:timber:$timber"
+    ]
+}
