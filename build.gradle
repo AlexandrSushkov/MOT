@@ -16,15 +16,18 @@ buildscript {
     ext.version_code = 9
     ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
 
+    ext.google_services = '3.1.1'
+
     repositories {
         jcenter()
         google()
     }
+    
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.gms:google-services:$google_services"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'com.google.gms:google-services:3.1.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

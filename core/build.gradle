@@ -36,9 +36,19 @@ android {
 
     dataBinding.enabled true
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
 }
 
 dependencies {
+    def coreDependencies = rootProject.ext.core
+    def developmentDependencies = rootProject.ext.development
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin

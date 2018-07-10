@@ -28,7 +28,7 @@ ext {
     stetho_version = '1.5.0'
     timber_version = '4.6.1'
 
-    coreDependencies = [
+    core = [
             //Kotlin
             kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version",
             kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
@@ -59,7 +59,7 @@ ext {
             rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version",
     ]
 
-    developmentDependencies = [
+    development = [
             //debug
             stetho                  : "com.facebook.stetho:stetho:$stetho_version",
             timber                  : "com.jakewharton.timber:timber:$timber_version"
