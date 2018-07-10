@@ -83,6 +83,10 @@ dependencies {
     implementation developmentDependencies.stetho
     implementation developmentDependencies.timber
 
+    implementation coreDependencies.room
+    kapt coreDependencies.roomAnnotation
+    implementation coreDependencies.roomRxJava
+
     //test
     testImplementation'junit:junit:4.12'
 

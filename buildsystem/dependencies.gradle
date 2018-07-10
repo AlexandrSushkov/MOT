@@ -57,6 +57,10 @@ ext {
             rxKotlin                : "io.reactivex.rxjava2:rxkotlin:$rxKotlin_version",
             rxAndroid               : "io.reactivex.rxjava2:rxandroid:$rxAndroid_version",
             rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version",
+
+            room                    : "android.arch.persistence.room:runtime:$archComponents_version",
+            roomAnnotation          : "android.arch.persistence.room:compiler:$archComponents_version",
+            roomRxJava              : "android.arch.persistence.room:rxjava2:$archComponents_version"
     ]
 
     development = [
