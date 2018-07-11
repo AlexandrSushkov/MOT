@@ -17,7 +17,7 @@ ext {
     archComponents_version = '1.0.0'
 
     //DI
-    dagger_version = '2.11'
+    dagger_version = '2.16'
 
     //rx
     rxKotlin_version = '2.1.0'
@@ -30,7 +30,7 @@ ext {
 
     core = [
             //Kotlin
-            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version",
+            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
             kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
 
             //support
