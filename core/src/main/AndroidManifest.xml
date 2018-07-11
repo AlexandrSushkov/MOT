@@ -41,6 +41,9 @@
             android:name=".activity.ChooseCurrencyActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".presentations.screen.RoomTestActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
 
         <provider
             android:name=".db.SQLiteContentProvider"

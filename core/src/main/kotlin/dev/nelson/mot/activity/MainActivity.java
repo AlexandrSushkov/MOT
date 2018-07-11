@@ -16,13 +16,14 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.dialog.CategoryDialog;
-import dev.nelson.mot.dialog.TestDialog;
 import dev.nelson.mot.fragment.AboutFragment;
 import dev.nelson.mot.fragment.CategoriesFragment;
 import dev.nelson.mot.fragment.RecentPaymentsFragment;
 import dev.nelson.mot.fragment.StatisticFragment;
+import dev.nelson.mot.presentations.screen.RoomTestActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.button_2)
+    void onClickButton2(){
+//        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+        startActivity(RoomTestActivity.Companion.getIntent(this));
     }
 
     public void selectDrawerItem(MenuItem menuItem){
