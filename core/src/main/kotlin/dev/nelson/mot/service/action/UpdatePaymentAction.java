@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import dev.nelson.mot.db.model.PaymentsProvider;
-import dev.nelson.mot.utils.MyApplication;
+import dev.nelson.mot.MotApplication;
 import dev.nelson.mot.utils.StringUtils;
 
 
@@ -21,6 +21,6 @@ public class UpdatePaymentAction implements DataOperationAction {
         }
         cv.put(PaymentsProvider.Columns.COST, bundle.getLong(PaymentsProvider.Columns.COST));
         cv.put(PaymentsProvider.Columns.SUMMARY, StringUtils.capitalizeFirstCharacter(bundle.getString(PaymentsProvider.Columns.SUMMARY)));
-        MyApplication.getContext().getContentResolver().update(uri, cv, null, null);
+        MotApplication.Companion.getContext().getContentResolver().update(uri, cv, null, null);
     }
 }

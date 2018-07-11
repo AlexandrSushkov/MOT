@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.os.Bundle;
 
 import dev.nelson.mot.db.model.PaymentsProvider;
-import dev.nelson.mot.utils.MyApplication;
+import dev.nelson.mot.MotApplication;
 import dev.nelson.mot.utils.StringUtils;
 
 class InsertPaymentAction implements DataOperationAction{
@@ -22,6 +22,6 @@ class InsertPaymentAction implements DataOperationAction{
             cv.put(PaymentsProvider.Columns.CATEGORY_ID, categoryId);
         }
         cv.put(PaymentsProvider.Columns.COST, cost);
-        MyApplication.getContext().getContentResolver().insert(PaymentsProvider.URI, cv);
+        MotApplication.Companion.getContext().getContentResolver().insert(PaymentsProvider.URI, cv);
     }
 }
