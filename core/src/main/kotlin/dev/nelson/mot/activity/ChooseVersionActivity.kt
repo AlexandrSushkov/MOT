@@ -1,0 +1,21 @@
+package dev.nelson.mot.activity
+
+import android.content.Intent
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import android.widget.Button
+import dev.nelson.mot.R
+import dev.nelson.mot.presentations.screen.RoomTestActivity
+
+class ChooseVersionActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_choose_version)
+        val btnVersion1: Button = findViewById(R.id.button_version_1)
+        val btnVersion2: Button = findViewById(R.id.button_version_2)
+
+        btnVersion1.setOnClickListener { startActivity(Intent(this, MainActivity::class.java)) }
+        btnVersion2.setOnClickListener { startActivity(Intent(this, RoomTestActivity::class.java)) }
+    }
+}

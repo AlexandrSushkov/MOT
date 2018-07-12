@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import dev.nelson.mot.utils.Constants;
 
 public class SplashActivity extends AppCompatActivity {
@@ -17,7 +15,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (isCurrencySet()) {
 //          start main activity
-            startMainActivity();
+            startChooseVersionActivity();
         } else {
 //          start choose currency activity
             Intent intent = new Intent(this, ChooseCurrencyActivity.class);
@@ -26,9 +24,8 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void startMainActivity() {
-        Intent mainActivityIntent = new Intent(this, MainActivity.class);
-        startActivity(mainActivityIntent);
+    private void startChooseVersionActivity() {
+        startActivity(new Intent(this, ChooseVersionActivity.class));
         finish();
     }
 
