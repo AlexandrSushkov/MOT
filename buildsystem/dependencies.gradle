@@ -10,7 +10,7 @@ allprojects {
 
 ext {
     //android support libs
-    supportLibrary_version = '27.0.2'
+    supportLibrary_version = '27.1.1'
     constraintLayout_version = '1.1.0-beta5'
 
     //architecture

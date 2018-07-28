@@ -6,15 +6,15 @@ apply plugin: 'kotlin-kapt'
 android {
     def config = rootProject.extensions.getByName("ext")
 
-    compileSdkVersion             config["compile_sdk"]
-    buildToolsVersion             config["build_tools"]
+    compileSdkVersion config["compile_sdk"]
+    buildToolsVersion config["build_tools"]
 
     defaultConfig {
-        applicationId             config["application_id"]
-        minSdkVersion             config["min_sdk"]
-        targetSdkVersion          config["target_sdk"]
-        versionCode               config["version_code"]
-        versionName               config["version_name"]
+        applicationId config["application_id"]
+        minSdkVersion config["min_sdk"]
+        targetSdkVersion config["target_sdk"]
+        versionCode config["version_code"]
+        versionName config["version_name"]
         testInstrumentationRunner config["test_runner"]
     }
 
@@ -23,7 +23,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            dependencies{
+            dependencies {
                 implementation 'com.google.firebase:firebase-crash:16.0.1'
             }
         }
@@ -65,6 +65,9 @@ dependencies {
     //architecture
     implementation coreDependencies.archComponentsRuntime
     implementation coreDependencies.archComponentsExtensions
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     kapt coreDependencies.archComponentsCompiler
 
     //DI
@@ -88,7 +91,7 @@ dependencies {
     implementation coreDependencies.roomRxJava
 
     //test
-    testImplementation'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
     //other
     implementation 'com.jakewharton:butterknife:8.8.1'
