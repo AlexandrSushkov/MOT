@@ -8,12 +8,12 @@ import dev.nelson.mot.injection.PerActivity
 import dev.nelson.mot.injection.ViewModelKey
 
 @Module
-abstract class RoomTestModule {
+abstract class DataBaseTransferModule {
 
     @Binds
     @IntoMap
     @PerActivity
-    @ViewModelKey(RoomTestViewModel::class)
-    abstract fun bindsRoomTestViewModel(roomTestViewModel: RoomTestViewModel): ViewModel
+    @ViewModelKey(DataBaseTransferViewModel::class)
+    abstract fun bindsRoomTestViewModel(dataBaseTransferViewModel: DataBaseTransferViewModel): ViewModel
 
 }

@@ -6,8 +6,8 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import dev.nelson.mot.injection.PerActivity
 import dev.nelson.mot.presentations.base.ViewModelFactory
-import dev.nelson.mot.presentations.screen.RoomTestActivity
-import dev.nelson.mot.presentations.screen.RoomTestModule
+import dev.nelson.mot.presentations.screen.DataBaseTransferActivity
+import dev.nelson.mot.presentations.screen.DataBaseTransferModule
 
 @Module
 abstract class UiModule {
@@ -16,6 +16,6 @@ abstract class UiModule {
     abstract fun provideViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 
     @PerActivity
-    @ContributesAndroidInjector(modules = [(RoomTestModule::class)])
-    abstract fun contributeRoomTestActivity(): RoomTestActivity
+    @ContributesAndroidInjector(modules = [(DataBaseTransferModule::class)])
+    abstract fun contributeRoomTestActivity(): DataBaseTransferActivity
 }

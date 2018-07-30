@@ -5,7 +5,7 @@ import dev.nelson.mot.interactor.RoomTestInteractor
 import dev.nelson.mot.presentations.base.BaseViewModel
 import javax.inject.Inject
 
-class RoomTestViewModel @Inject constructor(roomTestInteractor: RoomTestInteractor): BaseViewModel() {
+class DataBaseTransferViewModel @Inject constructor(roomTestInteractor: RoomTestInteractor): BaseViewModel() {
 
     val isShowText = ObservableBoolean()
 
