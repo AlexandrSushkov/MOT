@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import dev.nelson.mot.presentations.home.HomeActivity;
 import dev.nelson.mot.utils.Constants;
 
 public class SplashActivity extends AppCompatActivity {
@@ -18,8 +19,8 @@ public class SplashActivity extends AppCompatActivity {
             startChooseVersionActivity();
         } else {
 //          start choose currency activity
-            Intent intent = new Intent(this, ChooseCurrencyActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this, ChooseCurrencyActivity.class);
+            startActivity(HomeActivity.Companion.getIntent(this));
             finish();
         }
     }
