@@ -2,24 +2,23 @@ package dev.nelson.mot
 
 import android.app.Activity
 import android.app.Application
-import android.app.Fragment
 import android.content.Context
+import android.support.v4.app.Fragment
 import com.facebook.stetho.Stetho
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
-import dagger.android.HasFragmentInjector
+import dagger.android.support.HasSupportFragmentInjector
 import dev.nelson.mot.injection.DaggerAppComponent
 import timber.log.Timber
 import javax.inject.Inject
 
-class MotApplication : Application(), HasActivityInjector, HasFragmentInjector {
+class MotApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
 
+    @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
-
+    //todo this is temporary. Just to make old code works.
     companion object {
         var context: Context? = null
             private set
@@ -41,8 +40,7 @@ class MotApplication : Application(), HasActivityInjector, HasFragmentInjector {
     }
 
     override fun activityInjector(): DispatchingAndroidInjector<Activity> = activityInjector
-    override fun fragmentInjector(): DispatchingAndroidInjector<Fragment> = fragmentInjector
-
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
 
     private fun initTimber() = Timber.plant(Timber.DebugTree())
     private fun initStetho() = Stetho.initializeWithDefaults(this)

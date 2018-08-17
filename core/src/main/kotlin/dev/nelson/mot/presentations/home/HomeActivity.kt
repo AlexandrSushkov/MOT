@@ -25,4 +25,5 @@ class HomeActivity : BaseActivity() {
         binding = getDataBinding(R.layout.activity_home)
         binding.viewModel = getViewModel(factory)
     }
+
 }

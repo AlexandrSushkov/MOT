@@ -58,18 +58,19 @@ dependencies {
     //android support
     implementation coreDependencies.cardViewV7
     implementation coreDependencies.recyclerViewV7
-    implementation coreDependencies.supportLibV4
     implementation coreDependencies.supportDesign
     implementation coreDependencies.constraintLayout
 
     //architecture
-    implementation coreDependencies.archComponentsRuntime
-    implementation coreDependencies.archComponentsExtensions
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    kapt            coreDependencies.lifecycleCompiler
+    kapt            coreDependencies.roomAnnotation
+    implementation coreDependencies.lifecycleRuntime
+    implementation coreDependencies.lifecycleExtensions
+    implementation coreDependencies.room
+    implementation coreDependencies.roomRxJava
+    //    implementation 'com.google.android.material:material:1.0.0-rc01'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha05'
-    kapt coreDependencies.archComponentsCompiler
+
 
     //DI
     implementation coreDependencies.dagger
@@ -86,10 +87,6 @@ dependencies {
     //debug
     implementation developmentDependencies.stetho
     implementation developmentDependencies.timber
-
-    implementation coreDependencies.room
-    kapt coreDependencies.roomAnnotation
-    implementation coreDependencies.roomRxJava
 
     //test
     testImplementation 'junit:junit:4.12'

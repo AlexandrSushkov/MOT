@@ -11,10 +11,10 @@ allprojects {
 ext {
     //android support libs
     supportLibrary_version = '27.1.1'
-    constraintLayout_version = '1.1.0-beta5'
+    constraintLayout_version = '1.1.2'
 
     //architecture
-    archComponents_version = '1.0.0'
+    archComponents_version = '1.1.1'
 
     //DI
     dagger_version = '2.16'
@@ -42,9 +42,12 @@ ext {
             constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayout_version",
 
             //architecture
-            archComponentsRuntime   : "android.arch.lifecycle:runtime:$archComponents_version",
-            archComponentsExtensions: "android.arch.lifecycle:extensions:$archComponents_version",
-            archComponentsCompiler  : "android.arch.lifecycle:compiler:$archComponents_version",
+            lifecycleRuntime        : "android.arch.lifecycle:runtime:$archComponents_version",
+            lifecycleExtensions     : "android.arch.lifecycle:extensions:$archComponents_version",
+            lifecycleCompiler       : "android.arch.lifecycle:compiler:$archComponents_version",
+            room                    : "android.arch.persistence.room:runtime:$archComponents_version",
+            roomAnnotation          : "android.arch.persistence.room:compiler:$archComponents_version",
+            roomRxJava              : "android.arch.persistence.room:rxjava2:$archComponents_version",
 
             //DI
             dagger                  : "com.google.dagger:dagger:$dagger_version",
@@ -56,11 +59,8 @@ ext {
             //rx
             rxKotlin                : "io.reactivex.rxjava2:rxkotlin:$rxKotlin_version",
             rxAndroid               : "io.reactivex.rxjava2:rxandroid:$rxAndroid_version",
-            rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version",
+            rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version"
 
-            room                    : "android.arch.persistence.room:runtime:$archComponents_version",
-            roomAnnotation          : "android.arch.persistence.room:compiler:$archComponents_version",
-            roomRxJava              : "android.arch.persistence.room:rxjava2:$archComponents_version"
     ]
 
     development = [
