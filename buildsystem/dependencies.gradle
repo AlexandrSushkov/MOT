@@ -34,20 +34,20 @@ ext {
             kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
 
             //support
-            cardViewV7              : "com.android.support:cardview-v7:$supportLibrary_version",
-            recyclerViewV7          : "com.android.support:recyclerview-v7:$supportLibrary_version",
-            supportLibV4            : "com.android.support:support-v4:$supportLibrary_version",
-            supportDesign           : "com.android.support:design:$supportLibrary_version",
-            customTabs              : "com.android.support:customtabs:$supportLibrary_version",
-            constraintLayout        : "com.android.support.constraint:constraint-layout:$constraintLayout_version",
+            cardViewV7              : "androidx.cardview:cardview:1.0.0-alpha1",
+            recyclerViewV7          : "androidx.recyclerview:recyclerview:1.0.0-alpha1",
+            supportLibV4            : "androidx.legacy:legacy-support-v4:1.0.0-alpha1",
+            supportDesign           : "com.google.android.material:material:1.0.0-alpha1",
+            customTabs              : "androidx.browser:browser:1.0.0-alpha1",
+            constraintLayout        : "androidx.constraintlayout:constraintlayout:1.1.0",
 
             //architecture
-            lifecycleRuntime        : "android.arch.lifecycle:runtime:$archComponents_version",
-            lifecycleExtensions     : "android.arch.lifecycle:extensions:$archComponents_version",
-            lifecycleCompiler       : "android.arch.lifecycle:compiler:$archComponents_version",
-            room                    : "android.arch.persistence.room:runtime:$archComponents_version",
-            roomAnnotation          : "android.arch.persistence.room:compiler:$archComponents_version",
-            roomRxJava              : "android.arch.persistence.room:rxjava2:$archComponents_version",
+            lifecycleRuntime        : "androidx.lifecycle:lifecycle-runtime:2.0.0-alpha1",
+            lifecycleExtensions     : "androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1",
+            lifecycleCompiler       : "androidx.lifecycle:lifecycle-compiler:2.0.0-alpha1",
+            room                    : "androidx.room:room-runtime:2.0.0-alpha1",
+            roomAnnotation          : "androidx.room:room-compiler:2.0.0-alpha1",
+            roomRxJava              : "androidx.room:room-rxjava2:2.0.0-alpha1",
 
             //DI
             dagger                  : "com.google.dagger:dagger:$dagger_version",
