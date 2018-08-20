@@ -1,6 +1,6 @@
 package dev.nelson.mot.presentations.screen
 
-import android.databinding.ObservableBoolean
+import androidx.databinding.ObservableBoolean
 import dev.nelson.mot.interactor.RoomTestInteractor
 import dev.nelson.mot.presentations.base.BaseViewModel
 import javax.inject.Inject

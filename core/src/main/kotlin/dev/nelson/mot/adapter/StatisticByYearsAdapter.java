@@ -44,9 +44,9 @@ public class StatisticByYearsAdapter extends ArrayAdapter<BarData> {
             holder = new ViewHolder();
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_barchart, null);
-            holder.chart = (BarChart) convertView.findViewById(R.id.item_bar_chart);
-            holder.title = (TextView) convertView.findViewById(R.id.item_chart_title);
-            holder.totalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
+            holder.chart = convertView.findViewById(R.id.item_bar_chart);
+            holder.title = convertView.findViewById(R.id.item_chart_title);
+            holder.totalCost = convertView.findViewById(R.id.item_chart_total_cost);
 
             convertView.setTag(holder);
         } else {

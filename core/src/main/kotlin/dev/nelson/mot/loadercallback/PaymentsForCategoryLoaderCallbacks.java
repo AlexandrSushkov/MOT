@@ -3,10 +3,11 @@ package dev.nelson.mot.loadercallback;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.db.model.PaymentsProvider;
@@ -27,6 +28,7 @@ public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderC
         mEmptyCursorCallback = callback;
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_ID){
@@ -55,7 +57,7 @@ public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
         mAdapter.notifyDataSetChanged();
         if (!data.moveToFirst()){
@@ -64,7 +66,7 @@ public class PaymentsForCategoryLoaderCallbacks implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
         mAdapter.notifyDataSetChanged();
     }

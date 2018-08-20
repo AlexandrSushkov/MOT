@@ -3,9 +3,9 @@ package dev.nelson.mot.loadercallback;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import dev.nelson.mot.callback.SetDataFromPaymentLoaderCallbacks;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;

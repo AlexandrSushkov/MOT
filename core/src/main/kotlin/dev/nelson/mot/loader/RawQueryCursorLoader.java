@@ -3,10 +3,9 @@ package dev.nelson.mot.loader;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.content.AsyncTaskLoader;
 
+import androidx.loader.content.AsyncTaskLoader;
 import dev.nelson.mot.db.SQLiteOpenHelperImpl;
-import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
 
 public class RawQueryCursorLoader extends AsyncTaskLoader<Cursor> {

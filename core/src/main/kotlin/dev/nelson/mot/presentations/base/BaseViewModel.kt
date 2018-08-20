@@ -1,6 +1,6 @@
 package dev.nelson.mot.presentations.base
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseViewModel : ViewModel() {

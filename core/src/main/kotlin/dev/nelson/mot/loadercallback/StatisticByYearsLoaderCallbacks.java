@@ -4,8 +4,6 @@ package dev.nelson.mot.loadercallback;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -14,6 +12,8 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
 
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByYearsCallback;

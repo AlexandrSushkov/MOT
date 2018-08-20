@@ -3,10 +3,11 @@ package dev.nelson.mot.loadercallback;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 
+import androidx.annotation.NonNull;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.db.model.CategoriesProvider;
 
@@ -23,6 +24,7 @@ public class CategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<
         mContext = context;
     }
 
+    @NonNull
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         if (id == LOADER_ID) {
@@ -33,13 +35,13 @@ public class CategoriesLoaderCallbacks implements LoaderManager.LoaderCallbacks<
     }
 
     @Override
-    public void onLoadFinished(Loader loader, Cursor data) {
-            mAdapter.swapCursor(data);
-            mAdapter.notifyDataSetChanged();
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
         mAdapter.notifyDataSetChanged();
     }

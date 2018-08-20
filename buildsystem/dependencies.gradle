@@ -17,7 +17,7 @@ ext {
     archComponents_version = '1.1.1'
 
     //DI
-    dagger_version = '2.16'
+    dagger_version = '2.17'
 
     //rx
     rxKotlin_version = '2.1.0'

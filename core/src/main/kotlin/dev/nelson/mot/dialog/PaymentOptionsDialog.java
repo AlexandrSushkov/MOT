@@ -6,18 +6,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import dev.nelson.mot.R;
 import dev.nelson.mot.activity.PaymentActivity;
 import dev.nelson.mot.db.model.PaymentsProvider;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
 
-public class PaymentOptionsDialog extends DialogFragment{
+public class PaymentOptionsDialog extends DialogFragment {
 
     public static final String PAYMENT_ID_KEY = "payment_id";
 

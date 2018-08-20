@@ -1,7 +1,7 @@
 package dev.nelson.mot.room
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import dev.nelson.mot.room.model.category.Category
 import dev.nelson.mot.room.model.category.CategoryDao
 

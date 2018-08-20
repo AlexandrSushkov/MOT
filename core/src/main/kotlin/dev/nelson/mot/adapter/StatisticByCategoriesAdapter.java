@@ -2,29 +2,23 @@ package dev.nelson.mot.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.StringUtils;
 import dev.nelson.mot.utils.marker.CustomMarker;
@@ -52,9 +46,9 @@ public class StatisticByCategoriesAdapter extends ArrayAdapter<LineData> {
             holder = new ViewHolder();
 
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_linechart, null);
-            holder.chart = (LineChart) convertView.findViewById(R.id.item_line_chart);
-            holder.title = (TextView) convertView.findViewById(R.id.item_chart_title);
-            holder.totalCost = (TextView) convertView.findViewById(R.id.item_chart_total_cost);
+            holder.chart = convertView.findViewById(R.id.item_line_chart);
+            holder.title = convertView.findViewById(R.id.item_chart_title);
+            holder.totalCost = convertView.findViewById(R.id.item_chart_total_cost);
 
             convertView.setTag(holder);
         } else {

@@ -1,9 +1,9 @@
 package dev.nelson.mot.presentations.home
 
-import android.arch.lifecycle.ViewModelProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import dev.nelson.mot.R
 import dev.nelson.mot.databinding.ActivityHomeBinding
 import dev.nelson.mot.extentions.getDataBinding

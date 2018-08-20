@@ -11,17 +11,17 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.db.model.MultipleTablesProvider;
-import dev.nelson.mot.db.model.SQLiteTableProvider;
 import dev.nelson.mot.db.model.PaymentsProvider;
+import dev.nelson.mot.db.model.SQLiteTableProvider;
 import dev.nelson.mot.exception.NoSuchTableException;
 import dev.nelson.mot.exception.UnknownUriException;
 

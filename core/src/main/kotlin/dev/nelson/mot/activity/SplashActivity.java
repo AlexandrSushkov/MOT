@@ -3,9 +3,9 @@ package dev.nelson.mot.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import dev.nelson.mot.presentations.home.HomeActivity;
 import dev.nelson.mot.utils.Constants;
 

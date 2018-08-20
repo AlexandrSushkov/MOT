@@ -4,16 +4,18 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
 
+import static androidx.appcompat.app.AlertDialog.Builder;
 
 public class CategoryOptionsDialog extends DialogFragment {
 
@@ -38,7 +40,7 @@ public class CategoryOptionsDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        Builder builder = new Builder(Objects.requireNonNull(getActivity()));
         builder.setTitle(R.string.dialog_category_item_menu_title);
         builder.setItems(R.array.category_options_dialog, new DialogInterface.OnClickListener() {
             @Override
@@ -46,14 +48,14 @@ public class CategoryOptionsDialog extends DialogFragment {
                 switch (which){
                     case 0:
                         //rename category
-                        CategoryDialog.newInstance(CategoryDialog.ACTION_EDIT, categoryId).show(getActivity().getSupportFragmentManager(), "tag");
+                        CategoryDialog.newInstance(CategoryDialog.ACTION_EDIT, categoryId).show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(), "tag");
                         break;
                     case 1:
                         //delete category
                         Intent intent = new Intent(getContext(), DataOperationService.class);
                         intent.setAction(DataOperationFabric.DELETE_CATEGORY);
                         intent.putExtra(CategoriesProvider.Columns._ID, categoryId);
-                        getContext().startService(intent);
+                        Objects.requireNonNull(getContext()).startService(intent);
                         break;
                 }
             }
@@ -62,7 +64,7 @@ public class CategoryOptionsDialog extends DialogFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CATEGORY_ID_KEY, categoryId);
     }

@@ -4,10 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,6 +12,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dev.nelson.mot.R;
@@ -24,7 +24,6 @@ import dev.nelson.mot.service.DataOperationService;
 import dev.nelson.mot.service.action.DataOperationFabric;
 import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.StringUtils;
-
 
 public class CategoryDialog extends DialogFragment {
 
