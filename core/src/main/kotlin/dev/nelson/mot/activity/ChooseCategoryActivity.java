@@ -15,8 +15,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.CategoriesAdapter;
 import dev.nelson.mot.callback.SetDataFromCategoriesLoaderCallbacks;
@@ -28,10 +26,9 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
 
     public static final int REQUEST_CODE = 100;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
+    Toolbar mToolbar = findViewById(R.id.toolbar);
+    RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
+
     private CategoriesAdapter mAdapter;
     private CategoriesLoaderCallbacks mLoaderCallbacks;
     private ActionBar mActonBar;
@@ -40,7 +37,6 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_category);
-        ButterKnife.bind(this);
         initToolbar();
         mAdapter = new CategoriesAdapter(this, null, CategoriesAdapter.FLAG_CHOOSE_CATEGORY, this, this);
         initRecyclerView();

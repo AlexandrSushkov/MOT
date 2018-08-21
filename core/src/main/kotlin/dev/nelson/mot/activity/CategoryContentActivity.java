@@ -12,8 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.PaymentsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
@@ -22,12 +20,10 @@ import dev.nelson.mot.loadercallback.PaymentsForCategoryLoaderCallbacks;
 
 public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.recycler_view)
-    RecyclerView mRecyclerView;
-    @BindView(R.id.no_data_announcement)
-    TextView mNoDataAnnouncement;
+    Toolbar mToolbar = findViewById(R.id.toolbar);
+    RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
+    TextView mNoDataAnnouncement = findViewById(R.id.no_data_announcement);
+
     private ActionBar mActonBar;
     private PaymentsAdapter mAdapter;
     private PaymentsForCategoryLoaderCallbacks mLoaderCallbacks;
@@ -36,7 +32,6 @@ public class CategoryContentActivity extends AppCompatActivity implements EmptyC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_content);
-        ButterKnife.bind(this);
         initToolbar();
         mAdapter = new PaymentsAdapter(this, null, PaymentsAdapter.FLAG_PAYMENTS_FOR_CATEGORY);
         initRecyclerView();

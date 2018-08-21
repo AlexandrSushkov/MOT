@@ -10,20 +10,17 @@ import com.github.mikephil.charting.utils.MPPointF;
 
 import java.text.DecimalFormat;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.StringUtils;
 
 public class CustomMarker extends MarkerView {
 
-    @BindView(R.id.custom_marker_text)
     TextView mText;
     private DecimalFormat format;
 
     public CustomMarker(Context context) {
         super(context, R.layout.custom_marker);
-        ButterKnife.bind(this);
+        mText = findViewById(R.id.custom_marker_text);
     }
 
     // callbacks everytime the MarkerView is redrawn, can be used to update the

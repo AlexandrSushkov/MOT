@@ -12,14 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
-
 
 public class TestDialog extends DialogFragment {
 
-    @BindView(R.id.test_edit_text)
     EditText mEditText;
 
     public static TestDialog newInstance() {
@@ -37,7 +33,7 @@ public class TestDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.test_dialog, null);
-        ButterKnife.bind(this, dialogView);
+        mEditText = dialogView.findViewById(R.id.test_edit_text);
         mEditText.requestFocus();
         mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());

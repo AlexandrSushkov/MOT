@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.activity.CategoryContentActivity;
 import dev.nelson.mot.callback.SetDataFromCategoriesLoaderCallbacks;
@@ -95,15 +93,12 @@ public class CategoriesAdapter extends CursorRecyclerAdapter<CategoriesAdapter.V
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_fragment_category_recycler_view_text)
-        TextView mCategoryName;
-        @BindView(R.id.item_fragment_category_recycler_view_image_menu)
-        ImageView mItemMenu;
+        TextView mCategoryName = itemView.findViewById(R.id.item_fragment_category_recycler_view_text);
+        ImageView mItemMenu = itemView.findViewById(R.id.item_fragment_category_recycler_view_image_menu);
         int categoryId;
 
         ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

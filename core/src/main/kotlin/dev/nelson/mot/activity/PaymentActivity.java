@@ -20,9 +20,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.DatabaseChangesCallback;
 import dev.nelson.mot.callback.SetDataFromPaymentLoaderCallbacks;
@@ -36,7 +33,6 @@ import dev.nelson.mot.service.action.DataOperationFabric;
 import dev.nelson.mot.utils.CurrencyTextWatcher;
 import dev.nelson.mot.utils.StringUtils;
 
-
 public class PaymentActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks,
         DatabaseChangesCallback {
 
@@ -48,20 +44,14 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     private static final String PAYMENT_INITIAL_STATE_KEY = "payment_initial_state";
     private static final String PAYMENT_CURRENT_STATE_KEY = "payment_current_state";
 
-    @BindView(R.id.payment_toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.item_payment_text_title)
-    EditText mTitle;
-    @BindView(R.id.payment_category)
-    TextView mCategoryName;
-    @BindView(R.id.item_payment_text_cost)
-    EditText mCost;
-    @BindView(R.id.payment_summary)
-    EditText mSummary;
-    @BindView(R.id.payment_fab)
-    FloatingActionButton mFab;
-    @BindView(R.id.payment_wrapper)
-    LinearLayout mPaymentWrapper;
+    Toolbar mToolbar = findViewById(R.id.payment_toolbar);
+    EditText mTitle = findViewById(R.id.item_payment_text_title);
+    TextView mCategoryName = findViewById(R.id.payment_category);
+    EditText mCost = findViewById(R.id.item_payment_text_cost);
+    EditText mSummary = findViewById(R.id.payment_summary);
+    FloatingActionButton mFab = findViewById(R.id.payment_fab);
+    LinearLayout mPaymentWrapper = findViewById(R.id.payment_wrapper);
+
     private ActionBar mActonBar;
     private String mActionStatus;
     private PaymentLoaderCallbacks mPaymentLoaderCallbacks;
@@ -76,7 +66,6 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
-        ButterKnife.bind(this);
         initToolbar();
         mActionStatus = getIntent().getAction();
         switch (mActionStatus) {
@@ -90,9 +79,33 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
                 throw new IllegalStateException(getClass().getName() + " Wrong action flag.");
         }
         mCost.addTextChangedListener(new CurrencyTextWatcher(mCost));
-        if(paymentInitialState == null && paymentCurrentState == null){
+        if (paymentInitialState == null && paymentCurrentState == null) {
             initPaymentStates();
         }
+        mCategoryName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PaymentActivity.this, ChooseCategoryActivity.class);
+                startActivityForResult(intent, ChooseCategoryActivity.REQUEST_CODE);
+            }
+        });
+
+        mPaymentWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSummary.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.showSoftInput(mSummary, 0);
+            }
+        });
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initEditMode();
+                mActionStatus = ACTION_EDIT;
+            }
+        });
     }
 
     @Override
@@ -144,33 +157,14 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
 
     @Override
     public void dataBaseChanged(int lastAffectedRow) {
-        if(lastAffectedRow > 0){
+        if (lastAffectedRow > 0) {
             Toast.makeText(this, getString(R.string.new_payment_has_been_added), Toast.LENGTH_SHORT).show();
             paymentCurrentState.setId(lastAffectedRow);
             paymentInitialState = new Payment(paymentCurrentState);
-        }else {
+        } else {
             paymentInitialState = new Payment(paymentCurrentState);
             Toast.makeText(this, getString(R.string.payment_has_been_updated), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @OnClick(R.id.payment_category)
-    void onClickCategory() {
-        Intent intent = new Intent(this, ChooseCategoryActivity.class);
-        startActivityForResult(intent, ChooseCategoryActivity.REQUEST_CODE);
-    }
-
-    @OnClick(R.id.payment_wrapper)
-    void onClickPaymentWrapper() {
-        mSummary.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mSummary, 0);
-    }
-
-    @OnClick(R.id.payment_fab)
-    void onClickFab() {
-        initEditMode();
-        mActionStatus = ACTION_EDIT;
     }
 
     @Override
@@ -200,7 +194,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             paymentInitialState = savedInstanceState.getParcelable(PAYMENT_INITIAL_STATE_KEY);
             paymentCurrentState = savedInstanceState.getParcelable(PAYMENT_CURRENT_STATE_KEY);
         }
@@ -210,7 +204,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         paymentCurrentState.setTitle(mTitle.getText().toString());
-        if (mCost.getText().toString().length() > 0){
+        if (mCost.getText().toString().length() > 0) {
             paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
         }
         paymentCurrentState.setSummary(mSummary.getText().toString());
@@ -307,7 +301,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
 
     private void addChangesInPaymentCurrentState() {
         paymentCurrentState.setTitle(mTitle.getText().toString());
-        if (mCost.getText().toString().length() > 0){
+        if (mCost.getText().toString().length() > 0) {
             paymentCurrentState.setCost(Long.valueOf(StringUtils.cleanString(mCost.getText().toString())));
         }
         paymentCurrentState.setSummary(mSummary.getText().toString());

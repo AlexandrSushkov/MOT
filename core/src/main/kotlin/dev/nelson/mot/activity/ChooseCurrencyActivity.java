@@ -3,15 +3,13 @@ package dev.nelson.mot.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.utils.Constants;
 
@@ -20,18 +18,12 @@ public class ChooseCurrencyActivity extends AppCompatActivity {
     public static final String LANGUAGE_KEY = "language_key";
     public static final String COUNTRY_KEY = "country_key";
 
-    @BindView(R.id.radio_euro)
-    RadioButton mEuro;
-    @BindView(R.id.radio_pound)
-    RadioButton mPound;
-    @BindView(R.id.radio_ruble)
-    RadioButton mRuble;
-    @BindView(R.id.radio_hryvnia)
-    RadioButton mHryvnia;
-    @BindView(R.id.radio_dollar)
-    RadioButton mDollar;
-    @BindView(R.id.activity_choose_currency_button_choose)
-    TextView mBtnNext;
+    RadioButton mEuro = findViewById(R.id.radio_euro);
+    RadioButton mPound= findViewById(R.id.radio_pound);
+    RadioButton mRuble= findViewById(R.id.radio_ruble);
+    RadioButton mHryvnia= findViewById(R.id.radio_hryvnia);
+    RadioButton mDollar= findViewById(R.id.radio_dollar);
+    TextView mBtnNext= findViewById(R.id.activity_choose_currency_button_choose);
 
     private String mLanguage = null;
     private String mCountry = null;
@@ -40,54 +32,66 @@ public class ChooseCurrencyActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_currency);
-        ButterKnife.bind(this);
-    }
 
-    @OnClick(R.id.radio_euro)
-    void onClickEuro(){
-        mLanguage = getString(R.string.currency_locale_euro_language);
-        mCountry = getString(R.string.currency_locale_euro_country);
-    }
+        mEuro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLanguage = getString(R.string.currency_locale_euro_language);
+                mCountry = getString(R.string.currency_locale_euro_country);
+            }
+        });
 
-    @OnClick(R.id.radio_pound)
-    void onClickPound(){
-        mLanguage = getString(R.string.currency_locale_pound_language);
-        mCountry = getString(R.string.currency_locale_pound_country);
-    }
+        mPound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLanguage = getString(R.string.currency_locale_pound_language);
+                mCountry = getString(R.string.currency_locale_pound_country);
+            }
+        });
 
-    @OnClick(R.id.radio_ruble)
-    void onClickRuble(){
-        mLanguage = getString(R.string.currency_locale_ruble_language);
-        mCountry = getString(R.string.currency_locale_ruble_country);
-    }
+        mRuble.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLanguage = getString(R.string.currency_locale_ruble_language);
+                mCountry = getString(R.string.currency_locale_ruble_country);
+            }
+        });
 
-    @OnClick(R.id.radio_hryvnia)
-    void onClickHryvnia(){
-        mLanguage = getString(R.string.currency_locale_hryvnia_language);
-        mCountry = getString(R.string.currency_locale_hryvnia_country);
-    }
+        mHryvnia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLanguage = getString(R.string.currency_locale_hryvnia_language);
+                mCountry = getString(R.string.currency_locale_hryvnia_country);
+            }
+        });
 
-    @OnClick(R.id.radio_dollar)
-    void onClickDollar(){
-        mLanguage = getString(R.string.currency_locale_dollar_language);
-        mCountry = getString(R.string.currency_locale_dollar_county);
-    }
 
-    @OnClick(R.id.activity_choose_currency_button_choose)
-    void onClickBtnNext(){
-        if(mLanguage != null && mCountry != null){
-            SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(Constants.LANGUAGE_KEY, mLanguage);
-            editor.putString(Constants.COUNTRY_KEY, mCountry);
-            editor.apply();
-            //start main activity
-            startActivity(new Intent(this, ChooseVersionActivity.class));
+        mDollar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLanguage = getString(R.string.currency_locale_dollar_language);
+                mCountry = getString(R.string.currency_locale_dollar_county);
+            }
+        });
 
-            finish();
-        } else {
-            Toast.makeText(this, getString(R.string.choose_currency_toast_message), Toast.LENGTH_SHORT).show();
-        }
+        mBtnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mLanguage != null && mCountry != null){
+                    SharedPreferences settings = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(Constants.LANGUAGE_KEY, mLanguage);
+                    editor.putString(Constants.COUNTRY_KEY, mCountry);
+                    editor.apply();
+                    //start main activity
+                    startActivity(new Intent(ChooseCurrencyActivity.this, ChooseVersionActivity.class));
+
+                    finish();
+                } else {
+                    Toast.makeText(ChooseCurrencyActivity.this, getString(R.string.choose_currency_toast_message), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

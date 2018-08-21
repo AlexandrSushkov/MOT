@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.StatisticByYearsAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
@@ -27,16 +25,15 @@ public class StatisticByYearFragment extends Fragment implements StatisticByYear
 
     public static final String FRAGMENT_TAG = StatisticByYearFragment.class.getName();
 
-    @BindView(R.id.statistic_list_view)
     ListView mListView;
-    @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_by_year, container, false);
-        ButterKnife.bind(this, view);
+        mListView = view.findViewById(R.id.statistic_list_view);
+        mNoDataAnnouncement = view.findViewById(R.id.no_data_announcement);
         StatisticByYearsLoaderCallbacks loadersCallback = new StatisticByYearsLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticByYearsLoaderCallbacks.LOADER_ID, null, loadersCallback);
         return view;

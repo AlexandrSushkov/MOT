@@ -15,8 +15,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.dialog.CategoryDialog;
 import dev.nelson.mot.fragment.AboutFragment;
@@ -26,12 +24,10 @@ import dev.nelson.mot.fragment.StatisticFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.activity_main_drawer)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.main_activity_navigation_view)
-    NavigationView mNavView;
+    DrawerLayout mDrawerLayout = findViewById(R.id.activity_main_drawer);
+    Toolbar mToolbar = findViewById(R.id.toolbar);
+    NavigationView mNavView = findViewById(R.id.toolbar);
+
     private ActionBarDrawerToggle drawerToggle;
     private Fragment mContentFragment = null;
     private FragmentManager mFragmentManager;
@@ -40,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         mFragmentManager = getSupportFragmentManager();
         setSupportActionBar(mToolbar);
         drawerToggle = setUpDrawerToggle();

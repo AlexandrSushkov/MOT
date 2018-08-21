@@ -16,8 +16,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticByMonthsCallback;
@@ -32,20 +30,19 @@ public class StatisticByMonthsFragment extends Fragment implements StatisticByMo
 
     public static final String FRAGMENT_TAG = StatisticByMonthsFragment.class.getName();
 
-    @BindView(R.id.line_chart)
     LineChart mChart;
-    @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
-    @BindView(R.id.statistic_by_months_title)
     TextView mTitle;
-    @BindView(R.id.statistic_by_months_total_cost)
     TextView mTotalCost;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_by_months, container, false);
-        ButterKnife.bind(this, view);
+        mChart = view.findViewById(R.id.line_chart);
+        mNoDataAnnouncement = view.findViewById(R.id.no_data_announcement);
+        mTitle = view.findViewById(R.id.statistic_by_months_title);
+        mTotalCost = view.findViewById(R.id.statistic_by_months_total_cost);
         StatisticByMonthsLoaderCallbacks loadersCallback = new StatisticByMonthsLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticByMonthsLoaderCallbacks.LOADER_ID, null, loadersCallback);
         return view;

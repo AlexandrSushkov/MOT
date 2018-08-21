@@ -16,9 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.activity.PaymentActivity;
 import dev.nelson.mot.adapter.PaymentsAdapter;
@@ -33,11 +30,8 @@ public class RecentPaymentsFragment extends Fragment implements DatabaseChangesC
 
     public static final String FRAGMENT_TAG = RecentPaymentsFragment.class.getName();
 
-    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
-    @BindView(R.id.fragment_home_fab)
     FloatingActionButton mFab;
     private Context mContext;
     private PaymentsAdapter mAdapter;
@@ -49,19 +43,22 @@ public class RecentPaymentsFragment extends Fragment implements DatabaseChangesC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContext = getContext();
         View view = inflater.inflate(R.layout.fragment_recent_payments, container, false);
-        ButterKnife.bind(this, view);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mNoDataAnnouncement = view.findViewById(R.id.no_data_announcement);
+        mFab = view.findViewById(R.id.fragment_home_fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PaymentActivity.class);
+                intent.setAction(PaymentActivity.ACTION_EDIT);
+                mContext.startActivity(intent);
+            }
+        });
         mAdapter = new PaymentsAdapter(mContext, null, PaymentsAdapter.FLAG_RECENT_PAYMENTS);
         initRecyclerView();
         mLoaderCallbacks = new RecentPaymentsLoadersCallbacks(mContext, mAdapter, this);
         getActivity().getSupportLoaderManager().initLoader(PaymentLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;
-    }
-
-    @OnClick(R.id.fragment_home_fab)
-    void onClickFab() {
-        Intent intent = new Intent(mContext, PaymentActivity.class);
-        intent.setAction(PaymentActivity.ACTION_EDIT);
-        mContext.startActivity(intent);
     }
 
     @Override

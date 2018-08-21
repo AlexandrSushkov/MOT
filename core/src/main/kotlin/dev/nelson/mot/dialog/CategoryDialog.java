@@ -16,8 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.service.DataOperationService;
@@ -33,7 +31,6 @@ public class CategoryDialog extends DialogFragment {
     public static final String ID_KEY = "id_key";
     public static final String TITLE_KEY = "title_key";
 
-    @BindView(R.id.fragment_dialog_add_category_edit_text)
     EditText mEditText;
     private int mActionState;
     private int mCategoryId;
@@ -74,7 +71,7 @@ public class CategoryDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.fragment_dialog_add_category, null);
-        ButterKnife.bind(this, dialogView);
+        mEditText = dialogView.findViewById(R.id.fragment_dialog_add_category_edit_text);
         mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
         mEditText.requestFocus();
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());

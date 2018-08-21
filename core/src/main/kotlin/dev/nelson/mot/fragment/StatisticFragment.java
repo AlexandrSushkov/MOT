@@ -12,15 +12,12 @@ import android.widget.FrameLayout;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 
 public class StatisticFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = StatisticFragment.class.getName();
 
-    @BindView(R.id.statistic_wrapper)
     FrameLayout mWrapper;
 
     private FragmentManager mFragmentManager;
@@ -45,7 +42,7 @@ public class StatisticFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
-        ButterKnife.bind(this, view);
+        mWrapper = view.findViewById(R.id.statistic_wrapper);
         mFragmentManager = this.getChildFragmentManager();
         if (mCurrentFragment == null) {
             Fragment f = new StatisticCurrentMonthFragment();

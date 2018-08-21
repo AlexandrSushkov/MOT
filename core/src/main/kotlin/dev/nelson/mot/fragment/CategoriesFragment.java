@@ -17,9 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 import dev.nelson.mot.activity.CategoryContentActivity;
 import dev.nelson.mot.adapter.CategoriesAdapter;
@@ -32,9 +29,7 @@ public class CategoriesFragment extends Fragment {
     public static final String FRAGMENT_TAG = CategoriesFragment.class.getName();
 
 
-    @BindView(R.id.item_no_category)
     FrameLayout mItemNoCategory;
-    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private CategoriesAdapter mAdapter;
     private CategoriesLoaderCallbacks mLoaderCallbacks;
@@ -49,7 +44,19 @@ public class CategoriesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_categories, container, false);
-        ButterKnife.bind(this, view);
+        mItemNoCategory = view.findViewById(R.id.item_no_category);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+
+        mItemNoCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CategoryContentActivity.class);
+                intent.putExtra(CategoriesProvider.Columns._ID, -1);
+                intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, getString(R.string.no_category_category_name));
+                getContext().startActivity(intent);
+            }
+        });
+
         mAdapter = new CategoriesAdapter(view.getContext(), null, CategoriesAdapter.FLAG_VIEW_CATEGORIES);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -73,13 +80,5 @@ public class CategoriesFragment extends Fragment {
                 drawable.setColorFilter(ContextCompat.getColor(getContext(), R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
             }
         }
-    }
-
-    @OnClick(R.id.item_no_category)
-    void onClickNoCategory(){
-        Intent intent = new Intent(getContext(), CategoryContentActivity.class);
-        intent.putExtra(CategoriesProvider.Columns._ID, -1);
-        intent.putExtra(CategoriesProvider.Columns.CATEGORY_NAME, getString(R.string.no_category_category_name));
-        getContext().startActivity(intent);
     }
 }

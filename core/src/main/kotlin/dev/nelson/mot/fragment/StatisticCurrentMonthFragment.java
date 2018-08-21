@@ -24,8 +24,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.callback.EmptyCursorCallback;
 import dev.nelson.mot.callback.StatisticCurrentMonthCallback;
@@ -38,16 +36,15 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
 
     public static final String FRAGMENT_TAG = StatisticCurrentMonthFragment.class.getName();
 
-    @BindView(R.id.pie_chart)
     PieChart mChart;
-    @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistic_month, container, false);
-        ButterKnife.bind(this, view);
+        mChart = view.findViewById(R.id.pie_chart);
+        mNoDataAnnouncement = view.findViewById(R.id.no_data_announcement);
         StatisticCurrentMonthLoaderCallbacks mLoaderCallbacks = new StatisticCurrentMonthLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticCurrentMonthLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;

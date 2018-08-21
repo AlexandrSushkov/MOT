@@ -11,16 +11,12 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dev.nelson.mot.R;
 
 public class AboutFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = AboutFragment.class.getName();
 
-    @BindView(R.id.eastern_egg_19)
     TextView mEasternEgg;
     private int counter = 0;
     private View view;
@@ -29,17 +25,18 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_about, container, false);
-        ButterKnife.bind(this, view);
+        mEasternEgg = view.findViewById(R.id.eastern_egg_19);
+        mEasternEgg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                counter++;
+                if(counter == 8){
+                    Toast.makeText(view.getContext(), "Congratulation!!! You have found easter egg 19/25", Toast.LENGTH_SHORT).show();
+                    FirebaseCrash.report(new Exception("Easter egg has been found"));
+                    counter = 3;
+                }
+            }
+        });
         return view;
-    }
-
-    @OnClick(R.id.eastern_egg_19)
-    void onClickEasternEgg(){
-        counter++;
-        if(counter == 8){
-            Toast.makeText(view.getContext(), "Congratulation!!! You have found easter egg 19/25", Toast.LENGTH_SHORT).show();
-            FirebaseCrash.report(new Exception("Easter egg has been found"));
-            counter = 3;
-        }
     }
 }

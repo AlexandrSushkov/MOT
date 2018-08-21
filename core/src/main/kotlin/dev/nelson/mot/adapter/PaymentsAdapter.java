@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.activity.PaymentActivity;
 import dev.nelson.mot.db.model.CategoriesProvider;
@@ -54,9 +52,9 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
 
         if (mFlagStatus.equals(FLAG_RECENT_PAYMENTS)) {
             String categoryName = cursor.getString(cursor.getColumnIndex(CategoriesProvider.Columns.CATEGORY_NAME));
-            if(categoryName == null){
-               holder.mCategory.setText(mContext.getString(R.string.no_category_category_name));
-            }else {
+            if (categoryName == null) {
+                holder.mCategory.setText(mContext.getString(R.string.no_category_category_name));
+            } else {
                 holder.mCategory.setText(categoryName);
             }
         }
@@ -100,23 +98,16 @@ public class PaymentsAdapter extends CursorRecyclerAdapter<PaymentsAdapter.ViewH
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_payment_text_title)
-        TextView mTitle;
-        @BindView(R.id.item_payment_text_cost)
-        TextView mCost;
-        @BindView(R.id.item_payment_text_category_name)
-        TextView mCategory;
-        @BindView(R.id.item_payment_text_date)
-        TextView mDate;
-        @BindView(R.id.item_payment_text_summary)
-        TextView mSummary;
-        @BindView(R.id.item_payment_image_settings)
-        ImageView mItemMenu;
+        TextView mTitle = itemView.findViewById(R.id.item_payment_text_title);
+        TextView mCost = itemView.findViewById(R.id.item_payment_text_cost);
+        TextView mCategory = itemView.findViewById(R.id.item_payment_text_category_name);
+        TextView mDate = itemView.findViewById(R.id.item_payment_text_date);
+        TextView mSummary = itemView.findViewById(R.id.item_payment_text_summary);
+        ImageView mItemMenu = itemView.findViewById(R.id.item_payment_image_settings);
         int paymentId;
 
         ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

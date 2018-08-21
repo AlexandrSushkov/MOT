@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import dev.nelson.mot.R;
 import dev.nelson.mot.adapter.StatisticByMonthWithCategoriesAdapter;
 import dev.nelson.mot.callback.EmptyCursorCallback;
@@ -26,16 +24,15 @@ public class StatisticByMonthsWithCategoriesFragment extends Fragment implements
 
     public static final String FRAGMENT_TAG = StatisticByMonthsWithCategoriesFragment.class.getName();
 
-    @BindView(R.id.statistic_list_view)
     ListView mListView;
-    @BindView(R.id.no_data_announcement)
     TextView mNoDataAnnouncement;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_satistic_by_months_with_categories, container, false);
-        ButterKnife.bind(this, view);
+        mListView = view.findViewById(R.id.statistic_list_view);
+        mNoDataAnnouncement = view.findViewById(R.id.no_data_announcement);
         StatisticByMonthWithCategoriesLoaderCallbacks mLoaderCallbacks = new StatisticByMonthWithCategoriesLoaderCallbacks(getContext(), this, this);
         getActivity().getSupportLoaderManager().restartLoader(StatisticByMonthWithCategoriesLoaderCallbacks.LOADER_ID, null, mLoaderCallbacks);
         return view;

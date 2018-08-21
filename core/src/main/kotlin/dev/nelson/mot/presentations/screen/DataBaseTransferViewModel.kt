@@ -1,11 +1,9 @@
 package dev.nelson.mot.presentations.screen
 
 import androidx.databinding.ObservableBoolean
-import dev.nelson.mot.interactor.RoomTestInteractor
 import dev.nelson.mot.presentations.base.BaseViewModel
-import javax.inject.Inject
 
-class DataBaseTransferViewModel @Inject constructor(roomTestInteractor: RoomTestInteractor): BaseViewModel() {
+class DataBaseTransferViewModel : BaseViewModel() {
 
     val isShowText = ObservableBoolean()
 
