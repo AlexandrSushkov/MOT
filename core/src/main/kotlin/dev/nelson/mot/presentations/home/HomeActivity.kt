@@ -19,11 +19,13 @@ class HomeActivity : BaseActivity() {
         fun getIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
     }
 
+    lateinit var fab: FloatingActionButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val bar : BottomAppBar = findViewById(R.id.bottom_bar)
-        val fab : FloatingActionButton = findViewById(R.id.fab)
+        val bar: BottomAppBar = findViewById(R.id.bottom_app_bar)
+        fab = this.findViewById(R.id.fab)
 
         setSupportActionBar(bar)
         fab.setOnClickListener { startActivity(EditPaymentActivity.getIntent(this)) }
@@ -41,15 +43,15 @@ class HomeActivity : BaseActivity() {
             android.R.id.home -> openNavigation()
             R.id.search -> toast("search")
             R.id.settings -> startActivity(SettingsActivity.getIntent(this))
+            R.id.show -> fab.show()
+            R.id.hide -> fab.hide()
         }
         return true
     }
 
-
-
-    private fun openNavigation(){
-        val bottomNavDrawerFragment = BottomNavigationFragment()
-        bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.tag)
+    private fun openNavigation() {
+        val bottomNavDialogFragment = MotRoundedBottomSheetDialogFragment()
+        bottomNavDialogFragment.show(supportFragmentManager, bottomNavDialogFragment.tag)
     }
 
     private fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_SHORT).show()

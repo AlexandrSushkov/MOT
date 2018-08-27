@@ -18,7 +18,7 @@ class SettingsActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val bottomAppBar: BottomAppBar = findViewById(R.id.bottom_bar)
+        val bottomAppBar: BottomAppBar = findViewById(R.id.bottom_app_bar)
         setSupportActionBar(bottomAppBar)
     }
 
