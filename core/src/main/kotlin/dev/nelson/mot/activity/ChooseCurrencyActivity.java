@@ -83,9 +83,7 @@ public class ChooseCurrencyActivity extends AppCompatActivity {
                     editor.putString(Constants.LANGUAGE_KEY, mLanguage);
                     editor.putString(Constants.COUNTRY_KEY, mCountry);
                     editor.apply();
-                    //start main activity
-                    startActivity(new Intent(ChooseCurrencyActivity.this, ChooseVersionActivity.class));
-
+                    startActivity(new Intent(ChooseCurrencyActivity.this, MainActivity.class));
                     finish();
                 } else {
                     Toast.makeText(ChooseCurrencyActivity.this, getString(R.string.choose_currency_toast_message), Toast.LENGTH_SHORT).show();

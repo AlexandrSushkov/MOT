@@ -1,8 +1,6 @@
-apply plugin: "com.android.library"
+apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-
 android {
     def config = rootProject.extensions.getByName("ext")
 
@@ -10,6 +8,7 @@ android {
     buildToolsVersion config["build_tools_version"]
 
     defaultConfig {
+        applicationId config["application_id"]
         minSdkVersion config["min_sdk"]
         targetSdkVersion config["target_sdk"]
         versionCode config["version_code"]
@@ -20,21 +19,13 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            dependencies {
-                implementation 'com.google.firebase:firebase-crash:16.0.1'
-            }
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-    }
-
-    dataBinding.enabled true
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        debug {
+            debuggable true
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-debug'
+        }
     }
 
 }
@@ -43,6 +34,7 @@ dependencies {
     def coreDependencies = rootProject.ext.core
     def developmentDependencies = rootProject.ext.development
 
+    implementation project(":core")
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin
@@ -83,4 +75,13 @@ dependencies {
 
     //other
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+//    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+//    implementation 'androidx.core:core-ktx:0.3'
+//    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }

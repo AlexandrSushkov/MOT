@@ -34,7 +34,9 @@ public class StatisticFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
             mCurrentFragment = getChildFragmentManager().getFragment(savedInstanceState, "key");
-            mFragmentManager.beginTransaction().replace(R.id.statistic_wrapper, mCurrentFragment).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.statistic_wrapper, mCurrentFragment)
+                    .commit();
         }
     }
 
@@ -46,7 +48,9 @@ public class StatisticFragment extends Fragment {
         mFragmentManager = this.getChildFragmentManager();
         if (mCurrentFragment == null) {
             Fragment f = new StatisticCurrentMonthFragment();
-            mFragmentManager.beginTransaction().replace(R.id.statistic_wrapper, f, StatisticCurrentMonthFragment.FRAGMENT_TAG).commit();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.statistic_wrapper, f, StatisticCurrentMonthFragment.FRAGMENT_TAG)
+                    .commit();
             mCurrentFragment = f;
         }
         return view;
@@ -60,52 +64,51 @@ public class StatisticFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.fragment_statistic_menu_item_current_month:
-                if (!(mCurrentFragment instanceof StatisticCurrentMonthFragment)) {
-                    mCurrentFragment = new StatisticCurrentMonthFragment();
-                    mFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticCurrentMonthFragment.FRAGMENT_TAG)
-                            .commit();
-                }
-                break;
-            case R.id.fragment_statistic_menu_item_by_months:
-                if (!(mCurrentFragment instanceof StatisticByMonthsFragment)) {
-                    mCurrentFragment = new StatisticByMonthsFragment();
-                    mFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByMonthsFragment.FRAGMENT_TAG)
-                            .commit();
-                }
-                break;
-            case R.id.fragment_statistic_menu_item_by_months_with_categories:
-                if (!(mCurrentFragment instanceof StatisticByMonthsWithCategoriesFragment)) {
-                    mCurrentFragment = new StatisticByMonthsWithCategoriesFragment();
-                    mFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByMonthsWithCategoriesFragment.FRAGMENT_TAG)
-                            .commit();
-                }
-                break;
-            case R.id.fragment_statistic_menu_item_by_years:
-                if (!(mCurrentFragment instanceof StatisticByYearFragment)) {
-                    mCurrentFragment = new StatisticByYearFragment();
-                    mFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByYearFragment.FRAGMENT_TAG)
-                            .commit();
-                }
-                break;
-            case R.id.fragment_statistic_menu_item_categories:
-                if (!(mCurrentFragment instanceof StatisticByCategoriesFragment)) {
-                    mCurrentFragment = new StatisticByCategoriesFragment();
-                    mFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.statistic_wrapper, mCurrentFragment, StatisticByCategoriesFragment.FRAGMENT_TAG)
-                            .commit();
-                }
-                break;
+        if (item.getItemId() == R.id.fragment_statistic_menu_item_current_month) {
+            if (!(mCurrentFragment instanceof StatisticCurrentMonthFragment)) {
+                mCurrentFragment = new StatisticCurrentMonthFragment();
+                mFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.statistic_wrapper, mCurrentFragment,
+                                StatisticCurrentMonthFragment.FRAGMENT_TAG)
+                        .commit();
+            }
+        } else if (item.getItemId() == R.id.fragment_statistic_menu_item_by_months) {
+            if (!(mCurrentFragment instanceof StatisticByMonthsFragment)) {
+                mCurrentFragment = new StatisticByMonthsFragment();
+                mFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.statistic_wrapper, mCurrentFragment,
+                                StatisticByMonthsFragment.FRAGMENT_TAG)
+                        .commit();
+            }
+        } else if (item.getItemId() == R.id.fragment_statistic_menu_item_by_months_with_categories) {
+            if (!(mCurrentFragment instanceof StatisticByMonthsWithCategoriesFragment)) {
+                mCurrentFragment = new StatisticByMonthsWithCategoriesFragment();
+                mFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.statistic_wrapper, mCurrentFragment,
+                                StatisticByMonthsWithCategoriesFragment.FRAGMENT_TAG)
+                        .commit();
+            }
+        } else if (item.getItemId() == R.id.fragment_statistic_menu_item_by_years) {
+            if (!(mCurrentFragment instanceof StatisticByYearFragment)) {
+                mCurrentFragment = new StatisticByYearFragment();
+                mFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.statistic_wrapper, mCurrentFragment,
+                                StatisticByYearFragment.FRAGMENT_TAG)
+                        .commit();
+            }
+        } else if (item.getItemId() == R.id.fragment_statistic_menu_item_categories) {
+            if (!(mCurrentFragment instanceof StatisticByCategoriesFragment)) {
+                mCurrentFragment = new StatisticByCategoriesFragment();
+                mFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.statistic_wrapper, mCurrentFragment,
+                                StatisticByCategoriesFragment.FRAGMENT_TAG)
+                        .commit();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

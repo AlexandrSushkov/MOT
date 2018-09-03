@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import dev.nelson.mot.presentations.home.HomeActivity;
 import dev.nelson.mot.utils.Constants;
 
 public class SplashActivity extends AppCompatActivity {
@@ -15,18 +14,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (isCurrencySet()) {
-//          start main activity
-            startChooseVersionActivity();
+            startActivity(new Intent(this, MainActivity.class));
         } else {
-//          start choose currency activity
-//            Intent intent = new Intent(this, ChooseCurrencyActivity.class);
-            startActivity(HomeActivity.Companion.getIntent(this));
-            finish();
+            startActivity(new Intent(this, ChooseCurrencyActivity.class));
         }
-    }
-
-    private void startChooseVersionActivity() {
-        startActivity(new Intent(this, ChooseVersionActivity.class));
         finish();
     }
 

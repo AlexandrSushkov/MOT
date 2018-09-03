@@ -9,7 +9,7 @@ import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
-import dev.nelson.mot.R
+import dev.nelson.mot.main.R
 
 class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 

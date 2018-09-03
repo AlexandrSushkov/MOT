@@ -51,15 +51,13 @@ public class MainActivity extends AppCompatActivity {
         if(drawerToggle.onOptionsItemSelected(item)){
             return true;
         }
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START, true);
+        if (item.getItemId() == android.R.id.home){
+            mDrawerLayout.openDrawer(GravityCompat.START, true);
                 return true;
-            case R.id.fragment_categories_menu_item_add:
-              CategoryDialog
+        }else if(item.getItemId() == R.id.fragment_categories_menu_item_add){
+            CategoryDialog
                       .newInstance(CategoryDialog.ACTION_ADD)
                       .show(getSupportFragmentManager(), "Category option dialog");
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -67,26 +65,21 @@ public class MainActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem){
         Class fragmentClass;
         String tag;
-        switch (menuItem.getItemId()){
-            case R.id.navigation_menu_item_home:
-                fragmentClass = RecentPaymentsFragment.class;
-                tag = RecentPaymentsFragment.FRAGMENT_TAG;
-                break;
-            case R.id.navigation_menu_item_category:
-                fragmentClass = CategoriesFragment.class;
-                tag = CategoriesFragment.FRAGMENT_TAG;
-                break;
-            case R.id.navigation_menu_item_statistic:
-                fragmentClass = StatisticFragment.class;
-                tag = StatisticFragment.FRAGMENT_TAG;
-                break;
-            case R.id.navigation_menu_item_about:
-                fragmentClass = AboutFragment.class;
-                tag = AboutFragment.FRAGMENT_TAG;
-                break;
-            default:
-                fragmentClass = RecentPaymentsFragment.class;
-                tag = RecentPaymentsFragment.FRAGMENT_TAG;
+        if (menuItem.getItemId() == R.id.navigation_menu_item_home){
+            fragmentClass = RecentPaymentsFragment.class;
+            tag = RecentPaymentsFragment.FRAGMENT_TAG;
+        }else if (menuItem.getItemId() == R.id.navigation_menu_item_category) {
+            fragmentClass = CategoriesFragment.class;
+            tag = CategoriesFragment.FRAGMENT_TAG;
+        }else if (menuItem.getItemId() == R.id.navigation_menu_item_statistic){
+            fragmentClass = StatisticFragment.class;
+            tag = StatisticFragment.FRAGMENT_TAG;
+        }else if (menuItem.getItemId() == R.id.navigation_menu_item_about){
+            fragmentClass = AboutFragment.class;
+            tag = AboutFragment.FRAGMENT_TAG;
+        }else {
+            fragmentClass = RecentPaymentsFragment.class;
+            tag = RecentPaymentsFragment.FRAGMENT_TAG;
         }
 
         try {

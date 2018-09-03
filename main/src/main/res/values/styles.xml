@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <resources>
 
     <!-- Base application theme. -->
-
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
@@ -49,6 +46,32 @@
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <!--widgets-->
+
+    <!--bottom sheet dialog-->
+    <style name="RoundedBottomSheetTheme" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_bottom_sheet_dialog_background</item>
+    </style>
+
+    <style name="BaseRoundedBottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/RoundedBottomSheetTheme</item>
+    </style>
+
+    <style name="MotRoundedBottomSheetDialogTheme" parent="BaseRoundedBottomSheetDialogTheme">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/color_white</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!--bottom app bar-->
+    <style name="MotBottomAppBarTheme" parent="@style/Widget.MaterialComponents.BottomAppBar">
+        <item name="android:backgroundTint">@color/color_white</item>
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:elevation">6dp</item>
+
     </style>
 
 </resources>
