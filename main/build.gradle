@@ -21,11 +21,23 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
         debug {
             debuggable true
             applicationIdSuffix ".debug"
             versionNameSuffix '-debug'
         }
+    }
+
+//    sourceSets {
+//        main.java.srcDirs += 'src/main/kotlin'
+//        main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+//        test.java.srcDirs += 'src/test/kotlin'
+//        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+//    }
+
+    dataBinding {
+        enabled = true
     }
 
 }
@@ -34,7 +46,7 @@ dependencies {
     def coreDependencies = rootProject.ext.core
     def developmentDependencies = rootProject.ext.development
 
-    implementation project(":core")
+    implementation project(':lagacy')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin

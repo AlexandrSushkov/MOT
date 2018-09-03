@@ -24,10 +24,9 @@ import dev.nelson.mot.fragment.StatisticFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    DrawerLayout mDrawerLayout = findViewById(R.id.activity_main_drawer);
-    Toolbar mToolbar = findViewById(R.id.toolbar);
-    NavigationView mNavView = findViewById(R.id.toolbar);
-
+    private DrawerLayout mDrawerLayout;
+    private Toolbar mToolbar;
+    private NavigationView mNavView;
     private ActionBarDrawerToggle drawerToggle;
     private Fragment mContentFragment = null;
     private FragmentManager mFragmentManager;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initView();
         mFragmentManager = getSupportFragmentManager();
         setSupportActionBar(mToolbar);
         drawerToggle = setUpDrawerToggle();
@@ -48,36 +48,36 @@ public class MainActivity extends AppCompatActivity {
     //this method open navigation menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(drawerToggle.onOptionsItemSelected(item)){
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START, true);
-                return true;
-        }else if(item.getItemId() == R.id.fragment_categories_menu_item_add){
+            return true;
+        } else if (item.getItemId() == R.id.fragment_categories_menu_item_add) {
             CategoryDialog
-                      .newInstance(CategoryDialog.ACTION_ADD)
-                      .show(getSupportFragmentManager(), "Category option dialog");
+                    .newInstance(CategoryDialog.ACTION_ADD)
+                    .show(getSupportFragmentManager(), "Category option dialog");
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void selectDrawerItem(MenuItem menuItem){
+    public void selectDrawerItem(MenuItem menuItem) {
         Class fragmentClass;
         String tag;
-        if (menuItem.getItemId() == R.id.navigation_menu_item_home){
+        if (menuItem.getItemId() == R.id.navigation_menu_item_home) {
             fragmentClass = RecentPaymentsFragment.class;
             tag = RecentPaymentsFragment.FRAGMENT_TAG;
-        }else if (menuItem.getItemId() == R.id.navigation_menu_item_category) {
+        } else if (menuItem.getItemId() == R.id.navigation_menu_item_category) {
             fragmentClass = CategoriesFragment.class;
             tag = CategoriesFragment.FRAGMENT_TAG;
-        }else if (menuItem.getItemId() == R.id.navigation_menu_item_statistic){
+        } else if (menuItem.getItemId() == R.id.navigation_menu_item_statistic) {
             fragmentClass = StatisticFragment.class;
             tag = StatisticFragment.FRAGMENT_TAG;
-        }else if (menuItem.getItemId() == R.id.navigation_menu_item_about){
+        } else if (menuItem.getItemId() == R.id.navigation_menu_item_about) {
             fragmentClass = AboutFragment.class;
             tag = AboutFragment.FRAGMENT_TAG;
-        }else {
+        } else {
             fragmentClass = RecentPaymentsFragment.class;
             tag = RecentPaymentsFragment.FRAGMENT_TAG;
         }
@@ -112,11 +112,17 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.syncState();
     }
 
-    private ActionBarDrawerToggle setUpDrawerToggle(){
+    private void initView() {
+        mDrawerLayout = findViewById(R.id.activity_main_drawer);
+        mToolbar = findViewById(R.id.toolbar);
+        mNavView = findViewById(R.id.main_activity_navigation_view);
+    }
+
+    private ActionBarDrawerToggle setUpDrawerToggle() {
         return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
     }
 
-    private void setNavDrawer(NavigationView navigationView){
+    private void setNavDrawer(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -125,4 +131,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 }

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!--<data>-->
+    <data>
 
-        <!--<variable-->
-            <!--name="viewModel"-->
-            <!--type="dev.nelson.mot.presentations.home.HomeViewModel" />-->
-    <!--</data>-->
+        <variable
+            name="viewModel"
+            type="dev.nelson.mot.presentations.home.HomeViewModel" />
+    </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
 
@@ -17,55 +17,55 @@
         android:fitsSystemWindows="true"
         android:backgroundTint="@color/colorAccent">
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:orientation="vertical">-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!--<com.google.android.material.appbar.AppBarLayout-->
-                <!--android:id="@+id/appbar"-->
-                <!--android:backgroundTint="@color/color_white"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:paddingBottom="8dp">-->
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:backgroundTint="@color/color_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:fontFamily="@font/google_sans"-->
-                    <!--android:text="Recent purchase"-->
-                    <!--android:textSize="16sp"/>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/google_sans"
+                    android:text="Recent purchase"
+                    android:textSize="16sp"/>
 
-            <!--</com.google.android.material.appbar.AppBarLayout>-->
+            </com.google.android.material.appbar.AppBarLayout>
 
-            <!--<fragment-->
-                <!--android:id="@+id/navigation_host_fragment"-->
-                <!--android:name="androidx.navigation.fragment.NavHostFragment"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--app:defaultNavHost="true"-->
-                <!--app:navGraph="@navigation/home_navigation" />-->
+            <fragment
+                android:id="@+id/navigation_host_fragment"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/home_navigation" />
 
-        <!--</LinearLayout>-->
+        </LinearLayout>
 
-        <!--<com.google.android.material.bottomappbar.BottomAppBar-->
-            <!--android:id="@+id/bottom_app_bar"-->
-            <!--style="@style/MotBottomAppBarTheme"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?actionBarSize"-->
-            <!--app:hideOnScroll="true"-->
-            <!--android:elevation="6dp"-->
-            <!--app:navigationIcon="@drawable/ic_menu" />-->
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            style="@style/MotBottomAppBarTheme"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:hideOnScroll="true"
+            android:elevation="6dp"
+            app:navigationIcon="@drawable/ic_menu" />
 
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_add_black_24dp"-->
-            <!--app:layout_anchor="@id/bottom_app_bar" />-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_black_24dp"
+            app:layout_anchor="@id/bottom_app_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
