@@ -21,10 +21,10 @@ class ValueFormatterUtils {
         }else if(value < 100000f){
             switch (flag){
                 case SIDE_Y_AXIS:
-                    result = v.substring(0, v.length() - 2);
+                    result = v.substring(0, v.length() - 1);
                     break;
                 case Y_AXIS:
-                    result =  new StringBuffer(v).insert(v.length()-2, ".").toString();
+                    result =  new StringBuffer(v).insert(v.length()-1, ".").toString();
             }
         }else if(value >= 100000f && value < 100000000f){
             v = v.substring(0, v.length() - 4);
