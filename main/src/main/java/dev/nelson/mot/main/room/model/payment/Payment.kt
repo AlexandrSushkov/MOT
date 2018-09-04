@@ -16,8 +16,8 @@ import java.time.OffsetDateTime
 data class Payment(@PrimaryKey(autoGenerate = true)
                    @ColumnInfo(name = CategoryTable.CATEGORY_ID) val id: Long? = null,
                    @ColumnInfo(name = PaymentTable.TITLE) var title: String,
-                   @ColumnInfo(name = PaymentTable.SUMMARY) var summary: String,
+                   @ColumnInfo(name = PaymentTable.SUMMARY) var summary: String? = null,
                    @ColumnInfo(name = PaymentTable.CATEGORY_ID) val categoryId: Int,
-                   @ColumnInfo(name = PaymentTable.DATE) val date: OffsetDateTime,
+                   @ColumnInfo(name = PaymentTable.DATE) val date: OffsetDateTime? = null,
                    @ColumnInfo(name = PaymentTable.COST) val cost: Long)
 
