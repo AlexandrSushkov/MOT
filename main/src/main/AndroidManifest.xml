@@ -25,6 +25,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight"/>
         <activity android:name="dev.nelson.mot.presentations.payment.EditPaymentActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppThemeLight"/>
+        <activity android:name="dev.nelson.mot.presentations.settings.SettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight"/>
     </application>

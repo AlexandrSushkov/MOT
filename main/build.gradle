@@ -8,11 +8,11 @@ android {
     buildToolsVersion config["build_tools_version"]
 
     defaultConfig {
-        applicationId config["application_id"]
-        minSdkVersion config["min_sdk"]
-        targetSdkVersion config["target_sdk"]
-        versionCode config["version_code"]
-        versionName config["version_name"]
+        applicationId             config["application_id"]
+        minSdkVersion             config["min_sdk"]
+        targetSdkVersion          config["target_sdk"]
+        versionCode               config["version_code"]
+        versionName               config["version_name"]
         testInstrumentationRunner config["test_runner"]
     }
 
@@ -36,57 +36,46 @@ android {
 }
 
 dependencies {
-    def coreDependencies = rootProject.ext.core
-    def developmentDependencies = rootProject.ext.development
+    def libs = rootProject.ext.libs
 
     implementation project(':lagacy')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin
-    implementation coreDependencies.kotlin
-    implementation coreDependencies.kotlinReflect
+    implementation libs.kotlin
+    implementation libs.kotlinReflect
 
     //android support
-    implementation coreDependencies.cardViewV7
-    implementation coreDependencies.recyclerViewV7
-    implementation coreDependencies.supportDesign
-    implementation coreDependencies.constraintLayout
-    implementation 'androidx.core:core-ktx:1.0.0-rc01'
+    implementation libs.cardView
+    implementation libs.recyclerView
+    implementation libs.material
+    implementation libs.constraintLayout
+    implementation libs.coreKtx
 
     //architecture
-    kapt            coreDependencies.lifecycleCompiler
-    kapt            coreDependencies.roomAnnotation
-    implementation coreDependencies.lifecycleRuntime
-    implementation coreDependencies.lifecycleExtensions
-    implementation coreDependencies.room
-    implementation coreDependencies.roomRxJava
-    implementation 'com.google.android.material:material:1.0.0-rc01'
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha05'
-
+    kapt           libs.lifecycleCompiler
+    kapt           libs.roomAnnotation
+    implementation libs.lifecycleRuntime
+    implementation libs.lifecycleExtensions
+    implementation libs.room
+    implementation libs.roomRxJava
+    implementation libs.material
+    implementation libs.navigation
 
     //DI
 
     //rx
-    implementation coreDependencies.rxKotlin
-    implementation coreDependencies.rxAndroid
-    implementation coreDependencies.rxRelay
+    implementation libs.rxKotlin
+    implementation libs.rxAndroid
+    implementation libs.rxRelay
 
     //debug
-    implementation developmentDependencies.stetho
-    implementation developmentDependencies.timber
+    implementation libs.stetho
+    implementation libs.timber
 
     //test
     testImplementation 'junit:junit:4.12'
 
     //other
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
-
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
-//    implementation 'androidx.core:core-ktx:0.3'
-//    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
 }

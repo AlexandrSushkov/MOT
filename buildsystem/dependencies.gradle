@@ -10,11 +10,12 @@ allprojects {
 
 ext {
     //android support libs
-    supportLibrary_version = '27.1.1'
-    constraintLayout_version = '1.1.2'
+    constraint_layout_version = '1.1.2'
+    androdix_version = '1.0.0-rc02'
+    material_version = '1.0.0-rc01'
 
     //architecture
-    archComponents_version = '1.1.1'
+    archComponents_version = '2.0.0-alpha1'
 
     //DI
 
@@ -27,40 +28,38 @@ ext {
     stetho_version = '1.5.0'
     timber_version = '4.6.1'
 
-    core = [
+    libs = [
             //Kotlin
-            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
-            kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
+            kotlin             : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+            kotlinReflect      : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
 
             //support
-            cardViewV7              : "androidx.cardview:cardview:1.0.0-alpha1",
-            recyclerViewV7          : "androidx.recyclerview:recyclerview:1.0.0-alpha1",
-            supportLibV4            : "androidx.legacy:legacy-support-v4:1.0.0-alpha1",
-            supportDesign           : "com.google.android.material:material:1.0.0-alpha1",
-            customTabs              : "androidx.browser:browser:1.0.0-alpha1",
-            constraintLayout        : "androidx.constraintlayout:constraintlayout:1.1.0",
+            material           : "com.google.android.material:material:$material_version",
+            constraintLayout   : "androidx.constraintlayout:constraintlayout:$constraint_layout_version",
+            cardView           : "androidx.cardview:cardview:$androdix_version",
+            recyclerView       : "androidx.recyclerview:recyclerview:$androdix_version",
+            supportLibV4       : "androidx.legacy:legacy-support-v4:$androdix_version",
+            customTabs         : "androidx.browser:browser:$androdix_version",
+            coreKtx            : "androidx.core:core-ktx:$androdix_version",
 
-            //architecture
-            lifecycleRuntime        : "androidx.lifecycle:lifecycle-runtime:2.0.0-alpha1",
-            lifecycleExtensions     : "androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1",
-            lifecycleCompiler       : "androidx.lifecycle:lifecycle-compiler:2.0.0-alpha1",
-            room                    : "androidx.room:room-runtime:2.0.0-alpha1",
-            roomAnnotation          : "androidx.room:room-compiler:2.0.0-alpha1",
-            roomRxJava              : "androidx.room:room-rxjava2:2.0.0-alpha1",
+            //architecture components
+            lifecycleRuntime   : "androidx.lifecycle:lifecycle-runtime:$archComponents_version",
+            lifecycleExtensions: "androidx.lifecycle:lifecycle-extensions:$archComponents_version",
+            lifecycleCompiler  : "androidx.lifecycle:lifecycle-compiler:$archComponents_version",
+            room               : "androidx.room:room-runtime:$archComponents_version",
+            roomAnnotation     : "androidx.room:room-compiler:$archComponents_version",
+            roomRxJava         : "androidx.room:room-rxjava2:$archComponents_version",
+            navigation         : "android.arch.navigation:navigation-fragment:1.0.0-alpha05",
 
             //DI
 
-
             //rx
-            rxKotlin                : "io.reactivex.rxjava2:rxkotlin:$rxKotlin_version",
-            rxAndroid               : "io.reactivex.rxjava2:rxandroid:$rxAndroid_version",
-            rxRelay                 : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version"
+            rxKotlin           : "io.reactivex.rxjava2:rxkotlin:$rxKotlin_version",
+            rxAndroid          : "io.reactivex.rxjava2:rxandroid:$rxAndroid_version",
+            rxRelay            : "com.jakewharton.rxrelay2:rxrelay:$rxRelay_version",
 
-    ]
-
-    development = [
             //debug
-            stetho                  : "com.facebook.stetho:stetho:$stetho_version",
-            timber                  : "com.jakewharton.timber:timber:$timber_version"
+            stetho             : "com.facebook.stetho:stetho:$stetho_version",
+            timber             : "com.jakewharton.timber:timber:$timber_version"
     ]
 }
