@@ -10,6 +10,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dev.nelson.mot.activity.MainActivity
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.transfer.TransferDBActivity
 import dev.nelson.mot.presentations.base.BaseActivity
 import dev.nelson.mot.presentations.home.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.presentations.payment.EditPaymentActivity
@@ -27,7 +28,7 @@ class HomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
-        fab = this.findViewById(R.id.fab)
+        fab = findViewById(R.id.fab)
 
         setSupportActionBar(bar)
         fab.setOnClickListener { startActivity(EditPaymentActivity.getIntent(this)) }
@@ -48,6 +49,7 @@ class HomeActivity : BaseActivity() {
             R.id.show -> fab.show()
             R.id.hide -> fab.hide()
             R.id.legacy -> startActivity(Intent(this, MainActivity::class.java))
+            R.id.transfer_db -> startActivity(Intent(this, TransferDBActivity::class.java))
         }
         return true
     }
