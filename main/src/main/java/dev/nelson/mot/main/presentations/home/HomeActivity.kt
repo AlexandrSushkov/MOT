@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import dev.nelson.mot.activity.MainActivity
 import dev.nelson.mot.main.R
 import dev.nelson.mot.presentations.base.BaseActivity
 import dev.nelson.mot.presentations.home.MotRoundedBottomSheetDialogFragment
@@ -47,7 +46,6 @@ class HomeActivity : BaseActivity() {
             R.id.settings -> startActivity(SettingsActivity.getIntent(this))
             R.id.show -> fab.show()
             R.id.hide -> fab.hide()
-            R.id.legacy -> startActivity(Intent(this, MainActivity::class.java))
         }
         return true
     }

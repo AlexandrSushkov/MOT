@@ -16,7 +16,7 @@
     <style name="AppThemeLight" parent="BaseAppThemeLight" />
 
     <style name="SplashThemeLight" parent="BaseAppThemeLight">
-        <item name="android:windowBackground">@drawable/activity_splash</item>
+        <item name="android:windowBackground">@drawable/splash_activity_window_background</item>
         <item name="android:navigationBarColor">@color/color_white</item>
     </style>
 
