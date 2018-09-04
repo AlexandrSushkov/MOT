@@ -1,5 +1,7 @@
 package dev.nelson.mot.utils;
 
+import android.content.Context;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -23,8 +25,8 @@ public class StringUtils {
         return matcher.find();
     }
 
-    public static String formattedCost(long cost){
-        Locale myLocale = LocaleUtils.getLocaleForChosenCurrency();
+    public static String formattedCost(Context context, long cost){
+        Locale myLocale = LocaleUtils.getLocaleForChosenCurrency(context);
         BigDecimal costValue = new BigDecimal(cost);
         BigDecimal parsed = costValue.setScale(2, BigDecimal.ROUND_FLOOR).divide(new BigDecimal(100), BigDecimal.ROUND_FLOOR);
         return NumberFormat.getCurrencyInstance(myLocale).format(parsed);

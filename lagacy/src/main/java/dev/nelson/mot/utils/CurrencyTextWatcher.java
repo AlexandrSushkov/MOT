@@ -1,5 +1,6 @@
 package dev.nelson.mot.utils;
 
+import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -17,9 +18,9 @@ public class CurrencyTextWatcher implements TextWatcher {
     private int stringLengthAfterChanges = 0;
     private boolean isLastCharacterDigit;
 
-    public CurrencyTextWatcher(EditText editText) {
-        editTextWeakReference = new WeakReference<EditText>(editText);
-        myLocale = LocaleUtils.getLocaleForChosenCurrency();
+    public CurrencyTextWatcher(Context context, EditText editText) {
+        editTextWeakReference = new WeakReference<>(editText);
+        myLocale = LocaleUtils.getLocaleForChosenCurrency(context);
     }
 
     @Override

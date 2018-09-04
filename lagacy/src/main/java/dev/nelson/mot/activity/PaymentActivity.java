@@ -44,14 +44,13 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     private static final String PAYMENT_INITIAL_STATE_KEY = "payment_initial_state";
     private static final String PAYMENT_CURRENT_STATE_KEY = "payment_current_state";
 
-    Toolbar mToolbar = findViewById(R.id.payment_toolbar);
-    EditText mTitle = findViewById(R.id.item_payment_text_title);
-    TextView mCategoryName = findViewById(R.id.payment_category);
-    EditText mCost = findViewById(R.id.item_payment_text_cost);
-    EditText mSummary = findViewById(R.id.payment_summary);
-    FloatingActionButton mFab = findViewById(R.id.payment_fab);
-    LinearLayout mPaymentWrapper = findViewById(R.id.payment_wrapper);
-
+    private Toolbar mToolbar;
+    private EditText mTitle;
+    private TextView mCategoryName;
+    private EditText mCost;
+    private EditText mSummary;
+    private FloatingActionButton mFab;
+    private LinearLayout mPaymentWrapper;
     private ActionBar mActonBar;
     private String mActionStatus;
     private PaymentLoaderCallbacks mPaymentLoaderCallbacks;
@@ -66,6 +65,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+        initView();
         initToolbar();
         mActionStatus = getIntent().getAction();
         switch (mActionStatus) {
@@ -78,7 +78,7 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
             default:
                 throw new IllegalStateException(getClass().getName() + " Wrong action flag.");
         }
-        mCost.addTextChangedListener(new CurrencyTextWatcher(mCost));
+        mCost.addTextChangedListener(new CurrencyTextWatcher(this, mCost));
         if (paymentInitialState == null && paymentCurrentState == null) {
             initPaymentStates();
         }
@@ -210,6 +210,16 @@ public class PaymentActivity extends AppCompatActivity implements SetDataFromPay
         paymentCurrentState.setSummary(mSummary.getText().toString());
         outState.putParcelable(PAYMENT_INITIAL_STATE_KEY, paymentInitialState);
         outState.putParcelable(PAYMENT_CURRENT_STATE_KEY, paymentCurrentState);
+    }
+
+    private void initView() {
+        mToolbar = findViewById(R.id.payment_toolbar);
+        mTitle = findViewById(R.id.item_payment_text_title);
+        mCategoryName = findViewById(R.id.payment_category);
+        mCost = findViewById(R.id.item_payment_text_cost);
+        mSummary = findViewById(R.id.payment_summary);
+        mFab = findViewById(R.id.payment_fab);
+        mPaymentWrapper = findViewById(R.id.payment_wrapper);
     }
 
     private void initToolbar() {

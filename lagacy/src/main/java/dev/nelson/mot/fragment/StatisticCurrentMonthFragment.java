@@ -61,7 +61,7 @@ public class StatisticCurrentMonthFragment extends Fragment implements Statistic
             return;
         }
 //        Log.i("VAL SELECTED", "Value: " + e.getY() + ", index: " + h.getX() + ", DataSet index: " + h.getDataSetIndex());
-        Toast.makeText(getContext(), ((PieEntry) e).getLabel() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), ((PieEntry) e).getLabel() + ": " + String.valueOf(StringUtils.formattedCost(getContext(), (long) e.getY())), Toast.LENGTH_SHORT).show();
     }
 
     @Override

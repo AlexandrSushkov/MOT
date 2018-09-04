@@ -85,7 +85,7 @@ public class StatisticByMonthsLoaderCallbacks implements LoaderManager.LoaderCal
                 data.moveToNext();
             }
 
-            LineDataSet set = new LineDataSet(entries, "Total: " + StringUtils.formattedCost(totalCost));
+            LineDataSet set = new LineDataSet(entries, "Total: " + StringUtils.formattedCost(mContext, totalCost));
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(set);
             LineData lineData = new LineData(dataSets);

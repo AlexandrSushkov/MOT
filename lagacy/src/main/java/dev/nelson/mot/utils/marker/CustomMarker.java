@@ -27,7 +27,7 @@ public class CustomMarker extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        mText.setText(e.getData() + ": " + String.valueOf(StringUtils.formattedCost((long) e.getY())));
+        mText.setText(e.getData() + ": " + String.valueOf(StringUtils.formattedCost(getContext(), (long) e.getY())));
         super.refreshContent(e, highlight);
     }
 

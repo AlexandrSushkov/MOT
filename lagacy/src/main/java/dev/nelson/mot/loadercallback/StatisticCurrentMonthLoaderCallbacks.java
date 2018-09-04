@@ -77,7 +77,7 @@ public class StatisticCurrentMonthLoaderCallbacks implements LoaderManager.Loade
                 totalCost += cost;
                 data.moveToNext();
             }
-            PieDataSet dataSet = new PieDataSet(entries, StringUtils.formattedCost(totalCost));
+            PieDataSet dataSet = new PieDataSet(entries, StringUtils.formattedCost(mContext, totalCost));
             PieData pieData = new PieData(dataSet);
 
             mStatisticCurrentMonthCallback.setDataFromStatisticCurrentMonthLoaderCallbacks(pieData);

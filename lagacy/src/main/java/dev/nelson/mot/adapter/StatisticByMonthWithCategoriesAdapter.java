@@ -123,7 +123,7 @@ public class StatisticByMonthWithCategoriesAdapter extends ArrayAdapter<BarData>
         for (int j = 0; j < dataSet.getEntryCount(); j++) {
             totalCost += dataSet.getEntryForIndex(j).getY();
         }
-        return StringUtils.formattedCost(totalCost);
+        return StringUtils.formattedCost(getContext(), totalCost);
     }
 
     private class ViewHolder {
