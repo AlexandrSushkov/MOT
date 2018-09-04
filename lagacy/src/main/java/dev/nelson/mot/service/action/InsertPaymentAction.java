@@ -1,13 +1,18 @@
 package dev.nelson.mot.service.action;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.os.Bundle;
 
 import dev.nelson.mot.db.model.PaymentsProvider;
-import dev.nelson.mot.MotApplication;
 import dev.nelson.mot.utils.StringUtils;
 
 class InsertPaymentAction implements DataOperationAction{
+
+    private Context mContext;
+    public InsertPaymentAction(Context context) {
+        mContext = context;
+    }
 
     @Override
     public void perform(Bundle bundle) {
@@ -22,6 +27,6 @@ class InsertPaymentAction implements DataOperationAction{
             cv.put(PaymentsProvider.Columns.CATEGORY_ID, categoryId);
         }
         cv.put(PaymentsProvider.Columns.COST, cost);
-        MotApplication.Companion.getContext().getContentResolver().insert(PaymentsProvider.URI, cv);
+        mContext.getContentResolver().insert(PaymentsProvider.URI, cv);
     }
 }

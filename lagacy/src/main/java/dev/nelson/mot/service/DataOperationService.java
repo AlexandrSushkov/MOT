@@ -21,7 +21,7 @@ public class DataOperationService extends IntentService {
             return;
         }
         Log.d(TAG, "onHandleIntent: " + intent.getAction());
-        DataOperationAction action = DataOperationFabric.getAction(intent.getAction());
+        DataOperationAction action = DataOperationFabric.getAction(getBaseContext(), intent.getAction());
         action.perform(intent.getExtras());
     }
 }

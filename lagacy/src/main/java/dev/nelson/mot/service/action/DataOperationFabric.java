@@ -1,5 +1,7 @@
 package dev.nelson.mot.service.action;
 
+import android.content.Context;
+
 public class DataOperationFabric {
 
     public static final String INSERT_PAYMENT = "insert_payment";
@@ -9,20 +11,20 @@ public class DataOperationFabric {
     public static final String DELETE_PAYMENT = "delete_payment";
     public static final String DELETE_CATEGORY = "delete_category";
 
-    public static DataOperationAction getAction (String action){
+    public static DataOperationAction getAction (Context context, String action){
         switch (action){
             case INSERT_PAYMENT:
-                return new InsertPaymentAction();
+                return new InsertPaymentAction(context);
             case INSERT_CATEGORY:
-                return new InsertCategoryAction();
+                return new InsertCategoryAction(context);
             case UPDATE_PAYMENT:
-                return new UpdatePaymentAction();
+                return new UpdatePaymentAction(context);
             case UPDATE_CATEGORY:
-                return new UpdateCategoryAction();
+                return new UpdateCategoryAction(context);
             case DELETE_PAYMENT:
-                return new DeletePaymentAction();
+                return new DeletePaymentAction(context);
             case DELETE_CATEGORY:
-                return new DeleteCategoryAction();
+                return new DeleteCategoryAction(context);
             default:
                 throw new RuntimeException(DataOperationFabric.class.getName() + " No such action: " + action);
         }

@@ -26,9 +26,8 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
 
     public static final int REQUEST_CODE = 100;
 
-    Toolbar mToolbar = findViewById(R.id.toolbar);
-    RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
-
+    private Toolbar mToolbar;
+    private RecyclerView mRecyclerView;
     private CategoriesAdapter mAdapter;
     private CategoriesLoaderCallbacks mLoaderCallbacks;
     private ActionBar mActonBar;
@@ -37,6 +36,7 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_category);
+        initView();
         initToolbar();
         mAdapter = new CategoriesAdapter(this, null, CategoriesAdapter.FLAG_CHOOSE_CATEGORY, this, this);
         initRecyclerView();
@@ -50,7 +50,7 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
         inflater.inflate(R.menu.fragment_categories_menu, menu);
         for (int i = 0; i < menu.size(); i++) {
             Drawable drawable = menu.getItem(i).getIcon();
-            if (drawable != null){
+            if (drawable != null) {
                 drawable.mutate();
                 drawable.setColorFilter(ContextCompat.getColor(this, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
             }
@@ -74,6 +74,11 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
         setResult(RESULT_OK, resultIntent);
     }
 
+    private void initView() {
+        mToolbar = findViewById(R.id.toolbar);
+        mRecyclerView = findViewById(R.id.recycler_view);
+    }
+
     private void initToolbar() {
         setSupportActionBar(mToolbar);
         if ((mActonBar = getSupportActionBar()) != null) {
@@ -81,7 +86,7 @@ public class ChooseCategoryActivity extends AppCompatActivity implements SetData
         }
     }
 
-    private void initRecyclerView(){
+    private void initRecyclerView() {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         DividerItemDecoration decoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);

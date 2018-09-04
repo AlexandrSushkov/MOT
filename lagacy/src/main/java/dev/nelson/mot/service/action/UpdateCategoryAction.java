@@ -1,15 +1,21 @@
 package dev.nelson.mot.service.action;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import dev.nelson.mot.db.model.CategoriesProvider;
-import dev.nelson.mot.MotApplication;
 import dev.nelson.mot.utils.Constants;
 import dev.nelson.mot.utils.StringUtils;
 
 public class UpdateCategoryAction implements DataOperationAction {
+
+    private Context mContext;
+    public UpdateCategoryAction(Context context) {
+        mContext = context;
+    }
+
     @Override
     public void perform(Bundle bundle) {
         int categoryId = bundle.getInt(Constants.ID_KEY, -1);
@@ -17,6 +23,6 @@ public class UpdateCategoryAction implements DataOperationAction {
         Uri uri = Uri.withAppendedPath(CategoriesProvider.URI, String.valueOf(categoryId));
         ContentValues cv = new ContentValues();
         cv.put(CategoriesProvider.Columns.CATEGORY_NAME, StringUtils.capitalizeFirstCharacter(newName));
-        MotApplication.Companion.getContext().getContentResolver().update(uri, cv, null, null);
+        mContext.getContentResolver().update(uri, cv, null, null);
     }
 }
