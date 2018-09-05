@@ -11,8 +11,10 @@ class DBTransferRepository(var context: Context)  {
 
     private val payments: MutableList<Payment> = ArrayList()
 
+    /**
+     * transfer payments data to new database
+     */
     fun transferPayments() {
-        //todo transfer payments data to new database
         val helper = SQLiteOpenHelperImpl(context)
         val db = helper.readableDatabase
         val rawQuery = ("select *" + " from " + PaymentsProvider.TABLE_NAME)

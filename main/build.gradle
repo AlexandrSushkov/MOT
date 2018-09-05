@@ -42,7 +42,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin
-    implementation libs.kotlin
+    implementation libs.kotlinJDK
     implementation libs.kotlinReflect
 
     //android support
@@ -63,6 +63,10 @@ dependencies {
     implementation libs.navigation
 
     //DI
+    kapt           libs.daggerProcessor
+    kapt           libs.daggerAndroidProcessor
+    implementation libs.dagger2
+    implementation libs.daggerAndroid
 
     //rx
     implementation libs.rxKotlin
@@ -74,8 +78,8 @@ dependencies {
     implementation libs.timber
 
     //test
-    testImplementation 'junit:junit:4.12'
+    testImplementation libs.jUnit
 
     //other
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation libs.MPAndroidChart
 }
