@@ -8,11 +8,10 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import dev.nelson.mot.activity.MainActivity
+import dev.nelson.mot.legacy.activity.MainActivity
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.transfer.TransferDBActivity
-import dev.nelson.mot.presentations.base.BaseActivity
-import dev.nelson.mot.presentations.home.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.presentations.payment.EditPaymentActivity
 import dev.nelson.mot.presentations.settings.SettingsActivity
 
@@ -32,7 +31,6 @@ class HomeActivity : BaseActivity() {
 
         setSupportActionBar(bar)
         fab.setOnClickListener { startActivity(EditPaymentActivity.getIntent(this)) }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

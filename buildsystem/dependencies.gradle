@@ -25,6 +25,7 @@ ext {
 
             //support
             material              : "com.google.android.material:material:1.0.0-rc01",
+            appCompat             : "androidx.appcompat:appcompat:1.0.0",
             constraintLayout      : "androidx.constraintlayout:constraintlayout:1.1.2",
             cardView              : "androidx.cardview:cardview:$android_x_version",
             recyclerView          : "androidx.recyclerview:recyclerview:$android_x_version",

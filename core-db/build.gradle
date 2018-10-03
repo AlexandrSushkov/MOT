@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply from: "$rootDir/scripts/module_settings.gradle"
+
+dependencies {
+    def libs = rootProject.ext.libs
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //Kotlin
+    implementation libs.kotlinJDK
+    implementation libs.kotlinReflect
+
+    //test
+    testImplementation libs.jUnit
+}

@@ -1,14 +1,4 @@
-package dev.nelson.mot.extentions
-
-import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import dev.nelson.mot.presentations.base.BaseViewModel
+package dev.nelson.mot.main.extentions
 
 //fun <T : ViewDataBinding> FragmentActivity.getDataBinding(@LayoutRes layoutId: Int): T = DataBindingUtil.setContentView(this, layoutId)
 //fun <T : ViewDataBinding> AppCompatActivity.getDataBinding(@LayoutRes layoutId: Int): T = DataBindingUtil.setContentView(this, layoutId)

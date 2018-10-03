@@ -1,4 +1,4 @@
-package dev.nelson.mot.presentations.base
+package dev.nelson.mot.main.presentations.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.google.android.material.bottomappbar.BottomAppBar
 import dev.nelson.mot.R
-import dev.nelson.mot.presentations.base.BaseActivity
+import dev.nelson.mot.main.presentations.base.BaseActivity
 
 class SettingsActivity: BaseActivity() {
 

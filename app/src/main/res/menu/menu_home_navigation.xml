@@ -14,6 +14,11 @@
             android:id="@+id/nav_statistic_item"
             android:icon="@drawable/ic_trending_down_black_24dp"
             android:title="statistic" />
+
+        <item
+            android:id="@+id/payment_module_item"
+            android:icon="@drawable/ic_tag_plus"
+            android:title="payment_module" />
     </group>
 
     <group android:checkableBehavior="none">

@@ -39,6 +39,7 @@ dependencies {
     def libs = rootProject.ext.libs
 
     implementation project(':lagacy')
+    implementation project(':feature-payments')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //Kotlin

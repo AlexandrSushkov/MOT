@@ -3,7 +3,7 @@ package dev.nelson.mot.main.presentations.transfer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.repository.DBTransferRepository
+import dev.nelson.mot.main.data.repository.DBTransferRepository
 
 class TransferDBActivity : AppCompatActivity() {
 
