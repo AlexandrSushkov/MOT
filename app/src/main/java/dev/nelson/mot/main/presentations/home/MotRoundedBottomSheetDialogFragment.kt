@@ -27,8 +27,8 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_menu_item_home -> toast("recent payments")
-                R.id.nav_statistic_item -> toast("category")
-                R.id.nav_categorise_item -> toast("statistic")
+                R.id.nav_statistic_item -> toast("statistic")
+                R.id.nav_categorise_item -> toast("category")
                 R.id.nav_about_item -> toast("about")
             }
             finish()

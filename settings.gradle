@@ -1,1 +1,1 @@
-include ':main', ':lagacy'
+include ':app', ':lagacy'

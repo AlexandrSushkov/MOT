@@ -13,10 +13,10 @@ buildscript {
     ext.compile_sdk = 28
     ext.target_sdk = 28
     ext.min_sdk = 28
-    ext.build_tools_version = '28.0.2'
+    ext.build_tools_version = '28.0.3'
 
-    ext.kotlin_version = '1.2.61'
-    ext.gradle_version = '3.3.0-alpha08'
+    ext.kotlin_version = '1.2.71'
+    ext.gradle_version = '3.3.0-alpha13'
     ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
 
     //google

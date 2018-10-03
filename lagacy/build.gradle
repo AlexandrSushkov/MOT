@@ -38,3 +38,6 @@ dependencies {
     //other
     implementation libs.MPAndroidChart
 }
+repositories {
+    mavenCentral()
+}

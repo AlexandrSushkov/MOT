@@ -10,7 +10,7 @@ allprojects {
 
 ext {
     //android support libs
-    android_x_version = '1.0.0-rc02'
+    android_x_version = '1.0.0'
 
     //architecture
     archComponents_version = '2.0.0-alpha1'
@@ -48,16 +48,16 @@ ext {
             daggerAndroidProcessor: "com.google.dagger:dagger-android-processor:$dagger_version",
 
             //rx
-            rxKotlin              : "io.reactivex.rxjava2:rxkotlin:2.1.0",
-            rxAndroid             : "io.reactivex.rxjava2:rxandroid:2.0.1",
-            rxRelay               : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
+            rxKotlin              : "io.reactivex.rxjava2:rxkotlin:2.3.0",
+            rxAndroid             : "io.reactivex.rxjava2:rxandroid:2.1.0",
+            rxRelay               : "com.jakewharton.rxrelay2:rxrelay:2.1.0",
 
             //firebase
             firebaseCrash         : "com.google.firebase:firebase-crash:16.2.0",
 
             //debug
             stetho                : "com.facebook.stetho:stetho:1.5.0",
-            timber                : "com.jakewharton.timber:timber:4.6.1",
+            timber                : "com.jakewharton.timber:timber:4.7.1",
 
             //test
             jUnit                 : "junit:junit:4.12",
