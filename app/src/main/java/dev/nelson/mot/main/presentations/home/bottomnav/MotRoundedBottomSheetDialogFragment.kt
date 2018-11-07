@@ -1,7 +1,6 @@
-package dev.nelson.mot.main.presentations.home
+package dev.nelson.mot.main.presentations.home.bottomnav
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
-import dev.nelson.mot.featurePayments.presentation.PaymentActivity
 import dev.nelson.mot.main.R
 
 class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
@@ -28,11 +26,11 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val navigationView: NavigationView = view.findViewById(R.id.bottom_navigation)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_menu_item_home -> toast("recent payments")
-                R.id.nav_statistic_item -> toast("statistic")
-                R.id.nav_categorise_item -> toast("category")
-                R.id.payment_module_item -> startActivity(Intent(context, PaymentActivity::class.java))
-                R.id.nav_about_item -> toast("about")
+//                R.id.nav_menu_item_home -> toast("recent payments")
+//                R.id.nav_statistic_item -> toast("statistic")
+//                R.id.nav_categorise_item -> toast("category")
+//                R.id.payment_module_item -> startActivity(Intent(context, PaymentActivity::class.java))
+//                R.id.nav_about_item -> toast("about")
             }
             finish()
             true

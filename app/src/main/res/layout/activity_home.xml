@@ -7,15 +7,15 @@
 
         <variable
             name="viewModel"
-            type="dev.nelson.mot.presentations.home.HomeViewModel" />
+            type="dev.nelson.mot.main.presentations.home.HomeViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:backgroundTint="@color/colorAccent">
+        android:backgroundTint="@color/colorAccent"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,9 +24,9 @@
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appbar"
-                android:backgroundTint="@color/color_white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/color_white"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 
@@ -34,9 +34,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/google_sans"
-                    android:text="Recent purchase"
-                    android:textSize="16sp"/>
+                    android:text="Movies"
+                    android:textSize="16sp" />
 
             </com.google.android.material.appbar.AppBarLayout>
 
@@ -44,10 +43,9 @@
                 android:id="@+id/navigation_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 app:defaultNavHost="true"
-                app:navGraph="@navigation/home_navigation" />
+                app:navGraph="@navigation/my_nav" />
 
         </LinearLayout>
 
@@ -56,16 +54,18 @@
             style="@style/MotBottomAppBarTheme"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:hideOnScroll="true"
             android:elevation="6dp"
-            app:navigationIcon="@drawable/ic_menu" />
+            app:fabAlignmentMode="end"
+            app:hideOnScroll="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add_black_24dp"
-            app:layout_anchor="@id/bottom_app_bar" />
+            app:layout_behavior="dev.nelson.mot.main.utils.recycler.fab.ScrollAwareFABBehavior"
+            android:src="@drawable/ic_filter_list_black_24dp"
+            app:layout_anchor="@+id/bottom_app_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

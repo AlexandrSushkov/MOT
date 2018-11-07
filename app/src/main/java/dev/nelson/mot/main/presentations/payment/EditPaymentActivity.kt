@@ -1,10 +1,8 @@
-package dev.nelson.mot.presentations.payment
+package dev.nelson.mot.main.presentations.payment
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import dev.nelson.mot.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 
 class EditPaymentActivity: BaseActivity() {
@@ -15,9 +13,9 @@ class EditPaymentActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_payment)
-
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { finish() }
+//        setContentView(R.layout.activity_edit_payment)
+//
+//        val fab: FloatingActionButton = findViewById(R.id.fab)
+//        fab.setOnClickListener { finish() }
     }
 }

@@ -1,6 +1,6 @@
-package dev.nelson.mot.presentations.home
+package dev.nelson.mot.main.presentations.home
 
-import dev.nelson.mot.presentations.base.BaseViewModel
+import dev.nelson.mot.main.presentations.base.BaseViewModel
 
 class HomeViewModel : BaseViewModel(){
 

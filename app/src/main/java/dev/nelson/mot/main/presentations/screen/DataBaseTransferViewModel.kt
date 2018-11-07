@@ -1,7 +1,7 @@
-package dev.nelson.mot.presentations.screen
+package dev.nelson.mot.main.presentations.screen
 
 import androidx.databinding.ObservableBoolean
-import dev.nelson.mot.presentations.base.BaseViewModel
+import dev.nelson.mot.main.presentations.base.BaseViewModel
 
 class DataBaseTransferViewModel : BaseViewModel() {
 

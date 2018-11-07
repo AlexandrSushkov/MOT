@@ -1,11 +1,9 @@
-package dev.nelson.mot.presentations.settings
+package dev.nelson.mot.main.presentations.settings
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import com.google.android.material.bottomappbar.BottomAppBar
-import dev.nelson.mot.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 
 class SettingsActivity: BaseActivity() {
@@ -16,10 +14,10 @@ class SettingsActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-
-        val bottomAppBar: BottomAppBar = findViewById(R.id.bottom_app_bar)
-        setSupportActionBar(bottomAppBar)
+//        setContentView(R.layout.activity_settings)
+//
+//        val bottomAppBar: BottomAppBar = findViewById(R.id.bottom_app_bar)
+//        setSupportActionBar(bottomAppBar)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

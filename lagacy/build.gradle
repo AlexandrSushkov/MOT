@@ -37,6 +37,7 @@ dependencies {
 
     //other
     implementation libs.MPAndroidChart
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha07'
 }
 repositories {
     mavenCentral()

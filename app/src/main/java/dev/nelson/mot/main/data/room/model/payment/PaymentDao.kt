@@ -3,6 +3,7 @@ package dev.nelson.mot.room.model.payment
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import dev.nelson.mot.main.data.room.model.payment.Payment
 import io.reactivex.Flowable
 
 @Dao

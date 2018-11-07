@@ -15,8 +15,8 @@ buildscript {
     ext.min_sdk = 28
     ext.build_tools_version = '28.0.3'
 
-    ext.kotlin_version = '1.2.71'
-    ext.gradle_version = '3.3.0-alpha13'
+    ext.kotlin_version = '1.3.0'
+    ext.gradle_version = '3.3.0-beta02'
     ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
 
     //google
@@ -32,6 +32,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$google_services_version"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0-alpha07'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

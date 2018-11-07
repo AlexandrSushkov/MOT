@@ -1,9 +1,8 @@
-package dev.nelson.mot.presentations.screen
+package dev.nelson.mot.main.presentations.screen
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import dev.nelson.mot.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 
 class DataBaseTransferActivity: BaseActivity(){
@@ -15,6 +14,6 @@ class DataBaseTransferActivity: BaseActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_data_base_transfer)
+//        setContentView(R.layout.activity_data_base_transfer)
     }
 }

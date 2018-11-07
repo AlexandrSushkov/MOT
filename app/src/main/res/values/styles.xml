@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
@@ -20,7 +20,7 @@
         <item name="android:navigationBarColor">@color/color_white</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeDark" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -32,7 +32,7 @@
     </style>
 
     <style name="SplashTheme" parent="AppThemeLight">
-        <item name="android:windowBackground">@drawable/activity_splash</item>
+        <!--<item name="android:windowBackground">@drawable/activity_splash</item>-->
         <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
     </style>
 
@@ -40,8 +40,8 @@
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+        <!--<item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>-->
+        <!--<item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>-->
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
@@ -52,7 +52,7 @@
 
     <!--bottom sheet dialog-->
     <style name="RoundedBottomSheetTheme" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/rounded_bottom_sheet_dialog_background</item>
+        <!--<item name="android:background">@drawable/rounded_bottom_sheet_dialog_background</item>-->
     </style>
 
     <style name="BaseRoundedBottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
@@ -64,6 +64,12 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@color/color_white</item>
         <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <!--card view style-->
+    <style name="MotCardStyle" parent="CardView">
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
     </style>
 
     <!--bottom app bar-->

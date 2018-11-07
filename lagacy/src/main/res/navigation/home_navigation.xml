@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/resentPurchaseFragment"
-        android:name="dev.nelson.mot.presentations.home.fragments.ResentPurchaseFragment"
+        android:name="dev.nelson.mot.main.presentations.home.fragments.ResentPurchaseFragment"
         android:label="ResentPurchaseFragment"
         tools:layout="@layout/fragment_recent_purchase">
         <action
@@ -18,7 +18,7 @@
 
     <fragment
         android:id="@+id/categoriesFragment2"
-        android:name="dev.nelson.mot.presentations.home.fragments.CategoriesFragment"
+        android:name="dev.nelson.mot.main.presentations.home.fragments.CategoriesFragment"
         android:label="CategoriesFragment"
         tools:layout="@layout/fragment_categories_new">
         <action

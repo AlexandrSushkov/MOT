@@ -11,6 +11,6 @@ class TransferDBActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transfer_db)
         val dbTransferRepository = DBTransferRepository(this)
-        dbTransferRepository.transferPayments()
+//        dbTransferRepository.transferPayments()
     }
 }

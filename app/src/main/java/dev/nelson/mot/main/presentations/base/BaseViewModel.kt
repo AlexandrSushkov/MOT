@@ -1,4 +1,4 @@
-package dev.nelson.mot.presentations.base
+package dev.nelson.mot.main.presentations.base
 
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable

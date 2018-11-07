@@ -3,17 +3,16 @@ package dev.nelson.mot.main.presentations.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import dev.nelson.mot.legacy.activity.MainActivity
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
+import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
+import dev.nelson.mot.main.presentations.settings.SettingsActivity
 import dev.nelson.mot.main.presentations.transfer.TransferDBActivity
-import dev.nelson.mot.presentations.payment.EditPaymentActivity
-import dev.nelson.mot.presentations.settings.SettingsActivity
 
 class HomeActivity : BaseActivity() {
 
@@ -26,18 +25,16 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
-        fab = findViewById(R.id.fab)
-
-        setSupportActionBar(bar)
-        fab.setOnClickListener { startActivity(EditPaymentActivity.getIntent(this)) }
+        val homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        initAppBar()
+        initFab()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_home, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.menu_home, menu)
+//        return true
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
@@ -46,10 +43,22 @@ class HomeActivity : BaseActivity() {
             R.id.settings -> startActivity(SettingsActivity.getIntent(this))
             R.id.show -> fab.show()
             R.id.hide -> fab.hide()
-            R.id.legacy -> startActivity(Intent(this, MainActivity::class.java))
+//            R.id.legacy -> startActivity(Intent(this, MainActivity::class.java))
             R.id.transfer_db -> startActivity(Intent(this, TransferDBActivity::class.java))
         }
         return true
+    }
+
+    private fun initAppBar(){
+        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
+        setSupportActionBar(bar)
+    }
+
+    private fun initFab(){
+        fab = findViewById(R.id.fab)
+        fab.setOnClickListener {
+            //todo open filter fragment
+        }
     }
 
     private fun openNavigation() {
