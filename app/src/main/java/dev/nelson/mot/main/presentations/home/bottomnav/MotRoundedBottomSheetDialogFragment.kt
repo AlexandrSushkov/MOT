@@ -26,11 +26,9 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
         val navigationView: NavigationView = view.findViewById(R.id.bottom_navigation)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-//                R.id.nav_menu_item_home -> toast("recent payments")
-//                R.id.nav_statistic_item -> toast("statistic")
-//                R.id.nav_categorise_item -> toast("category")
-//                R.id.payment_module_item -> startActivity(Intent(context, PaymentActivity::class.java))
-//                R.id.nav_about_item -> toast("about")
+                R.id.nav_menu_item_home -> toast("movies")
+                R.id.nav_categorise_item -> toast("categories")
+                R.id.nav_about_item -> toast("about")
             }
             finish()
             true

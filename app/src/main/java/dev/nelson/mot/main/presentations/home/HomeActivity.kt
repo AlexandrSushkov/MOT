@@ -3,6 +3,7 @@ package dev.nelson.mot.main.presentations.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
@@ -11,8 +12,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.settings.SettingsActivity
-import dev.nelson.mot.main.presentations.transfer.TransferDBActivity
 
 class HomeActivity : BaseActivity() {
 
@@ -30,21 +29,21 @@ class HomeActivity : BaseActivity() {
         initFab()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.menu_home, menu)
-//        return true
-//    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             android.R.id.home -> openNavigation()
             R.id.search -> toast("search")
-            R.id.settings -> startActivity(SettingsActivity.getIntent(this))
-            R.id.show -> fab.show()
-            R.id.hide -> fab.hide()
+//            R.id.settings -> startActivity(SettingsActivity.getIntent(this))
+//            R.id.show -> fab.show()
+//            R.id.hide -> fab.hide()
 //            R.id.legacy -> startActivity(Intent(this, MainActivity::class.java))
-            R.id.transfer_db -> startActivity(Intent(this, TransferDBActivity::class.java))
+//            R.id.transfer_db -> startActivity(Intent(this, TransferDBActivity::class.java))
         }
         return true
     }
@@ -52,6 +51,8 @@ class HomeActivity : BaseActivity() {
     private fun initAppBar(){
         val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
         setSupportActionBar(bar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp)
     }
 
     private fun initFab(){

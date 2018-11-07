@@ -2,29 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/search"
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_black_24dp"
         android:title="search"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always" />
 
-    <item android:id="@+id/settings"
-        android:title="settings"
-        app:showAsAction="never"
-        />
-    <group >
-        <item
-            android:id="@+id/show"
-            android:title="show" />
+    <!--<item android:id="@+id/settings"-->
+    <!--android:title="settings"-->
+    <!--app:showAsAction="never"-->
+    <!--/>-->
+    <!--<group >-->
+    <!--<item-->
+    <!--android:id="@+id/show"-->
+    <!--android:title="show" />-->
 
-        <item
-            android:id="@+id/hide"
-            android:title="hide" />
-        <item
-            android:id="@+id/legacy"
-            android:title="legacy" />
-        <item
-            android:id="@+id/transfer_db"
-            android:title="transfer DB" />
-    </group>
+    <!--<item-->
+    <!--android:id="@+id/hide"-->
+    <!--android:title="hide" />-->
+    <!--<item-->
+    <!--android:id="@+id/legacy"-->
+    <!--android:title="legacy" />-->
+    <!--<item-->
+    <!--android:id="@+id/transfer_db"-->
+    <!--android:title="transfer DB" />-->
+    <!--</group>-->
 
 </menu>
