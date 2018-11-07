@@ -12,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
+import dev.nelson.mot.main.presentations.movieslist.MoviesListFragment
 
 class HomeActivity : BaseActivity() {
 
@@ -20,6 +21,7 @@ class HomeActivity : BaseActivity() {
     }
 
     lateinit var fab: FloatingActionButton
+    lateinit var moviesListFragment: MoviesListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +29,10 @@ class HomeActivity : BaseActivity() {
         val homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
         initAppBar()
         initFab()
+        moviesListFragment = MoviesListFragment.getInstance()
+
+        supportFragmentManager.beginTransaction().replace(R.id.container, moviesListFragment).commit()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -48,17 +54,18 @@ class HomeActivity : BaseActivity() {
         return true
     }
 
-    private fun initAppBar(){
+    private fun initAppBar() {
         val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
         setSupportActionBar(bar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp)
     }
 
-    private fun initFab(){
+    private fun initFab() {
         fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             //todo open filter fragment
+            moviesListFragment.expandFilterFragment()
         }
     }
 

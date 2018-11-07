@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.utils.recycler.fab;
+package dev.nelson.mot.main.util.recycler.fab;
 
 import android.content.Context;
 import android.util.AttributeSet;

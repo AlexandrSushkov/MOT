@@ -6,7 +6,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.domain.MovieUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.utils.extention.applyThrottling
+import dev.nelson.mot.main.util.extention.applyThrottling
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 

@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.utils.recycler.decoration
+package dev.nelson.mot.main.util.recycler.decoration
 
 import android.content.Context
 import android.graphics.Rect

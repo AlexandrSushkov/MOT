@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.utils.binding
+package dev.nelson.mot.main.util.binding
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +10,7 @@ import dev.nelson.mot.main.BR
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.databinding.ItemMovieBinding
-import dev.nelson.mot.main.utils.recycler.decoration.GridSpacingItemDecoration
+import dev.nelson.mot.main.util.recycler.decoration.GridSpacingItemDecoration
 
 @BindingAdapter(value = ["gridSpacingItemDecoration"])
 fun RecyclerView.applyItemDecoration(padding: Float) =

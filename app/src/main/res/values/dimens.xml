@@ -9,4 +9,7 @@
     <!--card view-->
     <dimen name="card_corner_radius">4dp</dimen>
 
+    <!--bottomSheetBehaviourDimen-->
+    <dimen name="design_bottom_sheet_peek_height_min">64dp</dimen>
+
 </resources>

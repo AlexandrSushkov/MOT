@@ -39,13 +39,20 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
-            <fragment
-                android:id="@+id/navigation_host_fragment"
-                android:name="androidx.navigation.fragment.NavHostFragment"
+            <!--<fragment-->
+                <!--android:id="@+id/navigation_host_fragment"-->
+                <!--android:name="androidx.navigation.fragment.NavHostFragment"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--app:defaultNavHost="true"-->
+                <!--app:navGraph="@navigation/my_nav" />-->
+
+            <FrameLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                app:navGraph="@navigation/my_nav" />
+                android:layout_height="match_parent">
+
+            </FrameLayout>
 
         </LinearLayout>
 
@@ -63,7 +70,7 @@
             style="@style/Widget.MaterialComponents.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_behavior="dev.nelson.mot.main.utils.recycler.fab.ScrollAwareFABBehavior"
+            app:layout_behavior="dev.nelson.mot.main.util.recycler.fab.ScrollAwareFABBehavior"
             android:src="@drawable/ic_filter_list_black_24dp"
             app:layout_anchor="@+id/bottom_app_bar" />
 

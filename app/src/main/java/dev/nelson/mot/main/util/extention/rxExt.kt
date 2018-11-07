@@ -1,6 +1,6 @@
-package dev.nelson.mot.main.utils.extention
+package dev.nelson.mot.main.util.extention
 
-import dev.nelson.mot.main.utils.constant.BUTTON_DEBOUNCE_DELAY_MS
+import dev.nelson.mot.main.util.constant.BUTTON_DEBOUNCE_DELAY_MS
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
 import io.reactivex.Observable
