@@ -10,12 +10,19 @@ import java.io.IOException
 class MovieRepositoryImpl(private val context: Context): MovieRepository {
 
     private val movieList:List<Movie>
+    private val genres:MutableSet<String> = HashSet()
 
     init {
         movieList = getTestData()
+        movieList.forEach {
+            val genresForMovie: List<String> = it.genre.split("|").map{ s -> s.trim() }
+            genres.addAll(genresForMovie)
+        }
     }
 
     override fun getMovieList() = Observable.just(movieList)!!
+
+    override fun getGenres() = Observable.just(genres.toList())!!
 
     private fun getTestData(): List<Movie> {
         val movieListString = loadJSONFromAsset("movies_list.json")
@@ -38,8 +45,10 @@ class MovieRepositoryImpl(private val context: Context): MovieRepository {
         }
         return json
     }
+
 }
 
 interface MovieRepository{
     fun getMovieList(): Observable<List<Movie>>
+    fun getGenres(): Observable<List<String>>
 }

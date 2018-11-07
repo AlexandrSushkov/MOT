@@ -6,4 +6,6 @@ class MovieUseCase(private val movieRepository: MovieRepository) {
 
     fun getMovieList() = movieRepository.getMovieList()
 
+    fun getGenres() = movieRepository.getGenres()
+
 }

@@ -56,13 +56,20 @@
 
         </LinearLayout>
 
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?actionBarSize"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:background="@drawable/bab_fake_shadow" />-->
+
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
             style="@style/MotBottomAppBarTheme"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:elevation="6dp"
             app:fabAlignmentMode="end"
+            android:elevation="6dp"
             app:hideOnScroll="true" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

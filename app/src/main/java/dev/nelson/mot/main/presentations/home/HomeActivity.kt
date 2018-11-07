@@ -63,10 +63,7 @@ class HomeActivity : BaseActivity() {
 
     private fun initFab() {
         fab = findViewById(R.id.fab)
-        fab.setOnClickListener {
-            //todo open filter fragment
-            moviesListFragment.expandFilterFragment()
-        }
+        fab.setOnClickListener { moviesListFragment.expandFilterFragment() }
     }
 
     private fun openNavigation() {

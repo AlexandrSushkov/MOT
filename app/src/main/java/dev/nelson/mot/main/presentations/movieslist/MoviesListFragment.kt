@@ -26,7 +26,6 @@ class MoviesListFragment : BaseFragment() {
     private lateinit var binding: FragmentMoiveListBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = getDataBinding(inflater, R.layout.fragment_moive_list, container)
         binding.viewModel = getViewModel(ViewModelProviders.DefaultFactory(activity!!.application))
@@ -34,7 +33,6 @@ class MoviesListFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val moviesRepository: MovieRepository = MovieRepositoryImpl(activity!!.applicationContext)
         val movieUseCase = MovieUseCase(moviesRepository)
         binding.viewModel?.initMovieList(movieUseCase)

@@ -24,7 +24,5 @@ inline fun <reified T : BaseViewModel> Fragment.getViewModel(factory: ViewModelP
 /**
  * Like [Fragment.viewModelProvider] for Fragments that want a [ViewModel] scoped to the Activity.
  */
-inline fun <reified VM : ViewModel> Fragment.activityViewModelProvider(
-        provider: ViewModelProvider.Factory
-) =
+inline fun <reified VM : ViewModel> Fragment.activityViewModelProvider(provider: ViewModelProvider.Factory) =
         ViewModelProviders.of(requireActivity(), provider).get(VM::class.java)
