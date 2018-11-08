@@ -29,18 +29,26 @@ fun RecyclerView.setMovies(movies: List<Movie>, onItemClickPublisher: Relay<Movi
             .into(this)
 }
 
-@BindingAdapter(value = ["setGenres"], requireAll = false)
-fun ChipGroup.setGenres(genres: List<String>){
-    val testChip = Chip(context)
-    testChip.text = "test chip"
-    testChip.isCheckable = true
-    this.addView(testChip)
-    val testChip2 = Chip(context)
-    testChip2.text = "test chip2"
-    testChip.isCheckable = true
-    this.addView(testChip2)
+@BindingAdapter(value = ["setGenres", "selectedGenres", "onGenreClick"], requireAll = false)
+fun ChipGroup.setGenres(genres: List<String>, selectedGenres: List<String>, onGenreClickPublisher: Relay<Pair<String, Boolean>>){
+    this.removeAllViews()
     genres.forEach{
         val chip = Chip(context)
-        chip.text = "te"
+        chip.text = it
+        chip.isCheckable = true
+        chip.isChecked = selectedGenres.contains(it)
+        chip.setOnCheckedChangeListener { _, isChecked -> onGenreClickPublisher.accept(Pair(it, isChecked)) }
+        this.addView(chip)}
+}
+
+@BindingAdapter(value = ["setSelectedGenres", "onSelectedGenreClick"], requireAll = false)
+fun ChipGroup.setSelectedGenres(selectedGenres: List<String>, onSelectedGenreClick: Relay<String>){
+    this.removeAllViews()
+    selectedGenres.forEach{
+        val chip = Chip(context)
+        chip.text = it
+        chip.isCheckable = true
+        chip.isChecked = true
+        chip.setOnCheckedChangeListener { _, _ -> onSelectedGenreClick.accept(it) }
         this.addView(chip)}
 }

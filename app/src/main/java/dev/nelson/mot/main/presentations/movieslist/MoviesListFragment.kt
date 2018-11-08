@@ -18,7 +18,7 @@ import dev.nelson.mot.presentations.base.BaseFragment
 class MoviesListFragment : BaseFragment() {
 
     companion object {
-        fun getInstance(): MoviesListFragment{
+        fun getInstance(): MoviesListFragment {
             return MoviesListFragment()
         }
     }
@@ -28,7 +28,9 @@ class MoviesListFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = getDataBinding(inflater, R.layout.fragment_moive_list, container)
-        binding.viewModel = getViewModel(ViewModelProviders.DefaultFactory(activity!!.application))
+        val model = activity?.run { ViewModelProviders.of(this).get(MoviesListViewModel::class.java) }
+//        binding.viewModel = getViewModel(ViewModelProviders.DefaultFactory(activity!!.application))
+        binding.viewModel = model
         return binding.root
     }
 
@@ -39,9 +41,9 @@ class MoviesListFragment : BaseFragment() {
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.filter_sheet))
     }
 
-    fun expandFilterFragment(){
+    fun expandFilterFragment() {
         val state = bottomSheetBehavior.state
-        when(state){
+        when (state) {
             BottomSheetBehavior.STATE_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             BottomSheetBehavior.STATE_HIDDEN -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
             BottomSheetBehavior.STATE_HALF_EXPANDED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

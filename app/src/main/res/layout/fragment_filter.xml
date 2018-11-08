@@ -39,10 +39,13 @@
 
         <com.google.android.material.chip.ChipGroup
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             bind:setGenres="@{viewModel.genres}"
+            bind:onGenreClick="@{viewModel.onGenreItemClickPublisher}"
+            bind:selectedGenres="@{viewModel.selectedGenres}"
             app:layout_constraintTop_toBottomOf="@+id/filter_title"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
