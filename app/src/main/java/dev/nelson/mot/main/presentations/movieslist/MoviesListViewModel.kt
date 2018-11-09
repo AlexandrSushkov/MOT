@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import com.jakewharton.rxrelay2.PublishRelay
+import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.domain.MovieUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -27,6 +29,10 @@ class MoviesListViewModel : BaseViewModel() {
     val onSelectedGenreClickPublisher: PublishRelay<String> = PublishRelay.create()
     private lateinit var movieUseCase: MovieUseCase
 
+    val expandedLayout = ObservableInt(R.layout.expanded)
+    val collapsedLayout = ObservableInt(R.layout.collapsed)
+    var isShowSelectedCategories = ObservableBoolean()
+
     init {
         onMovieItemClickPublisher
                 .applyThrottling()
@@ -37,7 +43,7 @@ class MoviesListViewModel : BaseViewModel() {
                 .map {
                     if (it.second && !selectedGenres.contains(it.first)) selectedGenres.add(it.first)
                     if (!it.second && selectedGenres.contains(it.first)) selectedGenres.remove(it.first)
-                    selectedGenresVisibility.set(!selectedGenres.isEmpty())
+                    isShowSelectedCategories.set(selectedGenres.isEmpty())
                 }
                 .flatMapSingle { if (selectedGenres.isEmpty()) movieUseCase.getMovieList().firstOrError() else movieUseCase.getFilteredMovieList(selectedGenres) }
                 .subscribe {
@@ -52,6 +58,7 @@ class MoviesListViewModel : BaseViewModel() {
                 .subscribe {
                     movies.clear()
                     movies.addAll(it)
+                    isShowSelectedCategories.set(selectedGenres.isEmpty())
                 }
                 .addTo(disposables)
 
@@ -62,9 +69,17 @@ class MoviesListViewModel : BaseViewModel() {
     fun initMovieList(movieUseCase: MovieUseCase) {
         this.movieUseCase = movieUseCase
         movieUseCase.getMovieList()
-                .subscribeBy(onNext = { movies.addAll(it) },
+                .subscribeBy(onNext = {
+                    movies.addAll(it)
+                    isShowSelectedCategories.set(selectedGenres.isEmpty())
+                },
                         onError = { it.printStackTrace() })
                 .addTo(disposables)
+    }
+
+    fun onResetFilterClick() {
+        selectedGenres.clear()
+        isShowSelectedCategories.set(selectedGenres.isEmpty())
     }
 
     //    fun onClickClick() = selectedGenresVisibility.set(!selectedGenresVisibility.get())

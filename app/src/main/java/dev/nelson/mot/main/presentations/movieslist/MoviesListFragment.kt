@@ -11,7 +11,6 @@ import dev.nelson.mot.main.data.repository.MovieRepositoryImpl
 import dev.nelson.mot.main.databinding.FragmentMoiveListBinding
 import dev.nelson.mot.main.domain.MovieUseCase
 import dev.nelson.mot.main.util.extention.getDataBinding
-import dev.nelson.mot.main.util.extention.getViewModel
 import dev.nelson.mot.main.widget.BottomSheetBehavior
 import dev.nelson.mot.presentations.base.BaseFragment
 
