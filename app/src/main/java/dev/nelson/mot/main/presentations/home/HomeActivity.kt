@@ -30,7 +30,6 @@ class HomeActivity : BaseActivity() {
         initAppBar()
         initFab()
         moviesListFragment = MoviesListFragment.getInstance()
-
         supportFragmentManager.beginTransaction().replace(R.id.container, moviesListFragment).commit()
 
     }
@@ -52,6 +51,10 @@ class HomeActivity : BaseActivity() {
 //            R.id.transfer_db -> startActivity(Intent(this, TransferDBActivity::class.java))
         }
         return true
+    }
+
+    override fun onBackPressed() {
+        if (moviesListFragment.isFilterOpen()) moviesListFragment.collapseFilterFragment() else super.onBackPressed()
     }
 
     private fun initAppBar() {
