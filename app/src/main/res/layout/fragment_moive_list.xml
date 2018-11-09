@@ -22,9 +22,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            bind:showSelectedCategories="@{viewModel.isShowSelectedCategories}"
             bind:collapsedLayout="@{viewModel.expandedLayout}"
-            bind:expandedLayout="@{viewModel.collapsedLayout}">
+            bind:expandedLayout="@{viewModel.collapsedLayout}"
+            bind:showSelectedCategories="@{viewModel.isShowSelectedCategories}">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/selected_genres"
@@ -33,9 +33,9 @@
                 android:layout_marginTop="4dp"
                 android:background="@color/color_white"
                 android:elevation="4dp"
+                app:layout_constraintBottom_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="parent">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -66,10 +66,10 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
                             android:layout_marginEnd="@dimen/small"
                             android:clickable="true"
                             android:onClick="@{() -> viewModel.onResetFilterClick()}"
-                            android:layout_gravity="end|center_vertical"
                             android:src="@drawable/ic_close_black_24dp" />
 
                     </FrameLayout>
@@ -77,13 +77,6 @@
                 </FrameLayout>
 
             </com.google.android.material.appbar.AppBarLayout>
-
-
-            <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:onClick="@{() -> viewModel.onClickClick()}"-->
-            <!--android:text="click"/>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movies_list"

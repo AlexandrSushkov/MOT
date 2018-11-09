@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.movieslist
 
 import android.util.Log
+import android.view.View
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -11,6 +12,7 @@ import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.domain.MovieUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.extention.applyThrottling
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
@@ -46,6 +48,7 @@ class MoviesListViewModel : BaseViewModel() {
                     isShowSelectedCategories.set(selectedGenres.isEmpty())
                 }
                 .flatMapSingle { if (selectedGenres.isEmpty()) movieUseCase.getMovieList().firstOrError() else movieUseCase.getFilteredMovieList(selectedGenres) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     movies.clear()
                     movies.addAll(it)
@@ -55,6 +58,7 @@ class MoviesListViewModel : BaseViewModel() {
         onSelectedGenreClickPublisher
                 .map { selectedGenres.remove(it) }
                 .flatMapSingle { if (selectedGenres.isEmpty()) movieUseCase.getMovieList().firstOrError() else movieUseCase.getFilteredMovieList(selectedGenres) }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     movies.clear()
                     movies.addAll(it)
@@ -82,7 +86,11 @@ class MoviesListViewModel : BaseViewModel() {
         isShowSelectedCategories.set(selectedGenres.isEmpty())
     }
 
-    //    fun onClickClick() = selectedGenresVisibility.set(!selectedGenresVisibility.get())
+    fun onResetFilterTextClick(view: View) {
+        selectedGenres.clear()
+        isShowSelectedCategories.set(selectedGenres.isEmpty())
+    }
+
 
 
 //    fun initGenres() {

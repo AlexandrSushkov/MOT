@@ -8,6 +8,10 @@
         <variable
             name="viewModel"
             type="dev.nelson.mot.main.presentations.movieslist.MoviesListViewModel" />
+
+        <variable
+            name="view"
+            type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,25 +31,31 @@
             android:padding="@dimen/small"
             android:text="@{viewModel.filter}" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/small"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="@dimen/small"
+            android:clickable="true"
+            android:onClick="@{viewModel::onResetFilterTextClick}"
             android:padding="@dimen/small"
-            android:visibility="gone"
-            android:text="Reset" />
+            android:text="Reset"
+            android:textStyle="bold"
+            android:visibility="@{!viewModel.selectedGenres.isEmpty() ? view.VISIBLE : view.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/chipGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/filter_title" />
 
         <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            bind:setGenres="@{viewModel.genres}"
+            android:layout_marginTop="@dimen/small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/filter_title"
             bind:onGenreClick="@{viewModel.onGenreItemClickPublisher}"
             bind:selectedGenres="@{viewModel.selectedGenres}"
-            app:layout_constraintTop_toBottomOf="@+id/filter_title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            bind:setGenres="@{viewModel.genres}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
