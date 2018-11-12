@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs'
 
 android {
     def config = rootProject.extensions.getByName("ext")
@@ -62,6 +63,8 @@ dependencies {
     implementation libs.roomRxJava
     implementation libs.material
     implementation libs.navigationFragment
+    implementation libs.navigationFragmetnKtx
+    implementation libs.navigationUiKtx
 
     //DI
 

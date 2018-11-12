@@ -1,0 +1,50 @@
+package dev.nelson.mot.main.presentations.navigationcomponent.bottomnav
+
+import android.app.Dialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.navigation.NavigationView
+import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.navigationcomponent.screen.about.NavAboutFragment
+import dev.nelson.mot.main.presentations.navigationcomponent.screen.home.NavHomeFragment
+
+class NavBottomSheetDialogFragment: BottomSheetDialogFragment() {
+
+    companion object {
+        fun newInstance():NavBottomSheetDialogFragment{
+            return NavBottomSheetDialogFragment()
+        }
+    }
+
+    override fun getTheme(): Int = R.style.MotRoundedBottomSheetDialogTheme
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(requireContext(), theme)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_nav_rounded_botton_dialog_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val navigationView: NavigationView = view.findViewById(R.id.bottom_navigation)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> toast(NavHomeFragment::class.java.simpleName)
+                R.id.nav_about -> toast(NavAboutFragment::class.java.simpleName)
+            }
+            finish()
+            true
+        }
+    }
+
+    private fun toast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
+
+    private fun finish() {
+        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+    }
+}
