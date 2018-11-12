@@ -35,7 +35,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name="dev.nelson.mot.main.presentations.transfer.TransferDBActivity"
+        android:name="dev.nelson.mot.main.presentations.transfer.TransferDBActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppThemeLight" />
+        <activity
+            android:name=".presentations.navigationcomponent.NavigationComponentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
     </application>

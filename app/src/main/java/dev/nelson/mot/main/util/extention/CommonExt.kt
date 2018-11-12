@@ -21,6 +21,9 @@ fun <T : ViewDataBinding> Fragment.getDataBinding(inflater: LayoutInflater, @Lay
 inline fun <reified T : BaseViewModel> Fragment.getViewModel(factory: ViewModelProvider.Factory = ViewModelProviders.DefaultFactory(activity!!.application)): T =
         ViewModelProviders.of(this, factory).get(T::class.java)
 
+inline fun <reified T : BaseViewModel> FragmentActivity.getViewModel(factory: ViewModelProvider.Factory = ViewModelProviders.DefaultFactory(application)): T =
+        ViewModelProviders.of(this, factory).get(T::class.java)
+
 /**
  * Like [Fragment.viewModelProvider] for Fragments that want a [ViewModel] scoped to the Activity.
  */

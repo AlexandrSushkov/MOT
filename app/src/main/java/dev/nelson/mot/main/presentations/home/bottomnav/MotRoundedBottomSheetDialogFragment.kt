@@ -10,6 +10,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.navigationcomponent.NavigationComponentActivity
 
 class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
@@ -29,6 +30,7 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 R.id.nav_menu_item_home -> toast("movies")
                 R.id.nav_categorise_item -> toast("categories")
                 R.id.nav_about_item -> toast("about")
+                R.id.nav_navigation_component_item -> startActivity(NavigationComponentActivity.getIntent(context!!))
             }
             finish()
             true
