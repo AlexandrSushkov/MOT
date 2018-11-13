@@ -5,9 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomappbar.BottomAppBar
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.ActivityNavigationComponentBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
@@ -32,7 +29,7 @@ class NavigationComponentActivity : BaseActivity() {
         viewModel = getViewModel(ViewModelProvider.AndroidViewModelFactory.getInstance(this.application))
         binding.viewModel = viewModel
         initBottomSheetAppBar()
-        setUpNavigation()
+//        setUpNavigation()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -43,19 +40,17 @@ class NavigationComponentActivity : BaseActivity() {
     }
 
     private fun initBottomSheetAppBar() {
-//        setSupportActionBar(binding.bottomAppBar)
-        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
-        setSupportActionBar(bar)
+        setSupportActionBar(binding.bottomAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp)
     }
 
-    private fun setUpNavigation() {
-        val host: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
-        val navController = host.navController
-        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
-        NavigationUI.setupWithNavController(bar, navController)
-    }
+//    private fun setUpNavigation() {
+//        val host: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
+//        val navController = host.navController
+//        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
+//        NavigationUI.setupActionBarWithNavController(this, navController)
+//    }
 
     private fun openNavigation() {
         val bottomSheetNavigation = NavBottomSheetDialogFragment.newInstance()

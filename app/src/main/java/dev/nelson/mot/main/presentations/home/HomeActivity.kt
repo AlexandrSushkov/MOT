@@ -75,4 +75,12 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun toast(string: String) = Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
+
+    private fun hideBottomNav(){
+
+    }
+
+    private fun showBottomNav(){
+
+    }
 }

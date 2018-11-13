@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.navigation.NavigationView
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.presentations.navigationcomponent.screen.about.NavAboutFragment
-import dev.nelson.mot.main.presentations.navigationcomponent.screen.home.NavHomeFragment
 
-class NavBottomSheetDialogFragment: BottomSheetDialogFragment() {
+class NavBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
-        fun newInstance():NavBottomSheetDialogFragment{
+        fun newInstance(): NavBottomSheetDialogFragment {
             return NavBottomSheetDialogFragment()
         }
     }
@@ -34,8 +33,18 @@ class NavBottomSheetDialogFragment: BottomSheetDialogFragment() {
         val navigationView: NavigationView = view.findViewById(R.id.bottom_navigation)
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> toast(NavHomeFragment::class.java.simpleName)
-                R.id.nav_about -> toast(NavAboutFragment::class.java.simpleName)
+                R.id.nav_home -> {
+                    if (isCurrentFragment(R.id.navHomeFragment).not()){
+                        findNavController().popBackStack()
+                        findNavController().navigate(R.id.navHomeFragment)
+                    }
+                }
+                R.id.nav_about -> {
+                    if (isCurrentFragment(R.id.navAboutFragment).not()){
+                        findNavController().popBackStack()
+                        findNavController().navigate(R.id.navAboutFragment)
+                    }
+                }
             }
             finish()
             true
@@ -44,7 +53,17 @@ class NavBottomSheetDialogFragment: BottomSheetDialogFragment() {
 
     private fun toast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
 
+    private fun isCurrentFragment(fragmentId: Int): Boolean  = findNavController().currentDestination?.id == fragmentId
+
     private fun finish() {
-        activity!!.supportFragmentManager.beginTransaction().remove(this).commit()
+        activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.remove(this)
+                ?.commit()
+    }
+
+    private fun openHome(){
+//        val action = NavDi
+
     }
 }
