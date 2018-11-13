@@ -67,6 +67,10 @@ dependencies {
     implementation libs.navigationUiKtx
 
     //DI
+    implementation libs.daggerAndroid
+    implementation libs.daggerAndroidSupport
+    kapt libs.daggerCompiler
+    kapt libs.daggerAndroidProcessor
 
     //rx
     implementation libs.rxKotlin
