@@ -11,6 +11,7 @@ import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.navigationcomponent.bottomnav.NavBottomSheetDialogFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 import dev.nelson.mot.main.util.extention.getViewModel
+import javax.inject.Inject
 
 class NavigationComponentActivity : BaseActivity() {
 
@@ -20,13 +21,16 @@ class NavigationComponentActivity : BaseActivity() {
         }
     }
 
+    @Inject lateinit var factory: ViewModelProvider.Factory
+
     private lateinit var binding: ActivityNavigationComponentBinding
-    private lateinit var viewModel: NavigationComponentVeiwModel
+    private lateinit var viewModel: NavigationComponentViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = getDataBinding(R.layout.activity_navigation_component)
-        viewModel = getViewModel(ViewModelProvider.AndroidViewModelFactory.getInstance(this.application))
+//        viewModel = getViewModel(ViewModelProvider.AndroidViewModelFactory.getInstance(this.application))
+        viewModel = getViewModel(factory)
         binding.viewModel = viewModel
         initBottomSheetAppBar()
 //        setUpNavigation()
