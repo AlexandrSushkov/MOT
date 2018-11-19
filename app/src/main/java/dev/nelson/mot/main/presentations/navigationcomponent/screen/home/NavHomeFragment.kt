@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.NavHomeFragmentBinding
+import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
-import dev.nelson.mot.presentations.base.BaseFragment
 
 class NavHomeFragment : BaseFragment() {
 

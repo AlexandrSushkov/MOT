@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.navigationcomponent
+package dev.nelson.mot.main.presentations.home
 
 import androidx.lifecycle.ViewModel
 import dagger.Binds
@@ -8,11 +8,11 @@ import dev.nelson.mot.main.di.annotation.PerActivity
 import dev.nelson.mot.main.di.ViewModelKey
 
 @Module
-abstract class NavigationComponentModule {
+abstract class HomeModule {
 
     @Binds
     @IntoMap
     @PerActivity
-    @ViewModelKey(NavigationComponentViewModel::class)
-    abstract fun bindViewModel(viewModel: NavigationComponentViewModel): ViewModel
+    @ViewModelKey(HomeViewModel::class)
+    abstract fun bindViewModel(viewModel: HomeViewModel): ViewModel
 }

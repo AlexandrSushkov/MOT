@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight">
         <activity
-            android:name=".presentations.navigationcomponent.NavigationComponentActivity"
+            android:name=".presentations.splash.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashThemeLight">
             <intent-filter>
@@ -38,10 +38,10 @@
         android:name="dev.nelson.mot.main.presentations.transfer.TransferDBActivity"
         android:screenOrientation="portrait"
         android:theme="@style/AppThemeLight" />
-        <!--<activity-->
-            <!--android:name=".presentations.navigationcomponent.NavigationComponentActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/AppThemeLight" />-->
+        <activity
+            android:name=".presentations.navigationcomponent.NavigationComponentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLight" />
     </application>
 
 </manifest>

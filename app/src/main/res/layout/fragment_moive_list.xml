@@ -93,18 +93,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <fragment
-            android:id="@+id/filter_sheet"
-            android:name="dev.nelson.mot.main.presentations.filter.FragmentFilter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="4dp"
-            app:behavior_hideable="true"
-            app:behavior_peekHeight="48dp"
-            app:behavior_skipCollapsed="true"
-            app:layout_behavior="dev.nelson.mot.main.widget.BottomSheetBehavior"
-            tools:layout="@layout/fragment_filter" />
+        <!--<fragment-->
+            <!--android:id="@+id/filter_sheet"-->
+            <!--android:name="dev.nelson.mot.main.presentations.filter.FragmentFilter"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="4dp"-->
+            <!--app:behavior_hideable="true"-->
+            <!--app:behavior_peekHeight="48dp"-->
+            <!--app:behavior_skipCollapsed="true"-->
+            <!--app:layout_behavior="dev.nelson.mot.main.widget.BottomSheetBehavior"-->
+            <!--tools:layout="@layout/fragment_filter" />-->
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

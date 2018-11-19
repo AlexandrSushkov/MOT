@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.main.presentations.movieslist.MoviesListFragment
+import dev.nelson.mot.main.util.extention.getDataBinding
+import dev.nelson.mot.main.util.extention.getViewModel
 
 class HomeActivity : BaseActivity() {
 
@@ -20,18 +20,19 @@ class HomeActivity : BaseActivity() {
         fun getIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
     }
 
-    lateinit var fab: FloatingActionButton
+    lateinit var binding: ActivityHomeBinding
+    lateinit var viewModel: HomeViewModel
     lateinit var moviesListFragment: MoviesListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        val homeViewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
+        binding = getDataBinding(R.layout.activity_home)
+        viewModel = getViewModel(factory)
+        binding.viewModel = viewModel
         initAppBar()
         initFab()
         moviesListFragment = MoviesListFragment.getInstance()
         supportFragmentManager.beginTransaction().replace(R.id.container, moviesListFragment).commit()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -58,15 +59,13 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun initAppBar() {
-        val bar: BottomAppBar = this.findViewById(R.id.bottom_app_bar)
-        setSupportActionBar(bar)
+        setSupportActionBar(binding.bottomAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp)
     }
 
     private fun initFab() {
-        fab = findViewById(R.id.fab)
-        fab.setOnClickListener { moviesListFragment.expandFilterFragment() }
+        binding.fab.setOnClickListener { moviesListFragment.expandFilterFragment() }
     }
 
     private fun openNavigation() {

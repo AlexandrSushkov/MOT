@@ -16,8 +16,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
+import javax.inject.Inject
 
-class MoviesListViewModel : BaseViewModel() {
+class MoviesListViewModel @Inject constructor(movieUseCase: MovieUseCase): BaseViewModel() {
 
     private val genresArray = Arrays.asList("Film-Noir", "Action", "Adventure", "Horror", "Romance", "War", "Documentary", "Sci-Fi", "Drama", "Thriller", "(no genres listed)",
             "Crime", "Fantasy", "Animation", "IMAX", "Comedy", "Mystery", "Children", "Musical")
@@ -29,13 +30,20 @@ class MoviesListViewModel : BaseViewModel() {
     val onMovieItemClickPublisher: PublishRelay<Movie> = PublishRelay.create()
     val onGenreItemClickPublisher: PublishRelay<Pair<String, Boolean>> = PublishRelay.create()
     val onSelectedGenreClickPublisher: PublishRelay<String> = PublishRelay.create()
-    private lateinit var movieUseCase: MovieUseCase
 
     val expandedLayout = ObservableInt(R.layout.expanded)
     val collapsedLayout = ObservableInt(R.layout.collapsed)
     var isShowSelectedCategories = ObservableBoolean()
 
     init {
+        movieUseCase.getMovieList()
+                .subscribeBy(onNext = {
+                    movies.addAll(it)
+                    isShowSelectedCategories.set(selectedGenres.isEmpty())
+                },
+                        onError = { it.printStackTrace() })
+                .addTo(disposables)
+
         onMovieItemClickPublisher
                 .applyThrottling()
                 .subscribe { Log.e("tag", it.toString()) }
@@ -70,16 +78,16 @@ class MoviesListViewModel : BaseViewModel() {
     }
 
 
-    fun initMovieList(movieUseCase: MovieUseCase) {
-        this.movieUseCase = movieUseCase
-        movieUseCase.getMovieList()
-                .subscribeBy(onNext = {
-                    movies.addAll(it)
-                    isShowSelectedCategories.set(selectedGenres.isEmpty())
-                },
-                        onError = { it.printStackTrace() })
-                .addTo(disposables)
-    }
+//    fun initMovieList(movieUseCase: MovieUseCase) {
+//        this.movieUseCase = movieUseCase
+//        movieUseCase.getMovieList()
+//                .subscribeBy(onNext = {
+//                    movies.addAll(it)
+//                    isShowSelectedCategories.set(selectedGenres.isEmpty())
+//                },
+//                        onError = { it.printStackTrace() })
+//                .addTo(disposables)
+//    }
 
     fun onResetFilterClick() {
         selectedGenres.clear()

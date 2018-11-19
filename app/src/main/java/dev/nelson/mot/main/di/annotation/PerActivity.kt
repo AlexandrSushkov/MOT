@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.di
+package dev.nelson.mot.main.di.annotation
 
 import javax.inject.Scope
 

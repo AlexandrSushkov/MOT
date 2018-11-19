@@ -21,7 +21,6 @@ class MotApplication : Application(), HasActivityInjector, HasSupportFragmentInj
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 
-
     override fun onCreate() {
         super.onCreate()
         DaggerAppComponent
@@ -30,8 +29,4 @@ class MotApplication : Application(), HasActivityInjector, HasSupportFragmentInj
                 .build()
                 .injectApp(this)
     }
-
-//    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-//        return DaggerAppComponent.builder().create(this)
-//    }
 }

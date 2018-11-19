@@ -6,8 +6,11 @@ import com.google.gson.reflect.TypeToken
 import dev.nelson.mot.main.data.model.Movie
 import io.reactivex.Observable
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MovieRepositoryImpl(private val context: Context): MovieRepository {
+@Singleton
+class MovieRepository @Inject constructor(private val context: Context){
 
     private val movieList:List<Movie>
     private val genres:MutableSet<String> = HashSet()
@@ -20,9 +23,9 @@ class MovieRepositoryImpl(private val context: Context): MovieRepository {
         }
     }
 
-    override fun getMovieList() = Observable.just(movieList)!!
+    fun getMovieList() = Observable.just(movieList)!!
 
-    override fun getGenres() = Observable.just(genres.toList())!!
+    fun getGenres() = Observable.just(genres.toList())!!
 
     private fun getTestData(): List<Movie> {
         val movieListString = loadJSONFromAsset("movies_list.json")
@@ -48,7 +51,7 @@ class MovieRepositoryImpl(private val context: Context): MovieRepository {
 
 }
 
-interface MovieRepository{
-    fun getMovieList(): Observable<List<Movie>>
-    fun getGenres(): Observable<List<String>>
-}
+//interface MovieRepository{
+//    fun getMovieList(): Observable<List<Movie>>
+//    fun getGenres(): Observable<List<String>>
+//}

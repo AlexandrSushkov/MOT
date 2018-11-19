@@ -1,6 +1,6 @@
 package dev.nelson.mot.main.presentations.home.fragments
 
-import dev.nelson.mot.presentations.base.BaseFragment
+import dev.nelson.mot.main.presentations.base.BaseFragment
 
 class CategoriesFragment: BaseFragment() {
 
