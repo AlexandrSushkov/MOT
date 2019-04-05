@@ -21,7 +21,7 @@ import dev.nelson.mot.db.model.CategoriesProvider;
 import dev.nelson.mot.loadercallback.PaymentsForCategoryLoaderCallbacks;
 
 public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback{
-
+//test
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.recycler_view)
