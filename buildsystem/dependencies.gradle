@@ -30,7 +30,7 @@ ext {
 
     core = [
             //Kotlin
-            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version",
+            kotlin                  : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version",
             kotlinReflect           : "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version",
 
             //support
