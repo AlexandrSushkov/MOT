@@ -7,14 +7,14 @@
 
     <fragment
         android:id="@+id/navHomeFragment"
-        android:name="dev.nelson.mot.main.presentations.navigationcomponent.screen.home.NavHomeFragment"
+        android:name="dev.nelson.mot.main.presentations.categries.CategoriesFragment"
         android:label="NavHomeFragment"
-        tools:layout="@layout/nav_home_fragment"/>
+        tools:layout="@layout/categories_fragment"/>
 
     <fragment
         android:id="@+id/navAboutFragment"
-        android:name="dev.nelson.mot.main.presentations.navigationcomponent.screen.about.NavAboutFragment"
+        android:name="dev.nelson.mot.main.presentations.about.AboutFragment"
         android:label="NavAboutFragment"
-        tools:layout="@layout/nav_about_fragment"/>
+        tools:layout="@layout/fragment_about"/>
 
 </navigation>

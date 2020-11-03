@@ -27,7 +27,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name=".presentations.payment.EditPaymentActivity"
+            android:name=".presentations.payment.NewPaymentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
@@ -35,11 +35,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-        android:name="dev.nelson.mot.main.presentations.transfer.TransferDBActivity"
-        android:screenOrientation="portrait"
-        android:theme="@style/AppThemeLight" />
-        <activity
-            android:name=".presentations.navigationcomponent.NavigationComponentActivity"
+            android:name="dev.nelson.mot.main.presentations.transfer.TransferDBActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
     </application>

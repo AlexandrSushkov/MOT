@@ -3,6 +3,7 @@ package dev.nelson.mot.main.util.recycler.fab;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -34,8 +35,9 @@ public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
                                int dyConsumed,
                                int dxUnconsumed,
                                int dyUnconsumed,
-                               int type) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
+                               int type,
+                               @NonNull int[] consumed) {
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
 
         if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
             child.hide(new FloatingActionButton.OnVisibilityChangedListener() {
@@ -43,19 +45,15 @@ public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
                 @Override
                 public void onHidden(FloatingActionButton fab) {
                     super.onHidden(fab);
+                    child.animate().rotation(90).setInterpolator(new LinearInterpolator()).start();
                     fab.setVisibility(View.INVISIBLE);
                 }
             });
         } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {
+            child.animate().rotation(-90).setInterpolator(new LinearInterpolator()).start();
             child.show();
+
         }
-//
-//        if (dyConsumed > 0) {
-//            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
-//            int fab_bottomMargin = layoutParams.bottomMargin;
-//            child.animate().translationY(child.getHeight() + fab_bottomMargin).setInterpolator(new LinearInterpolator()).start();
-//        } else if (dyConsumed < 0) {
-//            child.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
-//        }
+
     }
 }

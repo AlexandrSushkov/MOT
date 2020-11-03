@@ -1,20 +1,20 @@
-package dev.nelson.mot.main.presentations.navigationcomponent.screen.home
+package dev.nelson.mot.main.presentations.about
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.databinding.NavHomeFragmentBinding
+import dev.nelson.mot.main.databinding.FragmentAboutBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
-class NavHomeFragment : BaseFragment() {
+class AboutFragment: BaseFragment() {
 
-    lateinit var binding:NavHomeFragmentBinding
+    lateinit var binding: FragmentAboutBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = getDataBinding(inflater, R.layout.nav_home_fragment, container)
+        binding = getDataBinding(inflater, R.layout.fragment_about, container)
         return binding.root
     }
 

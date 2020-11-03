@@ -1,24 +1,26 @@
 package dev.nelson.mot.main.presentations.home
 
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
+import androidx.hilt.lifecycle.ViewModelInject
+import dev.nelson.mot.main.domain.TestUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.presentations.navigationcomponent.TestUseCase
+import dev.nelson.mot.main.util.SingleLiveEvent
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import javax.inject.Inject
 
-class HomeViewModel @Inject constructor(testUseCase: TestUseCase) : BaseViewModel(){
+class HomeViewModel @ViewModelInject constructor(testUseCase: TestUseCase) : BaseViewModel() {
 
-    val testString = ObservableField<String>("as")
-    val title = ObservableField<String>("title")
-    val titleVbilityisis = ObservableBoolean()
+    val title = ObservableField<String>()
+    val onItemClickEvent: SingleLiveEvent<Unit> = SingleLiveEvent()
 
 
     init {
-        testUseCase.test()
-                .subscribeBy { testString.set(it) }
-                .addTo(disposables)
+        testUseCase.getTest()
+            .subscribeBy { title.set(it) }
+            .addTo(disposables)
     }
 
+    fun openNavComponentActivity(){
+
+    }
 }

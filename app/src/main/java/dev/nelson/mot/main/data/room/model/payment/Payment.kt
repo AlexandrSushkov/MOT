@@ -4,9 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import dev.nelson.mot.room.model.category.Category
-import dev.nelson.mot.room.model.category.CategoryTable
-import dev.nelson.mot.room.model.payment.PaymentTable
+import dev.nelson.mot.main.data.room.model.category.Category
+import dev.nelson.mot.main.data.room.model.category.CategoryTable
 import java.time.OffsetDateTime
 
 @Entity(tableName = PaymentTable.TABLE_NAME,

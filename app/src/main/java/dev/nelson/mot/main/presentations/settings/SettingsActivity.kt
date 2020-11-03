@@ -1,29 +1,19 @@
 package dev.nelson.mot.main.presentations.settings
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import dev.nelson.mot.main.R
+import dev.nelson.mot.main.databinding.ActivitySettingsBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
+import dev.nelson.mot.main.util.extention.getDataBinding
 
 class SettingsActivity: BaseActivity() {
 
-    companion object {
-        fun getIntent(context: Context): Intent = Intent(context, SettingsActivity::class.java)
-    }
+    lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_settings)
-//
-//        val bottomAppBar: BottomAppBar = findViewById(R.id.bottom_app_bar)
-//        setSupportActionBar(bottomAppBar)
+        binding = getDataBinding(R.layout.activity_settings)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            android.R.id.home -> finish()
-        }
-        return true
-    }
 }

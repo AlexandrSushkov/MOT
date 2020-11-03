@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/nav_menu_item_home"
-            android:icon="@drawable/ic_local_movies_black_24dp"
-            android:title="movies" />
-        <item
-            android:id="@+id/nav_categorise_item"
-            android:icon="@drawable/ic_label_black_24dp"
-            android:title="categories" />
+    <item
+        android:id="@+id/nav_menu_item_recent_payments"
+        android:icon="@drawable/ic_local_movies_black_24dp"
+        android:title="@string/recent_payments" />
+    <item
+        android:id="@+id/nav_menu_item_categories"
+        android:icon="@drawable/ic_label_black_24dp"
+        android:title="@string/categories" />
 
-    </group>
+    <item
+        android:id="@+id/nav_menu_item_statistic"
+        android:icon="@drawable/ic_baseline_show_chart_24"
+        android:iconTint="@color/colorGreen"
+        android:title="@string/statistic"
+        android:tooltipText="@string/statistic" />
 
-    <group android:checkableBehavior="none">
+    <group
+        android:id="@+id/menu_group_2"
+        android:menuCategory="container">
+
         <item
-            android:id="@+id/nav_about_item"
+            android:id="@+id/nav_menu_item_about"
             android:icon="@drawable/ic_info_outline_black_24dp"
-            android:title="about" />
+            android:title="@string/about" />
 
-        <item
-            android:id="@+id/nav_navigation_component_item"
-            android:icon="@drawable/ic_navigation_black_24dp"
-            android:title="navigation component" />
     </group>
 
 </menu>

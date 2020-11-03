@@ -1,4 +1,4 @@
-package dev.nelson.mot.room.model.payment
+package dev.nelson.mot.main.data.room.model.payment
 
 import androidx.room.Dao
 import androidx.room.Insert

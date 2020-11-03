@@ -50,8 +50,3 @@ class MovieRepository @Inject constructor(private val context: Context){
     }
 
 }
-
-//interface MovieRepository{
-//    fun getMovieList(): Observable<List<Movie>>
-//    fun getGenres(): Observable<List<String>>
-//}

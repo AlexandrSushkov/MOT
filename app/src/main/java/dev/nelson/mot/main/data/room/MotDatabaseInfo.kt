@@ -1,4 +1,4 @@
-package dev.nelson.mot.room
+package dev.nelson.mot.main.data.room
 
 object MotDatabaseInfo {
     const val NAME = "mot_database.db"
