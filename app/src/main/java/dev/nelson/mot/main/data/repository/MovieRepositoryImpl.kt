@@ -23,9 +23,9 @@ class MovieRepository @Inject constructor(private val context: Context){
         }
     }
 
-    fun getMovieList() = Observable.just(movieList)!!
+    fun getMovieList() = Observable.just(movieList)
 
-    fun getGenres() = Observable.just(genres.toList())!!
+    fun getGenres() = Observable.just(genres.toList())
 
     private fun getTestData(): List<Movie> {
         val movieListString = loadJSONFromAsset("movies_list.json")

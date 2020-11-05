@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:background="@color/color_white"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +38,7 @@
             <FrameLayout
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:background="@drawable/close_button_background">
+                android:layout_gravity="end">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -48,8 +46,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="@dimen/small"
                     android:clickable="true"
-                    android:onClick="@{() -> viewModel.onResetFilterClick()}"
-                    android:src="@drawable/ic_close_black_24dp" />
+                    android:onClick="@{() -> viewModel.onResetFilterClick()}" />
 
             </FrameLayout>
 

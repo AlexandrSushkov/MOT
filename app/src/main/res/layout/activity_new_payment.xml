@@ -5,7 +5,6 @@
         android:id="@+id/payment_root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorGray"
         android:transitionName="new_payment">
 
         <TextView

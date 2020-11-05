@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navHomeFragment"
-        android:name="dev.nelson.mot.main.presentations.categries.CategoriesFragment"
+        android:name="dev.nelson.mot.main.presentations.categories.CategoriesActivity"
         android:label="NavHomeFragment"
         tools:layout="@layout/categories_fragment"/>
 
     <fragment
         android:id="@+id/navAboutFragment"
-        android:name="dev.nelson.mot.main.presentations.about.AboutFragment"
+        android:name="dev.nelson.mot.main.presentations.about.AboutActivity"
         android:label="NavAboutFragment"
         tools:layout="@layout/fragment_about"/>
 

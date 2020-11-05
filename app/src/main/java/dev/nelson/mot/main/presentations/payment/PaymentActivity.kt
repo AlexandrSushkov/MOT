@@ -10,10 +10,10 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.base.BaseActivity
 
-class NewPaymentActivity: BaseActivity() {
+class PaymentActivity: BaseActivity() {
 
     companion object {
-        fun getIntent(context: Context): Intent = Intent(context, NewPaymentActivity::class.java)
+        fun getIntent(context: Context): Intent = Intent(context, PaymentActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

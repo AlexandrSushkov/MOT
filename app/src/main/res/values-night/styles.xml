@@ -2,13 +2,9 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="bottomSheetDialogTheme">@style/RoundedBottomSheetDialogTheme</item>
-<!--        <item name="android:navigationBarColor">@color/color_white</item>-->
-<!--        <item name="android:statusBarColor">@color/color_white</item>-->
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:font">@array/com_google_android_gms_fonts_certs</item>
-
+        <item name="android:navigationBarColor">@color/color_toolbar</item>
+        <item name="android:statusBarColor">@color/color_toolbar</item>
+        <item name="android:windowLightStatusBar">false</item>
 <!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
 <!--        <item name="android:colorPrimaryDark">@color/testColorMint</item>-->
 <!--        <item name="android:colorAccent">@color/testColorRed</item>-->
@@ -20,6 +16,7 @@
 <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
 <!--        <item name="colorAccent">@color/colorAccent</item>-->
 <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
 
     <style name="SplashThemeLight" parent="AppTheme">

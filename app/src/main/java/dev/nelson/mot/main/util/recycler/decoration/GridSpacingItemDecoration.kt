@@ -7,15 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.nelson.mot.main.R
 
 class GridSpacingItemDecoration(context: Context,
-                                paddingLeft: Int,
-                                paddingTop: Int,
-                                paddingRight: Int,
-                                paddingBottom: Int, private val paddingFlag: Int) : RecyclerView.ItemDecoration() {
-
-    private val paddingLeft: Int = paddingLeft
-    private val paddingTop: Int = paddingTop
-    private val paddingRight: Int = paddingRight
-    private val paddingBottom: Int = paddingBottom
+                                private val paddingLeft: Int,
+                                private val paddingTop: Int,
+                                private val paddingRight: Int,
+                                private val paddingBottom: Int, private val paddingFlag: Int) : RecyclerView.ItemDecoration() {
 
     constructor(context: Context, flag: Int) : this(context, R.dimen.small, flag)
 
@@ -34,8 +29,8 @@ class GridSpacingItemDecoration(context: Context,
     }
 
     private fun setVerticalPadding(outRect: Rect) {
-        outRect.left = paddingLeft / 2
-        outRect.right = paddingRight / 2
+        outRect.left = paddingLeft
+        outRect.right = paddingRight
     }
 
     private fun setHorizontalPadding(outRect: Rect) {

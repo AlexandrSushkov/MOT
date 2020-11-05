@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.movieslist
 
-import android.app.ActivityOptions
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentMoviesListBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.payment.NewPaymentActivity
+import dev.nelson.mot.main.presentations.payment.PaymentActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 import dev.nelson.mot.main.widget.BottomSheetBehavior
 
@@ -27,7 +26,7 @@ class MoviesListFragment : BaseFragment() {
         binding.viewModel = viewModel
         viewModel.onItemClickEvent.observe(viewLifecycleOwner, Observer {
 //            val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.fab, "new_payment")
-            context?.let{startActivity(NewPaymentActivity.getIntent(it))}
+            context?.let{startActivity(PaymentActivity.getIntent(it))}
         } )
 
         return binding.root
