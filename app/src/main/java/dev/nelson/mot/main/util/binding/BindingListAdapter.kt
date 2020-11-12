@@ -11,6 +11,8 @@ import com.jakewharton.rxrelay2.Relay
 import dev.nelson.mot.main.BR
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
+import dev.nelson.mot.main.data.room.model.category.Category
+import dev.nelson.mot.main.databinding.ItemCategoryBinding
 import dev.nelson.mot.main.databinding.ItemMovieBinding
 import dev.nelson.mot.main.util.recycler.decoration.GridSpacingItemDecoration
 
@@ -27,6 +29,17 @@ fun RecyclerView.setMovies(movies: List<Movie>, onItemClickPublisher: Relay<Movi
                 }
             })
             .into(this)
+}
+
+@BindingAdapter(value = ["setCategories"])
+fun RecyclerView.setCategories(categories: List<Category>) {
+    LastAdapter(categories, BR.category)
+        .map<Category>(object : ItemType<ItemCategoryBinding>(R.layout.item_category) {
+            override fun onBind(holder: Holder<ItemCategoryBinding>) {
+//                holder.binding.publisher = onItemClickPublisher
+            }
+        })
+        .into(this)
 }
 
 @BindingAdapter(value = ["setGenres", "selectedGenres", "onGenreClick"], requireAll = false)

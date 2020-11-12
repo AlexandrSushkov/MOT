@@ -18,7 +18,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
+import javax.inject.Singleton
 
+@Singleton
 class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase: MovieUseCase) : BaseViewModel() {
 
     private val genresArray = listOf("Film-Noir", "Action", "Adventure", "Horror", "Romance", "War", "Documentary", "Sci-Fi", "Drama", "Thriller", "(no genres listed)",

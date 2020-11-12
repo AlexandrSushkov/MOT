@@ -26,15 +26,6 @@
             android:name=".presentations.payment.PaymentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".presentations.settings.SettingsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.statistic.StatisticActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".presentations.categories.CategoriesActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".presentations.about.AboutActivity"
             android:screenOrientation="portrait" />
         <activity

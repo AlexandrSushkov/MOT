@@ -15,17 +15,47 @@
             type="android.view.View" />
     </data>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/movies_list"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        bind:gridSpacingItemDecoration="@{@dimen/small}"
-        bind:onMovieItemClick="@{viewModel.onMovieItemClickPublisher}"
-        bind:setMovies="@{viewModel.movies}"
-        tools:listitem="@layout/item_movie"
-        tools:itemCount="6"/>
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/color_toolbar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
+
+                <TextView
+                    android:id="@+id/title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Movies"
+                    android:textSize="16sp"
+                    tools:text="Title" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/movies_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            bind:gridSpacingItemDecoration="@{@dimen/small}"
+            bind:onMovieItemClick="@{viewModel.onMovieItemClickPublisher}"
+            bind:setMovies="@{viewModel.movies}"
+            tools:listitem="@layout/item_movie"
+            tools:itemCount="6"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
