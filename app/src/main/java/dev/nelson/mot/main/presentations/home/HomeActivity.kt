@@ -1,13 +1,18 @@
 package dev.nelson.mot.main.presentations.home
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.Window
 import androidx.activity.viewModels
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import dev.nelson.mot.main.R
@@ -37,34 +42,30 @@ class HomeActivity : EntryPointActivity() {
         binding.viewModel = viewModel
         initAppBar()
         initFab()
+        initListeners()
+        binding.bottomAppBar.performHide()
+        binding.fab.hide()
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.nav_menu_item_recent_payments -> binding.apply {
-                    bottomAppBar.performShow()
-                    fab.apply {
-                        setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_add_24))
-                        show()
-                    }
-                }
-                R.id.nav_menu_item_categories -> binding.apply {
-                    bottomAppBar.performShow()
-                    fab.apply {
-                        setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_show_chart_24))
-                        show()
-                    }
-                }
-                R.id.nav_menu_item_statistic -> binding.apply{
-                    bottomAppBar.performShow()
-                    fab.hide()
 
-                }
-                R.id.nav_menu_item_settings -> binding.apply{
-                    fab.hide()
-                    bottomAppBar.performHide()
-                }
-            }
+//setNavigationBarButtonsColor(this, )
+    }
+
+    private fun setNavigationBarButtonsColor(activity: Activity, navigationBarColor: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val decorView = activity.window.decorView
+            val flags = decorView.systemUiVisibility
+//            if (isColorLight(navigationBarColor)) {
+//                flags = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+//            } else {
+//                flags = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+//            }
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         }
+    }
+
+    private fun isColorLight(color: Int): Boolean {
+        val darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
+        return darkness < 0.5;
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,13 +86,9 @@ class HomeActivity : EntryPointActivity() {
     }
 
     private fun initAppBar() {
-
-
         setSupportActionBar(binding.bottomAppBar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_dehaze_24)
-
-
     }
 
     private fun initFab() {
@@ -101,7 +98,43 @@ class HomeActivity : EntryPointActivity() {
         }
     }
 
-    private fun openNavigation() {
+    private fun initListeners() {
+        initNavControllerListener()
+    }
+
+    private fun initNavControllerListener() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.nav_menu_item_payment_list -> binding.apply {
+//                    bottomAppBar.performShow()
+//                    fab.apply {
+//                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_add_24, theme))
+//                        show()
+//                    }
+                }
+                R.id.nav_menu_item_categories -> binding.apply {
+                    bottomAppBar.performShow()
+//                    fab.apply {
+//                        setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_show_chart_24, theme))
+//                        show()
+//                    }
+                }
+                R.id.nav_menu_item_statistic -> binding.apply {
+                    bottomAppBar.performHide()
+                    fab.hide()
+                }
+                R.id.nav_menu_item_movies_list -> binding.apply {
+                    fab.hide()
+                }
+                R.id.nav_menu_item_settings -> binding.apply {
+                    fab.hide()
+                    bottomAppBar.performHide()
+                }
+            }
+        }
+    }
+
+    fun openNavigation() {
         val bottomNavDialogFragment = MotRoundedBottomSheetDialogFragment()
         bottomNavDialogFragment.show(supportFragmentManager, bottomNavDialogFragment.tag)
     }

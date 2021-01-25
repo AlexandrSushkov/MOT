@@ -26,6 +26,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
     private val genresArray = listOf("Film-Noir", "Action", "Adventure", "Horror", "Romance", "War", "Documentary", "Sci-Fi", "Drama", "Thriller", "(no genres listed)",
         "Crime", "Fantasy", "Animation", "IMAX", "Comedy", "Mystery", "Children", "Musical")
     val movies = ObservableArrayList<Movie>()
+    val moviesModelList = ObservableArrayList<MoviesListItemModel>()
     val genres = ObservableArrayList<String>()
     val selectedGenres = ObservableArrayList<String>()
     val selectedGenresVisibility = ObservableBoolean()
@@ -48,7 +49,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                 isShowSelectedCategories.set(selectedGenres.isEmpty())
             },
                 onError = { it.printStackTrace() })
-            .addTo(disposables)
+            .addToDisposables()
 
         onMovieItemClickPublisher
             .applyThrottling()
@@ -56,7 +57,21 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                 Log.e("tag", it.toString())
                 onItemClickEvent.postValue(Unit)
             }
-            .addTo(disposables)
+            .addToDisposables()
+
+        movieUseCase.getMovieModelList()
+            .doOnNext { moviesModelList.addAll(it) }
+            .doOnError { it.printStackTrace() }
+            .subscribe()
+            .addToDisposables()
+
+        onMovieItemClickPublisher
+            .applyThrottling()
+            .subscribe {
+                Log.e("tag", it.toString())
+                onItemClickEvent.postValue(Unit)
+            }
+            .addToDisposables()
 
         onGenreItemClickPublisher
             .map {
@@ -70,7 +85,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                 movies.clear()
                 movies.addAll(it)
             }
-            .addTo(disposables)
+            .addToDisposables()
 
         onSelectedGenreClickPublisher
             .map { selectedGenres.remove(it) }
@@ -81,7 +96,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                 movies.addAll(it)
                 isShowSelectedCategories.set(selectedGenres.isEmpty())
             }
-            .addTo(disposables)
+            .addToDisposables()
 
         genres.addAll(genresArray)
     }
@@ -95,7 +110,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                     isShowSelectedCategories.set(selectedGenres.isEmpty())
                 },
                         onError = { it.printStackTrace() })
-                .addTo(disposables)
+                .addToDisposables()
     }
 
     fun onResetFilterClick() {
@@ -116,7 +131,7 @@ class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase:
                     Timber.e(it.toString())
                 },
                         onError = { it.printStackTrace() })
-                .addTo(disposables)
+                .addToDisposables()
     }
 
 

@@ -52,6 +52,12 @@
             tools:listitem="@layout/item_category"
             tools:itemCount="6"/>
 
+        <ProgressBar
+            android:layout_width="@dimen/medium"
+            android:layout_height="@dimen/medium"
+            android:layout_gravity="center"
+            bind:isShow="@{viewModel.isLoading()}"
+            tools:visibility="visible"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

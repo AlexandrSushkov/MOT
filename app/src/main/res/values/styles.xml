@@ -31,6 +31,16 @@
         <item name="cornerSize">14dp</item>
     </style>
 
+    <style name="CustomActionBar" parent="@style/ThemeOverlay.AppCompat.DayNight.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ToggleSwitchTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorAccent">@color/colorRed</item>
+    </style>
+
     <!--widgets-->
 
     <!--bottom sheet dialog-->

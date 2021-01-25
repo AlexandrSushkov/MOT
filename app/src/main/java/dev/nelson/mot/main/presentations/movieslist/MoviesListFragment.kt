@@ -24,10 +24,12 @@ class MoviesListFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = getDataBinding(inflater, R.layout.fragment_movies_list, container)
         binding.viewModel = viewModel
-        viewModel.onItemClickEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.apply {
+            onItemClickEvent.observe(viewLifecycleOwner, Observer {
 //            val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.fab, "new_payment")
-            context?.let{startActivity(PaymentActivity.getIntent(it))}
-        } )
+                context?.let { startActivity(PaymentActivity.getIntent(it)) }
+            })
+        }
 
         return binding.root
     }

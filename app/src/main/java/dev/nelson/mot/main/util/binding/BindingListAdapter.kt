@@ -12,8 +12,12 @@ import dev.nelson.mot.main.BR
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.data.room.model.category.Category
+import dev.nelson.mot.main.data.room.model.payment.Payment
 import dev.nelson.mot.main.databinding.ItemCategoryBinding
 import dev.nelson.mot.main.databinding.ItemMovieBinding
+import dev.nelson.mot.main.databinding.ItemPaymentBinding
+import dev.nelson.mot.main.presentations.movieslist.MoviesAdapter
+import dev.nelson.mot.main.presentations.movieslist.MoviesListItemModel
 import dev.nelson.mot.main.util.recycler.decoration.GridSpacingItemDecoration
 
 @BindingAdapter(value = ["gridSpacingItemDecoration"])
@@ -31,16 +35,36 @@ fun RecyclerView.setMovies(movies: List<Movie>, onItemClickPublisher: Relay<Movi
             .into(this)
 }
 
+@BindingAdapter(value = ["setMoviesModelsList", "onMovieItemClick"])
+fun RecyclerView.setMoviesModelsList(movies: List<MoviesListItemModel>, onItemClickPublisher: Relay<Movie>) {
+    if(adapter == null){
+        adapter = MoviesAdapter()
+    }
+    (adapter as MoviesAdapter).submitData(movies)
+}
+
+
 @BindingAdapter(value = ["setCategories"])
 fun RecyclerView.setCategories(categories: List<Category>) {
     LastAdapter(categories, BR.category)
         .map<Category>(object : ItemType<ItemCategoryBinding>(R.layout.item_category) {
             override fun onBind(holder: Holder<ItemCategoryBinding>) {
-//                holder.binding.publisher = onItemClickPublisher
+//                holder.binding.on = onItemClickPublisher
             }
         })
         .into(this)
 }
+
+@BindingAdapter(value = ["setPayments"])
+fun RecyclerView.setPayments(payments: List<Payment>) {
+    LastAdapter(payments, BR.payment)
+        .map<Payment>(object : ItemType<ItemPaymentBinding>(R.layout.item_payment) {
+            override fun onBind(holder: Holder<ItemPaymentBinding>) {
+            }
+        })
+        .into(this)
+}
+
 
 @BindingAdapter(value = ["setGenres", "selectedGenres", "onGenreClick"], requireAll = false)
 fun ChipGroup.setGenres(genres: List<String>, selectedGenres: List<String>, onGenreClickPublisher: Relay<Pair<String, Boolean>>){

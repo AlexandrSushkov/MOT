@@ -33,7 +33,7 @@
 
         <provider
             android:name=".legacy.db.SQLiteContentProvider"
-            android:authorities="dev.nelson.mot"
+            android:authorities="dev.nelson.mot.debug"
             android:exported="false"
             android:syncable="false" />
 

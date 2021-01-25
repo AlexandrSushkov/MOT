@@ -23,6 +23,7 @@
         <item name="android:windowBackground">@drawable/splash_activity_window_background</item>
     </style>
 
+
     <!--widgets-->
 
     <!--bottom sheet dialog-->

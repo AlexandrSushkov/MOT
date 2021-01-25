@@ -1,6 +1,9 @@
 package dev.nelson.mot.main.util.binding
 
+import android.view.View
 import android.view.animation.OvershootInterpolator
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.BindingAdapter
@@ -20,3 +23,20 @@ fun ConstraintLayout.expandBottomMenu(isExpand: Boolean, expandedLayout: Int, co
     val menuStateSet = if (isExpand) expandSet else collapseSet
     menuStateSet.applyTo(expandableMenu)
 }
+
+@BindingAdapter("isShow")
+fun ProgressBar.isShow(isShow: Boolean) {
+    visibility = setVisibility(isShow)
+}
+
+@BindingAdapter("isShow")
+fun TextView.isShow(isShow: Boolean) {
+    visibility = setVisibility(isShow)
+}
+
+@BindingAdapter("cost")
+fun TextView.cost(cost: Int) {
+    text=cost.toString()
+}
+
+private fun setVisibility(isShow: Boolean): Int = if (isShow) View.VISIBLE else View.GONE

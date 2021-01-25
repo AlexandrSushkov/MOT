@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/nav_menu_item_recent_payments"
-        android:icon="@drawable/ic_local_movies_black_24dp"
+        android:id="@+id/nav_menu_item_payment_list"
+        android:icon="@drawable/ic_baseline_payment_24"
         android:title="@string/recent_payments" />
     <item
         android:id="@+id/nav_menu_item_categories"
@@ -15,7 +15,13 @@
         android:id="@+id/nav_menu_item_statistic"
         android:icon="@drawable/ic_baseline_show_chart_24"
         android:title="@string/statistic"
-        android:tooltipText="@string/statistic" />
+        android:tooltipText="@string/statistic"
+        android:menuCategory="secondary"/>
+
+    <item
+        android:id="@+id/nav_menu_item_movies_list"
+        android:icon="@drawable/ic_local_movies_black_24dp"
+        android:title="Movies" />
 
     <group
         android:id="@+id/menu_group_2"
@@ -27,10 +33,10 @@
             android:title="@string/settings"
             android:tooltipText="@string/settings" />
 
-        <item
-            android:id="@+id/nav_menu_item_about"
-            android:icon="@drawable/ic_info_outline_black_24dp"
-            android:title="@string/about" />
+<!--        <item-->
+<!--            android:id="@+id/nav_menu_item_about"-->
+<!--            android:icon="@drawable/ic_info_outline_black_24dp"-->
+<!--            android:title="@string/about" />-->
 
     </group>
 

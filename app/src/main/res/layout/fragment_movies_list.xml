@@ -52,7 +52,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             bind:gridSpacingItemDecoration="@{@dimen/small}"
             bind:onMovieItemClick="@{viewModel.onMovieItemClickPublisher}"
-            bind:setMovies="@{viewModel.movies}"
+            bind:setMoviesModelsList="@{viewModel.moviesModelList}"
             tools:listitem="@layout/item_movie"
             tools:itemCount="6"/>
 

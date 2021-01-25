@@ -17,10 +17,7 @@ class HomeViewModel @ViewModelInject constructor(testUseCase: TestUseCase) : Bas
     init {
         testUseCase.getTest()
             .subscribeBy { title.set(it) }
-            .addTo(disposables)
+            .addToDisposables()
     }
 
-    fun openNavComponentActivity(){
-
-    }
 }

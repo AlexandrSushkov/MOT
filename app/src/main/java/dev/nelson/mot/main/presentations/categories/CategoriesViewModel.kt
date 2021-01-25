@@ -6,22 +6,33 @@ import androidx.hilt.lifecycle.ViewModelInject
 import dev.nelson.mot.main.data.room.model.category.Category
 import dev.nelson.mot.main.domain.CategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.addTo
+import timber.log.Timber
+import javax.inject.Singleton
 
-class CategoriesViewModel @ViewModelInject constructor(private val categoryUseCase: CategoryUseCase) : BaseViewModel() {
+@Singleton
+class CategoriesViewModel @ViewModelInject constructor(categoryUseCase: CategoryUseCase) : BaseViewModel() {
 
     val categories = ObservableArrayList<Category>()
+    val isLoading = ObservableBoolean()
     var isShowPlaceholder = ObservableBoolean()
 
-
     init {
+        Timber.e("initViewModel")
         categoryUseCase.getCategories()
+            .doOnSubscribe { isLoading.set(true) }
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
+                isLoading.set(false)
                 categories.addAll(it)
                 isShowPlaceholder.set(categories.isEmpty())
             }
-            .doOnError { it.printStackTrace() }
+            .doOnError {
+                isLoading.set(false)
+                it.printStackTrace()
+            }
             .subscribe()
-            .addTo(disposables)
+            .addToDisposables()
     }
 }
