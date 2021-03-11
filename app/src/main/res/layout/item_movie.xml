@@ -50,7 +50,7 @@
                 tools:text="date" />
 
             <TextView
-                android:id="@+id/movie_genre"
+                android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small"
@@ -60,7 +60,7 @@
                 tools:text="genre" />
 
             <TextView
-                android:id="@+id/movie_country"
+                android:id="@+id/cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{itemMovie.country}"

@@ -7,7 +7,7 @@
 
         <variable
             name="category"
-            type="dev.nelson.mot.main.data.room.model.category.Category" />
+            type="dev.nelson.mot.main.data.room.model.category.CategoryEntity" />
     </data>
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
@@ -30,7 +30,7 @@
                 android:drawablePadding="@dimen/small"
                 android:gravity="top"
                 android:padding="@dimen/medium"
-                android:text="@{category.categoryName}"
+                android:text="@{category.name}"
                 app:drawableStartCompat="@drawable/ic_baseline_settings_24"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"

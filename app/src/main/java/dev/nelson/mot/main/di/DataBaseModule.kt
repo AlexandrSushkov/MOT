@@ -13,72 +13,16 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.nelson.mot.main.data.room.MotDatabase
 import dev.nelson.mot.main.data.room.MotDatabaseInfo
-import java.text.ParseException
+import dev.nelson.mot.main.data.room.model.category.CategoryTable
+import dev.nelson.mot.main.data.room.model.payment.PaymentTable
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import javax.inject.Singleton
-
 
 @InstallIn(ApplicationComponent::class)
 @Module
 object DataBaseModule {
-
-    private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            val categoriesOldTableName = "categories"
-            val categoriesTempTableName = "categories_temp"
-            val paymentsOldTableName = "payments"
-            val paymentsTempTableName = "payments_temp"
-
-            //migrate categories
-            // Create the new table
-            database.execSQL("CREATE TABLE IF NOT EXISTS $categoriesTempTableName (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)")
-            // Copy the data
-            database.execSQL("INSERT INTO $categoriesTempTableName (id, name) SELECT _id, category_name FROM $categoriesOldTableName")
-            // Remove the old table
-            database.execSQL("DROP TABLE $categoriesOldTableName")
-            //Change the table name to the correct one
-            database.execSQL("ALTER TABLE $categoriesTempTableName RENAME TO $categoriesOldTableName")
-
-            //migrate payments
-//            database.execSQL("CREATE TABLE IF NOT EXISTS $paymentsTempTableName (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, summary TEXT, category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL, date DATE DEFAULT CURRENT_DATE, cost INTEGER NOT NULL)")
-            database.execSQL("CREATE TABLE IF NOT EXISTS $paymentsTempTableName (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, summary TEXT, category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL, date TEXT, date_in_milliseconds INTEGER, cost INTEGER NOT NULL)")
-//            database.execSQL("CREATE TABLE IF NOT EXISTS $paymentsTempTableName (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, summary TEXT, category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL, cost INTEGER NOT NULL)")
-
-//            database.execSQL("INSERT INTO $paymentsTempTableName (id, title, summary, category_id, date, cost) SELECT _id, title, summary, category_id, date, cost FROM $paymentsOldTableName")
-            database.execSQL("INSERT INTO $paymentsTempTableName (id, title, summary, category_id, date, cost) SELECT _id, title, summary, category_id, date, cost FROM $paymentsOldTableName")
-//            database.execSQL("INSERT INTO $paymentsTempTableName (id, title, summary, category_id, cost) SELECT _id, title, summary, category_id, cost FROM $paymentsOldTableName")
-            database.execSQL("DROP TABLE $paymentsOldTableName")
-            database.execSQL("ALTER TABLE $paymentsTempTableName RENAME TO $paymentsOldTableName")
-
-            //
-            val cursor = database.query("SELECT id, date FROM $paymentsOldTableName")
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                do {
-                    val id = cursor.getLong(cursor.getColumnIndex("id"))
-                    val date = cursor.getString(cursor.getColumnIndex("date"))
-
-                    var dateInMilliseconds = 0L
-                    val f = SimpleDateFormat("yyyy-MM-dd")
-                    try {
-                        val d: Date = f.parse(date)
-                        dateInMilliseconds = d.time
-                    } catch (e: ParseException) {
-                        e.printStackTrace()
-                    }
-
-                    val cv = ContentValues()
-                    cv.put("date_in_milliseconds", dateInMilliseconds)
-
-                    database.update(paymentsOldTableName, SQLiteDatabase.CONFLICT_NONE, cv, "id=?", listOf(id).toTypedArray())
-//                    "UPDATE $paymentsOldTableName SET date_in_milliseconds=1 WHERE id=$id"
-                } while (cursor.moveToNext())
-            }
-            cursor.close()
-
-        }
-    }
 
     @Provides
     @Singleton
@@ -89,11 +33,69 @@ object DataBaseModule {
             .allowMainThreadQueries()
             .build()
 
-//    @Provides
-//    fun provideLegacyDb(@ApplicationContext context: Context): SQLiteDatabase {
-//        val helper = dev.nelson.mot.legacy.db.SQLiteOpenHelperImpl(context)
-//        return helper.readableDatabase
-//    }
+    private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            val tempTableName = "temp_table"
 
+            database.apply {
+                //migrate categories table
+                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${CategoryTable.NAME} TEXT NOT NULL)")
+                execSQL("INSERT INTO $tempTableName (${CategoryTable.ID}, ${CategoryTable.NAME}) SELECT ${CategoryTableV1.ID}, ${CategoryTableV1.NAME} FROM ${CategoryTableV1.TABLE_NAME}")
+                execSQL("DROP TABLE ${CategoryTableV1.TABLE_NAME}")
+                execSQL("ALTER TABLE $tempTableName RENAME TO ${CategoryTable.TABLE_NAME}")
+
+                //migrate payments table
+                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${PaymentTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTable.TITLE} TEXT NOT NULL, ${PaymentTable.CATEGORY_ID_KEY} INTEGER REFERENCES categories(${CategoryTable.ID}) ON DELETE SET NULL, ${PaymentTable.COST} INTEGER NOT NULL, ${PaymentTable.DATE} TEXT, ${PaymentTable.DATE_IN_MILLISECONDS} INTEGER, ${PaymentTable.SUMMARY} TEXT)")
+                execSQL("INSERT INTO $tempTableName (${PaymentTable.ID}, ${PaymentTable.TITLE}, ${PaymentTable.CATEGORY_ID_KEY}, ${PaymentTable.COST}, ${PaymentTable.SUMMARY}) SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.TITLE}, ${PaymentTableV1.CATEGORY_ID}, ${PaymentTableV1.COST}, ${PaymentTableV1.SUMMARY} FROM ${PaymentTableV1.TABLE_NAME}")
+
+                //migrate date
+                val cursor = query("SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.DATE} FROM ${PaymentTableV1.TABLE_NAME}")
+                if (cursor.count > 0) {
+                    cursor.moveToFirst()
+                    do {
+                        val id = cursor.getLong(cursor.getColumnIndex(PaymentTableV1.ID))
+                        val date = cursor.getString(cursor.getColumnIndex(PaymentTableV1.DATE))
+
+                        val dateFormat = SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
+                        val parsedDate: Date = dateFormat.parse(date)
+                        val dateInMilliseconds = parsedDate.time
+
+                        val contentValues = ContentValues().apply {
+                            put(PaymentTable.DATE_IN_MILLISECONDS, dateInMilliseconds)
+                            put(PaymentTable.DATE, date)
+                        }
+
+                        update(tempTableName, SQLiteDatabase.CONFLICT_NONE, contentValues, "${PaymentTable.ID}=?", listOf(id).toTypedArray())
+                    } while (cursor.moveToNext())
+                }
+                cursor.close()
+
+                execSQL("DROP TABLE ${PaymentTableV1.TABLE_NAME}")
+                execSQL("ALTER TABLE $tempTableName RENAME TO ${PaymentTable.TABLE_NAME}")
+            }
+        }
+    }
 }
 
+//DB v1
+private object MotDbV1Constants{
+    const val DATE_FORMAT = "yyyy-MM-dd"
+}
+
+private object PaymentTableV1 {
+    const val TABLE_NAME = "payments"
+
+    const val ID = "_id"
+    const val TITLE = "title"
+    const val SUMMARY = "summary"
+    const val CATEGORY_ID = "category_id"
+    const val DATE = "date"
+    const val COST = "cost"
+}
+
+private object CategoryTableV1 {
+    const val TABLE_NAME = "categories"
+
+    const val ID = "_id"
+    const val NAME = "category_name"
+}

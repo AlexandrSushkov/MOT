@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
@@ -36,12 +35,9 @@ import dev.nelson.mot.main.util.extention.getDataBinding
             newPaymentFab.setOnClickListener {
                 navController.navigate(R.id.paymentFragment)
             }
-
         }
 
-        viewModel.onPaymentItemEvent.observe(viewLifecycleOwner, Observer { navController.navigate(R.id.paymentFragment) })
+        viewModel.onPaymentEntityItemEvent.observe(viewLifecycleOwner, { navController.navigate(R.id.paymentFragment) })
     }
 
 }
-
-

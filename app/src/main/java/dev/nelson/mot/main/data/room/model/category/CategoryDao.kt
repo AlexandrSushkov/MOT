@@ -8,9 +8,9 @@ import io.reactivex.Flowable
 @Dao
 interface CategoryDao {
 
-    @Query("SELECT * FROM categories")
-    fun getAllCategories(): Flowable<List<Category>>
+    @Query("SELECT * FROM ${CategoryTable.TABLE_NAME}")
+    fun getAllCategories(): Flowable<List<CategoryEntity>>
 
     @Insert
-    fun addCategories(categorise: List<Category>)
+    fun addCategories(categorise: List<CategoryEntity>)
 }

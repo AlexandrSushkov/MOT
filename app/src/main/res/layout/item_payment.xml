@@ -6,9 +6,14 @@
 
     <data>
 
+<!--        <variable-->
+<!--            name="payment"-->
+<!--            type="dev.nelson.mot.main.data.room.model.payment.Payment" />-->
+
         <variable
             name="payment"
-            type="dev.nelson.mot.main.data.room.model.payment.Payment" />
+            type="dev.nelson.mot.main.data.model.Payment" />
+
 
     </data>
 
@@ -25,12 +30,12 @@
             android:padding="@dimen/medium">
 
             <TextView
-                android:id="@+id/movie_title"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="@{payment.title}"
+                android:text="@{payment.name}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="payment #1" />
@@ -40,23 +45,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small"
-                android:text="@{payment.date}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_title"
+                app:layout_constraintTop_toBottomOf="@+id/title"
                 tools:text="@tools:sample/date/ddmmyy" />
 
             <TextView
-                android:id="@+id/movie_genre"
+                android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small"
-                android:text="@{payment.categoryId.toString()}"
+                android:text="@{payment.category.name}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/date"
                 tools:text="category" />
 
             <TextView
-                android:id="@+id/movie_country"
+                android:id="@+id/cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

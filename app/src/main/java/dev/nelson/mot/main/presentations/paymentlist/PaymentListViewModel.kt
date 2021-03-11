@@ -5,23 +5,25 @@ import androidx.databinding.ObservableBoolean
 import androidx.hilt.lifecycle.ViewModelInject
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
-import dev.nelson.mot.main.data.room.model.payment.Payment
+import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
+import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import dev.nelson.mot.main.domain.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.extention.applyThrottling
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import timber.log.Timber
 
 class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentUseCase) : BaseViewModel() {
 
+//    val payments = ObservableArrayList<Payment>()
     val payments = ObservableArrayList<Payment>()
     val isLoading = ObservableBoolean()
     val isShowEmptyPlaceholder = ObservableBoolean()
 
-    val onPaymentItemClickPublisher: Relay<Payment> = PublishRelay.create()
-    val onPaymentItemEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
+    val onPaymentEntityItemClickPublisher: Relay<PaymentEntity> = PublishRelay.create()
+    val onPaymentEntityItemEvent: SingleLiveEvent<PaymentEntity> = SingleLiveEvent()
 
 
     init {
@@ -38,11 +40,11 @@ class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentU
             .addToDisposables()
 
 
-        onPaymentItemClickPublisher
+        onPaymentEntityItemClickPublisher
             .applyThrottling()
             .doOnNext {
                 Timber.d("on payment $it click")
-                onPaymentItemEvent.postValue(it)
+                onPaymentEntityItemEvent.postValue(it)
             }
             .subscribe()
             .addToDisposables()
