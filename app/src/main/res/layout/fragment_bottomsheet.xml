@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="dev.nelson.mot.main.presentations.home.HomeViewModel" />
+
+    </data>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/bottom_navigation"
+        android:background="@color/color_toolbar"
+        android:theme="@style/Theme.MaterialComponents.DayNight"
+        app:shapeAppearance="@style/ShapeAppearance.MyApp.LargeComponent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_home_navigation" />
+
+</layout>
+

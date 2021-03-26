@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Main</string>
+    <string name="test" translatable="false">TEEEst</string>
+    <string name="add_new_payment" translatable="false">add new payment</string>
+    <string name="recent_payments">Recent payments</string>
+    <string name="categories">Categories</string>
+    <string name="statistic">Statistic</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+
+</resources>

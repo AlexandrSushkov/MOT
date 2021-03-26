@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--color palette-->
+
+    <color name="color_white">#ffffff</color>
+    <color name="color_black">#000000</color>
+
+    <!--light theme-->
+    <color name="colorPrimaryThemeLight">#3E3853</color>
+    <color name="colorPrimaryDarkThemeLight">#332D48</color>
+    <color name="colorAccentThemeLight">#FF9800</color>
+
+
+    <color name="colorPrimary">#3E3853</color>
+    <color name="colorPrimaryDark">#332D48</color>
+    <color name="colorAccent">#FF9800</color>
+    <color name="colorBackground">#E3DEDE</color>
+    <color name="colorGray">#8c8c8c</color>
+    <color name="colorRed">#c74747</color>
+    <color name="colorGreen">#47c763</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <!--test colors-->
+    <color name="testColorGreen">#47c763</color>
+    <color name="testColorRed">#dc4b79</color>
+    <color name="testColorBlue">#477ac7</color>
+
+
+</resources>

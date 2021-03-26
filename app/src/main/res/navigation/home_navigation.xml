@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_navigation"
+    app:startDestination="@+id/nav_menu_item_payment_list">
+
+<!--to make navigation controller works properly fragment's id have to match with menu item id-->
+    <fragment
+        android:id="@+id/nav_menu_item_payment_list"
+        android:name="dev.nelson.mot.main.presentations.paymentlist.PaymentListFragment"
+        android:label="PaymentListFragment"
+        tools:layout="@layout/fragment_payment_list">
+        <action
+            android:id="@+id/go_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_menu_item_categories"
+        android:name="dev.nelson.mot.main.presentations.categories.CategoriesFragment"
+        android:label="CategoriesFragment"
+        tools:layout="@layout/categories_fragment"/>
+
+    <fragment
+        android:id="@+id/nav_menu_item_statistic"
+        android:name="dev.nelson.mot.main.presentations.statistic.StatisticFragment"
+        android:label="StatisticFragment"
+        tools:layout="@layout/activity_statistic"/>
+
+    <fragment
+        android:id="@+id/nav_menu_item_movies_list"
+        android:name="dev.nelson.mot.main.presentations.movieslist.MoviesListFragment"
+        android:label="MoviesListFragment"
+        tools:layout="@layout/fragment_movies_list"/>
+
+    <fragment
+        android:id="@+id/nav_menu_item_settings"
+        android:name="dev.nelson.mot.main.presentations.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/settings"/>
+
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentFragment"
+        android:label="PaymentFragment"
+        tools:layout="@layout/fragment_payment"/>
+
+</navigation>

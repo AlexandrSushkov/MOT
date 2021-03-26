@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/payment_root_layout"
+            android:layout_width="match_parent"
+            android:foregroundGravity="bottom"
+            android:background="@color/colorAccent"
+            android:layout_height="wrap_content"
+            android:transitionName="new_payment"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/payment_title"
+                android:layout_width="0dp"
+                android:hint="payment"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="date"
+                app:layout_constraintTop_toBottomOf="@id/payment_title"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <Button
+                android:id="@+id/btn_save_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save"
+                app:layout_constraintTop_toBottomOf="@id/payment_title"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
