@@ -10,6 +10,8 @@ import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
 import dev.nelson.mot.main.presentations.base.EntryPointFragment
 import dev.nelson.mot.main.presentations.home.HomeActivity
+import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
+import dev.nelson.mot.main.presentations.payment.PaymentFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
  class PaymentListFragment : EntryPointFragment() {
@@ -34,6 +36,11 @@ import dev.nelson.mot.main.util.extention.getDataBinding
             }
             newPaymentFab.setOnClickListener {
                 navController.navigate(R.id.paymentFragment)
+//                activity?.let {
+//                    val paymentFragment = PaymentFragment()
+//                    paymentFragment.show(it.supportFragmentManager, paymentFragment.tag)
+//                }
+
             }
         }
 

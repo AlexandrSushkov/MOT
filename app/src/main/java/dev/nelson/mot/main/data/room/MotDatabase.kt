@@ -9,7 +9,7 @@ import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.payment.PaymentDao
 
 @Database(entities = [(PaymentEntity::class), (CategoryEntity::class)], version = MotDatabaseInfo.VERSION, exportSchema = false)
-@TypeConverters(Converters::class)
+//@TypeConverters(Converters::class)
 abstract class MotDatabase : RoomDatabase() {
 
     abstract fun categoryDao(): CategoryDao

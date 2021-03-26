@@ -12,7 +12,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import androidx.activity.viewModels
-import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import dev.nelson.mot.main.R
