@@ -13,4 +13,7 @@ class PaymentUseCase @Inject constructor(private val paymentRepository: PaymentR
     fun getAllPayments(): Flowable<List<Payment>> = paymentRepository.getAllPaymentsWithCategory()
         .map { it.toPaymentList() }
         .subscribeOn(Schedulers.io())
+
+    suspend fun getAllPaymentsCor(): List<Payment> = paymentRepository.getAllPaymentsWithCategoryCor()
+        .toPaymentList()
 }

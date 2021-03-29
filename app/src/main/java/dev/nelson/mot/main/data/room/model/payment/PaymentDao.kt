@@ -20,4 +20,10 @@ interface PaymentDao {
 
     @Insert
     fun addPayments(paymentEntities: List<PaymentEntity>)
+
+
+    //coroutines
+    @Transaction
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} INNER JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
+    suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory>
 }

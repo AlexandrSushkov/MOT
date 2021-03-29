@@ -3,6 +3,7 @@ package dev.nelson.mot.main.presentations.paymentlist
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.viewModelScope
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import dev.nelson.mot.main.data.model.Payment
@@ -13,6 +14,7 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.extention.applyThrottling
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentUseCase) : BaseViewModel() {
@@ -27,17 +29,17 @@ class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentU
 
 
     init {
-        paymentUseCase.getAllPayments()
-            .doOnSubscribe { isLoading.set(true) }
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                isLoading.set(false)
-                payments.clear()
-                payments.addAll(it)
-                isShowEmptyPlaceholder.set(it.isEmpty())
-            }
-            .subscribe()
-            .addToDisposables()
+//        paymentUseCase.getAllPayments()
+//            .doOnSubscribe { isLoading.set(true) }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .doOnNext {
+//                isLoading.set(false)
+//                payments.clear()
+//                payments.addAll(it)
+//                isShowEmptyPlaceholder.set(it.isEmpty())
+//            }
+//            .subscribe()
+//            .addToDisposables()
 
 
         onPaymentEntityItemClickPublisher
@@ -48,6 +50,15 @@ class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentU
             }
             .subscribe()
             .addToDisposables()
+
+        viewModelScope.launch {
+            isLoading.set(true)
+            val paymentList = paymentUseCase.getAllPaymentsCor()
+            isLoading.set(false)
+            payments.clear()
+            payments.addAll(paymentList)
+            isShowEmptyPlaceholder.set(paymentList.isEmpty())
+        }
     }
 
 }
