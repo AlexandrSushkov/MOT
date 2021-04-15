@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.home.bottomnav
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentBottomsheetBinding
 import dev.nelson.mot.main.presentations.home.HomeViewModel
+import dev.nelson.mot.main.presentations.paymentlist.PaymentListComposeActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -47,11 +49,22 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 //            finish()
 //            true
 //        }
+        binding.bottomNavigation.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+//                R.id.nav_menu_item_recent_payments -> safeNavigate(R.id.moviesListFragment)
+                R.id.nav_menu_item_payment_list_compose -> startActivity(Intent(context, PaymentListComposeActivity::class.java))
+//                R.id.nav_menu_item_statistic -> safeNavigate(R.id.statisticFragment)
+//                R.id.nav_menu_item_settings -> safeNavigate(R.id.settingsFragment)
+            }
+            finish()
+            true
+        }
+
     }
 
-//    private fun finish() {
-//        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
-//    }
+    private fun finish() {
+        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+    }
 
     private fun safeNavigate(@IdRes id: Int) {
         //if destination is open fragment - do nothing

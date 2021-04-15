@@ -19,6 +19,7 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.EntryPointActivity
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.main.presentations.payment.PaymentActivity
+import dev.nelson.mot.main.presentations.paymentlist.PaymentListComposeActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 class HomeActivity : EntryPointActivity() {

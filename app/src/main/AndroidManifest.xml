@@ -28,6 +28,9 @@
         <activity
             android:name=".presentations.about.AboutActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".presentations.paymentlist.PaymentListComposeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

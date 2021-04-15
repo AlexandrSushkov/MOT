@@ -1,8 +1,11 @@
 package dev.nelson.mot.main.presentations.paymentlist
 
+import android.database.Observable
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
@@ -21,6 +24,12 @@ class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentU
 
 //    val payments = ObservableArrayList<Payment>()
     val payments = ObservableArrayList<Payment>()
+    val paymentListLiveData: LiveData<List<Payment>> = liveData {
+//        val superheroList = loadSuperheroes()
+//        kotlinx.coroutines.delay(1500)
+        val paymentList = paymentUseCase.getAllPaymentsCor()
+        emit(paymentList)
+    }
     val isLoading = ObservableBoolean()
     val isShowEmptyPlaceholder = ObservableBoolean()
 
@@ -60,5 +69,9 @@ class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentU
             isShowEmptyPlaceholder.set(paymentList.isEmpty())
         }
     }
+
+//    suspend fun loadPeyments(): List<Payment> {
+//        return getSuperheroList()
+//    }
 
 }

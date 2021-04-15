@@ -86,7 +86,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
 
     //compose
-    def compose_version = '1.0.0-beta02'
+    def compose_version = '1.0.0-beta04'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     // Tooling support (Previews, etc.)
