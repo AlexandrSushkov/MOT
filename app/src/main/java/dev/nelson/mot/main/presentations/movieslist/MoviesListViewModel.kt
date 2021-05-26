@@ -6,8 +6,8 @@ import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.hilt.lifecycle.ViewModelInject
 import com.jakewharton.rxrelay2.PublishRelay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.domain.MovieUseCase
@@ -15,13 +15,12 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.extention.applyThrottling
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import timber.log.Timber
-import javax.inject.Singleton
+import javax.inject.Inject
 
-@Singleton
-class MoviesListViewModel @ViewModelInject constructor(private var movieUseCase: MovieUseCase) : BaseViewModel() {
+@HiltViewModel
+class MoviesListViewModel @Inject constructor(private var movieUseCase: MovieUseCase) : BaseViewModel() {
 
     private val genresArray = listOf("Film-Noir", "Action", "Adventure", "Horror", "Romance", "War", "Documentary", "Sci-Fi", "Drama", "Thriller", "(no genres listed)",
         "Crime", "Fantasy", "Animation", "IMAX", "Comedy", "Mystery", "Children", "Musical")

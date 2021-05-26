@@ -1,28 +1,27 @@
 package dev.nelson.mot.main.presentations.paymentlist
 
-import android.database.Observable
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import dev.nelson.mot.main.domain.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.extention.applyThrottling
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class PaymentListViewModel @ViewModelInject constructor(paymentUseCase: PaymentUseCase) : BaseViewModel() {
+@HiltViewModel
+class PaymentListViewModel @Inject constructor(paymentUseCase: PaymentUseCase) : BaseViewModel() {
 
-//    val payments = ObservableArrayList<Payment>()
+    //    val payments = ObservableArrayList<Payment>()
     val payments = ObservableArrayList<Payment>()
     val paymentListLiveData: LiveData<List<Payment>> = liveData {
 //        val superheroList = loadSuperheroes()

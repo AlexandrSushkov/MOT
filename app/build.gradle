@@ -33,11 +33,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -54,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.android.gms:play-services-analytics-impl:17.0.0'
     def libs = rootProject.ext.libs
 
     implementation project(':lagacy')
@@ -68,7 +64,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
 
     //material
-    implementation "com.google.android.material:material:1.4.0-alpha01"
+    implementation "com.google.android.material:material:1.4.0-beta01"
 
     //android support
     implementation "androidx.recyclerview:recyclerview:1.1.0"
@@ -109,25 +105,25 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
 
     //Lifecycle
-    def lifecycle_version = "2.2.0"
+    def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     //DB
-    def room_version = "2.2.6"
+    def room_version = "2.3.0"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
     implementation "androidx.room:room-ktx:$room_version" //Kotlin Extensions and Coroutines support for Room
 
     //DI
-    def hilt_version = "2.28-alpha"
+    def hilt_version = "2.31.2-alpha"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 
     //rx
     implementation "io.reactivex.rxjava2:rxkotlin:2.3.0"
