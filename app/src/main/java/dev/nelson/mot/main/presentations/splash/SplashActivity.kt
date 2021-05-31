@@ -9,8 +9,8 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        startActivity(HomeActivity.getIntent(this))
-        startActivity(PaymentListComposeActivity.getIntent(this))
+        startActivity(HomeActivity.getIntent(this))
+//        startActivity(PaymentListComposeActivity.getIntent(this))
         finish()
     }
 }

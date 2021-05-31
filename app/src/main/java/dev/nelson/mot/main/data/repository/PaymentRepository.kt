@@ -10,8 +10,9 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
 
     fun getAllPayments(): Flowable<List<PaymentEntity>> = motDatabase.paymentDao().getAllPayments()
 
-    fun getAllPaymentsWithCategory(): Flowable<List<PaymentWithCategory>> = motDatabase.paymentDao().getAllPaymentsWithCategory()
+    fun getAllPaymentsWithCategory(): Flowable<List<PaymentWithCategory>> = motDatabase.paymentDao()
+            .getAllPaymentsWithCategory()
 
-    suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory> = motDatabase.paymentDao().getAllPaymentsWithCategoryCor()
-//    suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory> = emptyList()
+    suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory> = motDatabase.paymentDao()
+            .getAllPaymentsWithCategoryCor()
 }
