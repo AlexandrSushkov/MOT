@@ -38,8 +38,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion "1.4.31"
-        kotlinCompilerExtensionVersion '1.0.0-beta02'
+        kotlinCompilerVersion "1.5.10"
+        kotlinCompilerExtensionVersion '1.0.0-rc02'
     }
 
     defaultConfig.multiDexEnabled true
@@ -58,7 +58,7 @@ dependencies {
 
     //Kotlin
     def coroutines = "1.4.3"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.0"
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.31"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
@@ -74,21 +74,21 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.3.1'
 
     //navigation
-    def navigation_version = "2.3.4"
-    implementation "androidx.navigation:navigation-fragment:$navigation_version"
-    implementation "androidx.navigation:navigation-ui:$navigation_version"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-compose:1.0.0-alpha09"
+    def navigation_version = "2.4.0-alpha02"
+//    implementation "androidx.navigation:navigation-fragment:1.4.0-alpha01"
+//    implementation "androidx.navigation:navigation-ui:$navigation_version"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0-alpha05'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.0-alpha05'
+    implementation 'androidx.navigation:navigation-compose:2.4.0-alpha05'
 
     //compose
-    def compose_version = '1.0.0-beta04'
+    def compose_version = '1.0.0-rc02'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     // Tooling support (Previews, etc.)
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
-    implementation "androidx.compose.compiler:compiler:$compose_version"
+    implementation "androidx.compose.compiler:compiler:1.0.0-rc02"
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation "androidx.compose.foundation:foundation:$compose_version"
     // Material Design
@@ -97,9 +97,9 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.0-alpha03'
+    implementation 'androidx.activity:activity-compose:1.3.0-rc02'
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
     // Integration with observables
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
@@ -150,6 +150,5 @@ dependencies {
     //other
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.github.nitrico.lastadapter:lastadapter:2.3.0'
 
 }
