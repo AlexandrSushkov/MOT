@@ -16,7 +16,7 @@ buildscript {
     ext.build_tools_version = '30.0.2'
 
     ext.kotlin_version = '1.5.10'
-    ext.gradle_version = '7.0.0'
+    ext.gradle_version = '7.0.2'
     ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
 
     //google
