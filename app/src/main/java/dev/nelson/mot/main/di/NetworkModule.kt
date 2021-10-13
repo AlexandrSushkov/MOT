@@ -4,6 +4,8 @@ import android.content.Context
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import dev.nelson.mot.main.util.constant.NetworkConstants
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -13,8 +15,9 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+@InstallIn(SingletonComponent::class)
 @Module
-class NetworkModule {
+object NetworkModule {
 
     @Provides
     @Singleton

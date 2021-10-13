@@ -7,7 +7,7 @@
     <dimen name="large">24dp</dimen>
 
     <!--card view-->
-    <dimen name="card_corner_radius">4dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
 
     <!--bottomSheetBehaviourDimen-->
     <dimen name="design_bottom_sheet_peek_height_min">64dp</dimen>
