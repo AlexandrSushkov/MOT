@@ -14,7 +14,7 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
         val tempTableName = "temp_table"
 
         fun migrateCategoriesTable(database: SupportSQLiteDatabase) {
-            with(database){
+            with(database) {
                 execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${CategoryTable.NAME} TEXT NOT NULL)")
                 execSQL("INSERT INTO $tempTableName (${CategoryTable.ID}, ${CategoryTable.NAME}) SELECT ${CategoryTableV1.ID}, ${CategoryTableV1.NAME} FROM ${CategoryTableV1.TABLE_NAME}")
                 execSQL("DROP TABLE ${CategoryTableV1.TABLE_NAME}")
@@ -23,7 +23,7 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
         }
 
         fun migratePaymentTable(database: SupportSQLiteDatabase) {
-            with(database){
+            with(database) {
                 //migrate payments table
                 execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${PaymentTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTable.TITLE} TEXT NOT NULL, ${PaymentTable.CATEGORY_ID_KEY} INTEGER REFERENCES categories(${CategoryTable.ID}) ON DELETE SET NULL, ${PaymentTable.COST} INTEGER NOT NULL, ${PaymentTable.DATE} TEXT, ${PaymentTable.DATE_IN_MILLISECONDS} INTEGER, ${PaymentTable.SUMMARY} TEXT)")
                 execSQL("INSERT INTO $tempTableName (${PaymentTable.ID}, ${PaymentTable.TITLE}, ${PaymentTable.CATEGORY_ID_KEY}, ${PaymentTable.COST}, ${PaymentTable.SUMMARY}) SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.TITLE}, ${PaymentTableV1.CATEGORY_ID}, ${PaymentTableV1.COST}, ${PaymentTableV1.SUMMARY} FROM ${PaymentTableV1.TABLE_NAME}")
@@ -37,8 +37,7 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
                         val id = cursor.getLong(cursor.getColumnIndex(PaymentTableV1.ID))
                         val date = cursor.getString(cursor.getColumnIndex(PaymentTableV1.DATE))
 
-                        val dateFormat =
-                            SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
+                        val dateFormat = SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
                         val parsedDate: Date = dateFormat.parse(date)
                         val dateInMilliseconds = parsedDate.time
 
