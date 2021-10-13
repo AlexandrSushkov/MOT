@@ -2,22 +2,16 @@ package dev.nelson.mot.main.util.binding
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.github.nitrico.lastadapter.Holder
-import com.github.nitrico.lastadapter.ItemType
-import com.github.nitrico.lastadapter.LastAdapter
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.jakewharton.rxrelay2.Relay
-import dev.nelson.mot.main.BR
-import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Movie
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
-import dev.nelson.mot.main.databinding.ItemCategoryBinding
-import dev.nelson.mot.main.databinding.ItemMovieBinding
-import dev.nelson.mot.main.databinding.ItemPaymentBinding
+import dev.nelson.mot.main.presentations.categories.CategoryAdapter
 import dev.nelson.mot.main.presentations.movieslist.MoviesAdapter
 import dev.nelson.mot.main.presentations.movieslist.MoviesListItemModel
+import dev.nelson.mot.main.presentations.payment_list.PaymentListAdapter
 import dev.nelson.mot.main.util.recycler.decoration.GridSpacingItemDecoration
 
 @BindingAdapter(value = ["gridSpacingItemDecoration"])
@@ -26,13 +20,6 @@ fun RecyclerView.applyItemDecoration(padding: Float) =
 
 @BindingAdapter(value = ["setMovies", "onMovieItemClick"])
 fun RecyclerView.setMovies(movies: List<Movie>, onItemClickPublisher: Relay<Movie>) {
-    LastAdapter(movies, BR.itemMovie)
-            .map<Movie>(object : ItemType<ItemMovieBinding>(R.layout.item_movie) {
-                override fun onBind(holder: Holder<ItemMovieBinding>) {
-                    holder.binding.publisher = onItemClickPublisher
-                }
-            })
-            .into(this)
 }
 
 @BindingAdapter(value = ["setMoviesModelsList", "onMovieItemClick"])
@@ -46,23 +33,10 @@ fun RecyclerView.setMoviesModelsList(movies: List<MoviesListItemModel>, onItemCl
 
 @BindingAdapter(value = ["setCategories"])
 fun RecyclerView.setCategories(categoryEntities: List<CategoryEntity>) {
-    LastAdapter(categoryEntities, BR.category)
-        .map<CategoryEntity>(object : ItemType<ItemCategoryBinding>(R.layout.item_category) {
-            override fun onBind(holder: Holder<ItemCategoryBinding>) {
-//                holder.binding.on = onItemClickPublisher
-            }
-        })
-        .into(this)
 }
 
-@BindingAdapter(value = ["setPayments"])
-fun RecyclerView.setPayments(payments: List<Payment>) {
-    LastAdapter(payments, BR.payment)
-        .map<Payment>(object : ItemType<ItemPaymentBinding>(R.layout.item_payment) {
-            override fun onBind(holder: Holder<ItemPaymentBinding>) {
-            }
-        })
-        .into(this)
+@BindingAdapter(value = ["setPayments", "onPaymentClick"])
+fun RecyclerView.setPayments(payments: List<Payment>, onPaymentClickListener: Relay<Payment>) {
 }
 
 
@@ -88,4 +62,14 @@ fun ChipGroup.setSelectedGenres(selectedGenres: List<String>, onSelectedGenreCli
         chip.isChecked = true
         chip.setOnCheckedChangeListener { _, _ -> onSelectedGenreClick.accept(it) }
         this.addView(chip)}
+}
+
+@BindingAdapter(value = ["categoryAdapter"])
+fun RecyclerView.setCategoryAdapter(adapter: CategoryAdapter){
+    this.adapter = adapter
+}
+
+@BindingAdapter(value = ["paymentAdapter"])
+fun RecyclerView.setPaymentAdapter(adapter: PaymentListAdapter){
+    this.adapter = adapter
 }

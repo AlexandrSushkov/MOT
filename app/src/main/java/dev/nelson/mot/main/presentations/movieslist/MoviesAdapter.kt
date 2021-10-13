@@ -35,7 +35,6 @@ class MoviesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-
     fun submitData(listItem: List<MoviesListItemModel>) {
         moviesItemModelList.clear()
         moviesItemModelList.addAll(listItem)

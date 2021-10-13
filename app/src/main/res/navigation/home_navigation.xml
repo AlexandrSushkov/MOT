@@ -8,19 +8,24 @@
 <!--to make navigation controller works properly fragment's id have to match with menu item id-->
     <fragment
         android:id="@+id/nav_menu_item_payment_list"
-        android:name="dev.nelson.mot.main.presentations.paymentlist.PaymentListFragment"
+        android:name="dev.nelson.mot.main.presentations.payment_list.PaymentListFragment"
         android:label="PaymentListFragment"
         tools:layout="@layout/fragment_payment_list">
         <action
             android:id="@+id/go_to_paymentFragment"
             app:destination="@id/paymentFragment" />
+        <argument
+            android:name="payment"
+            app:argType="dev.nelson.mot.main.data.model.Payment"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_menu_item_categories"
-        android:name="dev.nelson.mot.main.presentations.categories.CategoriesFragment"
+        android:name="dev.nelson.mot.main.presentations.categories.CategoryListFragment"
         android:label="CategoriesFragment"
-        tools:layout="@layout/categories_fragment"/>
+        tools:layout="@layout/category_list_fragment"/>
 
     <fragment
         android:id="@+id/nav_menu_item_statistic"
@@ -42,8 +47,39 @@
 
     <fragment
         android:id="@+id/paymentFragment"
-        android:name="dev.nelson.mot.main.presentations.payment.PaymentFragment"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment"
         android:label="PaymentFragment"
-        tools:layout="@layout/fragment_payment"/>
+        tools:layout="@layout/fragment_payment_details">
+        <argument
+            android:name="payment"
+            app:argType="dev.nelson.mot.main.data.model.Payment"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_menu"
+        android:name="dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment"
+        tools:layout="@layout/fragment_bottomsheet">
+        <action
+            android:id="@+id/action_nav_menu_to_categoryDetails"
+            app:destination="@id/categoryDetails" />
+        <action
+            android:id="@+id/action_nav_menu_to_paymentActivity"
+            app:destination="@id/paymentActivity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/categoryDetails"
+        android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsActivity"
+        tools:layout="@layout/activity_category_details"
+        android:label="CategoryDetails" />
+
+    <activity
+        android:id="@+id/paymentActivity"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentActivity"
+        tools:layout="@layout/activity_new_payment"
+        android:label="PaymentActivity" />
+
 
 </navigation>

@@ -53,7 +53,7 @@ class MoviesListViewModel @Inject constructor(private var movieUseCase: MovieUse
         onMovieItemClickPublisher
             .applyThrottling()
             .subscribe {
-                Log.e("tag", it.toString())
+                Timber.e(it.toString())
                 onItemClickEvent.postValue(Unit)
             }
             .addToDisposables()
@@ -67,7 +67,7 @@ class MoviesListViewModel @Inject constructor(private var movieUseCase: MovieUse
         onMovieItemClickPublisher
             .applyThrottling()
             .subscribe {
-                Log.e("tag", it.toString())
+                Timber.e(it.toString())
                 onItemClickEvent.postValue(Unit)
             }
             .addToDisposables()

@@ -12,6 +12,7 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -33,16 +34,20 @@
             android:layout_height="?actionBarSize"
             android:layout_gravity="bottom"
             android:backgroundTint="@color/color_toolbar"
-            app:fabAlignmentMode="end"
-            android:visibility="gone"
+            app:fabAlignmentMode="center"
             app:hideOnScroll="true" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator_layout_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="90dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:backgroundTint="@color/color_fab"
             android:layout_width="wrap_content"
             app:borderWidth="0dp"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:contentDescription="@string/add_new_payment"
             android:src="@drawable/ic_baseline_add_24"

@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentBottomsheetBinding
 import dev.nelson.mot.main.presentations.home.HomeViewModel
-import dev.nelson.mot.main.presentations.paymentlist.PaymentListComposeActivity
+import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -51,10 +51,12 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 //        }
         binding.bottomNavigation.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-//                R.id.nav_menu_item_recent_payments -> safeNavigate(R.id.moviesListFragment)
+                R.id.nav_menu_item_payment_list -> safeNavigate(R.id.nav_menu_item_payment_list)
                 R.id.nav_menu_item_payment_list_compose -> startActivity(Intent(context, PaymentListComposeActivity::class.java))
-//                R.id.nav_menu_item_statistic -> safeNavigate(R.id.statisticFragment)
-//                R.id.nav_menu_item_settings -> safeNavigate(R.id.settingsFragment)
+                R.id.nav_menu_item_categories -> safeNavigate(R.id.nav_menu_item_categories)
+                R.id.nav_menu_item_statistic -> safeNavigate(R.id.nav_menu_item_statistic)
+                R.id.nav_menu_item_movies_list -> safeNavigate(R.id.nav_menu_item_movies_list)
+                R.id.nav_menu_item_settings -> safeNavigate(R.id.nav_menu_item_settings)
             }
             finish()
             true

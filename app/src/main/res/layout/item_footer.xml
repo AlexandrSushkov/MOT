@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
     android:layout_width="match_parent"
-    android:layout_height="60dp"/>
+    android:layout_height="48dp"
+    android:onClick="completionHintViewClick"
+    android:padding="24dp"
+    android:text="completion hint" />
+

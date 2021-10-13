@@ -18,6 +18,7 @@ import dev.nelson.mot.legacy.callback.EmptyCursorCallback;
 import dev.nelson.mot.legacy.db.model.CategoriesProvider;
 import dev.nelson.mot.legacy.loadercallback.PaymentsForCategoryLoaderCallbacks;
 
+@Deprecated
 public class CategoryContentActivity extends AppCompatActivity implements EmptyCursorCallback {
 
     Toolbar mToolbar = findViewById(R.id.toolbar);

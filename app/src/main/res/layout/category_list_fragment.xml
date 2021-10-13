@@ -19,7 +19,8 @@
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/color_toolbar">
+            android:backgroundTint="@color/color_toolbar"
+            app:elevation="@{viewModel.toolbarElevation}">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
@@ -41,13 +42,13 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movies_list"
+            android:id="@+id/category_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             bind:gridSpacingItemDecoration="@{@dimen/small}"
-            bind:setCategories="@{viewModel.categories}"
+            bind:categoryAdapter="@{viewModel.categoryAdapter}"
             app:spanCount="2"
             tools:listitem="@layout/item_category"
             tools:itemCount="6"/>
