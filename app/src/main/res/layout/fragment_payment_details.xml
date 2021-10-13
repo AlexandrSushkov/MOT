@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="dev.nelson.mot.main.presentations.payment.PaymentDetailsViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/payment_root_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:padding="16dp"
+                android:transitionName="new_payment">
+
+                <EditText
+                    android:id="@+id/payment_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="payment"
+                    android:text="@={viewModel.paymentName}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/payment_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="cost"
+                    android:inputType="number"
+                    android:text="@={viewModel.paymentCost}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/payment_title" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/payment_cost" />
+
+                <Button
+                    android:id="@+id/btn_save_payment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{viewModel::onSaveClick}"
+                    android:text="save"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/payment_cost" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
+</layout>

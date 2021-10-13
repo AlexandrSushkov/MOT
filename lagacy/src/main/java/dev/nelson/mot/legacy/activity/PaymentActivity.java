@@ -33,6 +33,7 @@ import dev.nelson.mot.legacy.service.action.DataOperationFabric;
 import dev.nelson.mot.legacy.utils.CurrencyTextWatcher;
 import dev.nelson.mot.legacy.utils.StringUtils;
 
+@Deprecated
 public class PaymentActivity extends AppCompatActivity implements SetDataFromPaymentLoaderCallbacks,
         DatabaseChangesCallback {
 

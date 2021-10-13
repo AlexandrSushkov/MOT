@@ -1,11 +1,10 @@
-package dev.nelson.mot.main.presentations.paymentlist
+package dev.nelson.mot.main.presentations.payment_list.compose
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.LiveData
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.base.EntryPointActivity
+import dev.nelson.mot.main.presentations.payment_list.PaymentListViewModel
 
 class PaymentListComposeActivity : EntryPointActivity() {
 

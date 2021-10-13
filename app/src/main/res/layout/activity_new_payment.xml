@@ -4,14 +4,50 @@
     <FrameLayout
         android:id="@+id/payment_root_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:transitionName="new_payment">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="payment" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/color_fab"
+            android:transitionName="new_payment">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:hint="payment" />
+
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autocomplete_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionHint="completion hint"
+                        android:completionHintView="@layout/item_footer"
+                        android:hint="auto" />
+
+                    <TextView
+                        android:id="@+id/text3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp"
+                        android:text="text 3" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 
