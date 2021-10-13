@@ -5,7 +5,9 @@
         <item name="android:navigationBarColor">@color/color_toolbar</item>
         <item name="android:statusBarColor">@color/color_toolbar</item>
         <item name="android:windowLightStatusBar">false</item>
-<!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
+        <item name="android:screenOrientation">fullSensor</item>
+
+        <!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
 <!--        <item name="android:colorPrimaryDark">@color/testColorMint</item>-->
 <!--        <item name="android:colorAccent">@color/testColorRed</item>-->
 <!--        <item name="android:textColorPrimary">@color/testColorBlue</item>-->

@@ -8,6 +8,7 @@
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:font">@array/com_google_android_gms_fonts_certs</item>
+        <item name="android:screenOrientation">fullSensor</item>
 
 <!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
 <!--        <item name="android:colorPrimaryDark">@color/testColorMint</item>-->
