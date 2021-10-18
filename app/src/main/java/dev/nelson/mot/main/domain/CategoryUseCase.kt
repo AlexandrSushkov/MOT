@@ -1,11 +1,10 @@
 package dev.nelson.mot.main.domain
 
-import dev.nelson.mot.main.data.model.Movie
+import dev.nelson.mot.main.data.mapers.toCategoryEntity
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepository
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
-import dev.nelson.mot.main.presentations.movieslist.Letter
-import dev.nelson.mot.main.presentations.movieslist.MoviesListItemModel
 import dev.nelson.mot.main.util.extention.isEven
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
@@ -38,6 +37,10 @@ class CategoryUseCase @Inject constructor(private val categoryRepository: Catego
             return@map it
         }
 
+
+    suspend fun addNewCategory(category: Category) { categoryRepository.addNewCategory(category.toCategoryEntity()) }
+
+    suspend fun editCategory(category: Category) = categoryRepository.editCategory(category.toCategoryEntity())
 
     suspend fun deleteCategory(category: CategoryEntity) = categoryRepository.deleteCategory(category)
 }

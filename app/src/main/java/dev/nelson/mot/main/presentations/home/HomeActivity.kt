@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.home
 
 import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -19,9 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
-import dev.nelson.mot.main.presentations.base.EntryPointActivity
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.payment.PaymentActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -98,14 +95,13 @@ class HomeActivity : BaseActivity() {
 
             when(navController.currentDestination?.id){
                 R.id.nav_menu_item_payment_list -> navController.navigate(R.id.paymentActivity)
-                R.id.nav_menu_item_categories -> navController.navigate(R.id.categoryDetails)
+                R.id.nav_menu_item_categories -> navController.navigate(R.id.category_details_screen)
             }
         }
     }
 
     private fun initListeners() {
         initNavControllerListener()
-
     }
 
     private fun initNavControllerListener() {
@@ -161,8 +157,6 @@ class HomeActivity : BaseActivity() {
     private fun showKeyboard() {
             val imm: InputMethodManager? = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
-
-
     }
 
 }

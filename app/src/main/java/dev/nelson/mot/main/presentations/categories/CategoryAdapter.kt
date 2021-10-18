@@ -14,6 +14,7 @@ import dev.nelson.mot.main.presentations.payment_list.PaymentListAdapter
 
 class CategoryAdapter(
     private val onItemClickPublisher: Relay<CategoryEntity>,
+    private val onItemLongClickPublisher: Relay<CategoryEntity>,
     private val onSwipeToDeleteAction: Relay<CategoryEntity>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -23,7 +24,11 @@ class CategoryAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         val v = layoutInflater.inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_category -> CategoryItemViewHolder(ItemCategoryBinding.inflate(layoutInflater, parent, false), onItemClickPublisher)
+            R.layout.item_category -> CategoryItemViewHolder(
+                ItemCategoryBinding.inflate(layoutInflater, parent, false),
+                onItemClickPublisher,
+                onItemLongClickPublisher
+            )
             R.layout.item_empty -> EmptyViewHolder(v)
             R.layout.item_letter -> LetterViewHolder(v)
 //            R.layout.item_header -> PaymentListAdapter.HeaderViewHolder(v)
@@ -71,12 +76,20 @@ class CategoryAdapter(
     companion object {
         class CategoryItemViewHolder(
             private val itemCategoryBinding: ItemCategoryBinding,
-            private val onItemClickPublisher: Relay<CategoryEntity>
+            private val onItemClickPublisher: Relay<CategoryEntity>,
+            private val onItemLongClickPublisher: Relay<CategoryEntity>
         ) : RecyclerView.ViewHolder(itemCategoryBinding.root) {
 
             fun bind(categoryItemModel: CategoryListItemModel.CategoryItemModel) {
-                itemCategoryBinding.categoryCard.setOnClickListener { onItemClickPublisher.accept(categoryItemModel.category) }
-                itemCategoryBinding.category = categoryItemModel.category
+                with(itemCategoryBinding) {
+                    category = categoryItemModel.category
+                    categoryCard.setOnClickListener { onItemClickPublisher.accept(categoryItemModel.category) }
+                    categoryCard.setOnLongClickListener {
+                        onItemLongClickPublisher.accept(categoryItemModel.category)
+                        true
+                    }
+                }
+
             }
         }
 

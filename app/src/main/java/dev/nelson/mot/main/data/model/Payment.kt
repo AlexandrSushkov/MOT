@@ -51,33 +51,3 @@ data class Payment(
         override fun newArray(size: Int): Array<Payment?> = arrayOfNulls(size)
     }
 }
-
-fun Payment.copyWith(name:String, cost: Int): Payment =
-    Payment(
-        name,
-        cost,
-        id = id,
-        date = date,
-        dateInMills = dateInMills,
-        category = category
-    )
-
-fun Payment.toPaymentEntity(): PaymentEntity =
-    PaymentEntity(
-        name,
-        cost,
-        id = id,
-        date = date,
-        dateInMilliseconds = dateInMills,
-        categoryIdKey = category?.id
-    )
-
-fun PaymentWithCategory.toPayment(): Payment {
-    val paymentEntity = this.paymentEntity
-    val categoryEntity = this.categoryEntity
-    return with(paymentEntity) {
-        Payment(title, cost, id, date, dateInMilliseconds, categoryEntity?.toCategory())
-    }
-}
-
-fun List<PaymentWithCategory>.toPaymentList(): List<Payment> = this.map { it.toPayment() }

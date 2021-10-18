@@ -18,4 +18,8 @@ class CategoryRepository @Inject constructor(private val motDatabase: MotDatabas
 
     suspend fun deleteCategory(category: CategoryEntity) = motDatabase.categoryDao().deleteCategory(category)
 
+    suspend fun addNewCategory(category: CategoryEntity) = motDatabase.categoryDao().add(category)
+
+    suspend fun editCategory(category: CategoryEntity) = motDatabase.categoryDao().edit(category)
+
 }

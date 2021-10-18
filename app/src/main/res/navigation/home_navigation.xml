@@ -5,7 +5,7 @@
     android:id="@+id/home_navigation"
     app:startDestination="@+id/nav_menu_item_payment_list">
 
-<!--to make navigation controller works properly fragment's id have to match with menu item id-->
+    <!--to make navigation controller works properly fragment's id have to match with menu item id-->
     <fragment
         android:id="@+id/nav_menu_item_payment_list"
         android:name="dev.nelson.mot.main.presentations.payment_list.PaymentListFragment"
@@ -16,9 +16,10 @@
             app:destination="@id/paymentFragment" />
         <argument
             android:name="payment"
+            android:defaultValue="@null"
             app:argType="dev.nelson.mot.main.data.model.Payment"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+
     </fragment>
 
     <fragment
@@ -31,19 +32,19 @@
         android:id="@+id/nav_menu_item_statistic"
         android:name="dev.nelson.mot.main.presentations.statistic.StatisticFragment"
         android:label="StatisticFragment"
-        tools:layout="@layout/activity_statistic"/>
+        tools:layout="@layout/activity_statistic" />
 
     <fragment
         android:id="@+id/nav_menu_item_movies_list"
         android:name="dev.nelson.mot.main.presentations.movieslist.MoviesListFragment"
         android:label="MoviesListFragment"
-        tools:layout="@layout/fragment_movies_list"/>
+        tools:layout="@layout/fragment_movies_list" />
 
     <fragment
         android:id="@+id/nav_menu_item_settings"
         android:name="dev.nelson.mot.main.presentations.settings.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings"/>
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/paymentFragment"
@@ -52,9 +53,9 @@
         tools:layout="@layout/fragment_payment_details">
         <argument
             android:name="payment"
+            android:defaultValue="@null"
             app:argType="dev.nelson.mot.main.data.model.Payment"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -63,23 +64,42 @@
         tools:layout="@layout/fragment_bottomsheet">
         <action
             android:id="@+id/action_nav_menu_to_categoryDetails"
-            app:destination="@id/categoryDetails" />
+            app:destination="@id/category_details_screen" />
         <action
             android:id="@+id/action_nav_menu_to_paymentActivity"
             app:destination="@id/paymentActivity" />
     </fragment>
 
     <activity
-        android:id="@+id/categoryDetails"
+        android:id="@+id/category_details_screen"
         android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsActivity"
-        tools:layout="@layout/activity_category_details"
-        android:label="CategoryDetails" />
+        android:label="CategoryDetails"
+        tools:layout="@layout/activity_category_details" />
 
     <activity
         android:id="@+id/paymentActivity"
         android:name="dev.nelson.mot.main.presentations.payment.PaymentActivity"
-        tools:layout="@layout/activity_new_payment"
-        android:label="PaymentActivity" />
+        android:label="PaymentActivity"
+        tools:layout="@layout/activity_new_payment" />
 
+    <action
+        android:id="@+id/open_category_details"
+        app:destination="@id/category_details_screen">
+        <argument
+            android:name="category"
+            android:defaultValue="@null"
+            app:argType="dev.nelson.mot.main.data.model.Category"
+            app:nullable="true" />
+    </action>
+
+    <action
+        android:id="@+id/open_payments_by_category"
+        app:destination="@id/nav_menu_item_payment_list">
+        <argument
+            android:name="category"
+            android:defaultValue="@null"
+            app:argType="dev.nelson.mot.main.data.model.Category"
+            app:nullable="true" />
+    </action>
 
 </navigation>

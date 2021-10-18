@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.data.room.model.payment
 
 import androidx.room.*
+import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.data.room.model.category.CategoryTable
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import io.reactivex.Completable
@@ -54,4 +55,7 @@ interface PaymentDao {
     // Flow
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
     fun getAllPaymentsWithCategoryOrderDateDescFlow(): Flow<List<PaymentWithCategory>>
+
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${CategoryTable.ID} = :categoryEntityId ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
+    fun getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId: Int): Flow<List<PaymentWithCategory>>
 }

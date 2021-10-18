@@ -23,7 +23,9 @@
             android:name=".presentations.home.HomeActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".presentations.payment.PaymentActivity" />
-        <activity android:name=".presentations.category_details.CategoryDetailsActivity" />
+        <activity
+            android:name=".presentations.category_details.CategoryDetailsActivity"
+            android:windowSoftInputMode="stateVisible" />
         <activity android:name=".presentations.about.AboutActivity" />
         <activity android:name=".presentations.payment_list.compose.PaymentListComposeActivity" />
     </application>

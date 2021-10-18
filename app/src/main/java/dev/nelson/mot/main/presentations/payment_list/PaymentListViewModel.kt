@@ -9,12 +9,20 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsViewModel
+import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.applyThrottling
+import io.reactivex.rxkotlin.toFlowable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,8 +30,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
+    extras: SavedStateHandle,
     private val paymentUseCase: PaymentUseCase
 ) : BaseViewModel() {
+
+    private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
+    private val category: Category = extras[Constants.CATEGORY_KEY] ?: Category(StringUtils.EMPTY)
 
     //    val payments = ObservableArrayList<Payment>()
     val payments = ObservableArrayList<Payment>()
@@ -69,7 +81,7 @@ class PaymentListViewModel @Inject constructor(
         swipeToDeleteCallbackLiveData.value = swipeToDeleteCallback
 
         viewModelScope.launch {
-            paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
+            getPaymentList(mode)
                 .map { paymentList -> paymentList.map { PaymentListItemModel.PaymentItemModel(it) } }
                 .collect { _paymentListAdapter.setData(it) }
         }
@@ -99,6 +111,13 @@ class PaymentListViewModel @Inject constructor(
 
     }
 
+    private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
+        return when (mode) {
+            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) } ?: emptyFlow()
+            is Mode.RecentPayments -> paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
+        }
+    }
+
     private fun deletePayment(payment: Payment) {
         viewModelScope.launch {
             paymentUseCase.deletePayment(payment)
@@ -109,8 +128,12 @@ class PaymentListViewModel @Inject constructor(
         onPaymentEntityItemEvent.postValue(null)
     }
 
-//    suspend fun loadPeyments(): List<Payment> {
+    //    suspend fun loadPeyments(): List<Payment> {
 //        return getSuperheroList()
 //    }
+    private sealed class Mode {
+        object RecentPayments : Mode()
+        object PaymentsForCategory : Mode()
+    }
 
 }

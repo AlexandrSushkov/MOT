@@ -5,8 +5,8 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.copyWith
 import dev.nelson.mot.main.domain.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
@@ -14,7 +14,9 @@ import dev.nelson.mot.main.util.constant.NetworkConstants
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel

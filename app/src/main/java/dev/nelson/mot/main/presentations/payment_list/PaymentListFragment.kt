@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
@@ -113,7 +114,7 @@ class PaymentListFragment : BaseFragment() {
             binding.paymentListCoordinatorLayout, "afaf",
             Snackbar.LENGTH_LONG
         )
-        snackbar.setAction("R.string.snack_bar_undo") { v -> undoDelete() }
+        snackbar.setAction("R.string.snack_bar_undo") { undoDelete() }
         snackbar.show()
     }
 

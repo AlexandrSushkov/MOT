@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.data.repository
 
 import dev.nelson.mot.main.data.room.MotDatabase
+import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import io.reactivex.Flowable
@@ -50,4 +51,8 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
     fun getAllPaymentsWithCategoryOrderDateDescFlow(): Flow<List<PaymentWithCategory>> =
         motDatabase.paymentDao()
             .getAllPaymentsWithCategoryOrderDateDescFlow()
+
+    fun getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId: Int): Flow<List<PaymentWithCategory>> =
+        motDatabase.paymentDao()
+            .getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId)
 }

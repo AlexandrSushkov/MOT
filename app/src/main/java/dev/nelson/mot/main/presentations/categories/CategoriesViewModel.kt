@@ -25,18 +25,20 @@ class CategoriesViewModel @Inject constructor(
     val categories = ObservableArrayList<CategoryEntity>()
     val isLoading = ObservableBoolean()
     var isShowPlaceholder = ObservableBoolean()
-    private val onCategoryEntityItemClickAction: Relay<CategoryEntity> = PublishRelay.create()
-
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
     val toolbarElevation = ObservableField<Int>()
-    val onSwipeToDeleteAction: Relay<CategoryEntity> = PublishRelay.create()
+
+    private val onCategoryItemClickAction: Relay<CategoryEntity> = PublishRelay.create()
+    private val onCategoryItemLongClickAction: Relay<CategoryEntity> = PublishRelay.create()
+    private val onSwipeToDeleteAction: Relay<CategoryEntity> = PublishRelay.create()
 
 
-    private val _adapter = CategoryAdapter(onCategoryEntityItemClickAction, onSwipeToDeleteAction)
+    private val _adapter = CategoryAdapter(onCategoryItemClickAction, onCategoryItemLongClickAction, onSwipeToDeleteAction)
     val categoryAdapter = ObservableField(_adapter)
     val swipeToDeleteCallback: MutableLiveData<CategorySwipeToDeleteCallback> = MutableLiveData()
-    val onItemClick: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
+    val openCategoryDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
+    val openPaymentsByDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
 
     init {
         val swipeToDeleteCallback = CategorySwipeToDeleteCallback(
@@ -73,14 +75,19 @@ class CategoriesViewModel @Inject constructor(
             .subscribe()
             .addToDisposables()
 
-        onScrollChanged
-            .distinctUntilChanged()
-            .doOnNext { if (it == 0) toolbarElevation.set(0) else toolbarElevation.set(20) }
+        onCategoryItemClickAction
+            .doOnNext { openPaymentsByDetailsAction.value = it }
             .subscribe()
             .addToDisposables()
 
-        onCategoryEntityItemClickAction
-            .doOnNext { onItemClick.value = it }
+        onCategoryItemLongClickAction
+            .doOnNext { openCategoryDetailsAction.value = it }
+            .subscribe()
+            .addToDisposables()
+
+        onScrollChanged
+            .distinctUntilChanged()
+            .doOnNext { if (it == 0) toolbarElevation.set(0) else toolbarElevation.set(20) }
             .subscribe()
             .addToDisposables()
     }
