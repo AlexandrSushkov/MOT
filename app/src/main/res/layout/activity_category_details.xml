@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentations.category_details.CategoryDetailsFragment">
 
     <data>
 
@@ -17,14 +19,19 @@
             android:id="@+id/category_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium"
             android:layout_marginStart="@dimen/medium"
+            android:layout_marginTop="@dimen/medium"
             android:layout_marginEnd="@dimen/medium"
+            android:focusable="true"
+            android:focusedByDefault="true"
             android:hint="category"
+            android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="text"
-            android:imeOptions="actionDone"
+            android:lines="1"
+            android:maxLength="64"
             android:text="@={viewModel.categoryName}"
+            app:layout_constraintBottom_toTopOf="@id/save_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,13 +40,12 @@
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{viewModel.onSaveClick}"
             android:layout_marginTop="@dimen/medium"
             android:layout_marginBottom="@dimen/medium"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:onClick="@{() -> viewModel.onSaveClick()}"
             android:text="save"
-            app:layout_constraintEnd_toEndOf="@id/category_name"
-            app:layout_constraintTop_toBottomOf="@id/category_name" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/category_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -19,6 +19,7 @@ import dev.nelson.mot.main.data.mapers.toCategory
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.databinding.CategoryListFragmentBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -62,13 +63,17 @@ class CategoryListFragment : BaseFragment() {
         }
     }
 
-    private fun openCategoryDetails(category:Category){
-        val action = HomeNavigationDirections.openCategoryDetails()
-            .apply { this.category = category }
-        navController.navigate(action)
+    private fun openCategoryDetails(category: Category) {
+//        val action = HomeNavigationDirections.openCategoryDetails()
+//            .apply { this.category = category }
+//        navController.navigate(action)
+//        private fun openCategoryDelails() {
+        val categoryDialogFragment = CategoryDetailsFragment.getInstance(category)
+        categoryDialogFragment.show(childFragmentManager, categoryDialogFragment.tag)
+//        }
     }
 
-    private fun openPaymentByCategory(category:Category){
+    private fun openPaymentByCategory(category: Category) {
         val action = HomeNavigationDirections.openPaymentsByCategory()
             .apply { this.category = category }
         navController.navigate(action)

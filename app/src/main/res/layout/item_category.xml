@@ -34,6 +34,8 @@
                 android:drawablePadding="@dimen/small"
                 android:gravity="center_vertical"
                 android:padding="@dimen/medium"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:text="@{category.name}"
                 app:drawableStartCompat="@drawable/ic_baseline_settings_24"
                 app:layout_constraintDimensionRatio="1:1"

@@ -10,7 +10,10 @@ import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
-import dev.nelson.mot.main.domain.CategoryUseCase
+import dev.nelson.mot.main.domain.use_case.CategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrdered
+import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import kotlinx.coroutines.flow.collect
@@ -19,7 +22,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
-    private val categoryUseCase: CategoryUseCase
+    private val categoryUseCase: CategoryUseCase,
+    private val deleteCategoryUseCase: DeleteCategoryUseCase,
+    private val getAllCategoriesOrdered: GetAllCategoriesOrdered,
+    private val paymentUseCase: PaymentUseCase,
 ) : BaseViewModel() {
 
     val categories = ObservableArrayList<CategoryEntity>()
@@ -66,7 +72,7 @@ class CategoriesViewModel @Inject constructor(
 //                }
 //                .collect { _adapter.setData(it) }
 
-            categoryUseCase.getAllCategoriesAlphabeticDescFlow()
+            getAllCategoriesOrdered.execute(true)
                 .collect { _adapter.setData(it) }
         }
 
@@ -95,7 +101,7 @@ class CategoriesViewModel @Inject constructor(
 
     private fun deleteCategory(category: CategoryEntity) {
         viewModelScope.launch {
-            categoryUseCase.deleteCategory(category)
+            deleteCategoryUseCase.execute(category)
         }
     }
 }

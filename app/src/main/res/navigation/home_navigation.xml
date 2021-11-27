@@ -70,9 +70,9 @@
             app:destination="@id/paymentActivity" />
     </fragment>
 
-    <activity
+    <fragment
         android:id="@+id/category_details_screen"
-        android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsActivity"
+        android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment"
         android:label="CategoryDetails"
         tools:layout="@layout/activity_category_details" />
 

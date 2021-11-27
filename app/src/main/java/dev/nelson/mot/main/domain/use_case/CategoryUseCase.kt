@@ -1,7 +1,5 @@
-package dev.nelson.mot.main.domain
+package dev.nelson.mot.main.domain.use_case
 
-import dev.nelson.mot.main.data.mapers.toCategoryEntity
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepository
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
@@ -19,7 +17,7 @@ class CategoryUseCase @Inject constructor(private val categoryRepository: Catego
 
     fun getCategoriesFlow(): Flow<List<CategoryEntity>> = categoryRepository.getCategoriesFlow()
 
-    fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesAlphabeticDescFlow()
+    fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered()
         .map { it.groupBy { category: CategoryEntity -> category.name.first() } }
         .map { value: Map<Char, List<CategoryEntity>> ->
             return@map listOf<CategoryListItemModel>().toMutableList().apply {
@@ -37,10 +35,4 @@ class CategoryUseCase @Inject constructor(private val categoryRepository: Catego
             return@map it
         }
 
-
-    suspend fun addNewCategory(category: Category) { categoryRepository.addNewCategory(category.toCategoryEntity()) }
-
-    suspend fun editCategory(category: Category) = categoryRepository.editCategory(category.toCategoryEntity())
-
-    suspend fun deleteCategory(category: CategoryEntity) = categoryRepository.deleteCategory(category)
 }

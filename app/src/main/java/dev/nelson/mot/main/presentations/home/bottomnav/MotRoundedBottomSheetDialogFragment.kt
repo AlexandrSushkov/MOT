@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentBottomsheetBinding
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.HomeViewModel
 import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeActivity
 import dev.nelson.mot.main.util.extention.getDataBinding

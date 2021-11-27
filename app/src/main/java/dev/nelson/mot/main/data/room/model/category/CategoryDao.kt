@@ -18,8 +18,8 @@ interface CategoryDao {
     @Query("SELECT * FROM ${CategoryTable.TABLE_NAME}")
     fun getAllCategoriesFlow(): Flow<List<CategoryEntity>>
 
-    @Query("SELECT * FROM ${CategoryTable.TABLE_NAME} ORDER BY ${CategoryTable.NAME} ASC")
-    fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryEntity>>
+    @Query("SELECT * FROM ${CategoryTable.TABLE_NAME} ORDER BY CASE WHEN :isAsc = 1 THEN ${CategoryTable.NAME} END COLLATE NOCASE ASC, CASE WHEN :isAsc = 0 THEN ${CategoryTable.NAME} END COLLATE NOCASE DESC")
+    fun getAllCategoriesOrdered(isAsc: Boolean): Flow<List<CategoryEntity>>
 
     @Insert
     suspend fun add(categoryEntity: CategoryEntity)

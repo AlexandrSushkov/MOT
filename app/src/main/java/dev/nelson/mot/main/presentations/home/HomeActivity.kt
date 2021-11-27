@@ -18,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
@@ -95,9 +96,16 @@ class HomeActivity : BaseActivity() {
 
             when(navController.currentDestination?.id){
                 R.id.nav_menu_item_payment_list -> navController.navigate(R.id.paymentActivity)
-                R.id.nav_menu_item_categories -> navController.navigate(R.id.category_details_screen)
+                R.id.nav_menu_item_categories -> {
+                    openCategoryDelails()
+//                    navController.navigate(R.id.category_details_screen)
+                }
             }
         }
+    }
+    private fun openCategoryDelails() {
+        val categoryDialogFragment = CategoryDetailsFragment()
+        categoryDialogFragment.show(supportFragmentManager, categoryDialogFragment.tag)
     }
 
     private fun initListeners() {
