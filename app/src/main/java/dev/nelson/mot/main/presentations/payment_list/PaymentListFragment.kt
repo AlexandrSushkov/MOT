@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
@@ -94,14 +93,14 @@ class PaymentListFragment : BaseFragment() {
                 showUndoSnackbar()
             })
 
-            onPaymentEntityItemEvent.observe(viewLifecycleOwner, {
+            onPaymentEntityItemClickEvent.observe(viewLifecycleOwner, {
 //            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
 //                .apply { payment = it }
 //            val extras = FragmentNavigatorExtras(binding.newPaymentFab to "new_payment")
 //
 //            navController.navigate(openPaymentDetailsAction, extras)
 
-                val paymentFragment = PaymentDetailsFragment()
+                val paymentFragment = PaymentDetailsFragment.getInstance(it)
                 paymentFragment.show(childFragmentManager, paymentFragment.tag)
             })
         }

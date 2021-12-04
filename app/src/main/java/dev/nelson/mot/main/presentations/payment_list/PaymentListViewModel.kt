@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.payment_list
 
-import android.view.View
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
@@ -11,16 +10,14 @@ import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.PaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.DeletePaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.applyThrottling
-import io.reactivex.rxkotlin.toFlowable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
@@ -31,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
-    private val paymentUseCase: PaymentUseCase
+    private val paymentUseCase: PaymentUseCase,
+    private val deletePaymentUseCase: DeletePaymentUseCase
 ) : BaseViewModel() {
 
     private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
@@ -50,11 +48,12 @@ class PaymentListViewModel @Inject constructor(
     val isShowEmptyPlaceholder = ObservableBoolean()
 
     val toolbarElevation = ObservableField<Int>()
-//    val paymentAdapter = ObservableField<PaymentListAdapter2>()
 
+    //    val paymentAdapter = ObservableField<PaymentListAdapter2>()
+    var paymentListTitle = ObservableField(if (category.name.isEmpty()) "Recent Payments" else category.name)
     val onPaymentEntityItemClickAction: Relay<Payment> = PublishRelay.create()
     val onSwipeToDeleteAction: Relay<Payment> = PublishRelay.create()
-    val onPaymentEntityItemEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
+    val onPaymentEntityItemClickEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
     val swipeToDeleteCallbackLiveData: MutableLiveData<PaymentSwipeToDeleteCallback> = MutableLiveData()
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
@@ -90,7 +89,7 @@ class PaymentListViewModel @Inject constructor(
             .applyThrottling()
             .doOnNext {
                 Timber.d("on payment $it click")
-                onPaymentEntityItemEvent.postValue(it)
+                onPaymentEntityItemClickEvent.postValue(it)
             }
             .subscribe()
             .addToDisposables()
@@ -113,19 +112,20 @@ class PaymentListViewModel @Inject constructor(
 
     private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
         return when (mode) {
-            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) } ?: emptyFlow()
+            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) }
+                ?: paymentUseCase.getAllPaymentsWithoutCategory()
             is Mode.RecentPayments -> paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
         }
     }
 
     private fun deletePayment(payment: Payment) {
         viewModelScope.launch {
-            paymentUseCase.deletePayment(payment)
+            deletePaymentUseCase.execute(payment)
         }
     }
 
-    fun onFabClick(view: View) {
-        onPaymentEntityItemEvent.postValue(null)
+    fun onFabClick() {
+        onPaymentEntityItemClickEvent.call()
     }
 
     //    suspend fun loadPeyments(): List<Payment> {

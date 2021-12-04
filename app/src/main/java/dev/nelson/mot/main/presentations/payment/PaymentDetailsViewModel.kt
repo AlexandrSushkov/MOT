@@ -1,13 +1,15 @@
 package dev.nelson.mot.main.presentations.payment
 
-import android.view.View
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.PaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.AddNewPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.EditPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.constant.NetworkConstants
@@ -22,16 +24,18 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentDetailsViewModel @Inject constructor(
     private val paymentUseCase: PaymentUseCase,
+    private val addNewPaymentUseCase: AddNewPaymentUseCase,
+    private val editPaymentUseCase: EditPaymentUseCase,
     handle: SavedStateHandle
 ) : BaseViewModel() {
 
     private val payment: Payment? = handle.get<Payment>("payment")
     val paymentName = ObservableField(payment?.name)
+    val paymentNameSelection = ObservableInt()
     val paymentCost = ObservableField(payment?.cost?.toString() ?: 0.toString())
-
     val finishAction = SingleLiveEvent<Unit>()
 
-    fun onSaveClick(view: View) {
+    fun onSaveClick() {
         if (payment == null) addNewPayment() else editPayment()
     }
 
@@ -45,7 +49,7 @@ class PaymentDetailsViewModel @Inject constructor(
                 date = currentDateFormatted,
                 dateInMills = currentDateInMills
             )
-            paymentUseCase.addPayment(payment)
+            addNewPaymentUseCase.execute(payment)
             Timber.e("payment $payment")
             finishAction.call()
         }
@@ -56,7 +60,7 @@ class PaymentDetailsViewModel @Inject constructor(
             payment?.let {
                 //todo, check if payment has been edited, if not, just close screen
                 val updatedPayment = it.copyWith(paymentName.get() ?: "", (paymentCost.get()?.toIntOrNull() ?: 0))
-                paymentUseCase.editPayment(updatedPayment)
+                editPaymentUseCase.execute(updatedPayment)
                 Timber.e("updated payment $payment")
                 finishAction.call()
             }

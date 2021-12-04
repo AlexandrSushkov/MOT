@@ -1,10 +1,9 @@
-package dev.nelson.mot.main.domain
+package dev.nelson.mot.main.domain.use_case.payment
 
 import dev.nelson.mot.main.data.mapers.toPaymentEntity
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepository
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
