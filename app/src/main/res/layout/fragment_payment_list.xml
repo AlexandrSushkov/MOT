@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Recent Payments"
+                    android:text="@{viewModel.paymentListTitle}"
                     android:textSize="16sp"
                     app:theme="@style/CustomActionBar"
                     tools:text="Title" />
@@ -74,7 +74,6 @@
             android:layout_margin="@dimen/medium"
             android:backgroundTint="@color/color_fab"
             android:contentDescription="@string/add_new_payment"
-            android:onClick="@{viewModel::onFabClick}"
             android:src="@drawable/ic_baseline_add_24"
             android:transitionName="new_payment"
             app:borderWidth="0dp"

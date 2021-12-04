@@ -5,13 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.internal.NavigationMenuItemView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.HomeNavigationDirections
 import dev.nelson.mot.main.R
@@ -59,7 +56,7 @@ class CategoryListFragment : BaseFragment() {
             })
 //            openCategoryDetailsAction.observe(viewLifecycleOwner, { navController.navigate(R.id.nav_menu_item_payment_list) })
             openCategoryDetailsAction.observe(viewLifecycleOwner, { openCategoryDetails(it.toCategory()) })
-            openPaymentsByDetailsAction.observe(viewLifecycleOwner, { openPaymentByCategory(it.toCategory()) })
+            openPaymentsByCategoryAction.observe(viewLifecycleOwner, { openPaymentByCategory(it.toCategory()) })
         }
     }
 

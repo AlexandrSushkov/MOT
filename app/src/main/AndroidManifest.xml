@@ -22,8 +22,8 @@
         <activity
             android:name=".presentations.home.HomeActivity"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".presentations.payment.PaymentActivity" />
-        <activity android:name=".presentations.about.AboutActivity" />
+<!--        <activity android:name=".presentations.payment.PaymentActivity" />-->
+<!--        <activity android:name=".presentations.about.AboutActivity" />-->
         <activity android:name=".presentations.payment_list.compose.PaymentListComposeActivity" />
     </application>
 

@@ -44,7 +44,7 @@ class CategoriesViewModel @Inject constructor(
     val categoryAdapter = ObservableField(_adapter)
     val swipeToDeleteCallback: MutableLiveData<CategorySwipeToDeleteCallback> = MutableLiveData()
     val openCategoryDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
-    val openPaymentsByDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
+    val openPaymentsByCategoryAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
 
     init {
         val swipeToDeleteCallback = CategorySwipeToDeleteCallback(
@@ -82,7 +82,7 @@ class CategoriesViewModel @Inject constructor(
             .addToDisposables()
 
         onCategoryItemClickAction
-            .doOnNext { openPaymentsByDetailsAction.value = it }
+            .doOnNext { openPaymentsByCategoryAction.value = it }
             .subscribe()
             .addToDisposables()
 

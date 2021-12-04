@@ -58,7 +58,7 @@ class CategoryDetailsFragment : BottomSheetDialogFragment() {
     }
 
     companion object{
-        fun getInstance(category: Category) : CategoryDetailsFragment{
+        fun getInstance(category: Category? = null) : CategoryDetailsFragment{
             val bundle = Bundle().apply {
                 putParcelable("category", category)
             }

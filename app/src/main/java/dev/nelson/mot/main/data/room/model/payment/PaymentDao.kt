@@ -58,4 +58,8 @@ interface PaymentDao {
 
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${CategoryTable.ID} = :categoryEntityId ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
     fun getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId: Int): Flow<List<PaymentWithCategory>>
+
+    //get payments without category
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} WHERE ${PaymentTable.CATEGORY_ID_KEY} IS NULL")
+    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>>
 }

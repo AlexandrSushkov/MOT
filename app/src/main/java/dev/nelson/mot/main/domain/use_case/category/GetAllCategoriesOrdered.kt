@@ -18,15 +18,26 @@ class GetAllCategoriesOrdered @Inject constructor(private val categoryRepository
         return listOf<CategoryListItemModel>()
             .toMutableList()
             .apply {
+                //no category item
+                val noCategory = CategoryEntity("No category")
+                add(CategoryListItemModel.CategoryItemModel(noCategory))
+                add(CategoryListItemModel.Empty)
+                //add categories items
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString()))
                     add(CategoryListItemModel.Empty)
-                    addAll(categoryList.map { categoryEntity -> CategoryListItemModel.CategoryItemModel(categoryEntity) })
+                    addAll(categoryList.map { categoryEntity -> categoryEntity.toCategoryItemModel() })
                     if (categoryList.size.isEven().not()) {
                         add(CategoryListItemModel.Empty)
                     }
                 }
+                //add footer
                 add(CategoryListItemModel.Footer)
             }
     }
+
+    fun CategoryEntity.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
+        return CategoryListItemModel.CategoryItemModel(this)
+    }
+
 }

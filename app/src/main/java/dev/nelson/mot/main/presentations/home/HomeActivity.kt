@@ -20,6 +20,7 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
+import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -95,16 +96,25 @@ class HomeActivity : BaseActivity() {
 //            showKeyboard()
 
             when(navController.currentDestination?.id){
-                R.id.nav_menu_item_payment_list -> navController.navigate(R.id.paymentActivity)
+                R.id.nav_menu_item_payment_list -> {
+                    openPaymentDetails()
+//                    navController.navigate(R.id.paymentActivity)
+                }
                 R.id.nav_menu_item_categories -> {
-                    openCategoryDelails()
+                    openCategoryDetails()
 //                    navController.navigate(R.id.category_details_screen)
                 }
             }
         }
     }
-    private fun openCategoryDelails() {
-        val categoryDialogFragment = CategoryDetailsFragment()
+
+    private fun openPaymentDetails() {
+        val paymentDetailsFragment = PaymentDetailsFragment.getInstance()
+        paymentDetailsFragment.show(supportFragmentManager, paymentDetailsFragment.tag)
+    }
+
+    private fun openCategoryDetails() {
+        val categoryDialogFragment = CategoryDetailsFragment.getInstance()
         categoryDialogFragment.show(supportFragmentManager, categoryDialogFragment.tag)
     }
 

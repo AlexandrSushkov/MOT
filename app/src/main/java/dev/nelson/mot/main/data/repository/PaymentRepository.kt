@@ -55,4 +55,8 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
     fun getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId: Int): Flow<List<PaymentWithCategory>> =
         motDatabase.paymentDao()
             .getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId)
+
+    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>> =
+        motDatabase.paymentDao()
+            .getAllPaymentsWithoutCategory()
 }

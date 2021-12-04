@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:onClick="completionHintViewClick"
+    android:background="@color/testColorMint"
     android:padding="24dp"
     android:text="completion hint" />
 

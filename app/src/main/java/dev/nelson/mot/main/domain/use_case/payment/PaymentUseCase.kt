@@ -52,6 +52,11 @@ class PaymentUseCase @Inject constructor(private val paymentRepository: PaymentR
             .map { it.toPaymentList() }
     }
 
+    fun getAllPaymentsWithoutCategory(): Flow<List<Payment>> {
+        return paymentRepository.getAllPaymentsWithoutCategory()
+            .map { it.toPaymentList() }
+    }
+
 
     suspend fun getAllPaymentsWithCategoryOrderedByIdDescCor() = paymentRepository.getAllPaymentsWithCategoryOrderedByIdDescCor()
 
