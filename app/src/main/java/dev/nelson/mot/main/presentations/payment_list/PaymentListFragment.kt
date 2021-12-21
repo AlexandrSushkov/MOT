@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -94,14 +95,15 @@ class PaymentListFragment : BaseFragment() {
             })
 
             onPaymentEntityItemClickEvent.observe(viewLifecycleOwner, {
-//            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
-//                .apply { payment = it }
+            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
+                .apply { payment = it }
 //            val extras = FragmentNavigatorExtras(binding.newPaymentFab to "new_payment")
-//
-//            navController.navigate(openPaymentDetailsAction, extras)
+//            val extras = ActivityNavigatorExtras(binding.newPaymentFab to "new_payment")
 
-                val paymentFragment = PaymentDetailsFragment.getInstance(it)
-                paymentFragment.show(childFragmentManager, paymentFragment.tag)
+            navController.navigate(openPaymentDetailsAction)
+
+//                val paymentFragment = PaymentDetailsFragment.getInstance(it)
+//                paymentFragment.show(childFragmentManager, paymentFragment.tag)
             })
         }
 

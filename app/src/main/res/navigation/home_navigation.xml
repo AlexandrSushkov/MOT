@@ -13,7 +13,7 @@
         tools:layout="@layout/fragment_payment_list">
         <action
             android:id="@+id/go_to_paymentFragment"
-            app:destination="@id/paymentFragment" />
+            app:destination="@id/paymentActivity" />
         <argument
             android:name="payment"
             android:defaultValue="@null"
@@ -48,7 +48,7 @@
 
     <fragment
         android:id="@+id/paymentFragment"
-        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsActivity"
         android:label="PaymentFragment"
         tools:layout="@layout/fragment_payment_details">
         <argument
@@ -78,9 +78,15 @@
 
     <activity
         android:id="@+id/paymentActivity"
-        android:name="dev.nelson.mot.main.presentations.payment.PaymentActivity"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsActivity"
         android:label="PaymentActivity"
-        tools:layout="@layout/activity_new_payment" />
+        tools:layout="@layout/activity_new_payment" >
+        <argument
+            android:name="payment"
+            android:defaultValue="@null"
+            app:argType="dev.nelson.mot.main.data.model.Payment"
+            app:nullable="true" />
+    </activity>
 
     <action
         android:id="@+id/open_category_details"

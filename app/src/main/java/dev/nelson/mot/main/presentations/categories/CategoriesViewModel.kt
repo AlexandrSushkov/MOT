@@ -12,7 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.domain.use_case.CategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
-import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrdered
+import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByName
 import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class CategoriesViewModel @Inject constructor(
     private val categoryUseCase: CategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
-    private val getAllCategoriesOrdered: GetAllCategoriesOrdered,
+    private val getAllCategoriesOrdered: GetAllCategoriesOrderedByName,
     private val paymentUseCase: PaymentUseCase,
 ) : BaseViewModel() {
 

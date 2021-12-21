@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,68 +10,87 @@
             type="dev.nelson.mot.main.presentations.payment.PaymentDetailsViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/payment_root_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            >
+            android:background="@color/colorAccent"
+            android:transitionName="new_payment">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/payment_root_layout"
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/payment_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:padding="16dp"
-                android:transitionName="new_payment">
+                android:layout_marginStart="@dimen/medium"
+                android:layout_marginTop="@dimen/large"
+                android:layout_marginEnd="@dimen/medium"
+                android:focusedByDefault="true"
+                android:hint="new payment"
+                android:selection="@{viewModel.paymentNameSelection}"
+                android:text="@={viewModel.paymentName}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/payment_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="new payment"
-                    android:selection="@{viewModel.paymentNameSelection}"
-                    android:focusedByDefault="true"
-                    android:text="@={viewModel.paymentName}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium"
+                android:layout_marginBottom="@dimen/medium"
+                android:hint="@{viewModel.categoryName}"
+                app:layout_constraintBottom_toBottomOf="@id/payment_cost"
+                app:layout_constraintEnd_toStartOf="@+id/payment_cost"
+                app:layout_constraintHorizontal_weight="3"
+                app:layout_constraintStart_toStartOf="@+id/payment_title"
+                app:layout_constraintTop_toTopOf="@+id/payment_cost"
+                tools:text="category" />
 
-                <EditText
-                    android:id="@+id/payment_cost"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="cost"
-                    android:inputType="number"
-                    android:text="@={viewModel.paymentCost}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/payment_title" />
+            <EditText
+                android:id="@+id/payment_cost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:gravity="end"
+                android:hint="cost"
+                android:inputType="number"
+                android:text="@={viewModel.paymentCost}"
+                app:layout_constraintEnd_toEndOf="@+id/payment_title"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/category"
+                app:layout_constraintTop_toBottomOf="@id/payment_title" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="date"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/payment_cost" />
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/small"
+                android:gravity="center_vertical"
+                android:text="@{viewModel.date}"
+                app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24"
+                app:layout_constraintBottom_toBottomOf="@id/btn_save_payment"
+                app:layout_constraintStart_toStartOf="@+id/payment_title"
+                app:layout_constraintTop_toTopOf="@id/btn_save_payment"
+                tools:text="12.03.2020" />
 
-                <Button
-                    android:id="@+id/btn_save_payment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="@{() -> viewModel.onSaveClick()}"
-                    android:text="save"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/payment_cost" />
+            <Button
+                android:id="@+id/btn_save_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium"
+                android:layout_marginBottom="@dimen/large"
+                android:onClick="@{() -> viewModel.onSaveClick()}"
+                android:text="save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/payment_title"
+                app:layout_constraintTop_toBottomOf="@id/payment_cost" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        </androidx.core.widget.NestedScrollView>
-
-    </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

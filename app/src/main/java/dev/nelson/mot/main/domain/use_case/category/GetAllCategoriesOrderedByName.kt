@@ -8,8 +8,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetAllCategoriesOrdered @Inject constructor(private val categoryRepository: CategoryRepository) {
+class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepository: CategoryRepository) {
 
+    /**
+     * Execute
+     *
+     * @param isAsc - true if order is ascending, false - descending
+     * @return
+     */
     fun execute(isAsc: Boolean): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered(isAsc)
         .map { it.groupBy { category: CategoryEntity -> category.name.first().uppercaseChar() } }
         .map { titleCharToCategoryMap: Map<Char, List<CategoryEntity>> -> createCategoryListViewRepresentation(titleCharToCategoryMap) }
@@ -36,7 +42,7 @@ class GetAllCategoriesOrdered @Inject constructor(private val categoryRepository
             }
     }
 
-    fun CategoryEntity.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
+    private fun CategoryEntity.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
         return CategoryListItemModel.CategoryItemModel(this)
     }
 

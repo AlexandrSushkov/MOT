@@ -9,6 +9,9 @@ import com.jakewharton.rxrelay2.Relay
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.databinding.ItemPaymentBinding
+import dev.nelson.mot.main.util.DateUtils
+import dev.nelson.mot.main.util.constant.NetworkConstants
+import dev.nelson.mot.main.util.toFormattedDate
 
 class PaymentListAdapter(
     private val onPaymentEntityItemClickPublisher: Relay<Payment>,
@@ -89,6 +92,12 @@ class PaymentListAdapter(
             fun bind(paymentItemModel: PaymentListItemModel.PaymentItemModel) {
                 itemView.setOnClickListener { onPaymentEntityItemClickPublisher.accept(paymentItemModel.payment) }
                 itemPaymentBinding.payment = paymentItemModel.payment
+                paymentItemModel.payment.dateInMills?.let {
+                    val date = DateUtils.createDateFromMills(it)
+                    itemPaymentBinding.date.text = date.toFormattedDate(NetworkConstants.DATE_FORMAT)
+                }
+
+
             }
         }
 

@@ -12,7 +12,7 @@ object NetworkConstants {
 
     //Headers value
     const val APPLICATION_JSON = "application/json"
-    const val DATE_FORMAT = "MM/dd/yyyy"
+    const val DATE_FORMAT = "dd/MM/yyyy"
 
     //Methods
     const val METHOD_PUT = "PUT"

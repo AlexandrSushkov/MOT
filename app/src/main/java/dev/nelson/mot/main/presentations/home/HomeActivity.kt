@@ -20,7 +20,8 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
+import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
+//import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -95,7 +96,7 @@ class HomeActivity : BaseActivity() {
 //            startActivity(PaymentActivity.getIntent(this), options.toBundle())
 //            showKeyboard()
 
-            when(navController.currentDestination?.id){
+            when (navController.currentDestination?.id) {
                 R.id.nav_menu_item_payment_list -> {
                     openPaymentDetails()
 //                    navController.navigate(R.id.paymentActivity)
@@ -109,8 +110,10 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun openPaymentDetails() {
-        val paymentDetailsFragment = PaymentDetailsFragment.getInstance()
-        paymentDetailsFragment.show(supportFragmentManager, paymentDetailsFragment.tag)
+//        val paymentDetailsFragment = PaymentDetailsFragment.getInstance()
+//        paymentDetailsFragment.show(supportFragmentManager, paymentDetailsFragment.tag)
+        val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
+        navController.navigate(openPaymentDetailsAction)
     }
 
     private fun openCategoryDetails() {
@@ -159,12 +162,12 @@ class HomeActivity : BaseActivity() {
         bottomNavDialogFragment.show(supportFragmentManager, bottomNavDialogFragment.tag)
     }
 
-    private fun showSneakBar(){
+    private fun showSneakBar() {
         val snackbar: Snackbar = Snackbar.make(
             binding.coordinatorLayout2, "afaf",
             Snackbar.LENGTH_LONG
         )
-        snackbar.setAction("undo") { v -> {  } }
+        snackbar.setAction("undo") { v -> { } }
         snackbar.show()
     }
 
@@ -173,8 +176,8 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun showKeyboard() {
-            val imm: InputMethodManager? = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-            imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        val imm: InputMethodManager? = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
 }
