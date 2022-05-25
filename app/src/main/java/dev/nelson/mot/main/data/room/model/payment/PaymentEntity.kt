@@ -3,15 +3,19 @@ package dev.nelson.mot.main.data.room.model.payment
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.data.room.model.category.CategoryTable
 
-@Entity(tableName = PaymentTable.TABLE_NAME,
-    foreignKeys = [(ForeignKey(entity = CategoryEntity::class,
+@Entity(
+    tableName = PaymentTable.TABLE_NAME,
+    foreignKeys = [(ForeignKey(
+        entity = CategoryEntity::class,
         parentColumns = arrayOf(CategoryTable.ID),
         childColumns = arrayOf(PaymentTable.CATEGORY_ID_KEY),
-        onDelete = ForeignKey.SET_NULL))]
+        onDelete = ForeignKey.SET_NULL
+    ))],
 )
 data class PaymentEntity(
     @ColumnInfo(name = PaymentTable.TITLE) var title: String,

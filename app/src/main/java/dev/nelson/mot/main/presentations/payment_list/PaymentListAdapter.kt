@@ -18,7 +18,7 @@ class PaymentListAdapter(
     private val onSwipeToDeleteAction: Relay<Payment>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val paymentItemModelList = emptyList<PaymentListItemModel>().toMutableList()
+    private val paymentItemModelList = mutableListOf<PaymentListItemModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)

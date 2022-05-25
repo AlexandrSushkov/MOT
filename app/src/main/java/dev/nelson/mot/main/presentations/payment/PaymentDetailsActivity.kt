@@ -4,35 +4,32 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.PersistableBundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListPopupWindow
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.compose.foundation.rememberScrollState
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayout
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-//import dev.nelson.mot.legacy.MotApplication.Companion.context
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.databinding.FragmentPaymentDetailsBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 import java.util.Calendar
-
 
 @AndroidEntryPoint
 class PaymentDetailsActivity : BaseActivity() {
 
     private lateinit var binding: FragmentPaymentDetailsBinding
     private val viewModel: PaymentDetailsViewModel by viewModels()
+    private val tags = listOf("tag1", "tag2", "tag3")
+
 
     //    private val navController by lazy { findNavController() }
     lateinit var listPopupWindow: ListPopupWindow
@@ -58,6 +55,40 @@ class PaymentDetailsActivity : BaseActivity() {
 
         initListeners()
 
+//        val chip1 = Chip(this)
+//        chip1.text = "test chip"
+//        chip1.isClickable = true
+//        chip1.isCheckable = false
+//        chip1.isCloseIconVisible = true
+//        chip1.setOnCloseIconClickListener { binding.tagChipGroup.removeView(chip1 as View) }
+//        binding.tagChipGroup.addView(chip1)
+        binding.add.setOnClickListener {
+            val txt = binding.enterTagName.text.toString()
+            addNewChip(txt, binding.tagChipGroup)
+        }
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tags)
+        binding.enterTagName.setAdapter(adapter)
+        binding.enterTagName.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, id ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+//             Выводим выбранное слово
+//            Toast.makeText(applicationContext, "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+            addNewChip(selectedItem, binding.tagChipGroup)
+            binding.enterTagName.text.clear()
+        }
+//        binding.tagList.adapter =
+
+    }
+
+    private fun addNewChip(person: String, chipGroup: FlexboxLayout) {
+        val chip = Chip(this)
+        chip.text = person
+        chip.chipIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp)
+        chip.isCloseIconVisible = true
+        chip.isClickable = true
+        chip.isCheckable = false
+        chipGroup.addView(chip as View, chipGroup.childCount - 1)
+        chip.setOnCloseIconClickListener { chipGroup.removeView(chip as View) }
     }
 
 //    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

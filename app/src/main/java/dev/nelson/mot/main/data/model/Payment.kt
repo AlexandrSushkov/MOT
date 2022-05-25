@@ -2,8 +2,6 @@ package dev.nelson.mot.main.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 
 data class Payment(
     val name: String,

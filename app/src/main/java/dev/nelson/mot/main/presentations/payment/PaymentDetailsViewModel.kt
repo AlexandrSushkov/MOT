@@ -33,6 +33,7 @@ class PaymentDetailsViewModel @Inject constructor(
     handle: SavedStateHandle
 ) : BaseViewModel() {
 
+    private val tags = listOf("tag1", "tag2", "tag3")
     private val payment: Payment? = handle.get<Payment>("payment")
     val paymentName = ObservableField(payment?.name)
     val categoryName = ObservableField(payment?.category?.name ?: "category")

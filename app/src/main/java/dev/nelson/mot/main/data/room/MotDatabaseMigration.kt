@@ -6,8 +6,10 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.nelson.mot.main.data.room.model.category.CategoryTable
 import dev.nelson.mot.main.data.room.model.payment.PaymentTable
+import dev.nelson.mot.main.data.room.model.payment_tag.PaymentTagTable
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 val MIGRATION_1_2: Migration = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -62,9 +64,22 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             }
         }
 
+        fun addPaymentTagTable(database: SupportSQLiteDatabase){
+            with(database) {
+                execSQL("CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTagTable.TITLE} TEXT NOT NULL)")
+            }
+        }
+
+        fun addPaymentTagToPaymentTable(database: SupportSQLiteDatabase){
+            with(database) {
+                execSQL("CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTagTable.TITLE} TEXT NOT NULL)")
+            }
+        }
+
         database.apply {
             migrateCategoriesTable(this)
             migratePaymentTable(this)
+            addPaymentTagTable(this)
         }
     }
 }
