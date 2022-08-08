@@ -13,5 +13,6 @@ class AboutActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = getDataBinding(R.layout.fragment_about)
+        // TODO: not implemented yet
     }
 }

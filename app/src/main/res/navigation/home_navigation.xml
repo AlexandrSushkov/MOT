@@ -8,6 +8,22 @@
     <!--to make navigation controller works properly fragment's id have to match with menu item id-->
     <fragment
         android:id="@+id/nav_menu_item_payment_list"
+        android:name="dev.nelson.mot.main.presentations.payment_list.PaymentListFragment"
+        android:label="PaymentListFragment"
+        tools:layout="@layout/fragment_payment_list">
+        <action
+            android:id="@+id/go_to_paymentFragment"
+            app:destination="@id/paymentActivity" />
+        <argument
+            android:name="payment"
+            android:defaultValue="@null"
+            app:argType="dev.nelson.mot.main.data.model.Payment"
+            app:nullable="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_menu_item_payment_list_compose"
         android:name="dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragment"
         android:label="PaymentListFragment"
         tools:layout="@layout/fragment_payment_list">

@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/nav_menu_item_payment_list_compose"
-        android:icon="@drawable/ic_category"
+        android:icon="@drawable/ic_baseline_payment_24"
         android:title="@string/recent_payments_compose" />
     <item
         android:id="@+id/nav_menu_item_categories"
@@ -38,10 +38,10 @@
             android:title="@string/settings"
             android:tooltipText="@string/settings" />
 
-<!--        <item-->
-<!--            android:id="@+id/nav_menu_item_about"-->
-<!--            android:icon="@drawable/ic_info_outline_black_24dp"-->
-<!--            android:title="@string/about" />-->
+        <item
+            android:id="@+id/nav_menu_item_about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/about" />
 
     </group>
 

@@ -20,9 +20,8 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-//import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
+import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
 import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
-//import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -93,34 +92,23 @@ class HomeActivity : BaseActivity() {
 
     private fun initFab() {
         binding.fab.setOnClickListener {
-//            val options = ActivityOptions.makeSceneTransitionAnimation(this, binding.fab, "new_payment")
-//            startActivity(PaymentActivity.getIntent(this), options.toBundle())
-//            showKeyboard()
-
             when (navController.currentDestination?.id) {
-                R.id.nav_menu_item_payment_list -> {
-                    openPaymentDetails()
-//                    navController.navigate(R.id.paymentActivity)
-                }
-                R.id.nav_menu_item_categories -> {
-                    openCategoryDetails()
-//                    navController.navigate(R.id.category_details_screen)
-                }
+                R.id.nav_menu_item_payment_list -> openPaymentDetails()
+                R.id.nav_menu_item_payment_list_compose -> openPaymentDetailsCompose()
+                R.id.nav_menu_item_categories -> openCategoryDetails()
+
             }
         }
     }
 
     private fun openPaymentDetails() {
-//        val paymentDetailsFragment = PaymentDetailsFragment.getInstance()
-//        paymentDetailsFragment.show(supportFragmentManager, paymentDetailsFragment.tag)
+        val openPaymentDetailsComposeAction = PaymentListFragmentDirections.goToPaymentFragment()
+        navController.navigate(openPaymentDetailsComposeAction)
+    }
 
-//        val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentActivity()
-//        navController.navigate(openPaymentDetailsAction)
-
-//        val openPaymentDetailsComposeAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
+    private fun openPaymentDetailsCompose() {
         val openPaymentDetailsComposeAction = PaymentListComposeFragmentDirections.goToPaymentDetailsCompose()
         navController.navigate(openPaymentDetailsComposeAction)
-
     }
 
     private fun openCategoryDetails() {

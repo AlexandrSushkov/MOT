@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.home.bottomnav
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentBottomsheetBinding
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.HomeViewModel
-import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeActivity
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -31,7 +28,7 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(requireContext(), theme)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = getDataBinding(inflater, R.layout.fragment_bottomsheet, container)
         binding.viewModel = viewModel
         setupWithNavController(binding.bottomNavigation, navController)
@@ -53,7 +50,8 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
         binding.bottomNavigation.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_menu_item_payment_list -> safeNavigate(R.id.nav_menu_item_payment_list)
-                R.id.nav_menu_item_payment_list_compose -> startActivity(Intent(context, PaymentListComposeActivity::class.java))
+//                R.id.nav_menu_item_payment_list_compose -> startActivity(Intent(context, PaymentListComposeActivity::class.java))
+                R.id.nav_menu_item_payment_list_compose -> safeNavigate(R.id.nav_menu_item_payment_list_compose)
                 R.id.nav_menu_item_categories -> safeNavigate(R.id.nav_menu_item_categories)
                 R.id.nav_menu_item_statistic -> safeNavigate(R.id.nav_menu_item_statistic)
                 R.id.nav_menu_item_movies_list -> safeNavigate(R.id.nav_menu_item_movies_list)
@@ -66,16 +64,20 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun finish() {
-        activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.remove(this)
+            ?.commit()
     }
 
+    /**
+     * - if destination is open fragment - do nothing
+     * - if fragments exist in stack - pop back to fragment
+     * - if fragment doesn't exist in the stack - open new one
+     *
+     * @param id destination id
+     */
     private fun safeNavigate(@IdRes id: Int) {
-        //if destination is open fragment - do nothing
-        //if fragments exist in stack - pop back to fragment
-        //if fragment doesn't exist in the stack - open new one
-//        if(navController.){
-//
-//        }
         if (navController.currentDestination?.id != id) {
 //            if (navController.graph.contains(id)) {
 //                navController.popBackStack(id, false)
@@ -88,36 +90,3 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
 }
-
-//
-//override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//    super.onViewCreated(view, savedInstanceState)
-//    val navigationView: NavigationView = view.findViewById(R.id.bottom_navigation)
-//    navigationView.setNavigationItemSelectedListener { menuItem ->
-//        when (menuItem.itemId) {
-//            R.id.nav_home -> {
-//                if (isCurrentFragment(R.id.navHomeFragment).not()){
-//                    findNavController().popBackStack()
-//                    findNavController().navigate(R.id.navHomeFragment)
-//                }
-//            }
-//            R.id.nav_about -> {
-//                if (isCurrentFragment(R.id.navAboutFragment).not()){
-//                    findNavController().popBackStack()
-//                    findNavController().navigate(R.id.navAboutFragment)
-//                }
-//            }
-//        }
-//        finish()
-//        true
-//    }
-//}
-//
-//private fun isCurrentFragment(fragmentId: Int): Boolean  = findNavController().currentDestination?.id == fragmentId
-//
-//private fun finish() {
-//    activity?.supportFragmentManager
-//        ?.beginTransaction()
-//        ?.remove(this)
-//        ?.commit()
-//}
