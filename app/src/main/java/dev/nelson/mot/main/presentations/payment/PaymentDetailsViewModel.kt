@@ -2,6 +2,7 @@ package dev.nelson.mot.main.presentations.payment
 
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,11 +36,11 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private val tags = listOf("tag1", "tag2", "tag3")
     private val payment: Payment? = handle.get<Payment>("payment")
-    val paymentName = ObservableField(payment?.name)
+    val paymentName = MutableLiveData(payment?.name ?: "")
     val categoryName = ObservableField(payment?.category?.name ?: "category")
     val date = ObservableField("")
     val paymentNameSelection = ObservableInt()
-    val paymentCost = ObservableField(payment?.cost?.toString() ?: 0.toString())
+    val paymentCost = MutableLiveData(payment?.cost?.toString() ?: "")
     val finishAction = SingleLiveEvent<Unit>()
     val categories = SingleLiveEvent<List<CategoryEntity>>()
     var selectedCategory: CategoryEntity? = null
@@ -70,8 +71,8 @@ class PaymentDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val currentDateInMills = System.currentTimeMillis()
             val payment = Payment(
-                paymentName.get() ?: "",
-                (paymentCost.get()?.toIntOrNull() ?: 0),
+                paymentName.value ?: "",
+                (paymentCost.value?.toIntOrNull() ?: 0),
                 dateInMills = currentDateInMills,
                 category = selectedCategory?.toCategory()
             )
@@ -86,8 +87,8 @@ class PaymentDetailsViewModel @Inject constructor(
             payment?.let {
                 //todo, check if payment has been edited, if not, just close screen
                 val updatedPayment = it.copyWith(
-                    paymentName.get() ?: "",
-                    (paymentCost.get()?.toIntOrNull() ?: 0),
+                    paymentName.value ?: "",
+                    (paymentCost.value?.toIntOrNull() ?: 0),
                     dateInMills,
                     selectedCategory?.toCategory()
                 )

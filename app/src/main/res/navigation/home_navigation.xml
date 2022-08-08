@@ -8,11 +8,14 @@
     <!--to make navigation controller works properly fragment's id have to match with menu item id-->
     <fragment
         android:id="@+id/nav_menu_item_payment_list"
-        android:name="dev.nelson.mot.main.presentations.payment_list.PaymentListFragment"
+        android:name="dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragment"
         android:label="PaymentListFragment"
         tools:layout="@layout/fragment_payment_list">
         <action
-            android:id="@+id/go_to_paymentFragment"
+            android:id="@+id/go_to_payment_details_compose"
+            app:destination="@id/paymentDetailsComposeActivity" />
+        <action
+            android:id="@+id/go_to_payment_activity"
             app:destination="@id/paymentActivity" />
         <argument
             android:name="payment"
@@ -107,5 +110,10 @@
             app:argType="dev.nelson.mot.main.data.model.Category"
             app:nullable="true" />
     </action>
+    <activity
+
+        android:id="@+id/paymentDetailsComposeActivity"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsComposeActivity"
+        android:label="PaymentDetailsComposeActivity" />
 
 </navigation>

@@ -10,10 +10,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListPopupWindow
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.activity.viewModels
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,13 +61,13 @@ class PaymentDetailsActivity : BaseActivity() {
 //        chip1.setOnCloseIconClickListener { binding.tagChipGroup.removeView(chip1 as View) }
 //        binding.tagChipGroup.addView(chip1)
         binding.add.setOnClickListener {
-            val txt = binding.enterTagName.text.toString()
-            addNewChip(txt, binding.tagChipGroup)
+//            val txt = binding.enterTagName.text.toString()
+//            addNewChip(txt, binding.tagChipGroup)
         }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tags)
+        val adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, tags)
         binding.enterTagName.setAdapter(adapter)
-        binding.enterTagName.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, id ->
+        binding.enterTagName.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position).toString()
 //             Выводим выбранное слово
 //            Toast.makeText(applicationContext, "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
@@ -77,6 +75,7 @@ class PaymentDetailsActivity : BaseActivity() {
             binding.enterTagName.text.clear()
         }
 //        binding.tagList.adapter =
+
 
     }
 
@@ -111,8 +110,8 @@ class PaymentDetailsActivity : BaseActivity() {
 
     private fun initListeners() {
 //        viewModel.finishAction.observe(viewLifecycleOwner, { dismiss() })
-        viewModel.finishAction.observe(this, { finish() })
-        viewModel.categories.observe(this, { categoriesList ->
+        viewModel.finishAction.observe(this) { finish() }
+        viewModel.categories.observe(this) { categoriesList ->
 //            context?.let {
             listPopupWindow = ListPopupWindow(this).apply {
                 isModal = true
@@ -123,7 +122,7 @@ class PaymentDetailsActivity : BaseActivity() {
             listPopupWindow.setAdapter(adapter)
 //                listPopupWindow.show()
 //            }
-        })
+        }
 
         with(binding.paymentTitle) {
             requestFocus()
@@ -153,10 +152,7 @@ class PaymentDetailsActivity : BaseActivity() {
             picker.show()
         }
 //        }
-        viewModel.requestTitleFieldFocusAction.observe(this, {
-//            binding.paymentTitle.focu
-            binding.paymentTitle.setSelection(binding.paymentTitle.text.length)
-        })
+        viewModel.requestTitleFieldFocusAction.observe(this) { binding.paymentTitle.setSelection(binding.paymentTitle.text.length) }
 
     }
 

@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -17,14 +16,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.base.EntryPointActivity
@@ -49,53 +47,48 @@ class PaymentListComposeActivity : EntryPointActivity() {
 
         val fabShape = RoundedCornerShape(50)
 
-        MaterialTheme {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(text = "Payment List Compose") },
-//                        navigationIcon = {
-//                            IconButton(onClick = { finish() }) {
-//                                Icon(
-//                                    Icons.Filled.ArrowBack,
-//                                    contentDescription = null
-//                                )
-//                            }
-//                        },
-
-                    )
-
-                },
-                bottomBar = {
-                    BottomAppBar(cutoutShape = fabShape) {}
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {},
-                        // We specify the same shape that we passed as the cutoutShape above.
-                        shape = fabShape,
-                        // We use the secondary color from the current theme. It uses the defaults when
-                        // you don't specify a theme (this example doesn't specify a theme either hence
-                        // it will just use defaults. Look at DarkModeActivity if you want to see an
-                        // example of using themes.
-                        backgroundColor = MaterialTheme.colors.secondary
-                    ) {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                },
-                isFloatingActionButtonDocked = true,
-                floatingActionButtonPosition = FabPosition.Center,
-
-
-                ) {
-                BodyContent()
-            }
-        }
+//        MaterialTheme {
+//            Scaffold(
+//                topBar = {
+//                    TopAppBar(
+//                        title = { Text(text = "Payment List Compose") },
+////                        navigationIcon = {
+////                            IconButton(onClick = { finish() }) {
+////                                Icon(
+////                                    Icons.Filled.ArrowBack,
+////                                    contentDescription = null
+////                                )
+////                            }
+////                        },
+//
+//                    )
+//
+//                },
+//                bottomBar = { BottomAppBar(cutoutShape = fabShape) {} },
+//                floatingActionButton = {
+//                    FloatingActionButton(
+//                        onClick = {},
+//                        // We specify the same shape that we passed as the cutoutShape above.
+//                        shape = fabShape,
+//                        // We use the secondary color from the current theme. It uses the defaults when
+//                        // you don't specify a theme (this example doesn't specify a theme either hence
+//                        // it will just use defaults. Look at DarkModeActivity if you want to see an
+//                        // example of using themes.
+//                        backgroundColor = MaterialTheme.colors.secondary
+//                    ) {
+//                        IconButton(onClick = {}) {
+//                            Icon(
+//                                Icons.Filled.Add,
+//                                contentDescription = null
+//                            )
+//                        }
+//                    }
+//                },
+//                isFloatingActionButtonDocked = true,
+//                floatingActionButtonPosition = FabPosition.Center,
+//                content = { PaddingValues(all = 0.dp) }
+//            )
+//        }
     }
 
     @Composable
@@ -160,39 +153,8 @@ class PaymentListComposeActivity : EntryPointActivity() {
                     Text(payment.cost.toString())
                 }
             }
-            RadioGroupHorizontal(radioOptions = listOf("on", "off", "none"))
+//            RadioGroupHorizontal(radioOptions = listOf("on", "off", "none"))
 
-        }
-    }
-
-    @Composable
-    fun RadioGroupHorizontal(radioOptions: List<String>) {
-        val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[1]) }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            radioOptions.forEach { text ->
-                Column(
-                    Modifier
-                        .selectable(
-                            selected = (text == selectedOption),
-                            onClick = { onOptionSelected(text) }
-                        ),
-
-                    ) {
-                    Row {
-                        RadioButton(
-                            selected = (text == selectedOption),
-                            onClick = { onOptionSelected(text) }
-                        )
-                        Text(
-                            text = text,
-                            style = MaterialTheme.typography.body1.merge(),
-                        )
-                    }
-                }
-            }
         }
     }
 

@@ -17,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.FragmentPaymentListBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
+import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -84,27 +85,27 @@ class PaymentListFragment : BaseFragment() {
         }
 
         with(viewModel){
-            swipeToDeleteCallbackLiveData.observe(viewLifecycleOwner, {
+            swipeToDeleteCallbackLiveData.observe(viewLifecycleOwner) {
                 val itemTouchHelper = ItemTouchHelper(it)
                 itemTouchHelper.attachToRecyclerView(binding.paymentList)
-            })
+            }
 
-            swipeToDeleteAction.observe(viewLifecycleOwner, {
+            swipeToDeleteAction.observe(viewLifecycleOwner) {
 //                Toast.makeText(context, "sdf", Toast.LENGTH_SHORT).show()
                 showUndoSnackbar()
-            })
+            }
 
-            onPaymentEntityItemClickEvent.observe(viewLifecycleOwner, {
-            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
-                .apply { payment = it }
+            onPaymentEntityItemClickEvent.observe(viewLifecycleOwner) {
+                val openPaymentDetailsAction = PaymentListComposeFragmentDirections.goToPaymentActivity()
+                    .apply { payment = it }
 //            val extras = FragmentNavigatorExtras(binding.newPaymentFab to "new_payment")
 //            val extras = ActivityNavigatorExtras(binding.newPaymentFab to "new_payment")
 
-            navController.navigate(openPaymentDetailsAction)
+                navController.navigate(openPaymentDetailsAction)
 
 //                val paymentFragment = PaymentDetailsFragment.getInstance(it)
 //                paymentFragment.show(childFragmentManager, paymentFragment.tag)
-            })
+            }
         }
 
     }

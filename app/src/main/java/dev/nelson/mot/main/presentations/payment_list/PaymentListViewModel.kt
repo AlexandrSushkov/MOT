@@ -50,7 +50,7 @@ class PaymentListViewModel @Inject constructor(
     val toolbarElevation = ObservableField<Int>()
 
     //    val paymentAdapter = ObservableField<PaymentListAdapter2>()
-    var paymentListTitle = ObservableField(if (category.name.isEmpty()) "Recent Payments" else category.name)
+    var paymentListTitle = ObservableField(category.name.ifEmpty { "Recent Payments" })
     val onPaymentEntityItemClickAction: Relay<Payment> = PublishRelay.create()
     val onSwipeToDeleteAction: Relay<Payment> = PublishRelay.create()
     val onPaymentEntityItemClickEvent: SingleLiveEvent<Payment> = SingleLiveEvent()

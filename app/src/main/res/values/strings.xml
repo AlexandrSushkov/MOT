@@ -2,11 +2,12 @@
     <string name="app_name">Main</string>
     <string name="test" translatable="false">TEEEst</string>
     <string name="add_new_payment" translatable="false">add new payment</string>
-    <string name="recent_payments">Recent payments</string>
-    <string name="recent_payments_compose">Recent Payments Compose</string>
-    <string name="categories">Categories</string>
-    <string name="statistic">Statistic</string>
-    <string name="about">About</string>
-    <string name="settings">Settings</string>
+    <string name="recent_payments" translatable="false">Recent payments</string>
+    <string name="recent_payments_compose" translatable="false">Recent Payments Compose</string>
+    <string name="categories" translatable="false">Categories</string>
+    <string name="statistic" translatable="false">Statistic</string>
+    <string name="about" translatable="false">About</string>
+    <string name="settings" translatable="false">Settings</string>
+    <string name="title_activity_payment_details_compose" translatable="false">PaymentDetailsComposeActivity</string>
 
 </resources>

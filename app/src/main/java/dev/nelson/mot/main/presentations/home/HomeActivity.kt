@@ -20,7 +20,8 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
+//import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
+import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
 //import dev.nelson.mot.main.presentations.payment.PaymentDetailsFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
@@ -112,8 +113,14 @@ class HomeActivity : BaseActivity() {
     private fun openPaymentDetails() {
 //        val paymentDetailsFragment = PaymentDetailsFragment.getInstance()
 //        paymentDetailsFragment.show(supportFragmentManager, paymentDetailsFragment.tag)
-        val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentFragment()
-        navController.navigate(openPaymentDetailsAction)
+
+//        val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentActivity()
+//        navController.navigate(openPaymentDetailsAction)
+
+//        val openPaymentDetailsComposeAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
+        val openPaymentDetailsComposeAction = PaymentListComposeFragmentDirections.goToPaymentDetailsCompose()
+        navController.navigate(openPaymentDetailsComposeAction)
+
     }
 
     private fun openCategoryDetails() {
@@ -167,7 +174,7 @@ class HomeActivity : BaseActivity() {
             binding.coordinatorLayout2, "afaf",
             Snackbar.LENGTH_LONG
         )
-        snackbar.setAction("undo") { v -> { } }
+        snackbar.setAction("undo") { _ -> { } }
         snackbar.show()
     }
 
