@@ -82,6 +82,9 @@
             android:id="@+id/action_nav_menu_to_categoryDetails"
             app:destination="@id/category_details_screen" />
         <action
+            android:id="@+id/action_nav_menu_to_categoryDetailsCompose"
+            app:destination="@id/category_details_compose_screen" />
+        <action
             android:id="@+id/action_nav_menu_to_paymentActivity"
             app:destination="@id/paymentActivity" />
     </fragment>
@@ -91,6 +94,12 @@
         android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment"
         android:label="CategoryDetails"
         tools:layout="@layout/activity_category_details" />
+
+    <fragment
+        android:id="@+id/category_details_compose_screen"
+        android:name="dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment"
+        android:label="CategoryDetailsCompose"
+        />
 
     <activity
         android:id="@+id/paymentActivity"

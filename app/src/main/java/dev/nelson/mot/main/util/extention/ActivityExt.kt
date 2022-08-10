@@ -31,4 +31,3 @@ fun FragmentActivity.hideKeyboard() {
     }
     imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
-

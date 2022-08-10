@@ -47,7 +47,7 @@ class CategoryDetailsFragment : BottomSheetDialogFragment() {
     }
 
     private fun initListeners() {
-        viewModel.closeAction.observe(this, { closeScreen() })
+        viewModel.closeScreenAction.observe(this) { closeScreen() }
         binding.categoryName.onDone { viewModel.onSaveClick() }
     }
 

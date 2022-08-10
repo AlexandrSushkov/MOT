@@ -9,9 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.payment.widget.PaymentDetailsLayout
-import dev.nelson.mot.main.presentations.payment_list.compose.widgets.PaymentListDateItem
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 
 @AndroidEntryPoint
 class PaymentDetailsComposeActivity : ComponentActivity() {
@@ -42,11 +41,15 @@ class PaymentDetailsComposeActivity : ComponentActivity() {
 
     @Preview(showBackground = true)
     @Composable
-    fun Preview(){
-        PaymentDetailsLayout("", "" ,{},{},{})
+    fun Preview() {
+        PaymentDetailsLayout(
+            name = "",
+            cost = "",
+            onNameChange = {},
+            onCostChange = {},
+            onSaveClick = {}
+        )
     }
-
-
 }
 
 

@@ -1,6 +1,6 @@
 package dev.nelson.mot.main.presentations.category_details
 
-import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,21 +22,21 @@ class CategoryDetailsViewModel @Inject constructor(
     private val editCategoryUseCase: EditCategoryUseCase
 ) : BaseViewModel() {
 
-    private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.AddNewCategory else Mode.EditCategory
+    private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) SaveCategoryMode.Add else SaveCategoryMode.Edit
     private val category: Category = extras[Constants.CATEGORY_KEY] ?: Category(StringUtils.EMPTY)
-    val categoryName = ObservableField(category.name)
-    val closeAction = SingleLiveEvent<Unit>()
+    val categoryName = MutableLiveData(category.name)
+    val closeScreenAction = SingleLiveEvent<Unit>()
 
     fun onSaveClick() {
-        categoryName.get()?.let { newName ->
+        categoryName.value?.let { newName ->
             if (newName != category.name) {
                 val newCategory = category.copyWith(newName)
                 when (mode) {
-                    is Mode.AddNewCategory -> addNewCategory(newCategory)
-                    is Mode.EditCategory -> editCategory(newCategory)
+                    is SaveCategoryMode.Add -> addNewCategory(newCategory)
+                    is SaveCategoryMode.Edit -> editCategory(newCategory)
                 }
             } else {
-                closeAction.call()
+                closeScreenAction.call()
             }
         }
     }
@@ -44,19 +44,19 @@ class CategoryDetailsViewModel @Inject constructor(
     private fun addNewCategory(category: Category) {
         viewModelScope.launch {
             addNewCategoryUseCase.execute(category)
-            closeAction.call()
+            closeScreenAction.call()
         }
     }
 
     private fun editCategory(category: Category) {
         viewModelScope.launch {
             editCategoryUseCase.execute(category)
-            closeAction.call()
+            closeScreenAction.call()
         }
     }
 
-    private sealed class Mode {
-        object AddNewCategory : Mode()
-        object EditCategory : Mode()
+    private sealed class SaveCategoryMode {
+        object Add : SaveCategoryMode()
+        object Edit : SaveCategoryMode()
     }
 }

@@ -4,32 +4,39 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import dev.nelson.mot.main.R
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.tooling.preview.Preview
+import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.databinding.FragmentSettingsBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.util.extention.getDataBinding
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment() {
 
     lateinit var binding: FragmentSettingsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        binding = getDataBinding(inflater, R.layout.fragment_settings, container)
-//        binding.backButton.setOnClickListener { findNavController().popBackStack() }
-        binding.composeView.setContent {  }
-        return binding.root
-    }
-
-
-    @Composable
-    private fun SettingsScreenLayout(){
-        MaterialTheme {
-            Text("Compose settings")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                SettingsScreenLayout()
+            }
         }
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenLayout() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Text("Compose settings")
+    }
 }

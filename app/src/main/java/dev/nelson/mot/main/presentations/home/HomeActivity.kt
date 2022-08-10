@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
+import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
 import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
 import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
@@ -96,7 +96,6 @@ class HomeActivity : BaseActivity() {
                 R.id.nav_menu_item_payment_list -> openPaymentDetails()
                 R.id.nav_menu_item_payment_list_compose -> openPaymentDetailsCompose()
                 R.id.nav_menu_item_categories -> openCategoryDetails()
-
             }
         }
     }
@@ -112,8 +111,12 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun openCategoryDetails() {
-        val categoryDialogFragment = CategoryDetailsFragment.getInstance()
-        categoryDialogFragment.show(supportFragmentManager, categoryDialogFragment.tag)
+//        val categoryDialogFragment = CategoryDetailsFragment.getInstance()
+//        categoryDialogFragment.show(supportFragmentManager, categoryDialogFragment.tag)
+
+        val categoryDetailsComposeFragment = CategoryDetailsComposeFragment.getInstance()
+        categoryDetailsComposeFragment.show(supportFragmentManager, categoryDetailsComposeFragment.tag)
+
     }
 
     private fun initListeners() {

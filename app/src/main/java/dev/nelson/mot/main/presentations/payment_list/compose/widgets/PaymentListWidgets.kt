@@ -50,7 +50,7 @@ fun ToolbarMot(title: String) {
     )
 }
 
-@Preview(name = "ToolbarMot light mode", showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun ToolbarMotPreview() {
     ToolbarMot("Toolbar")
@@ -66,7 +66,7 @@ fun PaymentListDateItem(date: String) {
     }
 }
 
-@Preview(name = "PaymentListDateItem light mode", showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun PaymentListDateItemPreview() {
     PaymentListDateItem("01.11.2022")
@@ -165,6 +165,17 @@ fun DismissiblePaymentListItem(
     )
 }
 
+// interactive mode available
+@Preview(showBackground = true, backgroundColor = 1)
+@Composable
+fun DismissiblePaymentListItemPreview() {
+    DismissiblePaymentListItem(
+        payment = PreviewData.previewPayment,
+        onClick = {},
+        onSwipeToDelete = {}
+    )
+}
+
 @Composable
 fun MoveToBinDismissibleBackground() {
     Box(
@@ -218,14 +229,17 @@ fun MoveToArchiveDismissibleBackground() {
 //}
 
 @Composable
-fun PaymentListItem(payment: Payment, onClick: (Payment) -> Unit, dismissDirection: DismissDirection?) {
+fun PaymentListItem(
+    payment: Payment,
+    onClick: (Payment) -> Unit,
+    dismissDirection: DismissDirection?
+) {
     Card(
         modifier = Modifier
-            .background(Color.White)
             .clickable { onClick.invoke(payment) },
         elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
 
-    ) {
+        ) {
         Row(
             modifier = Modifier
                 .padding(all = 16.dp)
@@ -248,7 +262,7 @@ fun PaymentListItem(payment: Payment, onClick: (Payment) -> Unit, dismissDirecti
 
 }
 
-@Preview(name = "PaymentListItem light mode", showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun PaymentListItemPreview() {
     PaymentListItem(
