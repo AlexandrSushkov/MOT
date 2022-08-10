@@ -16,7 +16,7 @@ import dev.nelson.mot.main.data.mapers.toCategory
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.databinding.CategoryListFragmentBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
+import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -50,13 +50,13 @@ class CategoryListFragment : BaseFragment() {
         }
 
         with(viewModel) {
-            swipeToDeleteCallback.observe(viewLifecycleOwner, {
+            swipeToDeleteCallback.observe(viewLifecycleOwner) {
                 val itemTouchHelper = ItemTouchHelper(it)
                 itemTouchHelper.attachToRecyclerView(binding.categoryList)
-            })
+            }
 //            openCategoryDetailsAction.observe(viewLifecycleOwner, { navController.navigate(R.id.nav_menu_item_payment_list) })
-            openCategoryDetailsAction.observe(viewLifecycleOwner, { openCategoryDetails(it.toCategory()) })
-            openPaymentsByCategoryAction.observe(viewLifecycleOwner, { openPaymentByCategory(it.toCategory()) })
+            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it.toCategory()) }
+            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it.toCategory()) }
         }
     }
 
@@ -65,7 +65,9 @@ class CategoryListFragment : BaseFragment() {
 //            .apply { this.category = category }
 //        navController.navigate(action)
 //        private fun openCategoryDelails() {
-        val categoryDialogFragment = CategoryDetailsFragment.getInstance(category)
+//        val categoryDialogFragment = CategoryDetailsFragment.getInstance(category)
+//        categoryDialogFragment.show(childFragmentManager, categoryDialogFragment.tag)
+        val categoryDialogFragment = CategoryDetailsComposeFragment.getInstance(category)
         categoryDialogFragment.show(childFragmentManager, categoryDialogFragment.tag)
 //        }
     }
