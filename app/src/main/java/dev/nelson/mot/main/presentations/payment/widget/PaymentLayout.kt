@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.presentations.payment.ui.theme.MotTheme
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 
 @Composable
 fun PaymentDetailsLayout(

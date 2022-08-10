@@ -27,7 +27,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentDetailsViewModel @Inject constructor(
-    private val paymentUseCase: PaymentUseCase,
     private val addNewPaymentUseCase: AddNewPaymentUseCase,
     private val editPaymentUseCase: EditPaymentUseCase,
     private val getCategoriesOrderedByName: GetCategoriesOrderedByName,

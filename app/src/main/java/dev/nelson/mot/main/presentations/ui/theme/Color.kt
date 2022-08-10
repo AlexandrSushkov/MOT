@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.payment.ui.theme
+package dev.nelson.mot.main.presentations.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

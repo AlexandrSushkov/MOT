@@ -30,9 +30,6 @@
         <action
             android:id="@+id/go_to_payment_details_compose"
             app:destination="@id/paymentDetailsComposeActivity" />
-        <action
-            android:id="@+id/go_to_payment_activity"
-            app:destination="@id/paymentActivity" />
         <argument
             android:name="payment"
             android:defaultValue="@null"
@@ -107,6 +104,17 @@
             app:nullable="true" />
     </activity>
 
+    <activity
+        android:id="@+id/paymentDetailsComposeActivity"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsComposeActivity"
+        android:label="PaymentDetailsComposeActivity" >
+        <argument
+            android:name="payment"
+            android:defaultValue="@null"
+            app:argType="dev.nelson.mot.main.data.model.Payment"
+            app:nullable="true" />
+    </activity>
+
     <action
         android:id="@+id/open_category_details"
         app:destination="@id/category_details_screen">
@@ -126,10 +134,6 @@
             app:argType="dev.nelson.mot.main.data.model.Category"
             app:nullable="true" />
     </action>
-    <activity
 
-        android:id="@+id/paymentDetailsComposeActivity"
-        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsComposeActivity"
-        android:label="PaymentDetailsComposeActivity" />
 
 </navigation>

@@ -3,7 +3,11 @@ package dev.nelson.mot.main.presentations.payment_list
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
@@ -16,10 +20,9 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.applyThrottling
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -58,25 +61,32 @@ class PaymentListViewModel @Inject constructor(
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
+    val p = List(20) { PreviewData.previewPayment }.toMutableList()
+
     val paymentListLivaData = MutableLiveData<List<Payment>>()
 
     private var _paymentList = paymentUseCase
         .getAllPaymentsWithCategoryOrderDateDescFlow()
-        .asLiveData(viewModelScope.coroutineContext)
+
+//        .asLiveData(viewModelScope.coroutineContext)
 
 //    private var _paymentListFlow = paymentUseCase
 //        .getAllPaymentsWithCategoryOrderDateDescFlow()
 //        .collect { paymentAdapter.get()?.setData(it) }
 
-    val paymentList: LiveData<List<Payment>>
+    val paymentList: Flow<List<Payment>>
         get() = _paymentList
+//        get() = flowOf(p)
 
     private val _paymentListAdapter = PaymentListAdapter(onPaymentEntityItemClickAction, onSwipeToDeleteAction)
     val paymentAdapter = ObservableField(_paymentListAdapter)
 
     init {
-        val swipeToDeleteCallback =
-            PaymentSwipeToDeleteCallback(_paymentListAdapter, ItemTouchHelper.ACTION_STATE_IDLE, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+        val swipeToDeleteCallback = PaymentSwipeToDeleteCallback(
+            _paymentListAdapter,
+            ItemTouchHelper.ACTION_STATE_IDLE,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        )
         swipeToDeleteCallbackLiveData.value = swipeToDeleteCallback
 
         viewModelScope.launch {
@@ -97,6 +107,7 @@ class PaymentListViewModel @Inject constructor(
         onSwipeToDeleteAction
             .doOnNext {
                 deletePayment(it)
+//                p.remove(it)
                 swipeToDeleteAction.call()
             }
             .subscribe()
@@ -111,6 +122,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
+
         return when (mode) {
             is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) }
                 ?: paymentUseCase.getAllPaymentsWithoutCategory()
