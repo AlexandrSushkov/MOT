@@ -7,9 +7,11 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.payment.widget.PaymentDetailsLayout
+import dev.nelson.mot.main.presentations.payment_list.compose.widgets.PaymentListDateItem
 
 @AndroidEntryPoint
 class PaymentDetailsComposeActivity : ComponentActivity() {
@@ -20,28 +22,30 @@ class PaymentDetailsComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MotTheme {
-                Layout()
+                val name by viewModel.paymentName.observeAsState("")
+                val cost by viewModel.paymentCost.observeAsState("")
+                PaymentDetailsLayout(
+                    name = name,
+                    cost = cost,
+                    onNameChange = { viewModel.paymentName.value = it },
+                    onCostChange = { viewModel.paymentCost.value = it },
+                    onSaveClick = { viewModel.onSaveClick() }
+                )
             }
         }
         initListeners()
     }
 
-    @Composable
-    fun Layout() {
-        val name by viewModel.paymentName.observeAsState("")
-        val cost by viewModel.paymentCost.observeAsState("")
-        PaymentDetailsLayout(
-            name = name,
-            cost = cost,
-            onNameChange = { viewModel.paymentName.value = it },
-            onCostChange = { viewModel.paymentCost.value = it },
-            onSaveClick = { viewModel.onSaveClick() }
-        )
-    }
-
     private fun initListeners() {
         viewModel.finishAction.observe(this) { finish() }
     }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun Preview(){
+        PaymentDetailsLayout("", "" ,{},{},{})
+    }
+
 
 }
 

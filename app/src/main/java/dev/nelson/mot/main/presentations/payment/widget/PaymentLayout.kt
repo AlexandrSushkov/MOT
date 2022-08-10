@@ -1,9 +1,9 @@
 package dev.nelson.mot.main.presentations.payment.widget
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -11,11 +11,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import dev.nelson.mot.main.R
+import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 
 @Composable
@@ -29,11 +30,10 @@ fun PaymentDetailsLayout(
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
         Column() {
             Row {
-                Image(painter = painterResource(id = R.drawable.ic_info_outline_black_24dp), contentDescription = "payment name icon")
                 TextField(
-                    value = name,
+                    value = if (LocalInspectionMode.current) "preview new payment" else name,
                     onValueChange = onNameChange,
-                    label = { Text(text = "new payment") }
+                    placeholder = { Text(text = "new payment") }
                 )
                 TextField(
                     value = cost,
@@ -42,7 +42,12 @@ fun PaymentDetailsLayout(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
-            Button(onClick = onSaveClick) {
+            Button(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(16.dp),
+                onClick = onSaveClick
+            ) {
                 Text(text = "Save")
             }
         }
