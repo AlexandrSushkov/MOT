@@ -80,7 +80,7 @@ fun PaymentListDateItem(date: String) {
 @Composable
 fun DismissiblePaymentListItemPreview() {
     DismissiblePaymentListItem(
-        payment = PreviewData.previewPayment,
+        payment = PreviewData.paymentItemPreview,
         onClick = {},
         onSwipeToDelete = {}
     )

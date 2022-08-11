@@ -16,7 +16,6 @@ import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByNam
 import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +45,8 @@ class CategoriesViewModel @Inject constructor(
     val openCategoryDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
     val openPaymentsByCategoryAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
 
+    val categoriesFlow = getAllCategoriesOrdered.execute(true)
+
     init {
         val swipeToDeleteCallback = CategorySwipeToDeleteCallback(
             _adapter,
@@ -74,6 +75,8 @@ class CategoriesViewModel @Inject constructor(
 
             getAllCategoriesOrdered.execute(true)
                 .collect { _adapter.setData(it) }
+
+
         }
 
         onSwipeToDeleteAction
@@ -96,6 +99,14 @@ class CategoriesViewModel @Inject constructor(
             .doOnNext { if (it == 0) toolbarElevation.set(0) else toolbarElevation.set(20) }
             .subscribe()
             .addToDisposables()
+    }
+
+    fun onCategoryClick(category: CategoryEntity) {
+        openPaymentsByCategoryAction.value = category
+    }
+
+    fun onCategoryLongClick(category: CategoryEntity) {
+        openCategoryDetailsAction.value = category
     }
 
 

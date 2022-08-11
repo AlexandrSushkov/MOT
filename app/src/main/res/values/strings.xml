@@ -5,6 +5,7 @@
     <string name="recent_payments" translatable="false">Recent payments</string>
     <string name="recent_payments_compose" translatable="false">Recent Payments Compose</string>
     <string name="categories" translatable="false">Categories</string>
+    <string name="categories_compose" translatable="false">Categories Compose</string>
     <string name="statistic" translatable="false">Statistic</string>
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>

@@ -21,8 +21,7 @@ class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepo
         .map { titleCharToCategoryMap: Map<Char, List<CategoryEntity>> -> createCategoryListViewRepresentation(titleCharToCategoryMap) }
 
     private fun createCategoryListViewRepresentation(value: Map<Char, List<CategoryEntity>>): List<CategoryListItemModel> {
-        return listOf<CategoryListItemModel>()
-            .toMutableList()
+        return mutableListOf<CategoryListItemModel>()
             .apply {
                 //no category item
                 val noCategory = CategoryEntity("No category")

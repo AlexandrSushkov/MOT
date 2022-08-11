@@ -45,6 +45,10 @@
         tools:layout="@layout/category_list_fragment"/>
 
     <fragment
+        android:id="@+id/nav_menu_item_categories_compose"
+        android:name="dev.nelson.mot.main.presentations.categories_list.CategoryListComposeFragment" />
+
+    <fragment
         android:id="@+id/nav_menu_item_statistic"
         android:name="dev.nelson.mot.main.presentations.statistic.StatisticFragment"
         android:label="StatisticFragment"

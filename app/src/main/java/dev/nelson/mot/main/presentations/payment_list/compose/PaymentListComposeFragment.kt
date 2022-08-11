@@ -85,7 +85,9 @@ fun PaymentList(
             .fillMaxWidth()
             .fillMaxHeight(),
     ) {
-        items(paymentList, key = { it.id ?: 0 }) {
+        items(paymentList,
+            key = { it.id ?: 0 }
+        ) {
             DismissiblePaymentListItem(
                 payment = it,
                 onClick = { payment -> onItemClick.accept(payment) },
@@ -99,7 +101,7 @@ fun PaymentList(
 @Composable
 fun PaymentListComposeFragmentPreview() {
     PaymentListComposeFragmentLayout(
-        List(20) { PreviewData.previewPayment },
+        PreviewData.paymentListPreview,
         PublishRelay.create(),
         PublishRelay.create()
     )

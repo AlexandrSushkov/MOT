@@ -61,7 +61,7 @@ class PaymentListViewModel @Inject constructor(
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
-    val p = List(20) { PreviewData.previewPayment }.toMutableList()
+    val p = List(20) { PreviewData.paymentItemPreview }.toMutableList()
 
     val paymentListLivaData = MutableLiveData<List<Payment>>()
 

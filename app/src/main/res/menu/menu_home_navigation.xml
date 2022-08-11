@@ -17,6 +17,11 @@
         android:title="@string/categories" />
 
     <item
+        android:id="@+id/nav_menu_item_categories_compose"
+        android:icon="@drawable/ic_label_black_24dp"
+        android:title="@string/categories_compose" />
+
+    <item
         android:id="@+id/nav_menu_item_statistic"
         android:icon="@drawable/ic_baseline_show_chart_24"
         android:title="@string/statistic"

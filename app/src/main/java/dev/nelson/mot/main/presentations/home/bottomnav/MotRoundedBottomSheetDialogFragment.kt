@@ -52,6 +52,7 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 R.id.nav_menu_item_payment_list -> safeNavigate(R.id.nav_menu_item_payment_list)
                 R.id.nav_menu_item_payment_list_compose -> safeNavigate(R.id.nav_menu_item_payment_list_compose)
                 R.id.nav_menu_item_categories -> safeNavigate(R.id.nav_menu_item_categories)
+                R.id.nav_menu_item_categories_compose -> safeNavigate(R.id.nav_menu_item_categories_compose)
                 R.id.nav_menu_item_statistic -> safeNavigate(R.id.nav_menu_item_statistic)
                 R.id.nav_menu_item_movies_list -> safeNavigate(R.id.nav_menu_item_movies_list)
                 R.id.nav_menu_item_settings -> safeNavigate(R.id.nav_menu_item_settings)
