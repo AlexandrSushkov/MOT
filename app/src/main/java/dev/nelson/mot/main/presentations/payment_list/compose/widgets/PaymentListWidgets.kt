@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
@@ -25,35 +26,43 @@ import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.util.compose.PreviewData
 
+@Preview(showBackground = true)
 @Composable
-fun ToolbarMot(title: String) {
-    TopAppBar(
-        title = { Text(text = title) },
+fun ToolbarMotPreview() {
+    TopAppBarMot("Toolbar")
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopAppBarMot(title: String) {
+    CenterAlignedTopAppBar(
+        title = { Text(text = title) }
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ToolbarMotPreview() {
-    ToolbarMot("Toolbar")
+fun PaymentListDateItemPreview() {
+    PaymentListDateItem("01.11.2022")
 }
 
 @Composable
@@ -66,10 +75,15 @@ fun PaymentListDateItem(date: String) {
     }
 }
 
-@Preview(showBackground = true)
+// interactive mode available
+@Preview(showBackground = true, backgroundColor = 1)
 @Composable
-fun PaymentListDateItemPreview() {
-    PaymentListDateItem("01.11.2022")
+fun DismissiblePaymentListItemPreview() {
+    DismissiblePaymentListItem(
+        payment = PreviewData.previewPayment,
+        onClick = {},
+        onSwipeToDelete = {}
+    )
 }
 
 @Composable
@@ -78,6 +92,8 @@ fun DismissiblePaymentListItem(
     onClick: (Payment) -> Unit,
     onSwipeToDelete: (Payment) -> Unit
 ) {
+    val haptic = LocalHapticFeedback.current
+
     val dismissState = rememberDismissState(
         confirmStateChange = { dismissValue ->
             if (dismissValue == DismissValue.DismissedToStart) {
@@ -92,31 +108,9 @@ fun DismissiblePaymentListItem(
     SwipeToDismiss(
         state = dismissState,
         background = {
-            //            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
-////            if (dismissState.dismissDirection == DismissDirection.EndToStart) {
-////                MoveToBinDismissibleBackground()
-////            }
-//
-//            val color by animateColorAsState(targetValue = if (dismissState.targetValue == DismissValue.DismissedToStart) Color.Red else Color.Gray)
-//            val icon = Icons.Default.Delete
-//            val scale by animateFloatAsState(targetValue = if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.2f)
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .background(color)
-//                    .padding(12.dp)
-//            ) {
-//                Icon(
-//                    icon,
-//                    contentDescription = "delete icon",
-//                    modifier = Modifier
-//                        .scale(scale)
-//                        .align(Alignment.CenterEnd)
-//                )
-//            }
+            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
             fun TimeInterpolator.toEasing() = Easing { x -> getInterpolation(x) }
 
-            val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
             val color by animateColorAsState(
                 when (dismissState.targetValue) {
                     DismissValue.Default -> Color.LightGray
@@ -125,11 +119,12 @@ fun DismissiblePaymentListItem(
                 }
             )
             val iconColor by animateColorAsState(
-                when (dismissState.targetValue) {
+                targetValue = when (dismissState.targetValue) {
                     DismissValue.Default -> Color.DarkGray
                     DismissValue.DismissedToEnd -> Color.Green
                     DismissValue.DismissedToStart -> Color.White
-                }
+                },
+                finishedListener = { haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
             )
             val alignment = when (direction) {
                 DismissDirection.StartToEnd -> Alignment.CenterStart
@@ -140,8 +135,8 @@ fun DismissiblePaymentListItem(
                 DismissDirection.EndToStart -> Icons.Default.Delete
             }
             val scale by animateFloatAsState(
-                targetValue = if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f,
-                animationSpec = FloatTweenSpec(500, 0, AnticipateOvershootInterpolator().toEasing())
+                targetValue = if (dismissState.targetValue == DismissValue.Default) 0.7f else 1.1f,
+                animationSpec = FloatTweenSpec(500, 0, AnticipateOvershootInterpolator().toEasing()),
             )
 
             Box(
@@ -165,69 +160,6 @@ fun DismissiblePaymentListItem(
     )
 }
 
-// interactive mode available
-@Preview(showBackground = true, backgroundColor = 1)
-@Composable
-fun DismissiblePaymentListItemPreview() {
-    DismissiblePaymentListItem(
-        payment = PreviewData.previewPayment,
-        onClick = {},
-        onSwipeToDelete = {}
-    )
-}
-
-@Composable
-fun MoveToBinDismissibleBackground() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Red)
-            .padding(8.dp),
-        content = {
-            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun MoveToArchiveDismissibleBackground() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Green)
-            .padding(8.dp),
-        content = {
-            Column(modifier = Modifier.align(Alignment.CenterStart)) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = "Move to Archive", fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-            }
-
-        }
-    )
-}
-
-//@Preview(name = "MoveToArchiveDismissibleBackgroundPreview", showBackground = true)
-//@Composable
-//fun MoveToArchiveDismissibleBackgroundPreview() {
-//    MoveToArchiveDismissibleBackground()
-//}
-
 @Composable
 fun PaymentListItem(
     payment: Payment,
@@ -235,11 +167,10 @@ fun PaymentListItem(
     dismissDirection: DismissDirection?
 ) {
     Card(
-        modifier = Modifier
-            .clickable { onClick.invoke(payment) },
+        modifier = Modifier.clickable(onClick = { onClick.invoke(payment) }),
         elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
-
-        ) {
+        shape = RoundedCornerShape(0.dp)
+    ) {
         Row(
             modifier = Modifier
                 .padding(all = 16.dp)
@@ -259,17 +190,4 @@ fun PaymentListItem(
             }
         }
     }
-
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PaymentListItemPreview() {
-    PaymentListItem(
-        PreviewData.previewPayment,
-        onClick = {},
-        null
-    )
-}
-
-

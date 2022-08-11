@@ -23,10 +23,10 @@
         android:tooltipText="@string/statistic"
         android:menuCategory="secondary"/>
 
-    <item
-        android:id="@+id/nav_menu_item_movies_list"
-        android:icon="@drawable/ic_local_movies_black_24dp"
-        android:title="Movies" />
+<!--    <item-->
+<!--        android:id="@+id/nav_menu_item_movies_list"-->
+<!--        android:icon="@drawable/ic_local_movies_black_24dp"-->
+<!--        android:title="Movies" />-->
 
     <group
         android:id="@+id/menu_group_2"

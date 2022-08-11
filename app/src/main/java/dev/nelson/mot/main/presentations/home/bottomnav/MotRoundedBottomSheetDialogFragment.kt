@@ -50,7 +50,6 @@ class MotRoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
         binding.bottomNavigation.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_menu_item_payment_list -> safeNavigate(R.id.nav_menu_item_payment_list)
-//                R.id.nav_menu_item_payment_list_compose -> startActivity(Intent(context, PaymentListComposeActivity::class.java))
                 R.id.nav_menu_item_payment_list_compose -> safeNavigate(R.id.nav_menu_item_payment_list_compose)
                 R.id.nav_menu_item_categories -> safeNavigate(R.id.nav_menu_item_categories)
                 R.id.nav_menu_item_statistic -> safeNavigate(R.id.nav_menu_item_statistic)

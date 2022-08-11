@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +26,7 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.presentations.payment_list.PaymentListViewModel
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.DismissiblePaymentListItem
-import dev.nelson.mot.main.presentations.payment_list.compose.widgets.ToolbarMot
+import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.compose.PreviewData
 
 @AndroidEntryPoint
@@ -67,12 +68,12 @@ fun PaymentListComposeFragmentLayout(
 
 ) {
     Column() {
-        ToolbarMot(title = "payments list")
+        TopAppBarMot(title = "payments list")
         PaymentList(paymentList, onItemClick, onSwipeToDelete)
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentList(
     paymentList: List<Payment>,
@@ -83,22 +84,14 @@ fun PaymentList(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
-
     ) {
         items(paymentList, key = { it.id ?: 0 }) {
             DismissiblePaymentListItem(
-                it,
+                payment = it,
                 onClick = { payment -> onItemClick.accept(payment) },
                 onSwipeToDelete = { payment -> onSwipeToDelete.accept(payment) }
             )
         }
-//        items(paymentList.size) {
-//            DismissiblePaymentListItem(
-//                paymentList[it],
-//                onClick = { payment -> onItemClick.accept(payment) },
-//                onSwipeToDelete = { payment -> onSwipeToDelete.accept(payment) }
-//            )
-//        }
     }
 }
 
