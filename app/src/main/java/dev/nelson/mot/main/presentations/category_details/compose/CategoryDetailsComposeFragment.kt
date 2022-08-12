@@ -14,16 +14,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
@@ -43,9 +48,8 @@ class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val categoryName by viewModel.categoryName.observeAsState("")
                 CategoryDetailsComposeLayout(
-                    categoryName,
+                    categoryName = viewModel.categoryName,
                     onCategoryNameChanged = { viewModel.categoryName.value = it },
                     onSaveClick = { viewModel.onSaveClick() }
                 )
@@ -75,25 +79,32 @@ class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
 
 @Composable
 fun CategoryDetailsComposeLayout(
-    categoryName: String,
+    categoryName: MutableLiveData<String>,
     onCategoryNameChanged: (String) -> Unit,
     onSaveClick: () -> Unit
 ) {
+    val catName = categoryName.observeAsState().value.orEmpty()
     val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(key1 = Unit, block = {focusRequester.requestFocus()})
+    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = catName, selection = TextRange(catName.length))) }
+
+    LaunchedEffect(key1 = Unit, block = { focusRequester.requestFocus() })
     Column(modifier = Modifier.fillMaxWidth()) {
         TextField(
-            value = categoryName,
-            onValueChange = { onCategoryNameChanged.invoke(it) },
+            value = textFieldValueState,
+            onValueChange = { textFieldValueState = it },
             placeholder = { Text(text = "new payment") },
-            modifier = Modifier.fillMaxWidth()
-                .focusRequester(focusRequester)
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
         )
         Button(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(6.dp),
-            onClick = { onSaveClick.invoke() }
+            onClick = {
+                onCategoryNameChanged.invoke(textFieldValueState.text)
+                onSaveClick.invoke()
+            }
         ) {
             Text(text = "Save")
         }
@@ -104,8 +115,7 @@ fun CategoryDetailsComposeLayout(
 @Composable
 fun CategoryDetailsComposeLayoutPreview() {
     CategoryDetailsComposeLayout(
-        categoryName = "",
-        onCategoryNameChanged = {},
-        onSaveClick = {}
-    )
+        categoryName = MutableLiveData("category"),
+        onCategoryNameChanged = {}
+    ) {}
 }
