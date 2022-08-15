@@ -5,14 +5,15 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 
-fun Payment.copyWith(name:String, cost: Int, dateInMills: Long?, category: Category?): Payment =
+fun Payment.copyWith(name:String, cost: Int, dateInMills: Long?, category: Category?, message: String): Payment =
     Payment(
         name,
         cost,
         id = id,
         date = date,
         dateInMills = dateInMills ?: this.dateInMills,
-        category = category ?: this.category
+        category = category ?: this.category,
+        message = message
     )
 
 fun Payment.toPaymentEntity(): PaymentEntity =
@@ -22,14 +23,15 @@ fun Payment.toPaymentEntity(): PaymentEntity =
         id = id,
         date = date,
         dateInMilliseconds = dateInMills,
-        categoryIdKey = category?.id
+        categoryIdKey = category?.id,
+        summary = message
     )
 
 fun PaymentWithCategory.toPayment(): Payment {
     val paymentEntity = this.paymentEntity
     val categoryEntity = this.categoryEntity
     return with(paymentEntity) {
-        Payment(title, cost, id, date, dateInMilliseconds, categoryEntity?.toCategory())
+        Payment(title, cost, summary ?: "", id, date, dateInMilliseconds, categoryEntity?.toCategory())
     }
 }
 

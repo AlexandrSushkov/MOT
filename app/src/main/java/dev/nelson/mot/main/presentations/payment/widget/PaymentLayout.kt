@@ -3,6 +3,7 @@ package dev.nelson.mot.main.presentations.payment.widget
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -23,8 +24,10 @@ import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 fun PaymentDetailsLayout(
     name: String,
     cost: String,
+    message: String,
     onNameChange: (String) -> Unit,
     onCostChange: (String) -> Unit,
+    onMessageChange: (String) -> Unit,
     onSaveClick: () -> Unit
 ) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
@@ -42,6 +45,12 @@ fun PaymentDetailsLayout(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = message,
+                onValueChange = onMessageChange,
+                placeholder = { Text(text = "message") },
+            )
             Button(
                 modifier = Modifier
                     .align(Alignment.End)
@@ -62,8 +71,10 @@ fun PaymentDetailsLayoutPreview() {
         PaymentDetailsLayout(
             name = "new payment",
             cost = "0.0",
+            message = "",
             onNameChange = {},
             onCostChange = {},
+            onMessageChange = {},
             onSaveClick = {}
         )
     }

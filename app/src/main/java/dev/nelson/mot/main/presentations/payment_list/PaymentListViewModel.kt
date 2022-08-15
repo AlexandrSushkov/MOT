@@ -20,7 +20,6 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.applyThrottling
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -61,11 +60,11 @@ class PaymentListViewModel @Inject constructor(
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
-    val p = List(20) { PreviewData.paymentItemPreview }.toMutableList()
+    val expandedLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     val paymentListLivaData = MutableLiveData<List<Payment>>()
 
-    private var _paymentList = paymentUseCase
+    private var _paymentList: Flow<List<Payment>> = paymentUseCase
         .getAllPaymentsWithCategoryOrderDateDescFlow()
 
 //        .asLiveData(viewModelScope.coroutineContext)
@@ -98,8 +97,20 @@ class PaymentListViewModel @Inject constructor(
         onPaymentEntityItemClickAction
             .applyThrottling()
             .doOnNext {
-                Timber.d("on payment $it click")
-                onPaymentEntityItemClickEvent.postValue(it)
+//                Timber.d("on payment $it click")
+//                onPaymentEntityItemClickEvent.postValue(it)
+
+//                val tempPayment = it.copy(isExpanded = !it.isExpanded)
+//                val tempPaymentLIst =
+//                _paymentList.
+//                    _paymentList.map { it.toMutableList() }
+//                        .map {
+//                            val temp = it.first().copy(isExpanded = !it.first().isExpanded)
+//                            it.set(0, temp)
+//                        }
+
+//                val e = expandedLiveData.value ?: false
+//                expandedLiveData.value = !e
             }
             .subscribe()
             .addToDisposables()
@@ -119,6 +130,11 @@ class PaymentListViewModel @Inject constructor(
             .subscribe()
             .addToDisposables()
 
+    }
+
+    fun onItemClick(payment: Payment) {
+        Timber.d("on payment $payment click")
+        onPaymentEntityItemClickEvent.postValue(payment)
     }
 
     private fun getPaymentList(mode: Mode): Flow<List<Payment>> {

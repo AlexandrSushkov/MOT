@@ -6,16 +6,19 @@ import android.os.Parcelable
 data class Payment(
     val name: String,
     val cost: Int,
+    val message: String = "",
     val id: Long? = null,
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
+    val isExpanded: Boolean = false
 
 
     ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readInt(),
+        parcel.readString() ?: "",
         parcel.readValue(Long::class.java.classLoader) as? Long,
         parcel.readString(),
         parcel.readValue(Long::class.java.classLoader) as? Long,
@@ -26,6 +29,7 @@ data class Payment(
         return """
             name: $name
             cost: $cost
+            message: $message
             date: $date
             id: $id
             category: $category
@@ -35,6 +39,7 @@ data class Payment(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
         parcel.writeInt(cost)
+        parcel.writeString(message)
         parcel.writeValue(id)
         parcel.writeString(date)
         parcel.writeValue(dateInMills)

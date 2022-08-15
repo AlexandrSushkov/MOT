@@ -23,11 +23,14 @@ class PaymentDetailsComposeActivity : ComponentActivity() {
             MotTheme {
                 val name by viewModel.paymentName.observeAsState("")
                 val cost by viewModel.paymentCost.observeAsState("")
+                val message by viewModel.message.observeAsState("")
                 PaymentDetailsLayout(
                     name = name,
                     cost = cost,
+                    message = message,
                     onNameChange = { viewModel.paymentName.value = it },
                     onCostChange = { viewModel.paymentCost.value = it },
+                    onMessageChange = { viewModel.message.value = it },
                     onSaveClick = { viewModel.onSaveClick() }
                 )
             }
@@ -45,8 +48,10 @@ class PaymentDetailsComposeActivity : ComponentActivity() {
         PaymentDetailsLayout(
             name = "",
             cost = "",
+            message = "",
             onNameChange = {},
             onCostChange = {},
+            onMessageChange = {},
             onSaveClick = {}
         )
     }

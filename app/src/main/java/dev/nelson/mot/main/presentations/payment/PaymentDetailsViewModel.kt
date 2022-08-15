@@ -35,11 +35,12 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private val tags = listOf("tag1", "tag2", "tag3")
     private val payment: Payment? = handle.get<Payment>("payment")
-    val paymentName = MutableLiveData(payment?.name ?: "")
+    val paymentName = MutableLiveData(payment?.name.orEmpty())
     val categoryName = ObservableField(payment?.category?.name ?: "category")
     val date = ObservableField("")
     val paymentNameSelection = ObservableInt()
-    val paymentCost = MutableLiveData(payment?.cost?.toString() ?: "")
+    val paymentCost = MutableLiveData(payment?.cost?.toString().orEmpty())
+    val message = MutableLiveData(payment?.message.orEmpty())
     val finishAction = SingleLiveEvent<Unit>()
     val categories = SingleLiveEvent<List<CategoryEntity>>()
     var selectedCategory: CategoryEntity? = null
@@ -70,10 +71,11 @@ class PaymentDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val currentDateInMills = System.currentTimeMillis()
             val payment = Payment(
-                paymentName.value ?: "",
+                paymentName.value.orEmpty(),
                 (paymentCost.value?.toIntOrNull() ?: 0),
                 dateInMills = currentDateInMills,
-                category = selectedCategory?.toCategory()
+                category = selectedCategory?.toCategory(),
+                message = message.value.orEmpty()
             )
             addNewPaymentUseCase.execute(payment)
             Timber.e("payment $payment")
@@ -86,10 +88,11 @@ class PaymentDetailsViewModel @Inject constructor(
             payment?.let {
                 //todo, check if payment has been edited, if not, just close screen
                 val updatedPayment = it.copyWith(
-                    paymentName.value ?: "",
+                    paymentName.value.orEmpty(),
                     (paymentCost.value?.toIntOrNull() ?: 0),
                     dateInMills,
-                    selectedCategory?.toCategory()
+                    selectedCategory?.toCategory(),
+                    message.value.orEmpty()
                 )
                 editPaymentUseCase.execute(updatedPayment)
                 Timber.e("updated payment $payment")
