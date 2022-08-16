@@ -7,7 +7,7 @@
 
         <variable
             name="category"
-            type="dev.nelson.mot.main.data.room.model.category.CategoryEntity" />
+            type="dev.nelson.mot.main.data.model.Category" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

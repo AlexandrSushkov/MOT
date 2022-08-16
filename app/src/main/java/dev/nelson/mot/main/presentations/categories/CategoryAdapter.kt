@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay2.Relay
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.databinding.ItemCategoryBinding
 import dev.nelson.mot.main.presentations.payment_list.PaymentListAdapter
 
 class CategoryAdapter(
-    private val onItemClickPublisher: Relay<CategoryEntity>,
-    private val onItemLongClickPublisher: Relay<CategoryEntity>,
-    private val onSwipeToDeleteAction: Relay<CategoryEntity>
+    private val onItemClickPublisher: Relay<Category>,
+    private val onItemLongClickPublisher: Relay<Category>,
+    private val onSwipeToDeleteAction: Relay<Category>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val categoryItemModelList = emptyList<CategoryListItemModel>().toMutableList()
@@ -76,8 +76,8 @@ class CategoryAdapter(
     companion object {
         class CategoryItemViewHolder(
             private val itemCategoryBinding: ItemCategoryBinding,
-            private val onItemClickPublisher: Relay<CategoryEntity>,
-            private val onItemLongClickPublisher: Relay<CategoryEntity>
+            private val onItemClickPublisher: Relay<Category>,
+            private val onItemLongClickPublisher: Relay<Category>
         ) : RecyclerView.ViewHolder(itemCategoryBinding.root) {
 
             fun bind(categoryItemModel: CategoryListItemModel.CategoryItemModel) {
@@ -89,7 +89,6 @@ class CategoryAdapter(
                         true
                     }
                 }
-
             }
         }
 

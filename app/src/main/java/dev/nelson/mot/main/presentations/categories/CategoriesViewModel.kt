@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
-import dev.nelson.mot.main.domain.use_case.CategoryUseCase
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByName
-import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -21,29 +19,27 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
-    private val categoryUseCase: CategoryUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val getAllCategoriesOrdered: GetAllCategoriesOrderedByName,
-    private val paymentUseCase: PaymentUseCase,
 ) : BaseViewModel() {
 
-    val categories = ObservableArrayList<CategoryEntity>()
+    val categories = ObservableArrayList<Category>()
     val isLoading = ObservableBoolean()
     var isShowPlaceholder = ObservableBoolean()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
     val toolbarElevation = ObservableField<Int>()
 
-    private val onCategoryItemClickAction: Relay<CategoryEntity> = PublishRelay.create()
-    private val onCategoryItemLongClickAction: Relay<CategoryEntity> = PublishRelay.create()
-    private val onSwipeToDeleteAction: Relay<CategoryEntity> = PublishRelay.create()
+    private val onCategoryItemClickAction: Relay<Category> = PublishRelay.create()
+    private val onCategoryItemLongClickAction: Relay<Category> = PublishRelay.create()
+    private val onSwipeToDeleteAction: Relay<Category> = PublishRelay.create()
 
 
     private val _adapter = CategoryAdapter(onCategoryItemClickAction, onCategoryItemLongClickAction, onSwipeToDeleteAction)
     val categoryAdapter = ObservableField(_adapter)
     val swipeToDeleteCallback: MutableLiveData<CategorySwipeToDeleteCallback> = MutableLiveData()
-    val openCategoryDetailsAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
-    val openPaymentsByCategoryAction: SingleLiveEvent<CategoryEntity> = SingleLiveEvent()
+    val openCategoryDetailsAction: SingleLiveEvent<Category> = SingleLiveEvent()
+    val openPaymentsByCategoryAction: SingleLiveEvent<Category> = SingleLiveEvent()
 
     val categoriesFlow = getAllCategoriesOrdered.execute(true)
 
@@ -101,16 +97,16 @@ class CategoriesViewModel @Inject constructor(
             .addToDisposables()
     }
 
-    fun onCategoryClick(category: CategoryEntity) {
+    fun onCategoryClick(category: Category) {
         openPaymentsByCategoryAction.value = category
     }
 
-    fun onCategoryLongClick(category: CategoryEntity) {
+    fun onCategoryLongClick(category: Category) {
         openCategoryDetailsAction.value = category
     }
 
 
-    private fun deleteCategory(category: CategoryEntity) {
+    private fun deleteCategory(category: Category) {
         viewModelScope.launch {
             deleteCategoryUseCase.execute(category)
         }

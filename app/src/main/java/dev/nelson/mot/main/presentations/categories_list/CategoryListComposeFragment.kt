@@ -41,9 +41,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.HomeNavigationDirections
-import dev.nelson.mot.main.data.mapers.toCategory
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.presentations.categories.CategoriesListComposeViewModel
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
@@ -80,8 +78,8 @@ class CategoryListComposeFragment : BaseFragment() {
 
     private fun initListeners() {
         with(viewModel) {
-            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it.toCategory()) }
-            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it.toCategory()) }
+            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it) }
+            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it) }
         }
     }
 
@@ -100,9 +98,9 @@ class CategoryListComposeFragment : BaseFragment() {
     @Composable
     fun CategoryListComposeFragmentLayout(
         categories: List<CategoryListItemModel>,
-        onCategoryClick: (CategoryEntity) -> Unit,
-        onCategoryLongClick: (CategoryEntity) -> Unit,
-        onFavoriteClick: (CategoryEntity, Boolean) -> Unit
+        onCategoryClick: (Category) -> Unit,
+        onCategoryLongClick: (Category) -> Unit,
+        onFavoriteClick: (Category, Boolean) -> Unit
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAppBarMot(title = "Categories")
@@ -112,7 +110,7 @@ class CategoryListComposeFragment : BaseFragment() {
                     categories.forEach {
                         if (it is CategoryListItemModel.CategoryItemModel) {
                             item {
-                                var checked by remember { mutableStateOf(it.category.isFavorite == 1) }
+                                var checked by remember { mutableStateOf(it.category.isFavorite) }
 
                                 Card(
                                     modifier = Modifier
@@ -142,8 +140,8 @@ class CategoryListComposeFragment : BaseFragment() {
                                             },
                                         ) {
                                             val tint by animateColorAsState(
-                                                if (checked) MotColors.Orange500
-                                                else Color.LightGray
+                                                if (checked) MotColors.FavoriteButtonOnBackground
+                                                else MotColors.FavoriteButtonOffBackground
                                             )
                                             Icon(
                                                 Icons.Filled.Star,

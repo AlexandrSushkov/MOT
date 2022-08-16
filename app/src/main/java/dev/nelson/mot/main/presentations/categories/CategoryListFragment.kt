@@ -55,8 +55,8 @@ class CategoryListFragment : BaseFragment() {
                 itemTouchHelper.attachToRecyclerView(binding.categoryList)
             }
 //            openCategoryDetailsAction.observe(viewLifecycleOwner, { navController.navigate(R.id.nav_menu_item_payment_list) })
-            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it.toCategory()) }
-            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it.toCategory()) }
+            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it) }
+            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it) }
         }
     }
 

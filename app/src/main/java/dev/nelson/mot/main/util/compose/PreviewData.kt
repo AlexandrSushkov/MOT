@@ -51,26 +51,26 @@ object PreviewData {
     private fun getCategoryList(): List<CategoryListItemModel> {
         val map = categoryNames
             .sortedBy { it.first() }
-            .mapIndexed { index, categoryName -> CategoryEntity(categoryName, id = index) }
-            .groupBy { category: CategoryEntity -> category.name.first() }
+            .mapIndexed { index, categoryName -> Category(categoryName, id = index) }
+            .groupBy { category: Category -> category.name.first() }
         return createCategoryListViewRepresentation(map)
     }
 
-    private fun createCategoryListViewRepresentation(value: Map<Char, List<CategoryEntity>>): List<CategoryListItemModel> {
+    private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<CategoryListItemModel> {
         return mutableListOf<CategoryListItemModel>()
             .apply {
                 //no category item
-                val noCategory = CategoryEntity("No category")
+                val noCategory = Category("No category")
                 add(CategoryListItemModel.CategoryItemModel(noCategory))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString()))
-                    addAll(categoryList.map { categoryEntity -> CategoryListItemModel.CategoryItemModel(categoryEntity) })
+                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category) })
                 }
             }
     }
 
-    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview.toCategoryEntity())
+    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview)
     val letterPreview = CategoryListItemModel.Letter("A")
 }
 
