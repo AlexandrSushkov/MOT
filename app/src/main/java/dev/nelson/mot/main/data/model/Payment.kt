@@ -11,7 +11,7 @@ data class Payment(
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
-    val isExpanded: Boolean = false
+    var isExpanded: Boolean = false
 
 
     ) : Parcelable {

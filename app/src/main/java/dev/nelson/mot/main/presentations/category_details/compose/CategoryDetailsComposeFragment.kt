@@ -49,7 +49,7 @@ class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 CategoryDetailsComposeLayout(
-                    categoryName = viewModel.categoryName,
+                    categoryNameLiveData = viewModel.categoryName,
                     onCategoryNameChanged = { viewModel.categoryName.value = it },
                     onSaveClick = { viewModel.onSaveClick() }
                 )
@@ -79,30 +79,30 @@ class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
 
 @Composable
 fun CategoryDetailsComposeLayout(
-    categoryName: MutableLiveData<String>,
+    categoryNameLiveData: MutableLiveData<String>,
     onCategoryNameChanged: (String) -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val catName = categoryName.observeAsState().value.orEmpty()
-    val focusRequester = remember { FocusRequester() }
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = catName, selection = TextRange(catName.length))) }
+    val categoryName = categoryNameLiveData.observeAsState().value.orEmpty()
+    val categoryNameFocusRequester = remember { FocusRequester.Default }
+    var categoryNameValueState by remember { mutableStateOf(TextFieldValue(text = categoryName, selection = TextRange(categoryName.length))) }
 
-    LaunchedEffect(key1 = Unit, block = { focusRequester.requestFocus() })
+    LaunchedEffect(key1 = Unit, block = { categoryNameFocusRequester.requestFocus() })
     Column(modifier = Modifier.fillMaxWidth()) {
         TextField(
-            value = textFieldValueState,
-            onValueChange = { textFieldValueState = it },
+            value = categoryNameValueState,
+            onValueChange = { categoryNameValueState = it },
             placeholder = { Text(text = "new payment") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequester),
+                .focusRequester(categoryNameFocusRequester),
         )
         Button(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(6.dp),
             onClick = {
-                onCategoryNameChanged.invoke(textFieldValueState.text)
+                onCategoryNameChanged.invoke(categoryNameValueState.text)
                 onSaveClick.invoke()
             }
         ) {
@@ -115,7 +115,7 @@ fun CategoryDetailsComposeLayout(
 @Composable
 fun CategoryDetailsComposeLayoutPreview() {
     CategoryDetailsComposeLayout(
-        categoryName = MutableLiveData("category"),
+        categoryNameLiveData = MutableLiveData("category"),
         onCategoryNameChanged = {}
     ) {}
 }

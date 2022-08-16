@@ -227,7 +227,7 @@ fun ExpandableArea(
     expanded: Boolean,
 ) {
     val EXPAND_ANIMATION_DURATION = 500
-    val transitionState = remember { MutableTransitionState(false) }
+    val transitionState = remember { MutableTransitionState(payment.isExpanded) }
     val transition = updateTransition(transitionState, label = "")
 
     val cardBgColor by transition.animateColor(
@@ -268,7 +268,10 @@ fun ExpandableArea(
         ) {
             IconButton(
                 modifier = Modifier.align(Alignment.CenterEnd),
-                onClick = { transitionState.targetState = !transitionState.currentState },
+                onClick = {
+                    transitionState.targetState = !transitionState.currentState
+                    payment.isExpanded = transitionState.currentState
+                          },
                 content = {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,

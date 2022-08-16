@@ -13,22 +13,23 @@ import dev.nelson.mot.main.domain.use_case.payment.AddNewPaymentUseCase
 import dev.nelson.mot.main.domain.use_case.payment.EditPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
-import dev.nelson.mot.main.util.DateUtils.getCurrentDate
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.constant.NetworkConstants
 import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class PaymentDetailsViewModel @Inject constructor(
+class PaymentDetailsComposeViewModel @Inject constructor(
     private val addNewPaymentUseCase: AddNewPaymentUseCase,
     private val editPaymentUseCase: EditPaymentUseCase,
     private val getCategoriesOrderedByName: GetCategoriesOrderedByName,
     handle: SavedStateHandle
 ) : BaseViewModel() {
 
+    // data
     private val payment: Payment? = handle.get<Payment>("payment")
     val paymentName = MutableLiveData(payment?.name.orEmpty())
     val categoryName = MutableLiveData(payment?.category?.name ?: "category")
@@ -38,24 +39,36 @@ class PaymentDetailsViewModel @Inject constructor(
 
     // actions
     val finishAction = SingleLiveEvent<Unit>()
-    val requestTitleFieldFocusAction = SingleLiveEvent<Unit>()
+    val onDateClickAction = SingleLiveEvent<Unit>()
     val categories = SingleLiveEvent<List<CategoryEntity>>()
+
+    //var
     var selectedCategory: CategoryEntity? = null
     var dateInMills = 0L
-//    val mFieldFocusAction = SingleLiveEvent<Unit>()
-
+    private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
-        setDate()
+        setInitialDate()
         viewModelScope.launch {
             getCategoriesOrderedByName.execute()
                 .collect { categories.value = it }
         }
-        requestTitleFieldFocusAction.call()
     }
 
     fun onSaveClick() {
-        if (payment == null) addNewPayment() else editPayment()
+//        if (payment == null) addNewPayment() else editPayment()
+        payment?.let { addNewPayment() } ?: editPayment()
+    }
+
+    fun onDateClick() {
+        Timber.e("on Date click")
+        onDateClickAction.call()
+    }
+
+    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
+        val selectedDate = selectedDateCalendar.time
+        setDate(selectedDate.time)
     }
 
     fun onCategoryItemClick(categoryEntity: CategoryEntity) {
@@ -97,22 +110,16 @@ class PaymentDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun setDate() {
-        dateInMills = payment?.dateInMills ?: getCurrentDate().time
+    private fun setInitialDate() {
+        dateInMills = payment?.dateInMills ?: DateUtils.getCurrentDate().time
+        setDate(dateInMills)
+    }
+
+    private fun setDate(dateInMills: Long) {
+        this.dateInMills = dateInMills
         val dateFromMills = DateUtils.createDateFromMills(dateInMills)
         val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
         date.value = dateTextFormatted
     }
 
-//    private fun getCurrentDateFormatted(): String {
-//        val currentDate = getCurrentDate()
-//        dateInMils = currentDate.time
-//        return currentDate
-//            .toFormattedDate(NetworkConstants.DATE_FORMAT)
-//    }
 }
-
-//fun Date.toFormattedDate(format: String, locale: Locale = Locale.getDefault()): String {
-//    val formatter = SimpleDateFormat(format, locale)
-//    return formatter.format(this)
-//}

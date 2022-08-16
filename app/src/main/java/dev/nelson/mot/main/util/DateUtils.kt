@@ -7,13 +7,9 @@ import java.util.Locale
 
 object DateUtils {
 
+    fun getCurrentDate(): Date = Calendar.getInstance().time
 
-
-     fun getCurrentDate(): Date {
-        return Calendar.getInstance().time
-    }
-
-     fun createDateFromMills(dateInMills: Long) = Date(dateInMills)
+    fun createDateFromMills(dateInMills: Long): Date = Date(dateInMills)
 
 }
 
