@@ -23,7 +23,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,6 +49,7 @@ import dev.nelson.mot.main.presentations.categories.CategoriesListComposeViewMod
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
 import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
+import dev.nelson.mot.main.presentations.ui.theme.MotColors
 import dev.nelson.mot.main.util.compose.PreviewData
 
 @AndroidEntryPoint
@@ -125,7 +126,7 @@ class CategoryListComposeFragment : BaseFragment() {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(all = 16.dp)
+                                            .padding(vertical = 8.dp, horizontal = 16.dp)
                                     ) {
                                         Text(
                                             text = it.category.name,
@@ -141,14 +142,14 @@ class CategoryListComposeFragment : BaseFragment() {
                                             },
                                         ) {
                                             val tint by animateColorAsState(
-                                                if (checked) Color.Red
+                                                if (checked) MotColors.Orange500
                                                 else Color.LightGray
                                             )
                                             Icon(
-                                                Icons.Filled.Favorite,
+                                                Icons.Filled.Star,
                                                 contentDescription = null,
                                                 tint = tint,
-                                                modifier = Modifier.size(32.dp)
+                                                modifier = Modifier.size(24.dp)
                                             )
                                         }
                                     }
@@ -192,27 +193,6 @@ class CategoryListComposeFragment : BaseFragment() {
             onCategoryClick = {},
             onCategoryLongClick = {},
             onFavoriteClick = { _, _ -> },
-        )
-    }
-}
-
-@Composable
-fun DefaultIconToggleButton() {
-    var checked by remember { mutableStateOf(false) }
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = { checked = it },
-        modifier = Modifier.size(72.dp),
-    ) {
-        val tint by animateColorAsState(
-            if (checked) Color.Red
-            else Color.LightGray
-        )
-        Icon(
-            Icons.Filled.Favorite,
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(32.dp)
         )
     }
 }
