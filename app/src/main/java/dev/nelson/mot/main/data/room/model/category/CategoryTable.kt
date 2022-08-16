@@ -5,4 +5,5 @@ object CategoryTable {
 
     const val ID = "category_id"
     const val NAME = "category_name"
+    const val FAVORITE = "favorite"
 }

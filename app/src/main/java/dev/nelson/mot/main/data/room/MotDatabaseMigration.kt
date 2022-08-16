@@ -17,7 +17,7 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
         fun migrateCategoriesTable(database: SupportSQLiteDatabase) {
             with(database) {
-                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${CategoryTable.NAME} TEXT NOT NULL)")
+                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${CategoryTable.NAME} TEXT NOT NULL, ${CategoryTable.FAVORITE} INTEGER NOT NULL DEFAULT 0)")
                 execSQL("INSERT INTO $tempTableName (${CategoryTable.ID}, ${CategoryTable.NAME}) SELECT ${CategoryTableV1.ID}, ${CategoryTableV1.NAME} FROM ${CategoryTableV1.TABLE_NAME}")
                 execSQL("DROP TABLE ${CategoryTableV1.TABLE_NAME}")
                 execSQL("ALTER TABLE $tempTableName RENAME TO ${CategoryTable.TABLE_NAME}")

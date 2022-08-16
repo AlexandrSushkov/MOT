@@ -2,17 +2,22 @@ package dev.nelson.mot.main.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 
-data class Category(val name: String, val id: Int? = null) : Parcelable {
+data class Category(
+    val name: String,
+    val isFavorite: Boolean = false,
+    val id: Int? = null
+) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
+        parcel.readBoolean(),
         parcel.readValue(Int::class.java.classLoader) as? Int
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
+        parcel.writeBoolean(isFavorite)
         parcel.writeValue(id)
     }
 
