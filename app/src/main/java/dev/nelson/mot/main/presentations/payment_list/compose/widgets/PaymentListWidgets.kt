@@ -9,14 +9,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -58,7 +55,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
@@ -271,7 +267,7 @@ fun ExpandableArea(
                 onClick = {
                     transitionState.targetState = !transitionState.currentState
                     payment.isExpanded = transitionState.currentState
-                          },
+                },
                 content = {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
@@ -321,7 +317,7 @@ fun ExpandableContent(
     ) {
         Text(
             text = text,
-            textAlign = TextAlign.Center
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }

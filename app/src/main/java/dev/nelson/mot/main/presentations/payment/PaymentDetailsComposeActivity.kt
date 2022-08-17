@@ -6,26 +6,36 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +48,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
@@ -71,8 +82,10 @@ class PaymentDetailsComposeActivity : ComponentActivity() {
                     onNameChange = { viewModel.paymentName.value = it },
                     onCostChange = { viewModel.cost.value = it },
                     onMessageChange = { viewModel.message.value = it },
+                    onDateClick = { viewModel.onDateClick() },
+                    onCategoryClick = { viewModel.onCategoryClick() },
                     onSaveClick = { viewModel.onSaveClick() },
-                    onDateClick = { viewModel.onDateClick() }
+                    categoryNameLiveData = viewModel.categoryName
                 )
             }
         }
@@ -108,31 +121,37 @@ fun PaymentDetailsLayoutPreview() {
         nameLiveData = MutableLiveData(""),
         costLiveData = MutableLiveData(""),
         date = "1/1/2022",
+        categoryNameLiveData = MutableLiveData("category"),
         messageLiveData = MutableLiveData(""),
         onNameChange = {},
         onCostChange = {},
         onMessageChange = {},
         onSaveClick = {},
-        onDateClick = {}
-    )
+        onCategoryClick = {},
+        onDateClick = {},
+
+        )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PaymentDetailsLayout(
     nameLiveData: MutableLiveData<String>,
     costLiveData: MutableLiveData<String>,
     date: String,
+    categoryNameLiveData: MutableLiveData<String>,
     messageLiveData: MutableLiveData<String>,
     onNameChange: (String) -> Unit,
     onCostChange: (String) -> Unit,
     onMessageChange: (String) -> Unit,
     onDateClick: () -> Unit,
+    onCategoryClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
     val name = nameLiveData.value.orEmpty()
     val cost = costLiveData.value.orEmpty()
     val message = messageLiveData.value.orEmpty()
+    val categoryName = categoryNameLiveData.value.orEmpty()
     val nameFocusRequester = remember { FocusRequester() }
     var nameFieldValueState by remember { mutableStateOf(TextFieldValue(text = name, selection = TextRange(name.length))) }
     var costFieldValueState by remember { mutableStateOf(TextFieldValue(text = cost, selection = TextRange(cost.length))) }
@@ -186,21 +205,62 @@ fun PaymentDetailsLayout(
             Row(
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable {
+//                    .clickable {
+//                        keyboardController?.hide()
+//                        focusManager.clearFocus()
+//                        onDateClick.invoke()
+//                    }
+            ) {
+                Chip(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.EditCalendar,
+                            contentDescription = "date icon"
+                        )
+                    },
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = Color.White
+                    ),
+                    onClick = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
                         onDateClick.invoke()
-                    }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.EditCalendar,
-                    contentDescription = "date icon"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = date,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
+                    },
+                    border = BorderStroke(1.dp, Color.LightGray)
+                ) {
+                    Text(
+                        text = date,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Chip(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Category,
+                            contentDescription = "category icon"
+                        )
+                    },
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = Color.White
+                    ),
+                    onClick = {
+                        onCategoryClick.invoke()
+                    },
+                    border = BorderStroke(1.dp, Color.LightGray)
+                ) {
+                    Text(
+                        text = categoryName,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+
+
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(
+//                    text = date,
+//                    modifier = Modifier.align(Alignment.CenterVertically)
+//                )
             }
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -216,10 +276,57 @@ fun PaymentDetailsLayout(
             Button(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(16.dp),
+                    .padding(8.dp),
                 onClick = onSaveClick
             ) {
-                Text(text = "Save")
+                Text(text = "button Save")
+            }
+            ElevatedButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                onClick = onSaveClick
+            ) {
+                Text(text = "eleveted Save")
+            }
+            OutlinedButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                onClick = onSaveClick
+            ) {
+                Text(text = "outlined Save")
+            }
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                onClick = onSaveClick
+            ) {
+                Icon(Icons.Default.Save, contentDescription = "save icon button")
+            }
+            ExtendedFloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                text = { Text(text = "ExtendedFloatingAction Save") },
+                onClick = onSaveClick
+            )
+            FilledTonalButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                onClick = onSaveClick
+            ) {
+                Text(text = "FilledTonal Save")
+            }
+            TextButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp),
+                onClick = onSaveClick
+            ) {
+                Text(text = "Text Save")
             }
         }
     }

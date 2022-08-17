@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toCategory
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByName
@@ -57,7 +58,7 @@ class PaymentDetailsComposeViewModel @Inject constructor(
 
     fun onSaveClick() {
 //        if (payment == null) addNewPayment() else editPayment()
-        payment?.let { addNewPayment() } ?: editPayment()
+        payment?.let { editPayment() } ?: addNewPayment()
     }
 
     fun onDateClick() {
@@ -71,9 +72,10 @@ class PaymentDetailsComposeViewModel @Inject constructor(
         setDate(selectedDate.time)
     }
 
-    fun onCategoryItemClick(categoryEntity: CategoryEntity) {
-        selectedCategory = categoryEntity
-        categoryName.value = categoryEntity.name
+    fun onCategoryClick() {
+    }
+
+    fun onCategorySelected(category: Category) {
     }
 
     private fun addNewPayment() {
