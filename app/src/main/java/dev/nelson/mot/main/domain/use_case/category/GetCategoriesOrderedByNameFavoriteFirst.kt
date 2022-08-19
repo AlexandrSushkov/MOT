@@ -10,6 +10,6 @@ class GetCategoriesOrderedByNameFavoriteFirst @Inject constructor(private val ge
 
     fun execute(isAsc: Boolean = true): Flow<List<Category>> = getCategoriesOrderedByName.execute(isAsc)
         .map { it.toCategoryList() }
-        .map { categoryList -> categoryList.sortedBy { category -> !category.isFavorite } } // for some reason this have to be inverted, otherwise favorite items will be in the end of the list
+        .map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
 
 }

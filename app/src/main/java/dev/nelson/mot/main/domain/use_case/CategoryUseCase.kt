@@ -11,11 +11,6 @@ import javax.inject.Inject
 
 class CategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    //    fun getCategories(): Flowable<List<CategoryEntity>> = categoryRepository.getCategories()
-//        .subscribeOn(Schedulers.io())
-//
-//    fun getCategoriesFlow(): Flow<List<CategoryEntity>> = categoryRepository.getCategoriesFlow()
-//
     fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered()
         .map { it.toCategoryList() }
         .map { it.groupBy { category: Category -> category.name.first() } }

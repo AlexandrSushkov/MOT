@@ -1,12 +1,12 @@
 package dev.nelson.mot.main.data.room.model.payment
 
-import androidx.room.*
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import dev.nelson.mot.main.data.room.model.category.CategoryTable
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,17 +20,6 @@ interface PaymentDao {
 
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} INNER JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
     fun getAllPaymentsWithCategory(): List<PaymentWithCategory>
-//////////////
-    //rx
-    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME}")
-    fun getAllPaymentsRx(): Flowable<List<PaymentEntity>>
-
-    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} INNER JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
-    fun getAllPaymentsWithCategoryRx(): Flowable<List<PaymentWithCategory>>
-
-    @Insert
-    fun addPayments(paymentEntities: List<PaymentEntity>): Single<List<Long>>
-///////////////
 
     //suspend
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} ORDER BY ${PaymentTable.ID} DESC")
@@ -50,7 +39,6 @@ interface PaymentDao {
 
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
     suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory>
-
 
     // Flow
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
