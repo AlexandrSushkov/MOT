@@ -55,12 +55,6 @@
         tools:layout="@layout/activity_statistic" />
 
     <fragment
-        android:id="@+id/nav_menu_item_movies_list"
-        android:name="dev.nelson.mot.main.presentations.movieslist.MoviesListFragment"
-        android:label="MoviesListFragment"
-        tools:layout="@layout/fragment_movies_list" />
-
-    <fragment
         android:id="@+id/nav_menu_item_settings"
         android:name="dev.nelson.mot.main.presentations.settings.SettingsFragment"
         android:label="SettingsFragment"

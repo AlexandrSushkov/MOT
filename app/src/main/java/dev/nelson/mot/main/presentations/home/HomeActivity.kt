@@ -144,9 +144,6 @@ class HomeActivity : BaseActivity() {
                     bottomAppBar.performHide()
 //                    fab.hide()
                 }
-                R.id.nav_menu_item_movies_list -> binding.apply {
-//                    fab.hide()
-                }
                 R.id.nav_menu_item_settings -> binding.apply {
 //                    fab.hide()
                     bottomAppBar.performHide()
