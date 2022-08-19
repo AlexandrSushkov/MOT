@@ -43,16 +43,16 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.HomeNavigationDirections
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
-import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
+import dev.nelson.mot.main.data.model.CategoryListItemModel
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
 import dev.nelson.mot.main.presentations.ui.theme.MotColors
 import dev.nelson.mot.main.util.compose.PreviewData
 
 @AndroidEntryPoint
-class CategoryListComposeFragment : BaseFragment() {
+class CategoryListFragment : BaseFragment() {
 
-    private val viewModel: CategoriesListComposeViewModel by viewModels()
+    private val viewModel: CategoriesListViewModel by viewModels()
     private val navController by lazy { findNavController() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -83,7 +83,7 @@ class CategoryListComposeFragment : BaseFragment() {
     }
 
     private fun openCategoryDetails(category: Category) {
-        val categoryDialogFragment = CategoryDetailsComposeFragment.getInstance(category)
+        val categoryDialogFragment = CategoryDetailsFragment.getInstance(category)
         categoryDialogFragment.show(childFragmentManager, categoryDialogFragment.tag)
     }
 

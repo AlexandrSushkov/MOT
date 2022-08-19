@@ -9,6 +9,6 @@
     <string name="statistic" translatable="false">Statistic</string>
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>
-    <string name="title_activity_payment_details_compose" translatable="false">PaymentDetailsComposeActivity</string>
+    <string name="title_activity_payment_details" translatable="false">PaymentDetailsActivity</string>
 
 </resources>

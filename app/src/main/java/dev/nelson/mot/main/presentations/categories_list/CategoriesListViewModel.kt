@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoriesListComposeViewModel @Inject constructor(
+class CategoriesListViewModel @Inject constructor(
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     private val getAllCategoriesOrdered: GetAllCategoriesOrderedByNameNew,
     private val editCategoryUseCase: EditCategoryUseCase,

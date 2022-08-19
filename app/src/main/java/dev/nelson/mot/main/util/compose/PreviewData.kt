@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
+import dev.nelson.mot.main.data.model.CategoryListItemModel
 
 val categoryNames = listOf(
     "Support",

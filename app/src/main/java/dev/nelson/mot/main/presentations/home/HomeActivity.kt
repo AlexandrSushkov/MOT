@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
@@ -18,9 +17,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
-import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
+import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
+import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
 import dev.nelson.mot.main.util.extention.getDataBinding
 
 @AndroidEntryPoint
@@ -92,23 +91,20 @@ class HomeActivity : BaseActivity() {
     private fun initFab() {
         binding.fab.setOnClickListener {
             when (navController.currentDestination?.id) {
-                R.id.nav_menu_item_payment_list_compose -> openPaymentDetailsCompose()
+                R.id.nav_menu_item_payment_list -> openPaymentDetailsCompose()
+                R.id.nav_menu_item_categories -> openCategoryDetails()
             }
         }
     }
 
     private fun openPaymentDetailsCompose() {
-        val openPaymentDetailsComposeAction = PaymentListComposeFragmentDirections.goToPaymentDetailsCompose()
+        val openPaymentDetailsComposeAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
         navController.navigate(openPaymentDetailsComposeAction)
     }
 
     private fun openCategoryDetails() {
-//        val categoryDialogFragment = CategoryDetailsFragment.getInstance()
-//        categoryDialogFragment.show(supportFragmentManager, categoryDialogFragment.tag)
-
-        val categoryDetailsComposeFragment = CategoryDetailsComposeFragment.getInstance()
+        val categoryDetailsComposeFragment = CategoryDetailsFragment.getInstance()
         categoryDetailsComposeFragment.show(supportFragmentManager, categoryDetailsComposeFragment.tag)
-
     }
 
     private fun initListeners() {
@@ -118,14 +114,14 @@ class HomeActivity : BaseActivity() {
     private fun initNavControllerListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.nav_menu_item_payment_list_compose -> binding.apply {
+                R.id.nav_menu_item_payment_list -> binding.apply {
                     bottomAppBar.performShow()
                     fab.apply {
                         setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_add_24, theme))
                         show()
                     }
                 }
-                R.id.nav_menu_item_categories_compose -> binding.apply {
+                R.id.nav_menu_item_categories -> binding.apply {
                     bottomAppBar.performShow()
                     fab.apply {
                         setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_show_chart_24, theme))
@@ -160,11 +156,6 @@ class HomeActivity : BaseActivity() {
 
     companion object {
         fun getIntent(context: Context): Intent = Intent(context, HomeActivity::class.java)
-    }
-
-    private fun showKeyboard() {
-        val imm: InputMethodManager? = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
 }

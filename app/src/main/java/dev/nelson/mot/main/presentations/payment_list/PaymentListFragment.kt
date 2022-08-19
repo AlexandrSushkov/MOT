@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.payment_list.compose
+package dev.nelson.mot.main.presentations.payment_list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,13 +23,12 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.payment_list.PaymentListViewModel
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.DismissiblePaymentListItem
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.compose.PreviewData
 
 @AndroidEntryPoint
-class PaymentListComposeFragment : BaseFragment() {
+class PaymentListFragment : BaseFragment() {
 
     private val viewModel: PaymentListViewModel by viewModels()
     private val navController by lazy { findNavController() }
@@ -56,7 +55,7 @@ class PaymentListComposeFragment : BaseFragment() {
 
     private fun initListeners() {
         viewModel.onPaymentEntityItemClickEvent.observe(viewLifecycleOwner) {
-            val openPaymentDetailsAction = PaymentListComposeFragmentDirections.goToPaymentDetailsCompose()
+            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
                 .apply { payment = it }
             navController.navigate(openPaymentDetailsAction)
         }

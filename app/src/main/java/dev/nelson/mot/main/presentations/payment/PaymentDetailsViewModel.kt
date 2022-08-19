@@ -27,7 +27,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
-class PaymentDetailsComposeViewModel @Inject constructor(
+class PaymentDetailsViewModel @Inject constructor(
     private val addNewPaymentUseCase: AddNewPaymentUseCase,
     private val editPaymentUseCase: EditPaymentUseCase,
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirst,

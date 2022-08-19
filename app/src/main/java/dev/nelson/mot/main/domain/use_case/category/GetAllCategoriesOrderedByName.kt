@@ -3,8 +3,7 @@ package dev.nelson.mot.main.domain.use_case.category
 import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepository
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
-import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
+import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.util.extention.isEven
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

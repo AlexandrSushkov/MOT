@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_navigation"
-    app:startDestination="@+id/nav_menu_item_payment_list_compose">
+    app:startDestination="@+id/nav_menu_item_payment_list">
 
     <!--to make navigation controller works properly fragment's id have to match with menu item id-->
     <fragment
-        android:id="@+id/nav_menu_item_payment_list_compose"
-        android:name="dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragment"
+        android:id="@+id/nav_menu_item_payment_list"
+        android:name="dev.nelson.mot.main.presentations.payment_list.PaymentListFragment"
         android:label="PaymentListComposeFragment">
         <action
             android:id="@+id/go_to_payment_details_compose"
@@ -22,8 +22,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_menu_item_categories_compose"
-        android:name="dev.nelson.mot.main.presentations.categories_list.CategoryListComposeFragment" />
+        android:id="@+id/nav_menu_item_categories"
+        android:name="dev.nelson.mot.main.presentations.categories_list.CategoryListFragment" />
 
     <fragment
         android:id="@+id/nav_menu_item_settings"
@@ -52,12 +52,12 @@
 
     <fragment
         android:id="@+id/category_details_compose_screen"
-        android:name="dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment"
+        android:name="dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment"
         android:label="CategoryDetailsCompose" />
 
     <activity
         android:id="@+id/paymentDetailsComposeActivity"
-        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsComposeActivity"
+        android:name="dev.nelson.mot.main.presentations.payment.PaymentDetailsActivity"
         android:label="PaymentDetailsComposeActivity">
         <argument
             android:name="payment"
@@ -78,7 +78,7 @@
 
     <action
         android:id="@+id/open_payments_by_category"
-        app:destination="@id/nav_menu_item_payment_list_compose">
+        app:destination="@id/nav_menu_item_payment_list">
         <argument
             android:name="category"
             android:defaultValue="@null"

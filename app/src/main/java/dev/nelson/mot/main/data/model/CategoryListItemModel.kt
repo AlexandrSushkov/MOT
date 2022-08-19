@@ -1,6 +1,4 @@
-package dev.nelson.mot.main.presentations.categories
-
-import dev.nelson.mot.main.data.model.Category
+package dev.nelson.mot.main.data.model
 
 /**
  * Category list item model this models is used in presentation layer to show list of categories.

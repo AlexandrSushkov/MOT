@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.category_details.compose
+package dev.nelson.mot.main.presentations.category_details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,10 +33,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsViewModel
 
 @AndroidEntryPoint
-class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
+class CategoryDetailsFragment : BottomSheetDialogFragment() {
 
     val viewModel: CategoryDetailsViewModel by viewModels()
 
@@ -67,12 +66,12 @@ class CategoryDetailsComposeFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun getInstance(category: Category? = null): CategoryDetailsComposeFragment {
+        fun getInstance(category: Category? = null): CategoryDetailsFragment {
             val bundle = Bundle().apply {
                 putParcelable("category", category)
             }
 
-            return CategoryDetailsComposeFragment().apply { arguments = bundle }
+            return CategoryDetailsFragment().apply { arguments = bundle }
         }
     }
 }

@@ -91,9 +91,9 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @AndroidEntryPoint
-class PaymentDetailsComposeActivity : ComponentActivity() {
+class PaymentDetailsActivity : ComponentActivity() {
 
-    private val viewModel: PaymentDetailsComposeViewModel by viewModels()
+    private val viewModel: PaymentDetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

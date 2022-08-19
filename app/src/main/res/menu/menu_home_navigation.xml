@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/nav_menu_item_payment_list_compose"
+        android:id="@+id/nav_menu_item_payment_list"
         android:icon="@drawable/ic_baseline_payment_24"
         android:title="@string/recent_payments_compose" />
 
     <item
-        android:id="@+id/nav_menu_item_categories_compose"
+        android:id="@+id/nav_menu_item_categories"
         android:icon="@drawable/ic_label_black_24dp"
         android:title="@string/categories_compose" />
 
