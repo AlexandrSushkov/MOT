@@ -187,7 +187,7 @@ class CategoryListComposeFragment : BaseFragment() {
     @Composable
     fun CategoryListComposeFragmentLayoutPreview() {
         CategoryListComposeFragmentLayout(
-            categories = PreviewData.categoryListPreview,
+            categories = PreviewData.categoriesListItemsPreview,
             onCategoryClick = {},
             onCategoryLongClick = {},
             onFavoriteClick = { _, _ -> },

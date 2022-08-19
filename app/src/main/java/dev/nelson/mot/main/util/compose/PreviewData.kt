@@ -4,7 +4,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
 
 val categoryNames = listOf(
@@ -43,10 +42,18 @@ val categoryNames = listOf(
 object PreviewData {
     val categoryPreview = Category(categoryNames.first())
     val categoryEntityPreview = Category(categoryNames.first()).toCategoryEntity()
-    val paymentItemPreview = Payment("payment name", 100, category = categoryPreview, message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. ")
+    val paymentItemPreview = Payment(
+        "payment name",
+        100,
+        category = categoryPreview,
+        message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. "
+    )
     val paymentListPreview: List<Payment> = (1..30).map { Payment("payment $it", it * 10, id = it.toLong(), category = categoryPreview) }
 
-    val categoryListPreview: List<CategoryListItemModel> = getCategoryList()
+    val categoriesListItemsPreview: List<CategoryListItemModel> = getCategoryList()
+    val categoriesSelectListItemsPreview: List<Category> = categoryNames
+        .sortedBy { it.first() }
+        .mapIndexed { index, categoryName -> Category(categoryName, id = index) }
 
     private fun getCategoryList(): List<CategoryListItemModel> {
         val map = categoryNames

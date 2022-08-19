@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toCategory
+import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByName
+import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirst
 import dev.nelson.mot.main.domain.use_case.payment.AddNewPaymentUseCase
 import dev.nelson.mot.main.domain.use_case.payment.EditPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -17,6 +19,8 @@ import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.constant.NetworkConstants
 import dev.nelson.mot.main.util.toFormattedDate
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
@@ -26,34 +30,35 @@ import javax.inject.Inject
 class PaymentDetailsComposeViewModel @Inject constructor(
     private val addNewPaymentUseCase: AddNewPaymentUseCase,
     private val editPaymentUseCase: EditPaymentUseCase,
-    private val getCategoriesOrderedByName: GetCategoriesOrderedByName,
+    getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirst,
     handle: SavedStateHandle
 ) : BaseViewModel() {
 
     // data
     private val payment: Payment? = handle.get<Payment>("payment")
+    val selectedCategory = MutableLiveData(payment?.category)
     val paymentName = MutableLiveData(payment?.name.orEmpty())
     val categoryName = MutableLiveData(payment?.category?.name ?: "category")
     val date = MutableLiveData("")
     val cost = MutableLiveData(payment?.cost?.toString().orEmpty())
     val message = MutableLiveData(payment?.message.orEmpty())
+    val categories: Flow<List<Category>> = getCategoriesOrderedByName.execute()
 
     // actions
     val finishAction = SingleLiveEvent<Unit>()
     val onDateClickAction = SingleLiveEvent<Unit>()
-    val categories = SingleLiveEvent<List<CategoryEntity>>()
+//    val categories = SingleLiveEvent<List<CategoryEntity>>()
 
     //var
-    var selectedCategory: CategoryEntity? = null
     var dateInMills = 0L
     private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
         setInitialDate()
-        viewModelScope.launch {
-            getCategoriesOrderedByName.execute()
-                .collect { categories.value = it }
-        }
+//        viewModelScope.launch {
+//            getCategoriesOrderedByName.execute()
+//                .collect { categories.value = it }
+//        }
     }
 
     fun onSaveClick() {
@@ -72,7 +77,9 @@ class PaymentDetailsComposeViewModel @Inject constructor(
         setDate(selectedDate.time)
     }
 
-    fun onCategoryClick() {
+    fun onCategoryClick(category: Category) {
+        selectedCategory.value = category
+        categoryName.value = category.name
     }
 
     fun onCategorySelected(category: Category) {
@@ -85,7 +92,7 @@ class PaymentDetailsComposeViewModel @Inject constructor(
                 paymentName.value.orEmpty(),
                 (cost.value?.toIntOrNull() ?: 0),
                 dateInMills = currentDateInMills,
-                category = selectedCategory?.toCategory(),
+                category = selectedCategory.value,
                 message = message.value.orEmpty()
             )
             addNewPaymentUseCase.execute(payment)
@@ -102,7 +109,7 @@ class PaymentDetailsComposeViewModel @Inject constructor(
                     paymentName.value.orEmpty(),
                     (cost.value?.toIntOrNull() ?: 0),
                     dateInMills,
-                    selectedCategory?.toCategory(),
+                    selectedCategory.value,
                     message.value.orEmpty()
                 )
                 editPaymentUseCase.execute(updatedPayment)
