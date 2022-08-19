@@ -56,7 +56,6 @@ class PaymentListViewModel @Inject constructor(
     val onPaymentEntityItemClickAction: Relay<Payment> = PublishRelay.create()
     val onSwipeToDeleteAction: Relay<Payment> = PublishRelay.create()
     val onPaymentEntityItemClickEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
-    val swipeToDeleteCallbackLiveData: MutableLiveData<PaymentSwipeToDeleteCallback> = MutableLiveData()
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
     val onScrollChanged: Relay<Int> = PublishRelay.create()
 
@@ -77,22 +76,8 @@ class PaymentListViewModel @Inject constructor(
         get() = _paymentList
 //        get() = flowOf(p)
 
-    private val _paymentListAdapter = PaymentListAdapter(onPaymentEntityItemClickAction, onSwipeToDeleteAction)
-    val paymentAdapter = ObservableField(_paymentListAdapter)
 
     init {
-        val swipeToDeleteCallback = PaymentSwipeToDeleteCallback(
-            _paymentListAdapter,
-            ItemTouchHelper.ACTION_STATE_IDLE,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        )
-        swipeToDeleteCallbackLiveData.value = swipeToDeleteCallback
-
-        viewModelScope.launch {
-            getPaymentList(mode)
-                .map { paymentList -> paymentList.map { PaymentListItemModel.PaymentItemModel(it) } }
-                .collect { _paymentListAdapter.setData(it) }
-        }
 
         onPaymentEntityItemClickAction
             .applyThrottling()

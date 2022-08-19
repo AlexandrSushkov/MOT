@@ -43,7 +43,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.HomeNavigationDirections
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.base.BaseFragment
-import dev.nelson.mot.main.presentations.categories.CategoriesListComposeViewModel
 import dev.nelson.mot.main.presentations.categories.CategoryListItemModel
 import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
 import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot

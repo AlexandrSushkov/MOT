@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.categories
+package dev.nelson.mot.main.presentations.categories_list
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel

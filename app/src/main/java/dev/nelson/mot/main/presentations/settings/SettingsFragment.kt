@@ -12,13 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import dev.nelson.mot.main.databinding.FragmentSettingsBinding
 import dev.nelson.mot.main.presentations.base.BaseFragment
 
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment() {
-
-    lateinit var binding: FragmentSettingsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {

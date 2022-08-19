@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.domain.use_case.category
 
-import dev.nelson.mot.main.data.mapers.toCategory
 import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepository

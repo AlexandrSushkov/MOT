@@ -20,7 +20,6 @@ import dev.nelson.mot.main.databinding.ActivityHomeBinding
 import dev.nelson.mot.main.presentations.base.BaseActivity
 import dev.nelson.mot.main.presentations.category_details.compose.CategoryDetailsComposeFragment
 import dev.nelson.mot.main.presentations.home.bottomnav.MotRoundedBottomSheetDialogFragment
-import dev.nelson.mot.main.presentations.payment_list.PaymentListFragmentDirections
 import dev.nelson.mot.main.presentations.payment_list.compose.PaymentListComposeFragmentDirections
 import dev.nelson.mot.main.util.extention.getDataBinding
 
@@ -93,16 +92,9 @@ class HomeActivity : BaseActivity() {
     private fun initFab() {
         binding.fab.setOnClickListener {
             when (navController.currentDestination?.id) {
-                R.id.nav_menu_item_payment_list -> openPaymentDetails()
                 R.id.nav_menu_item_payment_list_compose -> openPaymentDetailsCompose()
-                R.id.nav_menu_item_categories -> openCategoryDetails()
             }
         }
-    }
-
-    private fun openPaymentDetails() {
-        val openPaymentDetailsComposeAction = PaymentListFragmentDirections.goToPaymentFragment()
-        navController.navigate(openPaymentDetailsComposeAction)
     }
 
     private fun openPaymentDetailsCompose() {
@@ -126,14 +118,14 @@ class HomeActivity : BaseActivity() {
     private fun initNavControllerListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.nav_menu_item_payment_list -> binding.apply {
+                R.id.nav_menu_item_payment_list_compose -> binding.apply {
                     bottomAppBar.performShow()
                     fab.apply {
                         setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_add_24, theme))
                         show()
                     }
                 }
-                R.id.nav_menu_item_categories -> binding.apply {
+                R.id.nav_menu_item_categories_compose -> binding.apply {
                     bottomAppBar.performShow()
                     fab.apply {
                         setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_show_chart_24, theme))
