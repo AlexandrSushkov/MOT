@@ -8,9 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.ItemTouchHelper
-import com.jakewharton.rxrelay2.PublishRelay
-import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
@@ -20,9 +17,7 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.main.util.extention.applyThrottling
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,7 +38,6 @@ class PaymentListViewModel @Inject constructor(
 //        val superheroList = loadSuperheroes()
 //        kotlinx.coroutines.delay(1500)
         val paymentList = paymentUseCase.getAllPaymentsCor()
-
         emit(paymentList)
     }
     val isLoading = ObservableBoolean()
@@ -53,11 +47,8 @@ class PaymentListViewModel @Inject constructor(
 
     //    val paymentAdapter = ObservableField<PaymentListAdapter2>()
     var paymentListTitle = ObservableField(category.name.ifEmpty { "Recent Payments" })
-    val onPaymentEntityItemClickAction: Relay<Payment> = PublishRelay.create()
-    val onSwipeToDeleteAction: Relay<Payment> = PublishRelay.create()
     val onPaymentEntityItemClickEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
     val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
-    val onScrollChanged: Relay<Int> = PublishRelay.create()
 
     val expandedLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -77,46 +68,6 @@ class PaymentListViewModel @Inject constructor(
 //        get() = flowOf(p)
 
 
-    init {
-
-        onPaymentEntityItemClickAction
-            .applyThrottling()
-            .doOnNext {
-//                Timber.d("on payment $it click")
-//                onPaymentEntityItemClickEvent.postValue(it)
-
-//                val tempPayment = it.copy(isExpanded = !it.isExpanded)
-//                val tempPaymentLIst =
-//                _paymentList.
-//                    _paymentList.map { it.toMutableList() }
-//                        .map {
-//                            val temp = it.first().copy(isExpanded = !it.first().isExpanded)
-//                            it.set(0, temp)
-//                        }
-
-//                val e = expandedLiveData.value ?: false
-//                expandedLiveData.value = !e
-            }
-            .subscribe()
-            .addToDisposables()
-
-        onSwipeToDeleteAction
-            .doOnNext {
-                deletePayment(it)
-//                p.remove(it)
-                swipeToDeleteAction.call()
-            }
-            .subscribe()
-            .addToDisposables()
-
-        onScrollChanged
-            .distinctUntilChanged()
-            .doOnNext { if (it == 0) toolbarElevation.set(0) else toolbarElevation.set(20) }
-            .subscribe()
-            .addToDisposables()
-
-    }
-
     fun onItemClick(payment: Payment) {
         Timber.d("on payment $payment click")
         onPaymentEntityItemClickEvent.postValue(payment)
@@ -131,7 +82,7 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    private fun deletePayment(payment: Payment) {
+    fun deletePayment(payment: Payment) {
         viewModelScope.launch {
             deletePaymentUseCase.execute(payment)
         }

@@ -4,7 +4,6 @@ import androidx.databinding.ObservableField
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.SingleLiveEvent
-import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 @HiltViewModel

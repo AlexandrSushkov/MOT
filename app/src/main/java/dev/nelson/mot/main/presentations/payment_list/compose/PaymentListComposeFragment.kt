@@ -20,8 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
-import com.jakewharton.rxrelay2.PublishRelay
-import com.jakewharton.rxrelay2.Relay
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.base.BaseFragment
@@ -40,12 +38,11 @@ class PaymentListComposeFragment : BaseFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val payments by viewModel.paymentList.collectAsState(emptyList())
-                val onSwipeToDelete = viewModel.onSwipeToDeleteAction
                 val isExpanded = viewModel.expandedLiveData
                 PaymentListComposeFragmentLayout(
                     payments,
                     onItemClick = { viewModel.onItemClick(it) },
-                    onSwipeToDelete,
+                    onSwipeToDelete = { viewModel.deletePayment(it) },
                     isExpanded
                 )
             }
@@ -70,7 +67,7 @@ class PaymentListComposeFragment : BaseFragment() {
 fun PaymentListComposeFragmentLayout(
     paymentList: List<Payment>,
     onItemClick: (Payment) -> Unit,
-    onSwipeToDelete: Relay<Payment>,
+    onSwipeToDelete: (Payment) -> Unit,
     isExpanded: MutableLiveData<Boolean>
 ) {
     Column() {
@@ -84,7 +81,7 @@ fun PaymentListComposeFragmentLayout(
 fun PaymentList(
     paymentList: List<Payment>,
     onItemClick: (Payment) -> Unit,
-    onSwipeToDelete: Relay<Payment>,
+    onSwipeToDelete: (Payment) -> Unit,
     isExpanded: MutableLiveData<Boolean>
 ) {
     LazyColumn(
@@ -98,7 +95,7 @@ fun PaymentList(
             DismissiblePaymentListItem(
                 payment = it,
                 onClick = { payment -> onItemClick.invoke(payment) },
-                onSwipeToDelete = { payment -> onSwipeToDelete.accept(payment) },
+                onSwipeToDelete = { payment -> onSwipeToDelete.invoke(payment) },
                 isExpanded = isExpanded
             )
         }
@@ -110,8 +107,8 @@ fun PaymentList(
 fun PaymentListComposeFragmentPreview() {
     PaymentListComposeFragmentLayout(
         PreviewData.paymentListPreview,
-        {},
-        PublishRelay.create(),
-        MutableLiveData(false)
+        onItemClick = {},
+        onSwipeToDelete = {},
+        isExpanded = MutableLiveData(false)
     )
 }
