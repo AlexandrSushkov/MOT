@@ -20,6 +20,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = MotColors.PurpleGrey80,
     tertiary = MotColors.Pink80,
     surface = Color(0xFFDD9CCD),
+    background = Color(0xFF6FA062)
 
     )
 
@@ -28,6 +29,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = MotColors.PurpleGrey40,
     tertiary = MotColors.Pink40,
     surface = Color(0xFF6281A0),
+    background = Color(0xFF6FA062)
 
 
     /* Other default colors to override

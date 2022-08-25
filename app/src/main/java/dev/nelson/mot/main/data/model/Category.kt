@@ -2,6 +2,7 @@ package dev.nelson.mot.main.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import dev.nelson.mot.main.util.StringUtils
 
 data class Category(
     val name: String,
@@ -27,5 +28,7 @@ data class Category(
         override fun createFromParcel(parcel: Parcel): Category = Category(parcel)
 
         override fun newArray(size: Int): Array<Category?> = arrayOfNulls(size)
+
+        fun empty() = Category(StringUtils.EMPTY)
     }
 }

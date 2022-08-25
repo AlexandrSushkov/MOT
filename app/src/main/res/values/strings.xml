@@ -10,5 +10,6 @@
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>
     <string name="title_activity_payment_details" translatable="false">PaymentDetailsActivity</string>
+    <string name="title_activity_main_compose">MainActivityCompose</string>
 
 </resources>

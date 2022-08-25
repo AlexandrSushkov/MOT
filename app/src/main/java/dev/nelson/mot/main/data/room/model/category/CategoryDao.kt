@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryDao {
 
     @Query("SELECT * FROM ${CategoryTable.TABLE_NAME}")
-    fun getAllCategoriesFlow(): Flow<List<CategoryEntity>>
+    fun getAllCategories(): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM ${CategoryTable.TABLE_NAME} WHERE ${CategoryTable.ID} = :id")
+    fun getCategory(id: Int): Flow<CategoryEntity>
 
     @Query("SELECT * FROM ${CategoryTable.TABLE_NAME} ORDER BY CASE WHEN :isAsc = 1 THEN ${CategoryTable.NAME} END COLLATE NOCASE ASC, CASE WHEN :isAsc = 0 THEN ${CategoryTable.NAME} END COLLATE NOCASE DESC")
     fun getAllCategoriesOrdered(isAsc: Boolean): Flow<List<CategoryEntity>>

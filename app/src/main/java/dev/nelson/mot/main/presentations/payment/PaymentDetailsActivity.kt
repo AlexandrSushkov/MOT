@@ -85,6 +85,7 @@ import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
+import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -198,7 +199,7 @@ fun PaymentDetailsLayout(
 
 
     LaunchedEffect(key1 = Unit, block = {
-        delay(200) // <-- This is crucial.
+        delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial.
         nameFocusRequester.requestFocus()
     })
     ModalBottomSheetLayout(
@@ -290,7 +291,7 @@ fun PaymentDetailsLayout(
 //                            onCategoryClick.invoke()
                             scope.launch {
                                 keyboardController?.hide()
-                                delay(200)
+                                delay(Constants.DEFAULT_ANIMATION_DELAY)
                                 focusManager.clearFocus()
                                 modalBottomSheetState.show()
                             }

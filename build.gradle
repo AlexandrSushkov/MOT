@@ -10,9 +10,9 @@ buildscript {
     ext.version_code = 9
 
     // SDK and tools
-    ext.compile_sdk = 31
-    ext.target_sdk = 31
-    ext.min_sdk = 31
+    ext.compile_sdk = 32
+    ext.target_sdk = 32
+    ext.min_sdk = 32
     ext.build_tools_version = '30.0.3'
 
     // dependencies versions

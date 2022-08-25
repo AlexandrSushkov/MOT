@@ -55,9 +55,9 @@ class PaymentListFragment : BaseFragment() {
 
     private fun initListeners() {
         viewModel.onPaymentEntityItemClickEvent.observe(viewLifecycleOwner) {
-            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
-                .apply { payment = it }
-            navController.navigate(openPaymentDetailsAction)
+//            val openPaymentDetailsAction = PaymentListFragmentDirections.goToPaymentDetailsCompose()
+//                .apply { payment = it }
+//            navController.navigate(openPaymentDetailsAction)
         }
     }
 }

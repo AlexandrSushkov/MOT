@@ -1,9 +1,5 @@
 package dev.nelson.mot.main.presentations.categories_list
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -19,11 +15,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,76 +35,78 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import dagger.hilt.android.AndroidEntryPoint
-import dev.nelson.mot.main.HomeNavigationDirections
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.presentations.base.BaseFragment
 import dev.nelson.mot.main.data.model.CategoryListItemModel
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsFragment
-import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
 import dev.nelson.mot.main.presentations.ui.theme.MotColors
 import dev.nelson.mot.main.util.compose.PreviewData
 
-@AndroidEntryPoint
-class CategoryListFragment : BaseFragment() {
+@Composable
+fun CategoryListScreen(
+    openDrawer: () -> Unit,
+    openCategoryDetails: (Int?) -> Unit,
+    openPaymentsByCategory: (Category) -> Unit
+) {
+    val viewModel = hiltViewModel<CategoriesListViewModel>()
+    val categories by viewModel.categoriesFlow.collectAsState(initial = emptyList())
+    CategoryListComposeFragmentLayout(
+        openDrawer = openDrawer,
+        categories = categories,
+        onCategoryClick = openPaymentsByCategory,
+        openCategoryDetails = openCategoryDetails,
+        onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) }
+    )
+}
 
-    private val viewModel: CategoriesListViewModel by viewModels()
-    private val navController by lazy { findNavController() }
+@Preview
+@Composable
+fun CategoryListComposeFragmentLayoutPreview() {
+    CategoryListComposeFragmentLayout(
+        openDrawer = {},
+        categories = PreviewData.categoriesListItemsPreview,
+        onCategoryClick = {},
+        openCategoryDetails = {},
+        onFavoriteClick = { _, _ -> },
+    )
+}
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                val categories by viewModel.categoriesFlow.collectAsState(initial = emptyList())
-                CategoryListComposeFragmentLayout(
-                    categories = categories,
-                    onCategoryClick = { viewModel.onCategoryClick(it) },
-                    onCategoryLongClick = { viewModel.onCategoryLongClick(it) },
-                    onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) }
-                )
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CategoryListComposeFragmentLayout(
+    openDrawer: () -> Unit,
+    categories: List<CategoryListItemModel>,
+    onCategoryClick: (Category) -> Unit,
+    openCategoryDetails: (Int?) -> Unit,
+    onFavoriteClick: (Category, Boolean) -> Unit
+) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { openCategoryDetails.invoke(null) },
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Icon(Icons.Default.Add, "categories fab")
             }
+        },
+        topBar = {
+            CenterAlignedTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = openDrawer) {
+                        Icon(Icons.Default.Menu, contentDescription = "drawer icon")
+                    }
+                },
+                title = { Text(text = "Categories") }
+            )
         }
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initListeners()
-    }
-
-    private fun initListeners() {
-        with(viewModel) {
-            openCategoryDetailsAction.observe(viewLifecycleOwner) { openCategoryDetails(it) }
-            openPaymentsByCategoryAction.observe(viewLifecycleOwner) { openPaymentByCategory(it) }
-        }
-    }
-
-    private fun openCategoryDetails(category: Category) {
-        val categoryDialogFragment = CategoryDetailsFragment.getInstance(category)
-        categoryDialogFragment.show(childFragmentManager, categoryDialogFragment.tag)
-    }
-
-    private fun openPaymentByCategory(category: Category) {
-        val action = HomeNavigationDirections.openPaymentsByCategory()
-            .apply { this.category = category }
-        navController.navigate(action)
-    }
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    fun CategoryListComposeFragmentLayout(
-        categories: List<CategoryListItemModel>,
-        onCategoryClick: (Category) -> Unit,
-        onCategoryLongClick: (Category) -> Unit,
-        onFavoriteClick: (Category, Boolean) -> Unit
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TopAppBarMot(title = "Categories")
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 content = {
@@ -116,7 +120,7 @@ class CategoryListFragment : BaseFragment() {
                                         .fillMaxWidth()
                                         .combinedClickable(
                                             onClick = { onCategoryClick.invoke(it.category) },
-                                            onLongClick = { onCategoryLongClick.invoke(it.category) }
+                                            onLongClick = { openCategoryDetails.invoke(it.category.id) }
                                         ),
                                     shape = RoundedCornerShape(0.dp)
                                 ) {
@@ -182,14 +186,4 @@ class CategoryListFragment : BaseFragment() {
         }
     }
 
-    @Preview
-    @Composable
-    fun CategoryListComposeFragmentLayoutPreview() {
-        CategoryListComposeFragmentLayout(
-            categories = PreviewData.categoriesListItemsPreview,
-            onCategoryClick = {},
-            onCategoryLongClick = {},
-            onFavoriteClick = { _, _ -> },
-        )
-    }
 }
