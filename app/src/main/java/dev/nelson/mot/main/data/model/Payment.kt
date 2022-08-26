@@ -2,23 +2,22 @@ package dev.nelson.mot.main.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import dev.nelson.mot.main.util.StringUtils
 
 data class Payment(
     val name: String,
     val cost: Int,
-    val message: String = "",
+    val message: String = StringUtils.EMPTY,
     val id: Long? = null,
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
     var isExpanded: Boolean = false
-
-
-    ) : Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
+        parcel.readString().orEmpty(),
         parcel.readInt(),
-        parcel.readString() ?: "",
+        parcel.readString().orEmpty(),
         parcel.readValue(Long::class.java.classLoader) as? Long,
         parcel.readString(),
         parcel.readValue(Long::class.java.classLoader) as? Long,
@@ -52,5 +51,9 @@ data class Payment(
         override fun createFromParcel(parcel: Parcel): Payment = Payment(parcel)
 
         override fun newArray(size: Int): Array<Payment?> = arrayOfNulls(size)
+
+        fun empty(): Payment {
+            return Payment(StringUtils.EMPTY, 0)
+        }
     }
 }

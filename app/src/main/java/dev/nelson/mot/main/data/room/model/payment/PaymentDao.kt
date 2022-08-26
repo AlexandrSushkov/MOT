@@ -11,14 +11,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PaymentDao {
-    //normal
-    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} WHERE ${PaymentTable.ID}=:id")
-    fun getPaymentById(id: Long): PaymentEntity
 
-    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME}")
-    fun getPaymentAllPayments(): List<PaymentEntity>
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.ID}=:id")
+    fun getPaymentById(id: Int): Flow<PaymentWithCategory>
 
-    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} INNER JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
     fun getAllPaymentsWithCategory(): List<PaymentWithCategory>
 
     //suspend

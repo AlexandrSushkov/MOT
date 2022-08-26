@@ -9,6 +9,6 @@ class DeletePaymentUseCase @Inject constructor(private val paymentRepository: Pa
 
     suspend fun execute(payment: Payment) {
         val paymentEntity = payment.toPaymentEntity()
-        paymentRepository.deletePaymentCor(paymentEntity)
+        paymentRepository.deletePayment(paymentEntity)
     }
 }

@@ -104,7 +104,7 @@ fun App() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = "CategoryListScreen"
+                        startDestination = "PaymentListScreen"
                     ) {
                         composable(
                             route = "PaymentListScreen",

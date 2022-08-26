@@ -24,6 +24,6 @@ class PaymentUseCase @Inject constructor(private val paymentRepository: PaymentR
             .map { it.toPaymentList() }
     }
 
-    suspend fun getAllPaymentsCor(): List<Payment> = paymentRepository.getAllPaymentsWithCategoryCor()
+    suspend fun getAllPaymentsCor(): List<Payment> = paymentRepository.getAllPaymentsWithCategory()
         .toPaymentList()
 }

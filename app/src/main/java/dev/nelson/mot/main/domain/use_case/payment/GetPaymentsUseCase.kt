@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetPayments@Inject constructor(private val paymentRepository: PaymentRepository) {
+class GetPaymentsUseCase @Inject constructor(private val paymentRepository: PaymentRepository) {
 
     fun execute(withCategory: Boolean = false, desOrder: Boolean = false): Flow<List<Payment>> {
         return paymentRepository.getAllPaymentsWithCategoryOrderDateDescFlow()

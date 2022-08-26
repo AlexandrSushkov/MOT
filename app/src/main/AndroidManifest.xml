@@ -12,6 +12,7 @@
             android:name=".presentations.home.MainActivityCompose"
             android:exported="false"
             android:label="@string/title_activity_main_compose"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".presentations.payment.PaymentDetailsActivity"

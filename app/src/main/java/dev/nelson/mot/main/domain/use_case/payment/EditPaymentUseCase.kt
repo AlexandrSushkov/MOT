@@ -9,6 +9,6 @@ class EditPaymentUseCase @Inject constructor(private val paymentRepository: Paym
 
     suspend fun execute(payment: Payment) {
         val paymentEntity = payment.toPaymentEntity()
-        paymentRepository.updatePaymentCor(paymentEntity)
+        paymentRepository.updatePayment(paymentEntity)
     }
 }

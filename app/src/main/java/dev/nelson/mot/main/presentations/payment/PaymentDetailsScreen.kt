@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.payment
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,12 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomDrawerValue
-import androidx.compose.material.Button
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.Divider
@@ -25,41 +27,33 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -79,22 +73,29 @@ import kotlinx.coroutines.launch
 fun PaymentDetailsScreen(closeScreen: () -> Unit) {
 
     MotTheme {
-        val viewModel = hiltViewModel<PaymentDetailsViewModel>()
-        val date by viewModel.date.observeAsState("")
-        val categories by viewModel.categories.collectAsState(initial = emptyList())
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        val viewModel = hiltViewModel<PaymentDetailsViewModel>().apply {
+            finishAction.observe(lifecycleOwner) { closeScreen.invoke() }
+        }
+        val date by viewModel.dateState.observeAsState("")
+        val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
         PaymentDetailsLayout(
-            nameLiveData = viewModel.paymentName,
-            costLiveData = viewModel.cost,
+            nameLiveData = viewModel.paymentNameState,
+            costLiveData = viewModel.costState,
             date = date,
-            messageLiveData = viewModel.message,
+            messageLiveData = viewModel.messageState,
             categories = categories,
-            onNameChange = { viewModel.paymentName.value = it },
-            onCostChange = { viewModel.cost.value = it },
-            onMessageChange = { viewModel.message.value = it },
+            onNameChange = { viewModel.paymentNameState.value = it },
+            onCostChange = {
+                viewModel.onCostChange(it)
+//                viewModel.cost.value = it
+            },
+            onMessageChange = { viewModel.messageState.value = it },
             onDateClick = { viewModel.onDateClick() },
-            onCategoryClick = { viewModel.onCategoryClick(it) },
+            onCategoryClick = { viewModel.onCategorySelected(it) },
             onSaveClick = { viewModel.onSaveClick() },
-            categoryNameLiveData = viewModel.categoryName
+            categoryNameLiveData = viewModel.categoryNameState,
         )
     }
 }
@@ -103,11 +104,11 @@ fun PaymentDetailsScreen(closeScreen: () -> Unit) {
 @Composable
 fun PaymentDetailsLayoutPreview() {
     PaymentDetailsLayout(
-        nameLiveData = MutableLiveData(""),
-        costLiveData = MutableLiveData(""),
+        nameLiveData = MutableLiveData(TextFieldValue()),
+        costLiveData = MutableLiveData(TextFieldValue()),
         date = "1/1/2022",
         categoryNameLiveData = MutableLiveData("category"),
-        messageLiveData = MutableLiveData(""),
+        messageLiveData = MutableLiveData(TextFieldValue()),
         categories = emptyList(),
         onNameChange = {},
         onCostChange = {},
@@ -115,47 +116,64 @@ fun PaymentDetailsLayoutPreview() {
         onSaveClick = {},
         onCategoryClick = {},
         onDateClick = {},
-
         )
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentDetailsLayout(
-    nameLiveData: MutableLiveData<String>,
-    costLiveData: MutableLiveData<String>,
+    nameLiveData: MutableLiveData<TextFieldValue>,
+    costLiveData: MutableLiveData<TextFieldValue>,
     date: String,
     categoryNameLiveData: MutableLiveData<String>,
-    messageLiveData: MutableLiveData<String>,
+    messageLiveData: MutableLiveData<TextFieldValue>,
     categories: List<Category>,
-    onNameChange: (String) -> Unit,
-    onCostChange: (String) -> Unit,
-    onMessageChange: (String) -> Unit,
+    onNameChange: (TextFieldValue) -> Unit,
+    onCostChange: (TextFieldValue) -> Unit,
+    onMessageChange: (TextFieldValue) -> Unit,
     onDateClick: () -> Unit,
     onCategoryClick: (Category) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
 ) {
-    val name = nameLiveData.value.orEmpty()
-    val cost = costLiveData.value.orEmpty()
-    val message = messageLiveData.value.orEmpty()
+//    val paymentName = nameLiveData.value.orEmpty()
+//    val payment by paymentState.collectAsState(initial = Payment.empty())
+//    val message = messageLiveData.value.orEmpty()
     val categoryName by categoryNameLiveData.observeAsState("temp")
-    val nameFocusRequester = remember { FocusRequester() }
-    var nameFieldValueState by remember { mutableStateOf(TextFieldValue(text = name, selection = TextRange(name.length))) }
-    var costFieldValueState by remember { mutableStateOf(TextFieldValue(text = cost, selection = TextRange(cost.length))) }
-    var messageFieldValueState by remember { mutableStateOf(TextFieldValue(text = message, selection = TextRange(message.length))) }
+    val paymentNameFocusRequester = remember { FocusRequester() }
+
+//    var paymentNameFieldValueState by remember {
+//        mutableStateOf(
+//            TextFieldValue(
+//                text = payment.name,
+//                selection = TextRange(payment.name.length)
+//            )
+//        )
+//    }
+    val paymentNameFieldValueState by nameLiveData.observeAsState(initial = TextFieldValue())
+//    var costFieldValueState by remember { mutableStateOf(TextFieldValue(text = cost, selection = TextRange(cost.length))) }
+//    var costFieldValueState by remember { mutableStateOf(TextFieldValue()) }
+    val costFieldValueState by costLiveData.observeAsState(TextFieldValue())
+    val messageFieldValueState by messageLiveData.observeAsState(TextFieldValue())
+
+    val cost by costLiveData.observeAsState("")
+//    costFieldValueState = TextFieldValue(text = cost)
+
+//    var messageFieldValueState by remember { mutableStateOf(TextFieldValue(text = message, selection = TextRange(message.length))) }
 //    var categoryNameValueState by remember { mutableStateOf(TextFieldValue(text = categoryName)) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     val scope = rememberCoroutineScope()
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val scaffoldState = rememberBottomSheetScaffoldState()
     val bottomDrawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-
     LaunchedEffect(key1 = Unit, block = {
         delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial.
-        nameFocusRequester.requestFocus()
+        paymentNameFocusRequester.requestFocus()
+//        if (payment.name.isNotEmpty()) {
+//            paymentNameFieldValueState = TextFieldValue(text = payment.name)
+//        }
     })
     ModalBottomSheetLayout(
         sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
@@ -174,15 +192,15 @@ fun PaymentDetailsLayout(
                 Row {
                     TextField(
                         modifier = Modifier
-                            .focusRequester(nameFocusRequester)
+                            .focusRequester(paymentNameFocusRequester)
                             .weight(2f),
 //                    value = if (LocalInspectionMode.current) "preview new payment" else name,
-                        value = nameFieldValueState,
+                        value = paymentNameFieldValueState,
                         singleLine = true,
                         maxLines = 1,
                         onValueChange = {
-                            nameFieldValueState = it
-                            onNameChange.invoke(nameFieldValueState.text)
+//                            paymentNameFieldValueState = it
+                            onNameChange.invoke(it)
                         },
                         placeholder = { Text(text = "new payment") },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -193,8 +211,8 @@ fun PaymentDetailsLayout(
                         singleLine = true,
                         maxLines = 1,
                         onValueChange = {
-                            costFieldValueState = it
-                            onCostChange.invoke(costFieldValueState.text)
+//                            costFieldValueState = it
+                            onCostChange.invoke(it)
                         },
                         placeholder = { Text(text = "0.0") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
@@ -267,11 +285,19 @@ fun PaymentDetailsLayout(
 //                )
                 }
                 TextField(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .bringIntoViewRequester(bringIntoViewRequester)
+                        .onFocusEvent { event ->
+                            if (event.isFocused) {
+                                scope.launch { bringIntoViewRequester.bringIntoView() }
+                            }
+                        },
+
                     value = messageFieldValueState,
                     onValueChange = {
-                        messageFieldValueState = it
-                        onMessageChange.invoke(messageFieldValueState.text)
+//                        messageFieldValueState = it
+                        onMessageChange.invoke(it)
                     },
                     placeholder = { Text(text = "message") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
@@ -281,7 +307,8 @@ fun PaymentDetailsLayout(
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(8.dp),
-                    onClick = onSaveClick) {
+                    onClick = onSaveClick
+                ) {
                     Text(text = "Save")
                 }
 

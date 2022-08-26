@@ -2,10 +2,11 @@ package dev.nelson.mot.main.data.mapers
 
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 
-fun Payment.copyWith(name:String, cost: Int, dateInMills: Long?, category: Category?, message: String): Payment =
+fun Payment.copyWith(name: String, cost: Int, dateInMills: Long?, category: Category?, message: String): Payment =
     Payment(
         name,
         cost,
@@ -28,10 +29,18 @@ fun Payment.toPaymentEntity(): PaymentEntity =
     )
 
 fun PaymentWithCategory.toPayment(): Payment {
-    val paymentEntity = this.paymentEntity
-    val categoryEntity = this.categoryEntity
+    val paymentEntity: PaymentEntity = this.paymentEntity
+    val categoryEntity: CategoryEntity? = this.categoryEntity
     return with(paymentEntity) {
-        Payment(title, cost, summary ?: "", id, date, dateInMilliseconds, categoryEntity?.toCategory())
+        Payment(
+            name = title,
+            cost = cost,
+            message = summary.orEmpty(),
+            id = id,
+            date = date,
+            dateInMills = dateInMilliseconds,
+            category = categoryEntity?.toCategory()
+        )
     }
 }
 

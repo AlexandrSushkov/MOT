@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetCategoriesOrderedByNameFavoriteFirst @Inject constructor(private val getCategoriesOrderedByName: GetCategoriesOrderedByName) {
+class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(private val getCategoriesOrderedByName: GetCategoriesOrderedByName) {
 
     fun execute(isAsc: Boolean = true): Flow<List<Category>> = getCategoriesOrderedByName.execute(isAsc)
         .map { it.toCategoryList() }

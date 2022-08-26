@@ -99,26 +99,7 @@ class PaymentDetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        setContent {
-            MotTheme {
-                val date by viewModel.date.observeAsState("")
-                val categories by viewModel.categories.collectAsState(initial = emptyList())
-                PaymentDetailsLayout(
-                    nameLiveData = viewModel.paymentName,
-                    costLiveData = viewModel.cost,
-                    date = date,
-                    messageLiveData = viewModel.message,
-                    categories = categories,
-                    onNameChange = { viewModel.paymentName.value = it },
-                    onCostChange = { viewModel.cost.value = it },
-                    onMessageChange = { viewModel.message.value = it },
-                    onDateClick = { viewModel.onDateClick() },
-                    onCategoryClick = { viewModel.onCategoryClick(it) },
-                    onSaveClick = { viewModel.onSaveClick() },
-                    categoryNameLiveData = viewModel.categoryName
-                )
-            }
-        }
+        setContent {}
         initListeners()
     }
 

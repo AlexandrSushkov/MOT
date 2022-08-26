@@ -4,7 +4,11 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.util.StringUtils
 
-fun CategoryEntity.toCategory(): Category = Category(this.name, isFavorite == 1, this.id)
+fun CategoryEntity.toCategory(): Category = Category(
+    name = this.name,
+    isFavorite = isFavorite == 1,
+    id = this.id
+)
 
 fun List<CategoryEntity>.toCategoryList(): List<Category> = this.map { it.toCategory() }
 
