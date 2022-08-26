@@ -17,8 +17,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -37,9 +35,8 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.presentations.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.category_details.CategoryDetailsScreen
-import dev.nelson.mot.main.presentations.payment_list.PaymentListComposeFragmentLayout
+import dev.nelson.mot.main.presentations.payment.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.payment_list.PaymentListScreen
-import dev.nelson.mot.main.presentations.payment_list.PaymentListViewModel
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import kotlinx.coroutines.launch
 
@@ -72,9 +69,9 @@ fun App() {
         val drawerState = rememberDrawerState(drawerValue)
         val scope = rememberCoroutineScope()
 
-        fun customShape() =  object : Shape {
+        fun customShape() = object : Shape {
             override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
-                return Outline.Rectangle(Rect(0f,0f,100f /* width */, 131f /* height */))
+                return Outline.Rectangle(Rect(0f, 0f, 100f /* width */, 131f /* height */))
             }
         }
 
@@ -112,10 +109,24 @@ fun App() {
                         composable(
                             route = "PaymentListScreen",
                             content = {
-                                PaymentListScreen(navigateToCategories = {
-                                    navController.navigate(route = "CategoryListScreen")
-                                })
+                                PaymentListScreen(
+                                    openDrawer = { scope.launch { drawerState.open() } },
+                                    openPaymentDetails = { paymentId ->
+                                        paymentId?.let { navController.navigate(route = "PaymentDetailsScreen?id=$paymentId") }
+                                            ?: navController.navigate(route = "PaymentDetailsScreen")
+
+
+                                    })
                             },
+                        )
+                        composable(
+                            route = "PaymentDetailsScreen?id={id}",
+                            content = { PaymentDetailsScreen(closeScreen = { navController.popBackStack() }) },
+                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                        )
+                        composable(
+                            route = "PaymentDetailsScreen",
+                            content = { PaymentDetailsScreen(closeScreen = { navController.popBackStack() }) },
                         )
                         composable(
                             route = "CategoryListScreen",
@@ -132,12 +143,12 @@ fun App() {
                         )
                         composable(
                             route = "CategoryDetailsScreen?id={id}",
-                            content = { CategoryDetailsScreen({ navController.popBackStack() }) },
+                            content = { CategoryDetailsScreen(closeScreen = { navController.popBackStack() }) },
                             arguments = listOf(navArgument("id") { type = NavType.IntType })
                         )
                         composable(
                             route = "CategoryDetailsScreen",
-                            content = { CategoryDetailsScreen({ navController.popBackStack() }) },
+                            content = { CategoryDetailsScreen(closeScreen = { navController.popBackStack() }) },
                         )
                     }
                 }

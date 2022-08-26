@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -52,7 +51,7 @@ fun CategoryListScreen(
 ) {
     val viewModel = hiltViewModel<CategoriesListViewModel>()
     val categories by viewModel.categoriesFlow.collectAsState(initial = emptyList())
-    CategoryListComposeFragmentLayout(
+    CategoryListLayout(
         openDrawer = openDrawer,
         categories = categories,
         onCategoryClick = openPaymentsByCategory,
@@ -63,8 +62,8 @@ fun CategoryListScreen(
 
 @Preview
 @Composable
-fun CategoryListComposeFragmentLayoutPreview() {
-    CategoryListComposeFragmentLayout(
+fun CategoryListLayoutPreview() {
+    CategoryListLayout(
         openDrawer = {},
         categories = PreviewData.categoriesListItemsPreview,
         onCategoryClick = {},
@@ -75,7 +74,7 @@ fun CategoryListComposeFragmentLayoutPreview() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CategoryListComposeFragmentLayout(
+fun CategoryListLayout(
     openDrawer: () -> Unit,
     categories: List<CategoryListItemModel>,
     onCategoryClick: (Category) -> Unit,
@@ -83,14 +82,6 @@ fun CategoryListComposeFragmentLayout(
     onFavoriteClick: (Category, Boolean) -> Unit
 ) {
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { openCategoryDetails.invoke(null) },
-                modifier = Modifier.padding(24.dp)
-            ) {
-                Icon(Icons.Default.Add, "categories fab")
-            }
-        },
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
@@ -100,9 +91,16 @@ fun CategoryListComposeFragmentLayout(
                 },
                 title = { Text(text = "Categories") }
             )
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { openCategoryDetails.invoke(null) },
+            ) {
+                Icon(Icons.Default.Add, "categories fab")
+            }
+        },
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -110,17 +108,21 @@ fun CategoryListComposeFragmentLayout(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 content = {
-                    categories.forEach {
-                        if (it is CategoryListItemModel.CategoryItemModel) {
+                    categories.forEach { categoryListItem ->
+                        if (categoryListItem is CategoryListItemModel.CategoryItemModel) {
                             item {
-                                var checked by remember { mutableStateOf(it.category.isFavorite) }
+                                var checked by remember { mutableStateOf(categoryListItem.category.isFavorite) }
 
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .combinedClickable(
-                                            onClick = { onCategoryClick.invoke(it.category) },
-                                            onLongClick = { openCategoryDetails.invoke(it.category.id) }
+                                            onClick = { onCategoryClick.invoke(categoryListItem.category) },
+                                            onLongClick = {
+                                                categoryListItem.category.id?.let { categoryId ->
+                                                    openCategoryDetails.invoke(categoryId)
+                                                }
+                                            }
                                         ),
                                     shape = RoundedCornerShape(0.dp)
                                 ) {
@@ -130,34 +132,36 @@ fun CategoryListComposeFragmentLayout(
                                             .padding(vertical = 8.dp, horizontal = 16.dp)
                                     ) {
                                         Text(
-                                            text = it.category.name,
+                                            text = categoryListItem.category.name,
                                             modifier = Modifier
                                                 .weight(1f)
                                                 .align(Alignment.CenterVertically)
                                         )
-                                        IconToggleButton(
-                                            checked = checked,
-                                            onCheckedChange = { isChecked ->
-                                                checked = isChecked
-                                                onFavoriteClick.invoke(it.category, isChecked)
-                                            },
-                                        ) {
-                                            val tint by animateColorAsState(
-                                                if (checked) MotColors.FavoriteButtonOnBackground
-                                                else MotColors.FavoriteButtonOffBackground
-                                            )
-                                            Icon(
-                                                Icons.Filled.Star,
-                                                contentDescription = null,
-                                                tint = tint,
-                                                modifier = Modifier.size(24.dp)
-                                            )
+                                        if (categoryListItem.category.id != null) {
+                                            IconToggleButton(
+                                                checked = checked,
+                                                onCheckedChange = { isChecked ->
+                                                    checked = isChecked
+                                                    onFavoriteClick.invoke(categoryListItem.category, isChecked)
+                                                },
+                                            ) {
+                                                val tint by animateColorAsState(
+                                                    if (checked) MotColors.FavoriteButtonOnBackground
+                                                    else MotColors.FavoriteButtonOffBackground
+                                                )
+                                                Icon(
+                                                    Icons.Filled.Star,
+                                                    contentDescription = null,
+                                                    tint = tint,
+                                                    modifier = Modifier.size(24.dp)
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                        if (it is CategoryListItemModel.Letter) {
+                        if (categoryListItem is CategoryListItemModel.Letter) {
                             stickyHeader {
                                 Box(
                                     modifier = Modifier
@@ -165,7 +169,7 @@ fun CategoryListComposeFragmentLayout(
                                         .background(Color.LightGray)
                                 ) {
                                     Text(
-                                        text = it.letter,
+                                        text = categoryListItem.letter,
                                         modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                                         fontWeight = FontWeight.Bold
                                     )

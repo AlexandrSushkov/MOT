@@ -65,16 +65,19 @@ import dev.nelson.mot.main.util.compose.PreviewData
 @Preview(showBackground = true)
 @Composable
 fun ToolbarMotPreview() {
-    TopAppBarMot("Toolbar")
+    TopAppBarMot(title = "Toolbar", onClick = {})
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarMot(title: String) {
+fun TopAppBarMot(
+    title: String,
+    onClick: () -> Unit
+) {
     CenterAlignedTopAppBar(
         navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icons.Default.Menu
+            IconButton(onClick = onClick) {
+                Icon(Icons.Default.Menu, contentDescription = "drawer icon")
             }
         },
         title = { Text(text = title) }
