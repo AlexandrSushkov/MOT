@@ -100,12 +100,6 @@ class PaymentDetailsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {}
-        initListeners()
-    }
-
-    private fun initListeners() {
-        viewModel.finishAction.observe(this) { finish() }
-        viewModel.onDateClickAction.observe(this) { openDatePickerDialog() }
     }
 
     private fun openDatePickerDialog() {

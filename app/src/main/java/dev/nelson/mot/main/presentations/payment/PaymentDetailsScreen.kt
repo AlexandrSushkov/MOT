@@ -18,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.Divider
@@ -33,15 +32,12 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.rememberBottomDrawerState
-import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -52,7 +48,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -60,42 +55,42 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.MutableLiveData
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotButton
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @Composable
 fun PaymentDetailsScreen(closeScreen: () -> Unit) {
 
     MotTheme {
-        val lifecycleOwner = LocalLifecycleOwner.current
-
-        val viewModel = hiltViewModel<PaymentDetailsViewModel>().apply {
-            finishAction.observe(lifecycleOwner) { closeScreen.invoke() }
-        }
-        val date by viewModel.dateState.observeAsState("")
+        val viewModel = hiltViewModel<PaymentDetailsViewModel>()
+        LaunchedEffect(
+            key1 = true,
+            block = {
+                viewModel.finishAction.collect { closeScreen.invoke() }
+            }
+        )
+        val date by viewModel.dateState.collectAsState("")
         val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
         PaymentDetailsLayout(
-            nameLiveData = viewModel.paymentNameState,
-            costLiveData = viewModel.costState,
+            paymentNameState = viewModel.paymentNameState,
+            costState = viewModel.costState,
             date = date,
-            messageLiveData = viewModel.messageState,
+            messageState = viewModel.messageState,
             categories = categories,
-            onNameChange = { viewModel.paymentNameState.value = it },
-            onCostChange = {
-                viewModel.onCostChange(it)
-//                viewModel.cost.value = it
-            },
-            onMessageChange = { viewModel.messageState.value = it },
+            onNameChange = { viewModel.onPaymentNameChanged(it) },
+            onCostChange = { viewModel.onCostChange(it) },
+            onMessageChange = { viewModel.onMessageChanged(it) },
             onDateClick = { viewModel.onDateClick() },
             onCategoryClick = { viewModel.onCategorySelected(it) },
             onSaveClick = { viewModel.onSaveClick() },
-            categoryNameLiveData = viewModel.categoryNameState,
+            categoryNameState = viewModel.categoryNameState,
         )
     }
 }
@@ -104,11 +99,11 @@ fun PaymentDetailsScreen(closeScreen: () -> Unit) {
 @Composable
 fun PaymentDetailsLayoutPreview() {
     PaymentDetailsLayout(
-        nameLiveData = MutableLiveData(TextFieldValue()),
-        costLiveData = MutableLiveData(TextFieldValue()),
+        paymentNameState = MutableStateFlow(TextFieldValue()),
+        costState = MutableStateFlow(TextFieldValue()),
         date = "1/1/2022",
-        categoryNameLiveData = MutableLiveData("category"),
-        messageLiveData = MutableLiveData(TextFieldValue()),
+        categoryNameState = MutableStateFlow("category"),
+        messageState = MutableStateFlow(TextFieldValue()),
         categories = emptyList(),
         onNameChange = {},
         onCostChange = {},
@@ -116,17 +111,17 @@ fun PaymentDetailsLayoutPreview() {
         onSaveClick = {},
         onCategoryClick = {},
         onDateClick = {},
-        )
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentDetailsLayout(
-    nameLiveData: MutableLiveData<TextFieldValue>,
-    costLiveData: MutableLiveData<TextFieldValue>,
+    paymentNameState: StateFlow<TextFieldValue>,
+    costState: StateFlow<TextFieldValue>,
     date: String,
-    categoryNameLiveData: MutableLiveData<String>,
-    messageLiveData: MutableLiveData<TextFieldValue>,
+    categoryNameState: StateFlow<String>,
+    messageState: StateFlow<TextFieldValue>,
     categories: List<Category>,
     onNameChange: (TextFieldValue) -> Unit,
     onCostChange: (TextFieldValue) -> Unit,
@@ -135,41 +130,20 @@ fun PaymentDetailsLayout(
     onCategoryClick: (Category) -> Unit,
     onSaveClick: () -> Unit,
 ) {
-//    val paymentName = nameLiveData.value.orEmpty()
-//    val payment by paymentState.collectAsState(initial = Payment.empty())
-//    val message = messageLiveData.value.orEmpty()
-    val categoryName by categoryNameLiveData.observeAsState("temp")
-    val paymentNameFocusRequester = remember { FocusRequester() }
-
-//    var paymentNameFieldValueState by remember {
-//        mutableStateOf(
-//            TextFieldValue(
-//                text = payment.name,
-//                selection = TextRange(payment.name.length)
-//            )
-//        )
-//    }
-    val paymentNameFieldValueState by nameLiveData.observeAsState(initial = TextFieldValue())
-//    var costFieldValueState by remember { mutableStateOf(TextFieldValue(text = cost, selection = TextRange(cost.length))) }
-//    var costFieldValueState by remember { mutableStateOf(TextFieldValue()) }
-    val costFieldValueState by costLiveData.observeAsState(TextFieldValue())
-    val messageFieldValueState by messageLiveData.observeAsState(TextFieldValue())
-
-    val cost by costLiveData.observeAsState("")
-//    costFieldValueState = TextFieldValue(text = cost)
-
-//    var messageFieldValueState by remember { mutableStateOf(TextFieldValue(text = message, selection = TextRange(message.length))) }
-//    var categoryNameValueState by remember { mutableStateOf(TextFieldValue(text = categoryName)) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
     val scope = rememberCoroutineScope()
+    val paymentNameFocusRequester = remember { FocusRequester() }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
-    val scaffoldState = rememberBottomSheetScaffoldState()
-    val bottomDrawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    val categoryName by categoryNameState.collectAsState()
+    val paymentNameFieldValueState by paymentNameState.collectAsState(TextFieldValue())
+    val costFieldValueState by costState.collectAsState(TextFieldValue())
+    val messageFieldValueState by messageState.collectAsState(TextFieldValue())
+
     LaunchedEffect(key1 = Unit, block = {
-        delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial.
+        delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial. Otherwise keyboard won't pop on
         paymentNameFocusRequester.requestFocus()
 //        if (payment.name.isNotEmpty()) {
 //            paymentNameFieldValueState = TextFieldValue(text = payment.name)
