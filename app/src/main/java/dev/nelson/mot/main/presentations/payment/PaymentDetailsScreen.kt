@@ -145,9 +145,6 @@ fun PaymentDetailsLayout(
     LaunchedEffect(key1 = Unit, block = {
         delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial. Otherwise keyboard won't pop on
         paymentNameFocusRequester.requestFocus()
-//        if (payment.name.isNotEmpty()) {
-//            paymentNameFieldValueState = TextFieldValue(text = payment.name)
-//        }
     })
     ModalBottomSheetLayout(
         sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },

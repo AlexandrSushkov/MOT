@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.category_details
 
-import androidx.lifecycle.LiveData
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,9 +11,10 @@ import dev.nelson.mot.main.domain.use_case.category.AddNewCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.EditCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.util.SingleLiveEvent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,56 +27,56 @@ class CategoryDetailsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     // states
-    val categoryState: Flow<Category>
-        get() = _category
+    val categoryNameState
+        get() = _categoryNameState.asStateFlow()
+    private val _categoryNameState = MutableStateFlow(TextFieldValue())
 
     // actions
-    val closeScreenAction: LiveData<Unit>
-        get() = _closeScreen
+    val closeScreenAction
+        get() = _closeScreenAction.asSharedFlow()
+    private val _closeScreenAction = MutableSharedFlow<Unit>()
 
     // private data
-    private val _categoryId: Int? = extras.get<Int>("id")
-    private val _mode: SaveCategoryMode = _categoryId?.let { SaveCategoryMode.Edit } ?: SaveCategoryMode.Add
-    private val _category: Flow<Category> = _categoryId?.let { getCategoryUseCase.execute(it) } ?: flow { emit(Category.empty()) }
-    private val _closeScreen = SingleLiveEvent<Unit>()
-    private lateinit var initialCategory: Category
+    private val categoryId: Int? = extras.get<Int>("id")
+    private var initialCategory: Category? = null
 
     init {
         viewModelScope.launch {
-            _category.collect { initialCategory = it }
-        }
-    }
-
-    fun onSaveClick(categoryName: String) {
-        viewModelScope.launch {
-            if (initialCategory.name != categoryName) {
-                val newCategory = initialCategory.copyWith(categoryName.trimEnd())
-                when (_mode) {
-                    is SaveCategoryMode.Add -> addNewCategory(newCategory)
-                    is SaveCategoryMode.Edit -> editCategory(newCategory)
-                }
-            } else {
-                _closeScreen.call()
+            categoryId?.let { categoryId ->
+                getCategoryUseCase.execute(categoryId)
+                    .collect { category ->
+                        initialCategory = category
+                        _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))
+                    }
             }
         }
     }
 
-    private fun addNewCategory(category: Category) {
+    fun onNameChanged(textFieldValue: TextFieldValue){
+        _categoryNameState.value = textFieldValue
+    }
+
+    fun onSaveClick() {
         viewModelScope.launch {
+            initialCategory?.let { editCategory(it) } ?: addNewCategory()
+            _closeScreenAction.emit(Unit)
+        }
+    }
+
+    private fun addNewCategory() {
+        viewModelScope.launch {
+            val category = Category(_categoryNameState.value.text)
             addNewCategoryUseCase.execute(category)
-            _closeScreen.call()
         }
     }
 
     private fun editCategory(category: Category) {
         viewModelScope.launch {
-            editCategoryUseCase.execute(category)
-            _closeScreen.call()
+            val enteredName = _categoryNameState.value.text
+            if (category.name != enteredName) {
+                val modifiedCategory = category.copyWith(enteredName)
+                editCategoryUseCase.execute(modifiedCategory)
+            }
         }
-    }
-
-    private sealed class SaveCategoryMode {
-        object Add : SaveCategoryMode()
-        object Edit : SaveCategoryMode()
     }
 }

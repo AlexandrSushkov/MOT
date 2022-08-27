@@ -15,6 +15,7 @@ import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.main.util.constant.NetworkConstants
+import dev.nelson.mot.main.util.extention.leaveOnlyDigits
 import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -132,39 +133,34 @@ class PaymentDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val currentDateInMills = System.currentTimeMillis()
             val payment = Payment(
-                _paymentName.value?.text.orEmpty(),
-                (_cost.value?.text?.toIntOrNull() ?: 0),
+                _paymentName.value.text,
+                (_cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0),
                 dateInMills = currentDateInMills,
                 category = selectedCategory,
-                message = _message.value?.text.orEmpty()
+                message = _message.value.text
             )
             addNewPaymentUseCase.execute(payment)
             Timber.e("payment $payment")
-//            finishAction.call()
             _finishAction.emit(Unit)
-//            _finishAction.launchIn(viewModelScope)
         }
     }
 
     private fun editPayment() {
         viewModelScope.launch {
             val payment = Payment(
-                name = _paymentName.value?.text.orEmpty(),
-                cost = _cost.value?.text?.toIntOrNull() ?: 0,
-                message = _message.value?.text.orEmpty(),
+                name = _paymentName.value.text,
+                cost = _cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0,
+                message = _message.value.text,
                 id = initialPayment?.id,
                 date = initialPayment?.date,
                 dateInMills = dateInMills,
                 category = selectedCategory
             )
-            //todo, check if payment has been edited, if not, just close screen
             if (initialPayment != payment) {
                 editPaymentUseCase.execute(payment)
             }
             Timber.e("updated payment $payment")
-//            finishAction.call()
             _finishAction.emit(Unit)
-//            _finishAction.launchIn(viewModelScope)
         }
     }
 
