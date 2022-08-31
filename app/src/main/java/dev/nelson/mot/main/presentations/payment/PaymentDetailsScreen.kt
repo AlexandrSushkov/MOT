@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.payment
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -47,6 +48,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -64,6 +66,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @Composable
 fun PaymentDetailsScreen(closeScreen: () -> Unit) {
@@ -76,6 +79,20 @@ fun PaymentDetailsScreen(closeScreen: () -> Unit) {
                 viewModel.finishAction.collect { closeScreen.invoke() }
             }
         )
+
+        val context = LocalContext.current
+        val cldr: Calendar = Calendar.getInstance()
+        val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
+        val month: Int = cldr.get(Calendar.MONTH)
+        val year: Int = cldr.get(Calendar.YEAR)
+        val picker = DatePickerDialog(
+            context,
+            { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
+            year,
+            month,
+            day
+        )
+
         val date by viewModel.dateState.collectAsState("")
         val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
         PaymentDetailsLayout(
@@ -87,7 +104,7 @@ fun PaymentDetailsScreen(closeScreen: () -> Unit) {
             onNameChange = { viewModel.onPaymentNameChanged(it) },
             onCostChange = { viewModel.onCostChange(it) },
             onMessageChange = { viewModel.onMessageChanged(it) },
-            onDateClick = { viewModel.onDateClick() },
+            onDateClick = { picker.show() },
             onCategoryClick = { viewModel.onCategorySelected(it) },
             onSaveClick = { viewModel.onSaveClick() },
             categoryNameState = viewModel.categoryNameState,
