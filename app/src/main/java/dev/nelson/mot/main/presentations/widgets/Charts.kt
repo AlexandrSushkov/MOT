@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.mikephil.charting.charts.BarChart
 import dev.nelson.mot.main.presentations.ui.theme.MotColors
 import kotlin.random.Random
 
@@ -31,6 +35,7 @@ fun LineChartMotPreview() {
 fun LineChartMot(items: List<Float>){
     val random = Random(MotColors.chartColors.size)
     Row(modifier = Modifier
+        .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
         .height(20.dp)
         .fillMaxWidth()) {
         items.forEach() {
