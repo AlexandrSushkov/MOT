@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -87,7 +88,11 @@ fun App() {
                 Color.White
             }
         }
-
+        BackHandler(enabled = true, onBack = {
+            if (drawerState.isOpen){
+                scope.launch { drawerState.close() }
+            }
+        })
         Scaffold() { innerPadding ->
             Box(
                 modifier = Modifier
@@ -208,7 +213,7 @@ fun App() {
                         )
                         composable(
                             route = Statistic.route,
-                            content = { StatisticScreen() },
+                            content = { StatisticScreen(navController) },
                         )
                     }
                 }
