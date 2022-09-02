@@ -29,8 +29,10 @@
         <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
     </style>
 
-    <style name="SplashThemeLight" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_activity_window_background</item>
+    <style name="SplashThemeLight" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_anim_black</item>
+        <!-- Required for animated icons -->
+        <item name="windowSplashScreenAnimationDuration">1500</item>
     </style>
 
     <style name="ShapeAppearance.MyApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">

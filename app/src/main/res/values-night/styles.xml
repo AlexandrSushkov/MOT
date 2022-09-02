@@ -21,8 +21,10 @@
 <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
 
-    <style name="SplashThemeLight" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_activity_window_background</item>
+    <style name="SplashThemeLight" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_anim_white</item>
+        <!-- Required for animated icons -->
+        <item name="windowSplashScreenAnimationDuration">1500</item>
     </style>
 
 
