@@ -3,12 +3,10 @@ package dev.nelson.mot.main.presentations.nav
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavBackStackEntry
-import dev.nelson.mot.main.presentations.categories_list.CategoryListScreen
-import dev.nelson.mot.main.presentations.payment_list.PaymentListScreen
 
 interface MotDestinations {
     val icon: ImageVector
@@ -31,6 +29,12 @@ object Categories : MotDestinations {
 object Statistic : MotDestinations {
     override val icon = Icons.Default.BarChart
     override val route = "Statistic"
+//    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
+}
+
+object Settings : MotDestinations {
+    override val icon = Icons.Default.Settings
+    override val route = "Settings"
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 

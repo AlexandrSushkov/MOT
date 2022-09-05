@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.ViewModel
 
 sealed class MotDestinations(
     val icon: ImageVector,
@@ -20,7 +19,6 @@ sealed class MotDestinations(
 object PaymentList : MotDestinations(
     icon = Icons.Filled.PieChart,
     route = "PaymentList",
-//    vm = hiltViewModel()
     screen = {
 //        OverviewScreen()
     }

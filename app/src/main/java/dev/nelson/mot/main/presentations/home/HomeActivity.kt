@@ -1,20 +1,19 @@
 package dev.nelson.mot.main.presentations.home
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -22,9 +21,6 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,59 +37,61 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import dev.nelson.mot.main.presentations.categories_list.CategoryListScreen
-import dev.nelson.mot.main.presentations.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.nav.Categories
 import dev.nelson.mot.main.presentations.nav.Payments
+import dev.nelson.mot.main.presentations.nav.Settings
 import dev.nelson.mot.main.presentations.nav.Statistic
-import dev.nelson.mot.main.presentations.payment.PaymentDetailsScreen
-import dev.nelson.mot.main.presentations.payment_list.PaymentListScreen
-import dev.nelson.mot.main.presentations.statistic.StatisticScreen
+import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
+import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
+import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
+import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
+import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivityCompose : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
+
+    private val splashScreenViewModel: SplashScreenViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            App()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
-    }
-
-    companion object {
-        fun getIntent(context: Context): Intent = Intent(context, MainActivityCompose::class.java)
+        setContent {
+            MotApp()
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun AppPreview() {
-    App()
+private fun MotAppPreview() {
+    MotApp()
 }
 
+// TODO: move to navigation
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun App() {
+fun MotApp() {
+
+    val navController = rememberNavController()
+    val drawerValue = if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
+    val drawerState = rememberDrawerState(drawerValue)
+    val scope = rememberCoroutineScope()
+
+    fun getItemBackgroundByRoute(route: String): Color {
+        return if ((navController.currentDestination as NavDestination).route == route) Color.LightGray else Color.White
+    }
+
+    BackHandler(
+        enabled = drawerState.isOpen,
+        onBack = { scope.launch { drawerState.close() } }
+    )
+
     MotTheme {
-
-        val navController = rememberNavController()
-        val drawerValue = if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
-        val drawerState = rememberDrawerState(drawerValue)
-        val scope = rememberCoroutineScope()
-
-        fun getItemBackgroundByRoute(route: String): Color {
-            return if ((navController.currentDestination as NavDestination).route == route) {
-                Color.LightGray
-            } else {
-                Color.White
-            }
-        }
-        BackHandler(enabled = true, onBack = {
-            if (drawerState.isOpen){
-                scope.launch { drawerState.close() }
-            }
-        })
         Scaffold() { innerPadding ->
             Box(
                 modifier = Modifier
@@ -103,7 +102,7 @@ fun App() {
                     drawerState = drawerState,
                     gesturesEnabled = drawerState.isOpen,
                     drawerContent = {
-                        Box(
+                        Spacer(
                             modifier = Modifier
 //                                .background(Color.LightGray)
                                 .fillMaxSize()
@@ -177,7 +176,9 @@ fun App() {
                                             ?: navController.navigate(route = "PaymentDetailsScreen")
 
 
-                                    })
+                                    },
+                                    onActionIconClick = {navController.navigate(Settings.route)}
+                                )
                             },
                         )
                         composable(
@@ -215,10 +216,13 @@ fun App() {
                             route = Statistic.route,
                             content = { StatisticScreen(navController) },
                         )
+                        composable(
+                            route = Settings.route,
+                            content = { SettingsScreen(onNavIconClick = {navController.popBackStack()}) },
+                        )
                     }
                 }
             }
         }
-
     }
 }

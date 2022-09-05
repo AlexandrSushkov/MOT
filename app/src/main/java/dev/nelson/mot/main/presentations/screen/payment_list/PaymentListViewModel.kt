@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.payment_list
+package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableBoolean

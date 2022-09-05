@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.statistic
+package dev.nelson.mot.main.presentations.screen.statistic
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box

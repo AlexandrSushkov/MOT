@@ -7,22 +7,13 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher_foreground"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/SplashThemeNew">
         <activity
-            android:name=".presentations.home.MainActivityCompose"
-            android:exported="false"
-            android:label="@string/title_activity_main_compose"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".presentations.payment.PaymentDetailsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_payment_details"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".presentations.splash.SplashActivity"
+            android:name=".presentations.home.HomeActivity"
             android:exported="true"
-            android:theme="@style/SplashThemeLight">
+            android:label="@string/title_activity_main_compose"
+            android:theme="@style/SplashThemeNew"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

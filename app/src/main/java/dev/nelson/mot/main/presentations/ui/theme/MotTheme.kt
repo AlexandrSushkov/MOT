@@ -29,7 +29,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = MotColors.PurpleGrey40,
     tertiary = MotColors.Pink40,
     surface = Color(0xFF6281A0),
-    background = Color(0xFF6FA062)
+    background = Color(0xFF6FA062),
 
 
     /* Other default colors to override

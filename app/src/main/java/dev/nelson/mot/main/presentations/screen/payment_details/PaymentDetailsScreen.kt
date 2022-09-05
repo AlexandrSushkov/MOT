@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.payment
+package dev.nelson.mot.main.presentations.screen.payment_details
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.BorderStroke

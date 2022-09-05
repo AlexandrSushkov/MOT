@@ -21,27 +21,14 @@
 <!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
     </style>
 
-    <style name="SplashThemeLight" parent="Theme.SplashScreen">
+    <style name="SplashThemeNew" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon_anim_white</item>
         <!-- Required for animated icons -->
         <item name="windowSplashScreenAnimationDuration">1500</item>
+        <!-- switch to this theme after splash screen has been shown -->
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
-
-    <!--widgets-->
-
-    <!--bottom sheet dialog-->
-<!--    <style name="RoundedBottomSheetTheme" parent="@style/Widget.MaterialComponents.BottomSheet">-->
-<!--        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>-->
-<!--    </style>-->
-
-<!--    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">-->
-<!--        <item name="cornerFamily">rounded</item>-->
-<!--        <item name="cornerSizeTopRight">16dp</item>-->
-<!--        <item name="cornerSizeTopLeft">16dp</item>-->
-<!--        <item name="cornerSizeBottomRight">0dp</item>-->
-<!--        <item name="cornerSizeBottomLeft">0dp</item>-->
-<!--    </style>-->
 
     <style name="RoundedBottomSheetDialogTheme" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
 <!--    <style name="BaseRoundedBottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.Light">-->

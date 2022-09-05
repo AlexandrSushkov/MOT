@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package dev.nelson.mot.main.presentations.payment_list.compose.widgets
+package dev.nelson.mot.main.presentations.screen.payment_list.compose.widgets
 
 import android.animation.TimeInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
@@ -62,27 +62,7 @@ import androidx.lifecycle.MutableLiveData
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.util.compose.PreviewData
 
-@Preview(showBackground = true)
-@Composable
-fun ToolbarMotPreview() {
-    TopAppBarMot(title = "Toolbar", onClick = {})
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBarMot(
-    title: String,
-    onClick: () -> Unit
-) {
-    CenterAlignedTopAppBar(
-        navigationIcon = {
-            IconButton(onClick = onClick) {
-                Icon(Icons.Default.Menu, contentDescription = "drawer icon")
-            }
-        },
-        title = { Text(text = title) }
-    )
-}
 
 @Preview(showBackground = true)
 @Composable

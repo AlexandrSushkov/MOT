@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.category_details
+package dev.nelson.mot.main.presentations.screen.category_details
 
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue

@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.payment_list
+package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -17,12 +17,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.presentations.payment_list.compose.widgets.DismissiblePaymentListItem
-import dev.nelson.mot.main.presentations.payment_list.compose.widgets.TopAppBarMot
+import dev.nelson.mot.main.presentations.screen.payment_list.compose.widgets.DismissiblePaymentListItem
+import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.compose.PreviewData
 
 @Preview(showBackground = true)
@@ -34,12 +33,17 @@ fun PaymentListScreenPreview() {
         onItemClick = {},
         onSwipeToDelete = {},
         isExpanded = MutableLiveData(false),
-        openPaymentDetails = {}
+        openPaymentDetails = {},
+        onActionIconClick = {}
     )
 }
 
 @Composable
-fun PaymentListScreen(openDrawer: () -> Unit, openPaymentDetails: (Int?) -> Unit) {
+fun PaymentListScreen(
+    openDrawer: () -> Unit,
+    onActionIconClick: () -> Unit,
+    openPaymentDetails: (Int?) -> Unit
+) {
     val viewModel = hiltViewModel<PaymentListViewModel>()
     val payments by viewModel.paymentList.collectAsState(emptyList())
     val isExpanded = viewModel.expandedLiveData
@@ -50,7 +54,8 @@ fun PaymentListScreen(openDrawer: () -> Unit, openPaymentDetails: (Int?) -> Unit
         onItemClick = { openPaymentDetails.invoke(it.id?.toInt()) },
         onSwipeToDelete = { viewModel.deletePayment(it) },
         isExpanded,
-        openPaymentDetails = { openPaymentDetails.invoke(null) }
+        openPaymentDetails = { openPaymentDetails.invoke(null) },
+        onActionIconClick = onActionIconClick
     )
 }
 
@@ -61,13 +66,15 @@ fun PaymentListLayout(
     onItemClick: (Payment) -> Unit,
     onSwipeToDelete: (Payment) -> Unit,
     isExpanded: MutableLiveData<Boolean>,
-    openPaymentDetails: (Int?) -> Unit
+    openPaymentDetails: (Int?) -> Unit,
+    onActionIconClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBarMot(
                 title = "Payments list",
-                onClick = openDrawer
+                onNavigationIconClick = openDrawer,
+                onActionIconClick = onActionIconClick
             )
         },
         floatingActionButton = {
