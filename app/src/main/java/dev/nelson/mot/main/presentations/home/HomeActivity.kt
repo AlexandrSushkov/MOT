@@ -48,7 +48,9 @@ import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
+import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
@@ -57,11 +59,21 @@ class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.e("bundle1: ${intent.getBundleExtra(Constants.IS_OPENED_FROM_WIDGET)}")
+        Timber.e("extra: ${intent.extras?.getBoolean(Constants.IS_OPENED_FROM_WIDGET)}")
+        Timber.e("boolean extra: ${intent.getBooleanExtra(Constants.IS_OPENED_FROM_WIDGET, false)}")
+
         installSplashScreen().apply {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
         setContent {
-            MotApp()
+            Timber.e("bundle2: ${intent.getBundleExtra(Constants.IS_OPENED_FROM_WIDGET)}")
+            val isOpenedFromWidget = intent?.extras?.getBoolean(Constants.IS_OPENED_FROM_WIDGET, false) ?: false
+
+            MotApp(
+                isOpenedFromWidget = isOpenedFromWidget,
+                finishAction = { finishAndRemoveTask() }
+            )
         }
     }
 }
@@ -69,13 +81,16 @@ class HomeActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 private fun MotAppPreview() {
-    MotApp()
+    MotApp(
+        isOpenedFromWidget = false,
+        finishAction = {}
+    )
 }
 
 // TODO: move to navigation
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MotApp() {
+fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
     val navController = rememberNavController()
     val drawerValue = if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
@@ -89,6 +104,11 @@ fun MotApp() {
     BackHandler(
         enabled = drawerState.isOpen,
         onBack = { scope.launch { drawerState.close() } }
+    )
+
+    BackHandler(
+        enabled = isOpenedFromWidget,
+        onBack = { scope.launch { finishAction.invoke() } }
     )
 
     MotTheme {
@@ -164,7 +184,8 @@ fun MotApp() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = Payments.route
+                        startDestination = if (isOpenedFromWidget) "PaymentDetailsScreen" else Payments.route
+//                        startDestination = "PaymentDetailsScreen"
                     ) {
                         composable(
                             route = Payments.route,
@@ -177,7 +198,7 @@ fun MotApp() {
 
 
                                     },
-                                    onActionIconClick = {navController.navigate(Settings.route)}
+                                    onActionIconClick = { navController.navigate(Settings.route) }
                                 )
                             },
                         )
@@ -188,7 +209,16 @@ fun MotApp() {
                         )
                         composable(
                             route = "PaymentDetailsScreen",
-                            content = { PaymentDetailsScreen(closeScreen = { navController.popBackStack() }) },
+                            content = {
+                                PaymentDetailsScreen(closeScreen = {
+                                    if (isOpenedFromWidget) {
+                                        finishAction.invoke()
+                                    } else {
+                                        navController.popBackStack()
+                                    }
+                                }
+                                )
+                            },
                         )
                         composable(
                             route = Categories.route,
@@ -218,7 +248,7 @@ fun MotApp() {
                         )
                         composable(
                             route = Settings.route,
-                            content = { SettingsScreen(onNavIconClick = {navController.popBackStack()}) },
+                            content = { SettingsScreen(onNavIconClick = { navController.popBackStack() }) },
                         )
                     }
                 }
