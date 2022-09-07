@@ -2,25 +2,25 @@
 
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="bottomSheetDialogTheme">@style/RoundedBottomSheetDialogTheme</item>
-<!--        <item name="android:navigationBarColor">@color/color_white</item>-->
-<!--        <item name="android:statusBarColor">@color/color_white</item>-->
+        <!--        <item name="android:navigationBarColor">@color/color_white</item>-->
+        <!--        <item name="android:statusBarColor">@color/color_white</item>-->
         <item name="android:navigationBarColor">?attr/colorSurface</item>
         <item name="android:statusBarColor">?attr/colorSurface</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:font">@array/com_google_android_gms_fonts_certs</item>
         <item name="android:screenOrientation">fullSensor</item>
 
-<!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
-<!--        <item name="android:colorPrimaryDark">@color/testColorMint</item>-->
-<!--        <item name="android:colorAccent">@color/testColorRed</item>-->
-<!--        <item name="android:textColorPrimary">@color/testColorBlue</item>-->
-<!--        <item name="android:colorControlNormal">@color/testColorGreen</item>-->
+        <!--        <item name="android:colorPrimary">@color/testColorGray</item>-->
+        <!--        <item name="android:colorPrimaryDark">@color/testColorMint</item>-->
+        <!--        <item name="android:colorAccent">@color/testColorRed</item>-->
+        <!--        <item name="android:textColorPrimary">@color/testColorBlue</item>-->
+        <!--        <item name="android:colorControlNormal">@color/testColorGreen</item>-->
 
 
-<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
-<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-<!--        <item name="colorAccent">@color/colorAccent</item>-->
-<!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">@color/colorAccent</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 
     <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
@@ -55,24 +55,24 @@
     <!--widgets-->
 
     <!--bottom sheet dialog-->
-<!--    <style name="RoundedBottomSheetTheme" parent="@style/Widget.MaterialComponents.BottomSheet">-->
-<!--        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>-->
-<!--    </style>-->
+    <!--    <style name="RoundedBottomSheetTheme" parent="@style/Widget.MaterialComponents.BottomSheet">-->
+    <!--        <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>-->
+    <!--    </style>-->
 
-<!--    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">-->
-<!--        <item name="cornerFamily">rounded</item>-->
-<!--        <item name="cornerSizeTopRight">16dp</item>-->
-<!--        <item name="cornerSizeTopLeft">16dp</item>-->
-<!--        <item name="cornerSizeBottomRight">0dp</item>-->
-<!--        <item name="cornerSizeBottomLeft">0dp</item>-->
-<!--    </style>-->
+    <!--    <style name="CustomShapeAppearanceBottomSheetDialog" parent="">-->
+    <!--        <item name="cornerFamily">rounded</item>-->
+    <!--        <item name="cornerSizeTopRight">16dp</item>-->
+    <!--        <item name="cornerSizeTopLeft">16dp</item>-->
+    <!--        <item name="cornerSizeBottomRight">0dp</item>-->
+    <!--        <item name="cornerSizeBottomLeft">0dp</item>-->
+    <!--    </style>-->
 
     <style name="RoundedBottomSheetDialogTheme" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
-<!--    <style name="BaseRoundedBottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.Light">-->
+        <!--    <style name="BaseRoundedBottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.Light">-->
         <item name="android:windowIsFloating">false</item>
-<!--        <item name="bottomSheetStyle">@style/RoundedBottomSheetTheme</item>-->
-<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
-<!--        <item name="android:windowLightNavigationBar">true</item>-->
+        <!--        <item name="bottomSheetStyle">@style/RoundedBottomSheetTheme</item>-->
+        <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!--        <item name="android:windowLightNavigationBar">true</item>-->
     </style>
 
     <!--card view style-->
@@ -83,8 +83,18 @@
 
     <!--bottom app bar-->
     <style name="MotBottomAppBarTheme" parent="@style/Widget.MaterialComponents.BottomAppBar">
-<!--        <item name="android:backgroundTint">@color/color_white</item>-->
+        <!--        <item name="android:backgroundTint">@color/color_white</item>-->
         <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="Widget.Mot.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+    </style>
+
+    <style name="Widget.Mot.AppWidget.InnerView" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
 </resources>

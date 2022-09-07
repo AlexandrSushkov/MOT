@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.home
 
+import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -59,16 +60,11 @@ class HomeActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.e("bundle1: ${intent.getBundleExtra(Constants.IS_OPENED_FROM_WIDGET)}")
-        Timber.e("extra: ${intent.extras?.getBoolean(Constants.IS_OPENED_FROM_WIDGET)}")
-        Timber.e("boolean extra: ${intent.getBooleanExtra(Constants.IS_OPENED_FROM_WIDGET, false)}")
-
+        val isOpenedFromWidget = intent?.extras?.getBoolean(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, false) ?: false
         installSplashScreen().apply {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
         setContent {
-            Timber.e("bundle2: ${intent.getBundleExtra(Constants.IS_OPENED_FROM_WIDGET)}")
-            val isOpenedFromWidget = intent?.extras?.getBoolean(Constants.IS_OPENED_FROM_WIDGET, false) ?: false
 
             MotApp(
                 isOpenedFromWidget = isOpenedFromWidget,
