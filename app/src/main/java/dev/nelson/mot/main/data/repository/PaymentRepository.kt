@@ -24,6 +24,10 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
         motDatabase.paymentDao()
             .deletePayment(paymentEntity)
 
+    suspend fun deletePayments(paymentEntityList: List<PaymentEntity>) =
+        motDatabase.paymentDao()
+            .deletePayments(paymentEntityList)
+
     suspend fun getAllPaymentsWithCategoryOrderDateDesc(): List<PaymentWithCategory> =
         motDatabase.paymentDao()
             .getAllPaymentsWithCategoryOrderDateDescCor()

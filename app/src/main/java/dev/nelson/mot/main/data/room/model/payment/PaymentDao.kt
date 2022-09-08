@@ -34,6 +34,9 @@ interface PaymentDao {
     @Delete
     suspend fun deletePayment(paymentEntity: PaymentEntity)
 
+    @Delete
+    suspend fun deletePayments(paymentEntityList: List<PaymentEntity>)
+
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
     suspend fun getAllPaymentsWithCategoryCor(): List<PaymentWithCategory>
 

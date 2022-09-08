@@ -28,6 +28,8 @@ fun Payment.toPaymentEntity(): PaymentEntity =
         summary = message
     )
 
+fun List<Payment>.toPaymentEntityList(): List<PaymentEntity> = this.map { it.toPaymentEntity() }
+
 fun PaymentWithCategory.toPayment(): Payment {
     val paymentEntity: PaymentEntity = this.paymentEntity
     val categoryEntity: CategoryEntity? = this.categoryEntity

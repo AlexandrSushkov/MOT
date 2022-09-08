@@ -1,23 +1,23 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
-import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.use_case.payment.DeletePaymentUseCase
-import dev.nelson.mot.main.domain.use_case.payment.PaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.DeletePaymentsUseCase
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.SingleLiveEvent
 import dev.nelson.mot.main.util.StringUtils
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,76 +25,96 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
-    private val paymentUseCase: PaymentUseCase,
-    private val deletePaymentUseCase: DeletePaymentUseCase
+    private val getPaymentListUseCase: GetPaymentListUseCase,
+    private val deletePaymentsUseCase: DeletePaymentsUseCase,
 ) : BaseViewModel() {
 
     private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
     private val category: Category = extras[Constants.CATEGORY_KEY] ?: Category(StringUtils.EMPTY)
 
-    //    val payments = ObservableArrayList<Payment>()
-    val payments = ObservableArrayList<Payment>()
-    val paymentListLiveData: LiveData<List<Payment>> = liveData {
-//        val superheroList = loadSuperheroes()
-//        kotlinx.coroutines.delay(1500)
-        val paymentList = paymentUseCase.getAllPaymentsCor()
-        emit(paymentList)
-    }
-    val isLoading = ObservableBoolean()
-    val isShowEmptyPlaceholder = ObservableBoolean()
-
     val toolbarElevation = ObservableField<Int>()
 
-    //    val paymentAdapter = ObservableField<PaymentListAdapter2>()
-    var paymentListTitle = ObservableField(category.name.ifEmpty { "Recent Payments" })
-    val onPaymentEntityItemClickEvent: SingleLiveEvent<Payment> = SingleLiveEvent()
-    val swipeToDeleteAction: SingleLiveEvent<Unit> = SingleLiveEvent()
+    val snackBarVisibilityState
+        get() = _snackBarVisibilityState.asStateFlow()
+    private val _snackBarVisibilityState = MutableStateFlow(false)
 
-    val expandedLiveData: MutableLiveData<Boolean> = MutableLiveData()
-
-    val paymentListLivaData = MutableLiveData<List<Payment>>()
-
-    private var _paymentList: Flow<List<Payment>> = paymentUseCase
-        .getAllPaymentsWithCategoryOrderDateDescFlow()
-
-//        .asLiveData(viewModelScope.coroutineContext)
-
-//    private var _paymentListFlow = paymentUseCase
-//        .getAllPaymentsWithCategoryOrderDateDescFlow()
-//        .collect { paymentAdapter.get()?.setData(it) }
+    val deletedItemsCount: Flow<Int>
+        get() = _deletedItemsCount.asStateFlow()
+    private val _deletedItemsCount = MutableStateFlow(0)
 
     val paymentList: Flow<List<Payment>>
-        get() = _paymentList
-//        get() = flowOf(p)
+        get() = _paymentList.asStateFlow()
+    private val _paymentList = MutableStateFlow(listOf<Payment>())
+    private var initialPaymentList = mutableListOf<Payment>()
+    private val paymentsToDeleteList = mutableListOf<Payment>()
+    private var deletePaymentJob: Job? = null
 
-
-    fun onItemClick(payment: Payment) {
-        Timber.d("on payment $payment click")
-        onPaymentEntityItemClickEvent.postValue(payment)
-    }
-
-    private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
-
-        return when (mode) {
-            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) }
-                ?: paymentUseCase.getAllPaymentsWithoutCategory()
-            is Mode.RecentPayments -> paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
-        }
-    }
-
-    fun deletePayment(payment: Payment) {
+    init {
         viewModelScope.launch {
-            deletePaymentUseCase.execute(payment)
+            getPaymentListUseCase.execute()
+                .collect {
+                    initialPaymentList.addAll(it)
+                    _paymentList.value = it
+                }
         }
     }
 
-    fun onFabClick() {
-        onPaymentEntityItemClickEvent.call()
+    fun onSwipeToDelete(payment: Payment) {
+        // cancel previous jot if exist
+        deletePaymentJob?.cancel()
+        // create new one
+        deletePaymentJob = viewModelScope.launch {
+            paymentsToDeleteList.add(payment)
+            _deletedItemsCount.value = paymentsToDeleteList.size
+            showSnackBar()
+            val temp = mutableListOf<Payment>().apply {
+                addAll(_paymentList.value)
+                remove(payment)
+            }
+            _paymentList.value = temp
+            // ui updated, removed items is not visible on the screen
+            // wait
+            delay(4000)
+            hideSnackBar()
+            // remove payments from DB
+            deletePaymentsUseCase.execute(paymentsToDeleteList)
+            Timber.e("Deleted: $paymentsToDeleteList")
+            clearItemsToDeleteList()
+        }
     }
 
-    //    suspend fun loadPeyments(): List<Payment> {
-//        return getSuperheroList()
+    fun onUndoDeleteClick() {
+        hideSnackBar()
+        deletePaymentJob?.let {
+            it.cancel()
+            _paymentList.value = initialPaymentList
+            clearItemsToDeleteList()
+        }
+    }
+
+    private fun clearItemsToDeleteList(){
+        paymentsToDeleteList.clear()
+        _deletedItemsCount.value = paymentsToDeleteList.size
+    }
+
+    private fun showSnackBar() {
+        _snackBarVisibilityState.value = true
+    }
+
+    private fun hideSnackBar() {
+        _snackBarVisibilityState.value = false
+    }
+
+
+//    private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
+//
+//        return when (mode) {
+//            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) }
+//                ?: paymentUseCase.getAllPaymentsWithoutCategory()
+//            is Mode.RecentPayments -> paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
+//        }
 //    }
+
     private sealed class Mode {
         object RecentPayments : Mode()
         object PaymentsForCategory : Mode()

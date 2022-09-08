@@ -10,6 +10,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -17,26 +19,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.MutableLiveData
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.presentations.screen.payment_list.compose.widgets.DismissiblePaymentListItem
+import dev.nelson.mot.main.presentations.screen.payment_list.compose.widgets.MotDismissiblePaymentListItem
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.compose.PreviewData
 
-@Preview(showBackground = true)
-@Composable
-fun PaymentListScreenPreview() {
-    PaymentListLayout(
-        openDrawer = {},
-        paymentList = PreviewData.paymentListPreview,
-        onItemClick = {},
-        onSwipeToDelete = {},
-        isExpanded = MutableLiveData(false),
-        openPaymentDetails = {},
-        onActionIconClick = {}
-    )
-}
 
 @Composable
 fun PaymentListScreen(
@@ -46,14 +35,11 @@ fun PaymentListScreen(
 ) {
     val viewModel = hiltViewModel<PaymentListViewModel>()
     val payments by viewModel.paymentList.collectAsState(emptyList())
-    val isExpanded = viewModel.expandedLiveData
 
     PaymentListLayout(
         openDrawer,
         payments,
         onItemClick = { openPaymentDetails.invoke(it.id?.toInt()) },
-        onSwipeToDelete = { viewModel.deletePayment(it) },
-        isExpanded,
         openPaymentDetails = { openPaymentDetails.invoke(null) },
         onActionIconClick = onActionIconClick
     )
@@ -64,11 +50,13 @@ fun PaymentListLayout(
     openDrawer: () -> Unit,
     paymentList: List<Payment>,
     onItemClick: (Payment) -> Unit,
-    onSwipeToDelete: (Payment) -> Unit,
-    isExpanded: MutableLiveData<Boolean>,
     openPaymentDetails: (Int?) -> Unit,
     onActionIconClick: () -> Unit,
 ) {
+    val viewModel = hiltViewModel<PaymentListViewModel>()
+    val snackbarVisibleState by viewModel.snackBarVisibilityState.collectAsState()
+    val deletedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
+
     Scaffold(
         topBar = {
             TopAppBarMot(
@@ -80,39 +68,61 @@ fun PaymentListLayout(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { openPaymentDetails.invoke(null) },
-            ) {
-                Icon(Icons.Default.Add, "categories fab")
-            }
+                content = { Icon(Icons.Default.Add, "categories fab") }
+            )
         },
+        snackbarHost = {
+            if (snackbarVisibleState) {
+                Snackbar(
+                    action = {
+                        androidx.compose.material3.TextButton(
+                            onClick = { viewModel.onUndoDeleteClick() },
+                            content = { Text("Undo") }
+                        )
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    content = { Text(text = "$deletedItemsCount Deleted") }
+                )
+            }
+        }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            PaymentList(paymentList, onItemClick, onSwipeToDelete, isExpanded)
+            PaymentList(paymentList, onItemClick)
         }
     }
 
 }
-
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentList(
     paymentList: List<Payment>,
     onItemClick: (Payment) -> Unit,
-    onSwipeToDelete: (Payment) -> Unit,
-    isExpanded: MutableLiveData<Boolean>
 ) {
+    val viewModel = hiltViewModel<PaymentListViewModel>()
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
         items(paymentList,
             key = { it.id ?: 0 }
         ) {
-            DismissiblePaymentListItem(
+            MotDismissiblePaymentListItem(
                 payment = it,
                 onClick = { payment -> onItemClick.invoke(payment) },
-                onSwipeToDelete = { payment -> onSwipeToDelete.invoke(payment) },
-                isExpanded = isExpanded
+                onSwipeToDelete = { payment -> viewModel.onSwipeToDelete(payment) }
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PaymentListScreenPreview() {
+    PaymentListLayout(
+        openDrawer = {},
+        paymentList = PreviewData.paymentListPreview,
+        onItemClick = {},
+        openPaymentDetails = {}
+    ) {}
 }
