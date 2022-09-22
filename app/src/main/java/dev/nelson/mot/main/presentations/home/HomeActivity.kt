@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -42,6 +43,7 @@ import dev.nelson.mot.main.presentations.nav.Categories
 import dev.nelson.mot.main.presentations.nav.Payments
 import dev.nelson.mot.main.presentations.nav.Settings
 import dev.nelson.mot.main.presentations.nav.Statistic
+import dev.nelson.mot.main.presentations.screen.categories_list.CategoriesListViewModel
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
@@ -220,6 +222,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                             route = Categories.route,
                             content = {
                                 CategoryListScreen(
+                                    viewModel = hiltViewModel(),
                                     openDrawer = { scope.launch { drawerState.open() } },
                                     openCategoryDetails = { categoryId ->
                                         categoryId?.let { navController.navigate("CategoryDetailsScreen?id=$categoryId") }

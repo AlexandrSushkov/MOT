@@ -10,9 +10,24 @@
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>
     <string name="title_activity_payment_details" translatable="false">PaymentDetailsActivity</string>
-    <string name="title_activity_main_compose">MainActivityCompose</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
-    <string name="app_widget_description">This is an app widget description</string>
+    <string name="title_activity_main_compose" translatable="false">MainActivityCompose</string>
+    <string name="appwidget_text" translatable="false">EXAMPLE</string>
+    <string name="add_widget" translatable="false">Add widget</string>
+    <string name="app_widget_description" translatable="false">This is an app widget description</string>
+
+    <!--text-->
+    <string name="text_category" translatable="false">Category</string>
+    <string name="text_category_name" translatable="false">Category name</string>
+    <string name="text_categories" translatable="false">Categories</string>
+    <string name="text_payment" translatable="false">Payment</string>
+    <string name="text_payments" translatable="false">Payments</string>
+    <string name="text_add" translatable="false">Add</string>
+    <string name="text_edit" translatable="false">Edit</string>
+
+    <!--Accessibility text-->
+    <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
+    <string name="accessibility_category_icon" translatable="false">category icon</string>
+    <string name="accessibility_add_icon" translatable="false">add icon</string>
+
 
 </resources>
