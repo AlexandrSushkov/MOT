@@ -101,7 +101,6 @@ fun MotExpandableArea(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ExpandableContent(
     text: String,

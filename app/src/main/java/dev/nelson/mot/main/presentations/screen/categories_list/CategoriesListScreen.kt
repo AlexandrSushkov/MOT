@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.categories_list
 
+import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -18,12 +19,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
@@ -31,6 +35,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.TextButton
@@ -46,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,7 +62,9 @@ import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.presentations.ui.theme.MotColors
+import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.util.Constants
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
 
@@ -68,15 +76,20 @@ fun CategoryListScreen(
     openPaymentsByCategory: (Category) -> Unit
 ) {
 
-    val categories by viewModel.categoriesFlow.collectAsState(initial = emptyList())
-    val categoryId by viewModel.categoryId.collectAsState()
+    val categories by viewModel.categories.collectAsState(initial = emptyList())
+    val categoryToEditId by viewModel.categoryToEditId.collectAsState()
     val categoryNameState by viewModel.categoryNameState.collectAsState()
     val openDialog by viewModel.showEditCategoryDialogAction.collectAsState(initial = false)
     val categoryToEdit by viewModel.showEditCategoryDialogAction.collectAsState(initial = false)
+    val snackbarVisibleState by viewModel.snackBarVisibilityState.collectAsState()
+    val deleteItemsSnackbarText by viewModel.deleteItemsSnackbarText.collectAsState(StringUtils.EMPTY)
+    val deletedItemsMessage by viewModel.deletedItemsMessage.collectAsState(StringUtils.EMPTY)
+    val showDeletedMessageToast by viewModel.showDeletedItemsMessageToast.collectAsState(false)
 
     CategoryListLayout(
         openDrawer = openDrawer,
         categories = categories,
+        categoryToEditId = categoryToEditId,
         onCategoryClick = openPaymentsByCategory,
         openCategoryDetails = openCategoryDetails,
         categoryNameState = categoryNameState,
@@ -86,11 +99,17 @@ fun CategoryListScreen(
         onAddCategoryClick = { viewModel.onAddCategoryClick() },
         onCategoryNameChanged = { viewModel.onNameChanged(it) },
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
-        onSaveCategoryClick = { viewModel.onSaveCategoryClick() }
+        onSaveCategoryClick = { viewModel.onSaveCategoryClick() },
+        onSwipeCategory = { viewModel.onSwipeCategory(it) },
+        snackbarVisibleState = snackbarVisibleState,
+        deleteItemsSnackbarText = deleteItemsSnackbarText,
+        undoDeleteClick = { viewModel.onUndoDeleteClick() },
+        deletedItemsMessage = deletedItemsMessage,
+        showDeletedMessageToast = showDeletedMessageToast
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun CategoryListLayout(
     categories: List<CategoryListItemModel>,
@@ -104,17 +123,29 @@ fun CategoryListLayout(
     onAddCategoryClick: () -> Unit,
     onCategoryNameChanged: (TextFieldValue) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
-    onSaveCategoryClick: () -> Unit
+    onSaveCategoryClick: () -> Unit,
+    onSwipeCategory: (CategoryListItemModel.CategoryItemModel) -> Unit,
+    categoryToEditId: Int?,
+    snackbarVisibleState: Boolean,
+    deleteItemsSnackbarText: String,
+    undoDeleteClick: () -> Unit,
+    deletedItemsMessage: String,
+    showDeletedMessageToast: Boolean,
 ) {
 
     if (openDialog) {
         EditCategoryDialog(
+            categoryToEditId = categoryToEditId,
             categoryNameState = categoryNameState,
             closeEditCategoryDialog = closeEditCategoryDialog,
             onCategoryNameChanged = onCategoryNameChanged,
             onSaveCategoryClick = onSaveCategoryClick,
             openCategoryDetails = openCategoryDetails
         )
+    }
+
+    if (showDeletedMessageToast){
+        Toast.makeText(LocalContext.current, deletedItemsMessage, Toast.LENGTH_SHORT).show()
     }
 
     Scaffold(
@@ -136,14 +167,22 @@ fun CategoryListLayout(
                 }
             )
         },
+        snackbarHost = {
+            if (snackbarVisibleState) {
+                Snackbar(
+                    action = {
+                        TextButton(
+                            onClick = undoDeleteClick,
+                            content = { Text("Undo") }
+                        )
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    content = { Text(text = deleteItemsSnackbarText) }
+                )
+            }
+        },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddCategoryClick,
-//                {
-//                    openCategoryDetails.invoke(null)
-//                    onAddCategoryClick
-//                },
-            ) {
+            FloatingActionButton(onClick = onAddCategoryClick) {
                 Icon(Icons.Default.Add, stringResource(R.string.accessibility_add_icon))
             }
         },
@@ -158,65 +197,41 @@ fun CategoryListLayout(
                 content = {
                     categories.forEach { categoryListItem ->
                         if (categoryListItem is CategoryListItemModel.CategoryItemModel) {
-                            item {
-                                var checked by remember { mutableStateOf(categoryListItem.category.isFavorite) }
+                            item(key = categoryListItem.key) {
 
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .combinedClickable(
-                                            onClick = { onCategoryClick.invoke(categoryListItem.category) },
-                                            onLongClick = {
-//                                                categoryListItem.category.id?.let { categoryId ->
-//                                                    openCategoryDetails.invoke(categoryId)
-//                                                }
-
-                                                categoryListItem.category.id?.let {
-                                                    onCategoryLongPress.invoke(categoryListItem.category)
-//                                                    viewModel.onCategoryLongPress(categoryListItem.category)
-                                                }
-                                            }
-                                        ),
-                                    shape = RoundedCornerShape(0.dp)
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 8.dp, horizontal = 16.dp)
-                                    ) {
-                                        Text(
-                                            text = categoryListItem.category.name,
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .align(Alignment.CenterVertically),
-                                            style = MaterialTheme.typography.subtitle1
-                                        )
-                                        if (categoryListItem.category.id != null) {
-                                            IconToggleButton(
-                                                checked = checked,
-                                                onCheckedChange = { isChecked ->
-                                                    checked = isChecked
-                                                    onFavoriteClick.invoke(categoryListItem.category, isChecked)
-                                                },
-                                            ) {
-                                                val tint by animateColorAsState(
-                                                    if (checked) MotColors.FavoriteButtonOnBackground
-                                                    else MotColors.FavoriteButtonOffBackground
-                                                )
-                                                Icon(
-                                                    Icons.Filled.Star,
-                                                    contentDescription = null,
-                                                    tint = tint,
-                                                    modifier = Modifier.size(24.dp)
-                                                )
-                                            }
+                                val dismissState = rememberDismissState(
+                                    confirmStateChange = { dismissValue ->
+                                        if (dismissValue == DismissValue.DismissedToStart) {
+//                                            viewModel.onSwipeToDelete(payment)
+                                            onSwipeCategory.invoke(categoryListItem)
+                                            true
+                                        } else {
+                                            false
                                         }
                                     }
-                                }
+                                )
+                                categoryListItem.category.id?.let {
+                                    MotDismissibleListItem(
+                                        dismissState = dismissState,
+                                        dismissContent = {
+                                            CategoryListItem(
+                                                categoryListItem.category,
+                                                onCategoryClick,
+                                                onCategoryLongPress,
+                                                onFavoriteClick,
+                                            )
+                                        }
+                                    )
+                                } ?: CategoryListItem(
+                                    categoryListItem.category,
+                                    onCategoryClick,
+                                    onCategoryLongPress,
+                                    onFavoriteClick
+                                )
                             }
                         }
                         if (categoryListItem is CategoryListItemModel.Letter) {
-                            stickyHeader {
+                            stickyHeader(key = categoryListItem.key) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -231,22 +246,71 @@ fun CategoryListLayout(
                             }
                         }
                     }
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.White)
-                                .heightIn(60.dp)
-                        )
-                    }
+//                    item() { Footer() }
                 }
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CategoryListItem(
+    category: Category,
+    onCategoryClick: (Category) -> Unit,
+    onCategoryLongPress: (Category) -> Unit,
+    onFavoriteClick: (Category, Boolean) -> Unit,
+) {
+    var checked by remember { mutableStateOf(category.isFavorite) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .combinedClickable(
+                onClick = { onCategoryClick.invoke(category) },
+                onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
+            ),
+        shape = RoundedCornerShape(0.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            Text(
+                text = category.name,
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
+                style = MaterialTheme.typography.subtitle1
+            )
+            if (category.id != null) {
+                IconToggleButton(
+                    checked = checked,
+                    onCheckedChange = { isChecked ->
+                        checked = isChecked
+                        onFavoriteClick.invoke(category, isChecked)
+                    },
+                ) {
+                    val tint by animateColorAsState(
+                        if (checked) MotColors.FavoriteButtonOnBackground
+                        else MotColors.FavoriteButtonOffBackground
+                    )
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
+                        tint = tint,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun EditCategoryDialog(
+    categoryToEditId: Int?,
     categoryNameState: TextFieldValue,
     onCategoryNameChanged: (TextFieldValue) -> Unit,
     closeEditCategoryDialog: () -> Unit,
@@ -295,9 +359,9 @@ fun EditCategoryDialog(
         },
         confirmButton = {
             TextButton(onClick = onSaveCategoryClick) {
-//                categoryId?.let { Text(text = "Edit") } ?: Text(text = "Add")
+                val textId = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
                 Text(
-                    text = stringResource(R.string.text_add),
+                    text = stringResource(textId),
                     style = MaterialTheme.typography.button
                 )
             }
@@ -305,22 +369,39 @@ fun EditCategoryDialog(
     )
 }
 
+@Composable
+private fun Footer() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .heightIn(60.dp)
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun CategoryListLayoutPreview() {
     CategoryListLayout(
-        openDrawer = {},
         categories = PreviewData.categoriesListItemsPreview,
+        categoryNameState = TextFieldValue(),
+        openDialog = false,
+        openDrawer = {},
         onCategoryClick = {},
         openCategoryDetails = {},
         onFavoriteClick = { _, _ -> },
-        onSaveCategoryClick = {},
-        onCategoryNameChanged = {},
-        categoryNameState = TextFieldValue(),
         closeEditCategoryDialog = {},
         onAddCategoryClick = {},
+        onCategoryNameChanged = {},
         onCategoryLongPress = {},
-        openDialog = false
+        onSaveCategoryClick = {},
+        onSwipeCategory = {},
+        categoryToEditId = null,
+        snackbarVisibleState = false,
+        deleteItemsSnackbarText = "",
+        undoDeleteClick = {},
+        deletedItemsMessage = "toast",
+        showDeletedMessageToast = false
     )
 }
 
@@ -328,6 +409,7 @@ private fun CategoryListLayoutPreview() {
 @Composable
 private fun EditCategoryDialogPreview() {
     EditCategoryDialog(
+        categoryToEditId = null,
         onSaveCategoryClick = {},
         onCategoryNameChanged = {},
         categoryNameState = TextFieldValue(),

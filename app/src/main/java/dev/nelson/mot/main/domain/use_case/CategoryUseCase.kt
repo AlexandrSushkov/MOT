@@ -8,6 +8,7 @@ import dev.nelson.mot.main.util.extention.isEven
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.random.Random
 
 class CategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
@@ -17,17 +18,20 @@ class CategoryUseCase @Inject constructor(private val categoryRepository: Catego
         .map { value: Map<Char, List<Category>> ->
             return@map listOf<CategoryListItemModel>().toMutableList().apply {
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString()))
-                    add(CategoryListItemModel.Empty)
-                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category) })
+                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+                    add(CategoryListItemModel.Empty(generateKey()))
+                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
                     if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty)
+                        add(CategoryListItemModel.Empty(generateKey()))
                     }
                 }
             }
         }.map {
-            it.add(CategoryListItemModel.Footer)
+            it.add(CategoryListItemModel.Footer(generateKey()))
             return@map it
         }
+
+    private fun generateKey() = Random.nextInt(Int.MAX_VALUE)
+
 
 }

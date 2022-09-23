@@ -40,8 +40,12 @@ val categoryNames = listOf(
 )
 
 object PreviewData {
+    const val DEFAUT_KEY= 0
+
     val categoryPreview = Category(categoryNames.first())
+
     val categoryEntityPreview = Category(categoryNames.first()).toCategoryEntity()
+
     val paymentItemPreview = Payment(
         "payment name",
         100,
@@ -51,6 +55,7 @@ object PreviewData {
     val paymentListPreview: List<Payment> = (1..30).map { Payment("payment $it", it * 10, id = it.toLong(), category = categoryPreview) }
 
     val categoriesListItemsPreview: List<CategoryListItemModel> = getCategoryList()
+
     val categoriesSelectListItemsPreview: List<Category> = categoryNames
         .sortedBy { it.first() }
         .mapIndexed { index, categoryName -> Category(categoryName, id = index) }
@@ -68,17 +73,18 @@ object PreviewData {
             .apply {
                 //no category item
                 val noCategory = Category("No category")
-                add(CategoryListItemModel.CategoryItemModel(noCategory))
+                add(CategoryListItemModel.CategoryItemModel(noCategory, DEFAUT_KEY))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString()))
-                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category) })
+                    add(CategoryListItemModel.Letter(letter.toString(), DEFAUT_KEY))
+                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, DEFAUT_KEY) })
                 }
             }
     }
 
-    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview)
-    val letterPreview = CategoryListItemModel.Letter("A")
+    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview, DEFAUT_KEY)
+
+    val letterPreview = CategoryListItemModel.Letter("A", DEFAUT_KEY)
 }
 
 class PaymentPreviewProvider : PreviewParameterProvider<Payment> {

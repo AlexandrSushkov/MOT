@@ -8,6 +8,7 @@ import dev.nelson.mot.main.util.extention.isEven
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.random.Random
 
 class GetAllCategoriesOrderedByNameNew @Inject constructor(private val categoryRepository: CategoryRepository) {
 
@@ -24,22 +25,24 @@ class GetAllCategoriesOrderedByNameNew @Inject constructor(private val categoryR
             .apply {
                 //no category item
                 val noCategory = Category("No category")
-                add(CategoryListItemModel.CategoryItemModel(noCategory))
+                add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString()))
-                    add(CategoryListItemModel.Empty)
+                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+                    add(CategoryListItemModel.Empty(generateKey()))
                     addAll(categoryList.map { category -> category.toCategoryItemModel() })
                     if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty)
+                        add(CategoryListItemModel.Empty(generateKey()))
                     }
                 }
                 //add footer
-                add(CategoryListItemModel.Footer)
+                add(CategoryListItemModel.Footer(generateKey()))
             }
     }
 
+    private fun generateKey() = Random.nextInt(Int.MAX_VALUE)
+
     private fun Category.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
-        return CategoryListItemModel.CategoryItemModel(this)
+        return CategoryListItemModel.CategoryItemModel(this, generateKey())
     }
 }

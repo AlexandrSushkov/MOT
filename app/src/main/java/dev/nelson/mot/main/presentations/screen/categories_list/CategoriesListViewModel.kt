@@ -12,12 +12,17 @@ import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.EditCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByNameNew
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.StringUtils
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,18 +41,50 @@ class CategoriesListViewModel @Inject constructor(
         get() = _categoryNameState.asStateFlow()
     private val _categoryNameState = MutableStateFlow(TextFieldValue())
 
-    val categoryId
-        get() = _categoryId.asStateFlow()
-    private val _categoryId = MutableStateFlow<Int?>(null)
+    val categoryToEditId
+        get() = _categoryToEditId.asStateFlow()
+    private val _categoryToEditId = MutableStateFlow<Int?>(null)
+
+    val categories
+        get() = _categories.asStateFlow()
+    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
+
+    val deleteItemsSnackbarText: Flow<String>
+        get() = _deleteItemsSnackbarText.asStateFlow()
+    private val _deleteItemsSnackbarText = MutableStateFlow(StringUtils.EMPTY)
+
+    val deletedItemsMessage: Flow<String>
+        get() = _deletedItemsMessage.asStateFlow()
+    private val _deletedItemsMessage = MutableStateFlow(StringUtils.EMPTY)
+
+    val snackBarVisibilityState
+        get() = _snackBarVisibilityState.asStateFlow()
+    private val _snackBarVisibilityState = MutableStateFlow(false)
 
     // actions
     val showEditCategoryDialogAction
         get() = _showEditCategoryDialogAction.asSharedFlow()
     private val _showEditCategoryDialogAction = MutableSharedFlow<Boolean>()
 
-    val categoriesFlow: Flow<List<CategoryListItemModel>> = getAllCategoriesOrdered.execute(true)
+    val showDeletedItemsMessageToast
+        get() = _showDeletedItemsMessageToast.asSharedFlow()
+    private val _showDeletedItemsMessageToast = MutableSharedFlow<Boolean>()
 
+    // data
     private var initialCategory: Category? = null
+    private val initialCategoriesList = mutableListOf<CategoryListItemModel>()
+    private var deleteCategoryJob: Job? = null
+    private val categoriesToDeleteList = mutableListOf<Category>()
+
+    init {
+        viewModelScope.launch {
+            getAllCategoriesOrdered.execute(true).collect {
+                initialCategoriesList.clear()
+                initialCategoriesList.addAll(it)
+                _categories.value = it
+            }
+        }
+    }
 
     fun onFavoriteClick(category: Category, isChecked: Boolean) = viewModelScope.launch {
         val checkedCat = Category(category.name, isChecked, category.id)
@@ -63,7 +100,7 @@ class CategoriesListViewModel @Inject constructor(
     fun onCategoryLongPress(category: Category) {
         viewModelScope.launch {
             initialCategory = category
-            _categoryId.value = category.id
+            _categoryToEditId.value = category.id
             _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))
             _showEditCategoryDialogAction.emit(true)
         }
@@ -95,7 +132,7 @@ class CategoriesListViewModel @Inject constructor(
     fun closeEditCategoryDialog() {
         viewModelScope.launch {
             initialCategory = null
-            _categoryId.value = null
+            _categoryToEditId.value = null
             _showEditCategoryDialogAction.emit(false)
         }
     }
@@ -117,8 +154,67 @@ class CategoriesListViewModel @Inject constructor(
         }
     }
 
-    private fun deleteCategory(category: Category) = viewModelScope.launch {
-        deleteCategoryUseCase.execute(category)
+    fun onSwipeCategory(categoryItemModel: CategoryListItemModel.CategoryItemModel) {
+        // cancel previous jot if exist
+        deleteCategoryJob?.cancel()
+        // create new one
+        deleteCategoryJob = viewModelScope.launch {
+            categoriesToDeleteList.add(categoryItemModel.category)
+            showSnackBar()
+            val temp = mutableListOf<CategoryListItemModel>().apply {
+                addAll(_categories.value)
+                remove(categoryItemModel)
+            }
+            _categories.value = temp
+            // ui updated, removed items is not visible on the screen
+            // wait
+            delay(4000)
+            hideSnackBar()
+            // remove payments from DB
+            deleteCategoryUseCase.execute(categoriesToDeleteList)
+            Timber.e("Deleted: $categoriesToDeleteList")
+            showDeletedItemsMessage()
+            clearItemsToDeleteList()
+        }
+    }
+
+    private suspend fun showDeletedItemsMessage() {
+        val itemsWord = if (categoriesToDeleteList.size == 1) {
+            "item"
+        } else {
+            "items"
+        }
+        _deletedItemsMessage.value = "${categoriesToDeleteList.size} $itemsWord deleted"
+        _showDeletedItemsMessageToast.emit(true)
+        delay(200)
+        _showDeletedItemsMessageToast.emit(false)
+    }
+
+    fun onUndoDeleteClick() {
+        hideSnackBar()
+        deleteCategoryJob?.let {
+            _categories.value = initialCategoriesList
+            clearItemsToDeleteList()
+            it.cancel()
+        }
+    }
+
+    private fun clearItemsToDeleteList() {
+        categoriesToDeleteList.clear()
+    }
+
+    private fun showSnackBar() {
+        val itemsWord = if (categoriesToDeleteList.size == 1) {
+            "item"
+        } else {
+            "items"
+        }
+        _deleteItemsSnackbarText.value = "${categoriesToDeleteList.size} $itemsWord will be deleted"
+        _snackBarVisibilityState.value = true
+    }
+
+    private fun hideSnackBar() {
+        _snackBarVisibilityState.value = false
     }
 
 }

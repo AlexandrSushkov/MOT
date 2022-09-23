@@ -2,12 +2,13 @@ package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.repository.CategoryRepository
 import dev.nelson.mot.main.data.model.CategoryListItemModel
+import dev.nelson.mot.main.data.repository.CategoryRepository
 import dev.nelson.mot.main.util.extention.isEven
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.random.Random
 
 class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepository: CategoryRepository) {
 
@@ -27,24 +28,26 @@ class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepo
             .apply {
                 //no category item
                 val noCategory = Category("No category")
-                add(CategoryListItemModel.CategoryItemModel(noCategory))
-                add(CategoryListItemModel.Empty)
+                add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
+                add(CategoryListItemModel.Empty(generateKey()))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString()))
-                    add(CategoryListItemModel.Empty)
+                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+                    add(CategoryListItemModel.Empty(generateKey()))
                     addAll(categoryList.map { category -> category.toCategoryItemModel() })
                     if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty)
+                        add(CategoryListItemModel.Empty(generateKey()))
                     }
                 }
                 //add footer
-                add(CategoryListItemModel.Footer)
+                add(CategoryListItemModel.Footer(generateKey()))
             }
     }
 
+    private fun generateKey() = Random.nextInt(Int.MAX_VALUE)
+
     private fun Category.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
-        return CategoryListItemModel.CategoryItemModel(this)
+        return CategoryListItemModel.CategoryItemModel(this, generateKey())
     }
 
 }

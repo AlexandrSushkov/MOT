@@ -28,6 +28,6 @@
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
     <string name="accessibility_category_icon" translatable="false">category icon</string>
     <string name="accessibility_add_icon" translatable="false">add icon</string>
-
+    <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
 
 </resources>

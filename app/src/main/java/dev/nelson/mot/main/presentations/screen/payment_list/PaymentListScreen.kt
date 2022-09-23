@@ -1,11 +1,11 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -14,6 +14,7 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,10 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.presentations.screen.payment_list.compose.widgets.MotDismissiblePaymentListItem
+import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.compose.PreviewData
-
 
 @Composable
 fun PaymentListScreen(
@@ -93,7 +93,7 @@ fun PaymentListLayout(
 
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentList(
     paymentList: List<Payment>,
@@ -106,11 +106,26 @@ fun PaymentList(
     ) {
         items(paymentList,
             key = { it.id ?: 0 }
-        ) {
-            MotDismissiblePaymentListItem(
-                payment = it,
-                onClick = { payment -> onItemClick.invoke(payment) },
-                onSwipeToDelete = { payment -> viewModel.onSwipeToDelete(payment) }
+        ) { payment ->
+            val dismissState = rememberDismissState(
+                confirmStateChange = { dismissValue ->
+                    if (dismissValue == DismissValue.DismissedToStart) {
+                        viewModel.onSwipeToDelete(payment)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            )
+            MotDismissibleListItem(
+                dismissState = dismissState,
+                dismissContent = {
+                    PaymentListItem(
+                        payment,
+                        onClick = { payment -> onItemClick.invoke(payment) },
+                        dismissDirection = dismissState.dismissDirection
+                    )
+                }
             )
         }
     }

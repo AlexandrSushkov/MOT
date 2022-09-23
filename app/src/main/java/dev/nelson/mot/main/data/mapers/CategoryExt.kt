@@ -12,6 +12,8 @@ fun CategoryEntity.toCategory(): Category = Category(
 
 fun List<CategoryEntity>.toCategoryList(): List<Category> = this.map { it.toCategory() }
 
+fun List<Category>.toCategoryEntityList(): List<CategoryEntity> = this.map { it.toCategoryEntity() }
+
 fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(this.name, if (isFavorite) 1 else 0, this.id)
 
 fun Category.copyWith(name: String): Category = Category(name, isFavorite, this.id)
