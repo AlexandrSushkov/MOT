@@ -3,8 +3,8 @@ package dev.nelson.mot.main.util.compose
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.CategoryListItemModel
+import dev.nelson.mot.main.data.model.Payment
 
 val categoryNames = listOf(
     "Support",
@@ -40,7 +40,7 @@ val categoryNames = listOf(
 )
 
 object PreviewData {
-    const val DEFAUT_KEY= 0
+    const val DEFAUT_KEY = ""
 
     val categoryPreview = Category(categoryNames.first())
 

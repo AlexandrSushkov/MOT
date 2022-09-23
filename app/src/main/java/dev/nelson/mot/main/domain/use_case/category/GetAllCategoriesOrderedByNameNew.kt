@@ -7,6 +7,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.util.extention.isEven
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -40,7 +41,8 @@ class GetAllCategoriesOrderedByNameNew @Inject constructor(private val categoryR
             }
     }
 
-    private fun generateKey() = Random.nextInt(Int.MAX_VALUE)
+//    private fun generateKey() = Random.nextInt(Int.MAX_VALUE)
+    private fun generateKey() = UUID.randomUUID().toString()
 
     private fun Category.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
         return CategoryListItemModel.CategoryItemModel(this, generateKey())
