@@ -20,11 +20,7 @@ class CategoryUseCase @Inject constructor(private val categoryRepository: Catego
             return@map listOf<CategoryListItemModel>().toMutableList().apply {
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
-                    add(CategoryListItemModel.Empty(generateKey()))
                     addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
-                    if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty(generateKey()))
-                    }
                 }
             }
         }.map {

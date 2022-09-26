@@ -22,7 +22,7 @@ sealed class CategoryListItemModel {
     /**
      * Header - first item in the list to show some data.
      */
-    class Header(override val key: String) : CategoryListItemModel()
+//    class Header(override val key: String) : CategoryListItemModel()
 
     /**
      * Footer - last item in the list to show data or set empty space
@@ -32,5 +32,5 @@ sealed class CategoryListItemModel {
     /**
      * Empty - model to add empty spaces to the list
      */
-    class Empty(override val key: String) : CategoryListItemModel()
+//    class Empty(override val key: String) : CategoryListItemModel()
 }

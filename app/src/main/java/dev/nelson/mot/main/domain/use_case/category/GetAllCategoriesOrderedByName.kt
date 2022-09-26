@@ -30,15 +30,10 @@ class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepo
                 //no category item
                 val noCategory = Category("No category")
                 add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
-                add(CategoryListItemModel.Empty(generateKey()))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
-                    add(CategoryListItemModel.Empty(generateKey()))
                     addAll(categoryList.map { category -> category.toCategoryItemModel() })
-                    if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty(generateKey()))
-                    }
                 }
                 //add footer
                 add(CategoryListItemModel.Footer(generateKey()))

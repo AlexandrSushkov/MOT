@@ -12,7 +12,9 @@ import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.EditCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByNameNew
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +22,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,7 +48,8 @@ class CategoriesListViewModel @Inject constructor(
 
     val categories
         get() = _categories.asStateFlow()
-    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
+//    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
+    private val _categories = MutableStateFlow<MotResult<List<CategoryListItemModel>>>(MotResult.Loading)
 
     val deleteItemsSnackbarText: Flow<String>
         get() = _deleteItemsSnackbarText.asStateFlow()
@@ -81,7 +83,7 @@ class CategoriesListViewModel @Inject constructor(
             getAllCategoriesOrdered.execute(true).collect {
                 initialCategoriesList.clear()
                 initialCategoriesList.addAll(it)
-                _categories.value = it
+                _categories.value = MotResult.Success(it)
             }
         }
     }
@@ -162,10 +164,10 @@ class CategoriesListViewModel @Inject constructor(
             categoriesToDeleteList.add(categoryItemModel.category)
             showSnackBar()
             val temp = mutableListOf<CategoryListItemModel>().apply {
-                addAll(_categories.value)
+                addAll(_categories.value.successOr(emptyList()))
                 remove(categoryItemModel)
             }
-            _categories.value = temp
+            _categories.value = MotResult.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(4000)
@@ -193,7 +195,7 @@ class CategoriesListViewModel @Inject constructor(
     fun onUndoDeleteClick() {
         hideSnackBar()
         deleteCategoryJob?.let {
-            _categories.value = initialCategoriesList
+            _categories.value = MotResult.Success(initialCategoriesList)
             clearItemsToDeleteList()
             it.cancel()
         }

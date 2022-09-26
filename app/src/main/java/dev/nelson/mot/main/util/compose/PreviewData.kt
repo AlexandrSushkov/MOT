@@ -5,6 +5,7 @@ import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.Payment
+import java.util.UUID
 
 val categoryNames = listOf(
     "Support",
@@ -40,7 +41,6 @@ val categoryNames = listOf(
 )
 
 object PreviewData {
-    const val DEFAUT_KEY = ""
 
     val categoryPreview = Category(categoryNames.first())
 
@@ -73,18 +73,20 @@ object PreviewData {
             .apply {
                 //no category item
                 val noCategory = Category("No category")
-                add(CategoryListItemModel.CategoryItemModel(noCategory, DEFAUT_KEY))
+                add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString(), DEFAUT_KEY))
-                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, DEFAUT_KEY) })
+                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
                 }
             }
     }
 
-    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview, DEFAUT_KEY)
+    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview, generateKey())
 
-    val letterPreview = CategoryListItemModel.Letter("A", DEFAUT_KEY)
+    val letterPreview = CategoryListItemModel.Letter("A", generateKey())
+
+    private fun generateKey() = UUID.randomUUID().toString()
 }
 
 class PaymentPreviewProvider : PreviewParameterProvider<Payment> {

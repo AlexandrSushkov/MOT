@@ -30,11 +30,7 @@ class GetAllCategoriesOrderedByNameNew @Inject constructor(private val categoryR
                 //add categories items
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
-                    add(CategoryListItemModel.Empty(generateKey()))
                     addAll(categoryList.map { category -> category.toCategoryItemModel() })
-                    if (categoryList.size.isEven().not()) {
-                        add(CategoryListItemModel.Empty(generateKey()))
-                    }
                 }
                 //add footer
                 add(CategoryListItemModel.Footer(generateKey()))
