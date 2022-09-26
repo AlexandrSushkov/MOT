@@ -71,6 +71,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
 import dev.nelson.mot.main.presentations.ui.theme.MotColors
+import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
@@ -446,30 +447,6 @@ private fun Footer() {
             .background(Color.White)
             .heightIn(60.dp)
     )
-}
-
-@Composable
-private fun ListPlaceholder(modifier: Modifier, imageVector: ImageVector, text: String) {
-    Column(
-        modifier = modifier
-    ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = "empty list icon",
-            modifier = Modifier
-                .size(42.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = text
-        )
-    }
 }
 
 @Preview(showBackground = true)

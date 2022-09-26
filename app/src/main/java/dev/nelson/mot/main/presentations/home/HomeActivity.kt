@@ -196,7 +196,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
 
                                     },
-                                    onActionIconClick = { navController.navigate(Settings.route) }
+                                    onActionIconClick = { navController.navigate(Settings.route) },
+                                    viewModel = hiltViewModel()
                                 )
                             },
                         )

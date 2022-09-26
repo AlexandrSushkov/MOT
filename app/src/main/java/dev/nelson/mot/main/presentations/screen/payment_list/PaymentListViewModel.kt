@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,8 +10,9 @@ import dev.nelson.mot.main.domain.use_case.payment.DeletePaymentsUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
-import dev.nelson.mot.main.util.SingleLiveEvent
+import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -42,9 +42,10 @@ class PaymentListViewModel @Inject constructor(
         get() = _deletedItemsCount.asStateFlow()
     private val _deletedItemsCount = MutableStateFlow(0)
 
-    val paymentList: Flow<List<Payment>>
+    val paymentListResult: Flow<MotResult<List<Payment>>>
         get() = _paymentList.asStateFlow()
-    private val _paymentList = MutableStateFlow(listOf<Payment>())
+    private val _paymentList = MutableStateFlow<MotResult<List<Payment>>>(MotResult.Loading)
+
     private var initialPaymentList = mutableListOf<Payment>()
     private val paymentsToDeleteList = mutableListOf<Payment>()
     private var deletePaymentJob: Job? = null
@@ -54,7 +55,7 @@ class PaymentListViewModel @Inject constructor(
             getPaymentListUseCase.execute()
                 .collect {
                     initialPaymentList.addAll(it)
-                    _paymentList.value = it
+                    _paymentList.value = MotResult.Success(it)
                 }
         }
     }
@@ -68,10 +69,10 @@ class PaymentListViewModel @Inject constructor(
             _deletedItemsCount.value = paymentsToDeleteList.size
             showSnackBar()
             val temp = mutableListOf<Payment>().apply {
-                addAll(_paymentList.value)
+                addAll(_paymentList.value.successOr(emptyList()))
                 remove(payment)
             }
-            _paymentList.value = temp
+            _paymentList.value = MotResult.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(4000)
@@ -87,12 +88,12 @@ class PaymentListViewModel @Inject constructor(
         hideSnackBar()
         deletePaymentJob?.let {
             it.cancel()
-            _paymentList.value = initialPaymentList
+            _paymentList.value = MotResult.Success(initialPaymentList)
             clearItemsToDeleteList()
         }
     }
 
-    private fun clearItemsToDeleteList(){
+    private fun clearItemsToDeleteList() {
         paymentsToDeleteList.clear()
         _deletedItemsCount.value = paymentsToDeleteList.size
     }

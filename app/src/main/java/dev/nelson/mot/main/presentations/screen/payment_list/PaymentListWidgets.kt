@@ -63,7 +63,7 @@ fun PaymentListItem(
                     payment.category?.name?.let { Text(it) }
                 }
                 Column(
-                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                    modifier = Modifier.align(alignment = CenterVertically)
                 ) {
                     Text(payment.cost.toString())
                 }
