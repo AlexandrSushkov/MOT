@@ -23,6 +23,7 @@ data class PaymentEntity(
     @ColumnInfo(name = PaymentTable.ID) val id: Long? = null,
     @ColumnInfo(name = PaymentTable.SUMMARY) var summary: String? = null,
     @ColumnInfo(name = PaymentTable.CATEGORY_ID_KEY) val categoryIdKey: Int? = null,
+    @Deprecated(message = "store date in epoch milliseconds")
     @ColumnInfo(name = PaymentTable.DATE) val date: String? = null,
     @ColumnInfo(name = PaymentTable.DATE_IN_MILLISECONDS) val dateInMilliseconds: Long? = null
 )

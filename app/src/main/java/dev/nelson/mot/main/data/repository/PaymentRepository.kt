@@ -3,6 +3,7 @@ package dev.nelson.mot.main.data.repository
 import dev.nelson.mot.main.data.room.model.payment.PaymentDao
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.main.util.Order
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -17,31 +18,30 @@ class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) 
      */
     fun getPayment(paymentId: Int): Flow<PaymentWithCategory> = paymentDao.getPaymentById(paymentId)
 
-//    suspend fun getAllPaymentsWithCategoryOrderDateDesc(): List<PaymentWithCategory> = paymentDao
-//        .getAllPaymentsWithCategoryOrderDateDescCor()
-
-    suspend fun getAllPaymentsWithCategory(): List<PaymentWithCategory> = paymentDao.getAllPaymentsWithCategoryCor()
-
-    fun getAllPaymentsWithCategoryOrderDateDescFlow(): Flow<List<PaymentWithCategory>> = paymentDao.getAllPaymentsWithCategoryOrderDateDescFlow()
-
-    fun getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId: Int): Flow<List<PaymentWithCategory>> = paymentDao
-        .getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId)
+    fun getAllPaymentsWithCategoryOrderByDateDesc(): Flow<List<PaymentWithCategory>> = paymentDao.getAllPaymentsWithCategoryOrderDateDesc()
 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
      */
-    fun getPaymentsWithCategoryByDateRangeFlow(startTime: Long): Flow<List<PaymentWithCategory>> = paymentDao.getPaymentsWithCategoryByDateRangeFlow(startTime)
+    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: Order): Flow<List<PaymentWithCategory>> {
+        return when (order) {
+            Order.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
+            Order.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
+        }
+    }
 
     /**
      * Get payments WITH end date used to get payments in a particular time period.
      */
-    fun getPaymentsWithCategoryByDateRangeFlow(startTime: Long, endTime: Long): Flow<List<PaymentWithCategory>> = paymentDao
-        .getPaymentsWithCategoryByDateRangeFlow(startTime, endTime)
-
-    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>> = paymentDao.getAllPaymentsWithoutCategory()
+    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, endTime: Long, order: Order): Flow<List<PaymentWithCategory>> {
+        return when (order) {
+            Order.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime, endTime)
+            Order.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime, endTime)
+        }
+    }
 
     // ADD
-    suspend fun addPayment(paymentEntity: PaymentEntity) = paymentDao.insertPayment(paymentEntity)
+    suspend fun addPayment(paymentEntity: PaymentEntity) = paymentDao.addPayment(paymentEntity)
 
     // EDIT
     suspend fun updatePayment(paymentEntity: PaymentEntity) = paymentDao.updatePayment(paymentEntity)

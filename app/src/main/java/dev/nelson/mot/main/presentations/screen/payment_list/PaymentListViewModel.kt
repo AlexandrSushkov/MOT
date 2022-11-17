@@ -6,15 +6,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
+import dev.nelson.mot.main.util.Order
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
@@ -29,10 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
-    private val getPaymentListUseCase: GetPaymentListUseCase,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
     private val getPaymentListByDateRange: GetPaymentListByDateRange,
-    private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
 ) : BaseViewModel() {
 
@@ -60,7 +57,7 @@ class PaymentListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-            getPaymentListByDateRange.execute(startOfMonthTime) // no end date. otherwise newly added payments wont be shown.
+            getPaymentListByDateRange.execute(startOfMonthTime, order = Order.Descending) // no end date. otherwise newly added payments wont be shown.
                 .collect {
                     initialPaymentList.addAll(it)
                     _paymentList.value = MotResult.Success(it)

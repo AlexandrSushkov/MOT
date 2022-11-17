@@ -9,8 +9,7 @@ import javax.inject.Inject
 
 class GetPaymentUseCase @Inject constructor(private val paymentRepository: PaymentRepository) {
 
-    fun execute(paymentId: Int): Flow<Payment> {
-        return paymentRepository.getPayment(paymentId)
-            .map { it.toPayment() }
-    }
+    fun execute(paymentId: Int): Flow<Payment> = paymentRepository.getPayment(paymentId)
+        .map { it.toPayment() }
+
 }
