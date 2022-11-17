@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.domain.use_case.category.AddNewCategoryUseCase
-import dev.nelson.mot.main.domain.use_case.category.EditCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
+import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +22,7 @@ import javax.inject.Inject
 class CategoryDetailsViewModel @Inject constructor(
     extras: SavedStateHandle,
     private val getCategoryUseCase: GetCategoryUseCase,
-    private val addNewCategoryUseCase: AddNewCategoryUseCase,
-    private val editCategoryUseCase: EditCategoryUseCase
+    private val modifyCategoryUseCase: ModifyCategoryUseCase
 ) : BaseViewModel() {
 
     // states
@@ -52,7 +51,7 @@ class CategoryDetailsViewModel @Inject constructor(
         }
     }
 
-    fun onNameChanged(textFieldValue: TextFieldValue){
+    fun onNameChanged(textFieldValue: TextFieldValue) {
         _categoryNameState.value = textFieldValue
     }
 
@@ -66,7 +65,7 @@ class CategoryDetailsViewModel @Inject constructor(
     private fun addNewCategory() {
         viewModelScope.launch {
             val category = Category(_categoryNameState.value.text)
-            addNewCategoryUseCase.execute(category)
+            modifyCategoryUseCase.execute(category, ModifyCategoryAction.Add)
         }
     }
 
@@ -75,7 +74,7 @@ class CategoryDetailsViewModel @Inject constructor(
             val enteredName = _categoryNameState.value.text
             if (category.name != enteredName) {
                 val modifiedCategory = category.copyWith(enteredName)
-                editCategoryUseCase.execute(modifiedCategory)
+                modifyCategoryUseCase.execute(modifiedCategory, ModifyCategoryAction.Edit)
             }
         }
     }

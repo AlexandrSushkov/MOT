@@ -7,10 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
-import dev.nelson.mot.main.domain.use_case.category.AddNewCategoryUseCase
-import dev.nelson.mot.main.domain.use_case.category.DeleteCategoryUseCase
-import dev.nelson.mot.main.domain.use_case.category.EditCategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.DeleteCategoriesUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByNameNew
+import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
+import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.StringUtils
@@ -23,15 +23,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.minus
+import kotlinx.datetime.periodUntil
+import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesListViewModel @Inject constructor(
     getAllCategoriesOrdered: GetAllCategoriesOrderedByNameNew,
-    private val deleteCategoryUseCase: DeleteCategoryUseCase,
-    private val editCategoryUseCase: EditCategoryUseCase,
-    private val addNewCategoryUseCase: AddNewCategoryUseCase
+    private val deleteCategoriesUseCase: DeleteCategoriesUseCase,
+    private val modifyCategoryUseCase: ModifyCategoryUseCase,
 ) : BaseViewModel() {
 
     // state
@@ -48,7 +57,8 @@ class CategoriesListViewModel @Inject constructor(
 
     val categories
         get() = _categories.asStateFlow()
-//    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
+
+    //    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
     private val _categories = MutableStateFlow<MotResult<List<CategoryListItemModel>>>(MotResult.Loading)
 
     val deleteItemsSnackbarText: Flow<String>
@@ -86,11 +96,26 @@ class CategoriesListViewModel @Inject constructor(
                 _categories.value = MotResult.Success(it)
             }
         }
+        execute1()
+    }
+
+    fun execute1(): Long {
+        val instantInThePast: Instant = Instant.parse("2020-01-01T00:00:00Z")
+        val systemTZ = TimeZone.currentSystemDefault()
+
+        val period: DateTimePeriod = instantInThePast.periodUntil(Clock.System.now(), systemTZ)
+        val now: Instant = Clock.System.now()
+        val currentDate = now.toLocalDateTime(systemTZ).date
+        currentDate.dayOfMonth.minus(1)
+//        val firstDayOfTheMonth = LocalDate(currentDate.year, currentDate.month, 1)
+        val firstDayOfTheMonth: LocalDate = currentDate.minus(currentDate.dayOfMonth, DateTimeUnit.DAY)
+        firstDayOfTheMonth.atStartOfDayIn(systemTZ).toEpochMilliseconds()
+        return Clock.System.now().toEpochMilliseconds()
     }
 
     fun onFavoriteClick(category: Category, isChecked: Boolean) = viewModelScope.launch {
         val checkedCat = Category(category.name, isChecked, category.id)
-        editCategoryUseCase.execute(checkedCat)
+        modifyCategoryUseCase.execute(checkedCat, ModifyCategoryAction.Edit)
     }
 
     /**
@@ -142,7 +167,7 @@ class CategoriesListViewModel @Inject constructor(
     private fun addNewCategory() {
         viewModelScope.launch {
             val category = Category(_categoryNameState.value.text)
-            addNewCategoryUseCase.execute(category)
+            modifyCategoryUseCase.execute(category, ModifyCategoryAction.Add)
         }
     }
 
@@ -151,7 +176,7 @@ class CategoriesListViewModel @Inject constructor(
             val enteredName = _categoryNameState.value.text
             if (category.name != enteredName) {
                 val modifiedCategory = category.copyWith(enteredName)
-                editCategoryUseCase.execute(modifiedCategory)
+                modifyCategoryUseCase.execute(modifiedCategory, ModifyCategoryAction.Edit)
             }
         }
     }
@@ -173,7 +198,7 @@ class CategoriesListViewModel @Inject constructor(
             delay(4000)
             hideSnackBar()
             // remove payments from DB
-            deleteCategoryUseCase.execute(categoriesToDeleteList)
+            deleteCategoriesUseCase.execute(categoriesToDeleteList)
             Timber.e("Deleted: $categoriesToDeleteList")
             showDeletedItemsMessage()
             clearItemsToDeleteList()
