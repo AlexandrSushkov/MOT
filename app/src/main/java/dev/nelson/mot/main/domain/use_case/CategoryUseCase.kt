@@ -13,22 +13,22 @@ import kotlin.random.Random
 
 class CategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
-    fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered()
-        .map { it.toCategoryList() }
-        .map { it.groupBy { category: Category -> category.name.first() } }
-        .map { value: Map<Char, List<Category>> ->
-            return@map listOf<CategoryListItemModel>().toMutableList().apply {
-                value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
-                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
-                }
-            }
-        }.map {
-            it.add(CategoryListItemModel.Footer(generateKey()))
-            return@map it
-        }
-
-    private fun generateKey() = UUID.randomUUID().toString()
+//    fun getAllCategoriesAlphabeticDescFlow(): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered()
+//        .map { it.toCategoryList() }
+//        .map { it.groupBy { category: Category -> category.name.first() } }
+//        .map { value: Map<Char, List<Category>> ->
+//            return@map listOf<CategoryListItemModel>().toMutableList().apply {
+//                value.forEach { (letter, categoryList) ->
+//                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+//                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
+//                }
+//            }
+//        }.map {
+//            it.add(CategoryListItemModel.Footer(generateKey()))
+//            return@map it
+//        }
+//
+//    private fun generateKey() = UUID.randomUUID().toString()
 
 
 }

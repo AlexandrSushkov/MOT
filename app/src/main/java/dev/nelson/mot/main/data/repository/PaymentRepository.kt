@@ -8,21 +8,16 @@ import javax.inject.Inject
 
 class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase) {
 
+    //GET
+    /**
+     * Get payment
+     *
+     * @param paymentId id of the payment
+     * @return [PaymentWithCategory]
+     */
     fun getPayment(paymentId: Int): Flow<PaymentWithCategory> = motDatabase
         .paymentDao()
         .getPaymentById(paymentId)
-
-    suspend fun addPayment(paymentEntity: PaymentEntity) = motDatabase
-        .paymentDao()
-        .insertPayment(paymentEntity)
-
-    suspend fun updatePayment(paymentEntity: PaymentEntity) = motDatabase
-        .paymentDao()
-        .updatePayment(paymentEntity)
-
-    suspend fun deletePayment(paymentEntity: PaymentEntity) = motDatabase
-        .paymentDao()
-        .deletePayment(paymentEntity)
 
     suspend fun deletePayments(paymentEntityList: List<PaymentEntity>) = motDatabase
         .paymentDao()
@@ -52,8 +47,24 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
         .paymentDao()
         .getPaymentsWithCategoryByDateRangeFlow(startTime, endTime)
 
-
     fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>> = motDatabase
         .paymentDao()
         .getAllPaymentsWithoutCategory()
+
+    // ADD
+    suspend fun addPayment(paymentEntity: PaymentEntity) = motDatabase
+        .paymentDao()
+        .insertPayment(paymentEntity)
+
+    // EDIT
+    suspend fun updatePayment(paymentEntity: PaymentEntity) = motDatabase
+        .paymentDao()
+        .updatePayment(paymentEntity)
+
+    // DELETE
+    suspend fun deletePayment(paymentEntity: PaymentEntity) = motDatabase
+        .paymentDao()
+        .deletePayment(paymentEntity)
+
+
 }

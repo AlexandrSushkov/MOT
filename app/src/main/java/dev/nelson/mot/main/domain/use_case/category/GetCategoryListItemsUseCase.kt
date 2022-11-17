@@ -1,26 +1,28 @@
 package dev.nelson.mot.main.domain.use_case.category
 
-import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
-import dev.nelson.mot.main.data.repository.CategoryRepository
-import dev.nelson.mot.main.util.extention.isEven
+import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
+import dev.nelson.mot.main.util.Order
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
-import kotlin.random.Random
 
-class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepository: CategoryRepository) {
+/**
+ * Used on [CategoryListScreen] to show all categories.
+ */
+class GetCategoryListItemsUseCase @Inject constructor(private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase) {
 
     /**
-     * Execute
+     * Get list of [Category] ordered in a particular order.
      *
-     * @param isAsc - true if order is ascending, false - descending
-     * @return
+     * Transform it to [CategoryListItemModel].
+     *
+     * @param order [Order] represents order
+     * @return list of [CategoryListItemModel]
      */
-    fun execute(isAsc: Boolean): Flow<List<CategoryListItemModel>> = categoryRepository.getAllCategoriesOrdered(isAsc)
-        .map { it.toCategoryList() }
+    fun execute(order: Order = Order.Ascending): Flow<List<CategoryListItemModel>> = getAllCategoriesOrderedByName.execute(order)
         .map { it.groupBy { category: Category -> category.name.first().uppercaseChar() } }
         .map { titleCharToCategoryMap: Map<Char, List<Category>> -> createCategoryListViewRepresentation(titleCharToCategoryMap) }
 
@@ -45,5 +47,4 @@ class GetAllCategoriesOrderedByName @Inject constructor(private val categoryRepo
     private fun Category.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
         return CategoryListItemModel.CategoryItemModel(this, generateKey())
     }
-
 }

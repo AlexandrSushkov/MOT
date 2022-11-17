@@ -7,18 +7,21 @@ import javax.inject.Inject
 
 class CategoryRepository @Inject constructor(private val motDatabase: MotDatabase) {
 
-    fun getAllCategoriesOrdered(isAsc: Boolean = true): Flow<List<CategoryEntity>> = motDatabase.categoryDao()
-        .getAllCategoriesOrdered(isAsc)
+    fun getAllCategoriesOrderedByNameDescending(): Flow<List<CategoryEntity>> = motDatabase.categoryDao()
+        .getAllCategoriesOrderedByNameDescending()
+
+    fun getAllCategoriesOrderedByNameAscending(): Flow<List<CategoryEntity>> = motDatabase.categoryDao()
+        .getAllCategoriesOrderedByNameAscending()
 
     fun getCategory(id: Int): Flow<CategoryEntity> = motDatabase.categoryDao()
         .getCategory(id)
 
+    suspend fun addCategory(category: CategoryEntity) = motDatabase.categoryDao().add(category)
+
+    suspend fun editCategory(category: CategoryEntity) = motDatabase.categoryDao().edit(category)
+
     suspend fun deleteCategory(category: CategoryEntity) = motDatabase.categoryDao().deleteCategory(category)
 
     suspend fun deleteCategories(categories: List<CategoryEntity>) = motDatabase.categoryDao().deleteCategories(categories)
-
-    suspend fun addNewCategory(category: CategoryEntity) = motDatabase.categoryDao().add(category)
-
-    suspend fun editCategory(category: CategoryEntity) = motDatabase.categoryDao().edit(category)
 
 }

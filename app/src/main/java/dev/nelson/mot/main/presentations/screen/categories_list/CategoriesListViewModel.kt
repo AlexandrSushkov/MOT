@@ -8,7 +8,7 @@ import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.domain.use_case.category.DeleteCategoriesUseCase
-import dev.nelson.mot.main.domain.use_case.category.GetAllCategoriesOrderedByNameNew
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryListItemsUseCase
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesListViewModel @Inject constructor(
-    getAllCategoriesOrdered: GetAllCategoriesOrderedByNameNew,
+    getCategoryListItemsUseCase: GetCategoryListItemsUseCase,
     private val deleteCategoriesUseCase: DeleteCategoriesUseCase,
     private val modifyCategoryUseCase: ModifyCategoryUseCase,
 ) : BaseViewModel() {
@@ -90,7 +90,7 @@ class CategoriesListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getAllCategoriesOrdered.execute(true).collect {
+            getCategoryListItemsUseCase.execute().collect {
                 initialCategoriesList.clear()
                 initialCategoriesList.addAll(it)
                 _categories.value = MotResult.Success(it)

@@ -1,15 +1,18 @@
 package dev.nelson.mot.main.domain.use_case.category
 
-import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
+import dev.nelson.mot.main.util.Order
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(private val getCategoriesOrderedByName: GetCategoriesOrderedByName) {
+/**
+ * Used on [PaymentDetailsScreen] to show categories selection list.
+ */
+class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase) {
 
-    fun execute(isAsc: Boolean = true): Flow<List<Category>> = getCategoriesOrderedByName.execute(isAsc)
-        .map { it.toCategoryList() }
+    fun execute(order: Order = Order.Ascending): Flow<List<Category>> = getAllCategoriesOrderedByName.execute(order)
         .map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
 
 }

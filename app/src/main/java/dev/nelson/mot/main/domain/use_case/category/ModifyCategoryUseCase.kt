@@ -10,7 +10,7 @@ class ModifyCategoryUseCase @Inject constructor(private val categoryRepository: 
     suspend fun execute(category: Category, action: ModifyCategoryAction) {
         val categoryEntity = category.toCategoryEntity()
         when(action){
-            ModifyCategoryAction.Add -> categoryRepository.addNewCategory(categoryEntity)
+            ModifyCategoryAction.Add -> categoryRepository.addCategory(categoryEntity)
             ModifyCategoryAction.Edit -> categoryRepository.editCategory(categoryEntity)
             ModifyCategoryAction.Delete -> categoryRepository.deleteCategory(categoryEntity)
         }
