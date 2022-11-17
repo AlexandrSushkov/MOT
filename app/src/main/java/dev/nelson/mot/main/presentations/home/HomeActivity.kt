@@ -244,7 +244,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                         )
                         composable(
                             route = Statistic.route,
-                            content = { StatisticScreen(navController) },
+                            content = { StatisticScreen(navController, viewModel = hiltViewModel()) },
                         )
                         composable(
                             route = Settings.route,
