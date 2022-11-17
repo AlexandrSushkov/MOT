@@ -3,7 +3,22 @@ package dev.nelson.mot.main.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 
+/**
+ * Data class for [PaymentWithCategory] and [PaymentEntity] for presentation layer.
+ *
+ * @property name
+ * @property cost
+ * @property message
+ * @property id
+ * @property date
+ * @property dateInMills
+ * @property category
+ * @property isExpanded used in payment list to show/hide message
+ * @constructor Create empty Payment
+ */
 data class Payment(
     val name: String,
     val cost: Int,
@@ -15,13 +30,14 @@ data class Payment(
     var isExpanded: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString().orEmpty(),
-        parcel.readInt(),
-        parcel.readString().orEmpty(),
-        parcel.readValue(Long::class.java.classLoader) as? Long,
-        parcel.readString(),
-        parcel.readValue(Long::class.java.classLoader) as? Long,
-        parcel.readParcelable(Category::class.java.classLoader)
+        parcel.readString().orEmpty(), // name
+        parcel.readInt(), // cost
+        parcel.readString().orEmpty(), // message
+        parcel.readValue(Long::class.java.classLoader) as? Long, //id
+        parcel.readString(), // date
+        parcel.readValue(Long::class.java.classLoader) as? Long, // date in mills
+        parcel.readParcelable(Category::class.java.classLoader), // category
+        parcel.readBoolean() // is expanded
     )
 
     override fun toString(): String {
@@ -29,8 +45,9 @@ data class Payment(
             name: $name
             cost: $cost
             message: $message
-            date: $date
             id: $id
+            date: $date
+            dateInMills: $dateInMills
             category: $category
         """
     }
@@ -43,6 +60,7 @@ data class Payment(
         parcel.writeString(date)
         parcel.writeValue(dateInMills)
         parcel.writeParcelable(category, flags)
+        parcel.writeBoolean(isExpanded)
     }
 
     override fun describeContents(): Int = 0

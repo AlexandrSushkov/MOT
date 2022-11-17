@@ -6,15 +6,21 @@ import dev.nelson.mot.main.data.room.model.category.CategoryEntity
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 
-fun Payment.copyWith(name: String, cost: Int, dateInMills: Long?, category: Category?, message: String): Payment =
-    Payment(
-        name,
-        cost,
+fun Payment.copyWith(
+    name: String? = null,
+    cost: Int? = null,
+    date: String? = null,
+    dateInMills: Long? = null,
+    category: Category? = null,
+    message: String? = null
+): Payment = Payment(
+        name = name ?: this.name,
+        cost = cost ?: this.cost,
         id = id,
-        date = date,
+        date = date ?: this.date,
         dateInMills = dateInMills ?: this.dateInMills,
         category = category ?: this.category,
-        message = message
+        message = message ?: this.message
     )
 
 fun Payment.toPaymentEntity(): PaymentEntity =

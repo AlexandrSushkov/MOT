@@ -1,6 +1,10 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,7 +48,7 @@ fun PaymentListScreen(
     viewModel: PaymentListViewModel
 ) {
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
-    val snackbarVisibleState by viewModel.snackBarVisibilityState.collectAsState()
+    val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
 
     PaymentListLayout(
@@ -53,7 +57,7 @@ fun PaymentListScreen(
         onItemClick = { openPaymentDetails.invoke(it.id?.toInt()) },
         openPaymentDetails = { openPaymentDetails.invoke(null) },
         onActionIconClick = onActionIconClick,
-        snackbarVisibleState = snackbarVisibleState,
+        snackbarVisibleState = snackbarVisibilityState,
         onUndoButtonClick = { viewModel.onUndoDeleteClick() },
         deletedItemsCount = deletedItemsCount,
         onSwipeToDeleteItem = { viewModel.onSwipeToDelete(it) }
@@ -109,7 +113,7 @@ fun PaymentListLayout(
 
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentList(
     paymentListResult: MotResult<List<Payment>>,
@@ -129,35 +133,53 @@ fun PaymentList(
                     ListPlaceholder(
                         Modifier.align(Alignment.Center),
                         Icons.Default.Filter,
-                        "empty"
+                        "Empty"
                     )
                 }
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    paymentList.forEach { payment ->
-                        item(payment.id ?: 0) {
-                            val dismissState = rememberDismissState(
-                                confirmStateChange = { dismissValue ->
-                                    if (dismissValue == DismissValue.DismissedToStart) {
-                                        onSwipeToDeleteItem.invoke(payment)
-                                        true
-                                    } else {
-                                        false
+                Column() {
+                    Row(modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                        .clickable { }) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = paymentList.first().date.orEmpty(), modifier = Modifier.align(Alignment.Start))
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = paymentList.last().date.orEmpty(), modifier = Modifier.align(Alignment.End))
+                        }
+                    }
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        item {
+
+                        }
+                        paymentList.forEach { payment ->
+                            item(payment.id ?: 0) {
+                                val dismissState = rememberDismissState(
+                                    confirmStateChange = { dismissValue ->
+                                        if (dismissValue == DismissValue.DismissedToStart) {
+                                            onSwipeToDeleteItem.invoke(payment)
+                                            true
+                                        } else {
+                                            false
+                                        }
                                     }
-                                }
-                            )
-                            MotDismissibleListItem(
-                                dismissState = dismissState,
-                                dismissContent = {
-                                    PaymentListItem(
-                                        payment,
-                                        onClick = { payment -> onItemClick.invoke(payment) },
-                                        dismissDirection = dismissState.dismissDirection
-                                    )
-                                }
-                            )
+                                )
+                                MotDismissibleListItem(
+                                    dismissState = dismissState,
+                                    dismissContent = {
+                                        PaymentListItem(
+                                            payment,
+                                            onClick = { payment -> onItemClick.invoke(payment) },
+                                            dismissDirection = dismissState.dismissDirection
+                                        )
+                                    }
+                                )
+                            }
+                            stickyHeader {
+//                            PaymentListDateItem(date = "12/21/23")
+                            }
                         }
                     }
                 }

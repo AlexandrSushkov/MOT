@@ -6,8 +6,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.use_case.payment.DeletePaymentsUseCase
+import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
+import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListUseCase
+import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
+import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
@@ -26,7 +30,10 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
     private val getPaymentListUseCase: GetPaymentListUseCase,
-    private val deletePaymentsUseCase: DeletePaymentsUseCase,
+    private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
+    private val getPaymentListByDateRange: GetPaymentListByDateRange,
+    private val getCurrentTimeUseCase: GetCurrentTimeUseCase,
+    private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
 ) : BaseViewModel() {
 
     private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
@@ -52,7 +59,8 @@ class PaymentListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getPaymentListUseCase.execute()
+            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
+            getPaymentListByDateRange.execute(startOfMonthTime) // no end date. otherwise newly added payments wont be shown.
                 .collect {
                     initialPaymentList.addAll(it)
                     _paymentList.value = MotResult.Success(it)
@@ -78,7 +86,7 @@ class PaymentListViewModel @Inject constructor(
             delay(4000)
             hideSnackBar()
             // remove payments from DB
-            deletePaymentsUseCase.execute(paymentsToDeleteList)
+            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList, ModifyListOfPaymentsAction.Delete)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
         }
@@ -91,6 +99,10 @@ class PaymentListViewModel @Inject constructor(
             _paymentList.value = MotResult.Success(initialPaymentList)
             clearItemsToDeleteList()
         }
+    }
+
+    fun onDateRangeClick() {
+        // open date picker
     }
 
     private fun clearItemsToDeleteList() {

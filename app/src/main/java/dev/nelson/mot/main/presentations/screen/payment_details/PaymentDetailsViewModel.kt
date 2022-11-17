@@ -9,9 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
-import dev.nelson.mot.main.domain.use_case.payment.AddNewPaymentUseCase
-import dev.nelson.mot.main.domain.use_case.payment.EditPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
+import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.main.util.constant.NetworkConstants
@@ -30,10 +31,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentDetailsViewModel @Inject constructor(
-    private val addNewPaymentUseCase: AddNewPaymentUseCase,
-    private val editPaymentUseCase: EditPaymentUseCase,
+    private val modifyPaymentUseCase: ModifyPaymentUseCase,
     getPaymentUseCase: GetPaymentUseCase,
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
+    getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     handle: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -91,6 +92,11 @@ class PaymentDetailsViewModel @Inject constructor(
                 setInitialDate()
             }
         }
+
+        viewModelScope.launch {
+            val startOfTheMonth = getStartOfCurrentMonthTimeUseCase.execute()
+            Timber.d("startOfTheMonth:$startOfTheMonth")
+        }
     }
 
     fun onSaveClick() {
@@ -139,7 +145,7 @@ class PaymentDetailsViewModel @Inject constructor(
                 category = selectedCategory,
                 message = _message.value.text
             )
-            addNewPaymentUseCase.execute(payment)
+            modifyPaymentUseCase.execute(payment, ModifyPaymentAction.Add)
             Timber.e("payment $payment")
             _finishAction.emit(Unit)
         }
@@ -157,7 +163,7 @@ class PaymentDetailsViewModel @Inject constructor(
                 category = selectedCategory
             )
             if (initialPayment != payment) {
-                editPaymentUseCase.execute(payment)
+                modifyPaymentUseCase.execute(payment, ModifyPaymentAction.Edit)
             }
             Timber.e("updated payment $payment")
             _finishAction.emit(Unit)

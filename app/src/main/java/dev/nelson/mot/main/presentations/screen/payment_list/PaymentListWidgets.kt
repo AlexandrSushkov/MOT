@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Chip
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
@@ -30,11 +31,32 @@ import dev.nelson.mot.main.util.compose.PreviewData
 @Composable
 fun PaymentListDateItem(date: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
+//        Card(
+//            modifier = Modifier
+//                .align(Alignment.CenterHorizontally)
+//                .padding(vertical = 6.dp),
+//                elevation = 4.dp,
+//                shape = RoundedCornerShape(20.dp)
+//        ) {
+//            Text(
+//                modifier = Modifier
+//                    .align(Alignment.CenterHorizontally)
+//                    .padding(vertical = 4.dp, horizontal = 12.dp),
+//                text = date,
+//                style = MaterialTheme.typography.body2
+//            )
+//        }
+
+        Chip(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = date,
-            style = MaterialTheme.typography.subtitle2
-        )
+            onClick = {}
+        ) {
+            Text(
+                text = date,
+                style = MaterialTheme.typography.caption
+            )
+        }
+
     }
 }
 
@@ -50,22 +72,26 @@ fun PaymentListItem(
         shape = RoundedCornerShape(0.dp)
     ) {
         Column() {
-            Row(
-                modifier = Modifier
-                    .padding(all = 16.dp)
-            ) {
+            Row(modifier = Modifier.padding(all = 16.dp)) {
                 Column(
                     modifier = Modifier
                         .weight(1.0f)
                         .fillMaxWidth()
                 ) {
-                    Text(payment.name)
-                    payment.category?.name?.let { Text(it) }
+                    Text(
+                        text = payment.name,
+                        style = MaterialTheme.typography.subtitle1,
+                    )
+                    payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
+                    payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
                 }
                 Column(
                     modifier = Modifier.align(alignment = CenterVertically)
                 ) {
-                    Text(payment.cost.toString())
+                    Text(
+                        payment.cost.toString(),
+                        style = MaterialTheme.typography.subtitle2
+                    )
                 }
             }
             if (payment.message.isNotEmpty()) {
