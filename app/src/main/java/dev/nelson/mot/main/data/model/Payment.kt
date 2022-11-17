@@ -24,6 +24,7 @@ data class Payment(
     val cost: Int,
     val message: String = StringUtils.EMPTY,
     val id: Long? = null,
+    @Deprecated(message = "store date in epoch milliseconds")
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,

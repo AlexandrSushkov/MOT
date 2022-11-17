@@ -19,13 +19,9 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
         .paymentDao()
         .getPaymentById(paymentId)
 
-    suspend fun deletePayments(paymentEntityList: List<PaymentEntity>) = motDatabase
-        .paymentDao()
-        .deletePayments(paymentEntityList)
-
-    suspend fun getAllPaymentsWithCategoryOrderDateDesc(): List<PaymentWithCategory> = motDatabase
-        .paymentDao()
-        .getAllPaymentsWithCategoryOrderDateDescCor()
+//    suspend fun getAllPaymentsWithCategoryOrderDateDesc(): List<PaymentWithCategory> = motDatabase
+//        .paymentDao()
+//        .getAllPaymentsWithCategoryOrderDateDescCor()
 
     suspend fun getAllPaymentsWithCategory(): List<PaymentWithCategory> = motDatabase
         .paymentDao()
@@ -39,10 +35,16 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
         .paymentDao()
         .getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(categoryEntityId)
 
+    /**
+     * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
+     */
     fun getPaymentsWithCategoryByDateRangeFlow(startTime: Long): Flow<List<PaymentWithCategory>> = motDatabase
         .paymentDao()
         .getPaymentsWithCategoryByDateRangeFlow(startTime)
 
+    /**
+     * Get payments WITH end date used to get payments in a particular time period.
+     */
     fun getPaymentsWithCategoryByDateRangeFlow(startTime: Long, endTime: Long): Flow<List<PaymentWithCategory>> = motDatabase
         .paymentDao()
         .getPaymentsWithCategoryByDateRangeFlow(startTime, endTime)
@@ -66,5 +68,8 @@ class PaymentRepository @Inject constructor(private val motDatabase: MotDatabase
         .paymentDao()
         .deletePayment(paymentEntity)
 
+    suspend fun deletePayments(paymentEntityList: List<PaymentEntity>) = motDatabase
+        .paymentDao()
+        .deletePayments(paymentEntityList)
 
 }
