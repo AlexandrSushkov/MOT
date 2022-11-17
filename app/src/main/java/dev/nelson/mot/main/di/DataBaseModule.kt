@@ -10,6 +10,8 @@ import dagger.hilt.components.SingletonComponent
 import dev.nelson.mot.main.data.room.MIGRATION_1_2
 import dev.nelson.mot.main.data.room.MotDatabase
 import dev.nelson.mot.main.data.room.MotDatabaseInfo
+import dev.nelson.mot.main.data.room.model.category.CategoryDao
+import dev.nelson.mot.main.data.room.model.payment.PaymentDao
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -24,4 +26,12 @@ object DataBaseModule {
             .addMigrations(MIGRATION_1_2)
             .allowMainThreadQueries()
             .build()
+
+    @Provides
+    @Singleton
+    fun providePaymentDao(motDatabase: MotDatabase): PaymentDao = motDatabase.paymentDao()
+
+    @Provides
+    @Singleton
+    fun provideCategoryDao(motDatabase: MotDatabase): CategoryDao = motDatabase.categoryDao()
 }
