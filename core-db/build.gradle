@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootDir/scripts/module_settings.gradle"
+android {
+    namespace 'com.mot.coreDB'
+}
 
 dependencies {
     def libs = rootProject.ext.libs

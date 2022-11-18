@@ -10,6 +10,5 @@ android {
     defaultConfig {
         minSdkVersion             config["min_sdk"]
         targetSdkVersion          config["target_sdk"]
-        testInstrumentationRunner config["test_runner"]
     }
 }

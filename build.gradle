@@ -17,9 +17,8 @@ buildscript {
 
     // dependencies versions
     ext.kotlin_version = '1.6.21'
-    ext.gradle_version = '7.0.2'
     ext.compose_version = '1.2.0-beta02'
-    ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
+    ext.test_runner = 'dev.nelson.mot.main.MotTestRunner'
 
     // google
     ext.google_services_version = '4.3.10'
@@ -27,15 +26,16 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://repo1.maven.org/maven2' }
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$gradle_version"
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$google_services_version"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.1'
-        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.1'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.44'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

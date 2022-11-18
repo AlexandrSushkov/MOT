@@ -9,7 +9,6 @@ android {
     defaultConfig {
         minSdkVersion             config["min_sdk"]
         targetSdkVersion          config["target_sdk"]
-        testInstrumentationRunner config["test_runner"]
     }
 
     buildTypes {
@@ -18,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'dev.nelson.mot'
 }
 
 dependencies {

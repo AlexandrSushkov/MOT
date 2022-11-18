@@ -1,4 +1,4 @@
 include ':app' //main app
-include ':core-db', ':core-newtwork' //core modules
+include ':core-db' //core modules
 include ':feature-payments' //feature modules
 include ':lagacy'//legacy module

@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class GetPaymentListUseCase @Inject constructor(private val paymentRepository: PaymentRepository) {
 
-    fun execute(withCategory: Boolean = false, desOrder: Boolean = false): Flow<List<Payment>> {
-        return paymentRepository.getAllPaymentsWithCategoryOrderDateDescFlow()
-            .map { it.toPaymentList() }
-    }
+    // get payment divided by day
+    // ordered
+    // in time range
+    // with category
 }
