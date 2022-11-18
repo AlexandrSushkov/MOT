@@ -12,9 +12,7 @@ import javax.inject.Inject
 class GetAllCategoriesOrderedByNameUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
     /**
-     * Get list of [CategoryEntity] from DB in a particular order.
-     *
-     * Transform it to [Category].
+     * Get list of [CategoryEntity] from DB in a particular order. Transform it to [Category].
      *
      * @param order [Order] represents order
      * @return list of [Category]

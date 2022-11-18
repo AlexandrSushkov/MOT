@@ -29,7 +29,7 @@ class GetCategoryListItemsUseCase @Inject constructor(private val getAllCategori
     private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<CategoryListItemModel> {
         return mutableListOf<CategoryListItemModel>()
             .apply {
-                //no category item
+                // add no category item
                 val noCategory = Category("No category")
                 add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
                 //add categories items
