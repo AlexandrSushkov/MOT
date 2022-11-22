@@ -64,7 +64,6 @@ class HomeActivity : ComponentActivity() {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
         setContent {
-
             MotApp(
                 isOpenedFromWidget = isOpenedFromWidget,
                 finishAction = { finishAndRemoveTask() }

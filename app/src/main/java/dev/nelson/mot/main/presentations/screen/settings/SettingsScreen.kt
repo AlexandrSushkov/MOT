@@ -30,7 +30,7 @@ fun SettingsScreen(
     onNavIconClick: () -> Unit,
     settingsViewModel: SettingsViewModel,
 ) {
-    val toastMessage by settingsViewModel.showToast.collectAsState(StringUtils.EMPTY)
+    val toastMessage by settingsViewModel.showToastAction.collectAsState(StringUtils.EMPTY)
 
     SettingsScreenLayout(
         onNavIconClick,

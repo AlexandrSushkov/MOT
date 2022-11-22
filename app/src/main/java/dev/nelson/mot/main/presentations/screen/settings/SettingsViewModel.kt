@@ -16,7 +16,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val isExported = exportDataBaseUseCase.execute()
             val toastMessage = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
-            _showToast.emit(toastMessage)
+            showToast(toastMessage)
         }
     }
 
