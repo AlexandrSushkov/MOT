@@ -43,7 +43,6 @@ import dev.nelson.mot.main.presentations.nav.Categories
 import dev.nelson.mot.main.presentations.nav.Payments
 import dev.nelson.mot.main.presentations.nav.Settings
 import dev.nelson.mot.main.presentations.nav.Statistic
-import dev.nelson.mot.main.presentations.screen.categories_list.CategoriesListViewModel
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
@@ -51,9 +50,7 @@ import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
-import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
@@ -248,7 +245,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                         )
                         composable(
                             route = Settings.route,
-                            content = { SettingsScreen(onNavIconClick = { navController.popBackStack() }) },
+                            content = { SettingsScreen(onNavIconClick = { navController.popBackStack() }, settingsViewModel = hiltViewModel()) },
                         )
                     }
                 }

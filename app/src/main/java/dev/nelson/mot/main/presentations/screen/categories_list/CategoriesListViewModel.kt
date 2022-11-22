@@ -96,21 +96,6 @@ class CategoriesListViewModel @Inject constructor(
                 _categories.value = MotResult.Success(it)
             }
         }
-        execute1()
-    }
-
-    fun execute1(): Long {
-        val instantInThePast: Instant = Instant.parse("2020-01-01T00:00:00Z")
-        val systemTZ = TimeZone.currentSystemDefault()
-
-        val period: DateTimePeriod = instantInThePast.periodUntil(Clock.System.now(), systemTZ)
-        val now: Instant = Clock.System.now()
-        val currentDate = now.toLocalDateTime(systemTZ).date
-        currentDate.dayOfMonth.minus(1)
-//        val firstDayOfTheMonth = LocalDate(currentDate.year, currentDate.month, 1)
-        val firstDayOfTheMonth: LocalDate = currentDate.minus(currentDate.dayOfMonth, DateTimeUnit.DAY)
-        firstDayOfTheMonth.atStartOfDayIn(systemTZ).toEpochMilliseconds()
-        return Clock.System.now().toEpochMilliseconds()
     }
 
     fun onFavoriteClick(category: Category, isChecked: Boolean) = viewModelScope.launch {
