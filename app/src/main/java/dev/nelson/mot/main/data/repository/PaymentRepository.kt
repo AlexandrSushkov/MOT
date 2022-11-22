@@ -18,7 +18,7 @@ class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) 
      */
     fun getPayment(paymentId: Int): Flow<PaymentWithCategory> = paymentDao.getPaymentById(paymentId)
 
-    fun getAllPaymentsWithCategoryOrderByDateDesc(): Flow<List<PaymentWithCategory>> = paymentDao.getAllPaymentsWithCategoryOrderDateDesc()
+//    fun getAllPaymentsWithCategoryOrderByDateDesc(): Flow<List<PaymentWithCategory>> = paymentDao.getAllPaymentsWithCategoryOrderDateDesc()
 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.

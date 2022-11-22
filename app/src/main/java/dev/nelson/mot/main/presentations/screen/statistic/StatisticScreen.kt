@@ -36,15 +36,17 @@ fun StatisticScreen(
     navHostController: NavHostController,
     viewModel: StatisticViewModel
 ) {
-    val list by viewModel.paymentListResult.collectAsState(emptyMap())
-    StatisticLayout(navHostController, list)
+    val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
+    val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
+    StatisticLayout(navHostController, currentMonth, previousMonthList)
 
 }
 
 @Composable
 fun StatisticLayout(
     navHostController: NavHostController,
-    list: Map<Category?, List<Payment>>
+    currentMonthList: Map<Category?, List<Payment>>,
+    previousMonthList: Map<Category?, List<Payment>>
 ) {
     Scaffold(
         bottomBar = {
@@ -77,7 +79,6 @@ fun StatisticLayout(
                                 onClick = { }
                             )
                         }
-
                     }
                     Column {
                         StatisticContent()
@@ -85,12 +86,25 @@ fun StatisticLayout(
                 }
             } else {
                 StatisticContent()
+                Text(text = "Current month:")
                 LazyColumn(content = {
-                    list.keys.forEach {
+                    currentMonthList.keys.forEach {
                         item {
                             Row() {
                                 Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = list[it].let { pl -> pl?.sumOf { payment -> payment.cost } ?: 0 }.toString())
+                                Text(text = currentMonthList[it].let { pl -> pl?.sumOf { payment -> payment.cost } ?: 0 }.toString())
+                            }
+
+                        }
+                    }
+                })
+                Text(text = "Previous month:")
+                LazyColumn(content = {
+                    previousMonthList.keys.forEach {
+                        item {
+                            Row() {
+                                Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
+                                Text(text = previousMonthList[it].let { pl -> pl?.sumOf { payment -> payment.cost } ?: 0 }.toString())
                             }
 
                         }
@@ -103,7 +117,7 @@ fun StatisticLayout(
 
 @Composable
 fun StatisticContent() {
-    Box(modifier = Modifier.padding(16.dp, vertical = 24.dp)) {
+    Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)) {
         LineChartMot(items = listOf(0.2f, 0.5f, 0.1f, 0.3f))
     }
 }
@@ -113,7 +127,7 @@ fun StatisticContent() {
 private fun StatisticLayoutPreview() {
     StatisticLayout(
         NavHostController(LocalContext.current),
-        emptyMap()
+        currentMonthList = emptyMap(),
+        previousMonthList = emptyMap()
     )
 }
-
