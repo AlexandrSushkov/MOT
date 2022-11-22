@@ -3,7 +3,7 @@ package dev.nelson.mot.main.data.repository
 import dev.nelson.mot.main.data.room.model.payment.PaymentDao
 import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
-import dev.nelson.mot.main.util.Order
+import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -23,20 +23,20 @@ class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
      */
-    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: Order): Flow<List<PaymentWithCategory>> {
+    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: SortingOrder): Flow<List<PaymentWithCategory>> {
         return when (order) {
-            Order.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
-            Order.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
+            SortingOrder.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
+            SortingOrder.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
         }
     }
 
     /**
      * Get payments WITH end date used to get payments in a particular time period.
      */
-    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, endTime: Long, order: Order): Flow<List<PaymentWithCategory>> {
+    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, endTime: Long, order: SortingOrder): Flow<List<PaymentWithCategory>> {
         return when (order) {
-            Order.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime, endTime)
-            Order.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime, endTime)
+            SortingOrder.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime, endTime)
+            SortingOrder.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime, endTime)
         }
     }
 

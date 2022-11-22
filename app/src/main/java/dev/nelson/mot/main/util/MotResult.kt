@@ -1,5 +1,11 @@
 package dev.nelson.mot.main.util
 
+/**
+ * Used for presentation layer to pass data between view model and composable to show progress
+ *
+ * @param R
+ * @constructor Create empty Mot result
+ */
 sealed class MotResult<out R> {
     object Loading : MotResult<Nothing>()
     data class Success<out T>(val data: T) : MotResult<T>()

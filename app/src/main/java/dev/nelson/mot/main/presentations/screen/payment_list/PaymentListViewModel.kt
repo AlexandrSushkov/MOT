@@ -13,7 +13,7 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
-import dev.nelson.mot.main.util.Order
+import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
@@ -57,7 +57,7 @@ class PaymentListViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-            getPaymentListByDateRange.execute(startOfMonthTime, order = Order.Descending) // no end date. otherwise newly added payments wont be shown.
+            getPaymentListByDateRange.execute(startOfMonthTime, order = SortingOrder.Descending) // no end date. otherwise newly added payments wont be shown.
                 .collect {
                     initialPaymentList.addAll(it)
                     _paymentList.value = MotResult.Success(it)

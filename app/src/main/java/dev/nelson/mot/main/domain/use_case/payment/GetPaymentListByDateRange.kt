@@ -5,7 +5,7 @@ import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepository
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
-import dev.nelson.mot.main.util.Order
+import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -18,7 +18,7 @@ class GetPaymentListByDateRange @Inject constructor(
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
 
-    fun execute(startTime: Long, endTime: Long? = null, order: Order = Order.Ascending): Flow<List<Payment>> {
+    fun execute(startTime: Long, endTime: Long? = null, order: SortingOrder = SortingOrder.Ascending): Flow<List<Payment>> {
         val paymentsWithCategoryList = endTime?.let { paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, it, order) }
             ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, order)
         return paymentsWithCategoryList
