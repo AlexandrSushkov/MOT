@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MotDismissibleListItem(
     dismissState: DismissState,
+    directions: Set<DismissDirection> = emptySet(),
     dismissContent: @Composable (RowScope.() -> Unit)
 ) {
     val haptic = LocalHapticFeedback.current
@@ -88,7 +89,7 @@ fun MotDismissibleListItem(
             }
         },
         dismissContent = dismissContent,
-        directions = setOf(DismissDirection.EndToStart),
+        directions = directions,
         dismissThresholds = { FractionalThreshold(0.35f) }
     )
 }

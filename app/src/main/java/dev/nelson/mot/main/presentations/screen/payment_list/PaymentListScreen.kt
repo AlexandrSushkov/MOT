@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -27,10 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
@@ -49,17 +50,32 @@ fun PaymentListScreen(
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
+    val isSelectedState by viewModel.isSelectedState.collectAsState(false)
+    val selectedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
+    val openPaymentDetailsFlow by viewModel.openNewPayment.collectAsState(PaymentListViewModel.OpenPaymentDetailsState.None)
+
+//    when(openPaymentDetailsFlow){
+//        is PaymentListViewModel.OpenPaymentDetailsState.NewPayment -> openPaymentDetails.invoke(null)
+//        is PaymentListViewModel.OpenPaymentDetailsState.ExistingPayment -> openPaymentDetails.invoke((openPaymentDetailsFlow as PaymentListViewModel.OpenPaymentDetailsState.ExistingPayment).id)
+//        is PaymentListViewModel.OpenPaymentDetailsState.None -> {} // do nothing
+//    }
 
     PaymentListLayout(
         openDrawer = openDrawer,
         paymentListResult = paymentListResult,
-        onItemClick = { payment ->  openPaymentDetails.invoke(payment.id?.toInt()) },
-        openPaymentDetails = { openPaymentDetails.invoke(null) },
+//        onItemClick = { payment -> openPaymentDetails.invoke(payment.payment.id?.toInt()) },
+        onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
+        onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
+//        openPaymentDetails = { openPaymentDetails.invoke(null) },
+        onFabClick = { viewModel.onFabClick() },
         onActionIconClick = onActionIconClick,
         snackbarVisibleState = snackbarVisibilityState,
         onUndoButtonClick = { viewModel.onUndoDeleteClick() },
         deletedItemsCount = deletedItemsCount,
-        onSwipeToDeleteItem = { viewModel.onSwipeToDelete(it) }
+        onSwipeToDeleteItem = { paymentItemModel -> viewModel.onSwipeToDelete(paymentItemModel) },
+        isSelectedState = isSelectedState,
+        selectedItemsCount = selectedItemsCount,
+        onCancelSelectionClick = { viewModel.onCancelSelectionClick() }
     )
 }
 
@@ -67,27 +83,39 @@ fun PaymentListScreen(
 fun PaymentListLayout(
     openDrawer: () -> Unit,
     paymentListResult: MotResult<List<PaymentListItemModel>>,
-    onItemClick: (Payment) -> Unit,
-    openPaymentDetails: (Int?) -> Unit,
+    onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onFabClick: () -> Unit,
     onActionIconClick: () -> Unit,
     snackbarVisibleState: Boolean,
     onUndoButtonClick: () -> Unit,
     deletedItemsCount: Int,
-    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit
+    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    isSelectedState: Boolean,
+    selectedItemsCount: Int,
+    onCancelSelectionClick: () -> Unit
 ) {
 
     Scaffold(
         topBar = {
-            TopAppBarMot(
-                title = "Payments list",
-                onNavigationIconClick = openDrawer,
-                onActionIconClick = onActionIconClick
-            )
+            if (isSelectedState) {
+                MotSelectionTopAppBar(
+                    onNavigationIconClick = onCancelSelectionClick,
+                    title = selectedItemsCount.toString(),
+                    onActionIconClick = { }
+                )
+            } else {
+                TopAppBarMot(
+                    title = "Payments list",
+                    onNavigationIconClick = openDrawer,
+                    onActionIconClick = onActionIconClick
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { openPaymentDetails.invoke(null) },
-                content = { Icon(Icons.Default.Add, "categories fab") }
+                onClick = onFabClick,
+                content = { Icon(Icons.Default.Add, "new payment fab") }
             )
         },
         snackbarHost = {
@@ -106,7 +134,7 @@ fun PaymentListLayout(
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            PaymentList(paymentListResult, onItemClick, onSwipeToDeleteItem)
+            PaymentList(paymentListResult, onItemClick, onItemLongClick, onSwipeToDeleteItem, isSelectedState)
         }
     }
 
@@ -116,8 +144,10 @@ fun PaymentListLayout(
 @Composable
 fun PaymentList(
     paymentListResult: MotResult<List<PaymentListItemModel>>,
-    onItemClick: (Payment) -> Unit,
-    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit
+    onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    isSelectedState: Boolean
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -161,11 +191,14 @@ fun PaymentList(
                                     )
                                     MotDismissibleListItem(
                                         dismissState = dismissState,
+                                        directions = if (isSelectedState.not()) setOf(DismissDirection.EndToStart) else emptySet(),
                                         dismissContent = {
                                             PaymentListItem(
-                                                paymentListItemModel.payment,
+                                                paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
-                                                dismissDirection = dismissState.dismissDirection
+                                                dismissDirection = dismissState.dismissDirection,
+                                                onLongClick = { payment -> onItemLongClick.invoke(payment) },
+                                                isSelectedState = isSelectedState
                                             )
                                         }
                                     )
@@ -202,11 +235,15 @@ private fun PaymentListScreenPreview() {
         paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
         onItemClick = {},
-        openPaymentDetails = {},
+        onItemLongClick = {},
+        onFabClick = {},
         onActionIconClick = {},
-        onSwipeToDeleteItem = {},
-        onUndoButtonClick = {},
         snackbarVisibleState = false,
-        deletedItemsCount = 0
+        onUndoButtonClick = {},
+        deletedItemsCount = 0,
+        onSwipeToDeleteItem = {},
+        isSelectedState = false,
+        selectedItemsCount = 0,
+        onCancelSelectionClick = {}
     )
 }

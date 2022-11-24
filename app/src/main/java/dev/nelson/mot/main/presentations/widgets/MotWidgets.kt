@@ -7,12 +7,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +37,7 @@ fun TopAppBarMot(
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigationIconClick) {
-                Icon(Icons.Default.Menu, contentDescription = "drawer icon")
+                Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
             }
         },
         title = { Text(text = title) },
@@ -39,6 +46,43 @@ fun TopAppBarMot(
                 Icon(Icons.Default.Settings, contentDescription = "")
             }
         }
+    )
+}
+
+@Composable
+fun MotSelectionTopAppBar(
+    title: String,
+    onNavigationIconClick: () -> Unit,
+    onActionIconClick: () -> Unit
+) {
+    SmallTopAppBar(
+        navigationIcon = {
+            IconButton(onClick = onNavigationIconClick) {
+                Icon(Icons.Default.Close, contentDescription = "close drawer icon")
+            }
+        },
+        title = { Text(text = title)},
+        actions = {
+            IconButton(onClick = onActionIconClick) {
+                Icon(Icons.Default.EditCalendar, contentDescription = "")
+            }
+            IconButton(onClick = onActionIconClick) {
+                Icon(Icons.Default.Category, contentDescription = "")
+            }
+            IconButton(onClick = onActionIconClick) {
+                Icon(Icons.Default.Delete, contentDescription = "")
+            }
+        }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MotSelectionTopAppBarPreview() {
+    MotSelectionTopAppBar(
+        title = "0",
+        onNavigationIconClick = {},
+        onActionIconClick = {}
     )
 }
 
@@ -76,7 +120,7 @@ fun ListPlaceholder(modifier: Modifier, imageVector: ImageVector, text: String) 
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ListPlaceholderPreview() {
     ListPlaceholder(

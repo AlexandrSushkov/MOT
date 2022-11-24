@@ -13,10 +13,11 @@ import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
  * @property cost
  * @property message
  * @property id
- * @property date
- * @property dateInMills
+ * @property date - formatted string representation of the mills
+ * @property dateInMills - date in epoch milliseconds
  * @property category
  * @property isExpanded used in payment list to show/hide message
+ * @property isSelected used in payment list to show/hide selection checkbox
  * @constructor Create empty Payment
  */
 data class Payment(
@@ -28,7 +29,8 @@ data class Payment(
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
-    var isExpanded: Boolean = false
+    var isExpanded: Boolean = false,
+    var isSelected: Boolean = false,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().orEmpty(), // name
@@ -38,7 +40,8 @@ data class Payment(
         parcel.readString(), // date
         parcel.readValue(Long::class.java.classLoader) as? Long, // date in mills
         parcel.readParcelable(Category::class.java.classLoader), // category
-        parcel.readBoolean() // is expanded
+        parcel.readBoolean(), // is expanded
+        parcel.readBoolean() // is selected
     )
 
     override fun toString(): String {
@@ -62,6 +65,7 @@ data class Payment(
         parcel.writeValue(dateInMills)
         parcel.writeParcelable(category, flags)
         parcel.writeBoolean(isExpanded)
+        parcel.writeBoolean(isSelected)
     }
 
     override fun describeContents(): Int = 0

@@ -3,7 +3,9 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
 import androidx.compose.material.Chip
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
@@ -26,9 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -40,7 +45,7 @@ fun DateRangeWidget(startDate: String, endDate: String) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .align(Alignment.CenterVertically)
+                    .align(CenterVertically)
             ) {
                 Text(text = startDate, modifier = Modifier.align(Alignment.Start))
             }
@@ -48,7 +53,7 @@ fun DateRangeWidget(startDate: String, endDate: String) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .align(Alignment.CenterVertically)
+                    .align(CenterVertically)
             ) {
                 Text(text = endDate, modifier = Modifier.align(Alignment.End))
             }
@@ -57,6 +62,7 @@ fun DateRangeWidget(startDate: String, endDate: String) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentListDateItem(date: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -89,42 +95,66 @@ fun PaymentListDateItem(date: String) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PaymentListItem(
-    payment: Payment,
-    onClick: (Payment) -> Unit,
-    dismissDirection: DismissDirection?
+    paymentItemModel: PaymentListItemModel.PaymentItemModel,
+    onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    dismissDirection: DismissDirection?,
+    isSelectedState: Boolean
 ) {
+    val haptic = LocalHapticFeedback.current
+
     Card(
-        modifier = Modifier.clickable(onClick = { onClick.invoke(payment) }),
+        modifier = Modifier.combinedClickable(
+            onClick = { onClick.invoke(paymentItemModel) },
+            onLongClick = {
+                if (isSelectedState.not()) {
+                    onLongClick.invoke(paymentItemModel)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                }
+
+            }
+        ),
         elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
         shape = RoundedCornerShape(0.dp)
     ) {
-        Column() {
-            Row(modifier = Modifier.padding(all = 16.dp)) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = payment.name,
-                        style = MaterialTheme.typography.subtitle1,
-                    )
-                    payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
-                    payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
-                }
-                Column(
-                    modifier = Modifier.align(alignment = CenterVertically)
-                ) {
-                    Text(
-                        payment.cost.toString(),
-                        style = MaterialTheme.typography.subtitle2
+        Row() {
+            if (isSelectedState) {
+                Column(modifier = Modifier.align(CenterVertically)) {
+                    Checkbox(
+                        checked = paymentItemModel.payment.isSelected,
+                        onCheckedChange = { onClick.invoke(paymentItemModel) }
                     )
                 }
             }
-            if (payment.message.isNotEmpty()) {
-                MotExpandableArea(payment = payment)
+            Column() {
+                Row(modifier = Modifier.padding(all = 16.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1.0f)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = paymentItemModel.payment.name,
+                            style = MaterialTheme.typography.subtitle1,
+                        )
+                        paymentItemModel.payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
+//                        payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
+                    }
+                    Column(
+                        modifier = Modifier.align(alignment = CenterVertically)
+                    ) {
+                        Text(
+                            paymentItemModel.payment.cost.toString(),
+                            style = MaterialTheme.typography.subtitle2
+                        )
+                    }
+                }
+                if (paymentItemModel.payment.message.isNotEmpty()) {
+                    MotExpandableArea(payment = paymentItemModel.payment)
+                }
             }
         }
     }
@@ -149,9 +179,11 @@ private fun DismissiblePaymentListItemPreview() {
         dismissState = DismissState(DismissValue.Default),
         dismissContent = {
             PaymentListItem(
-                payment = PreviewData.paymentItemPreview,
+                paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
-                dismissDirection = DismissDirection.EndToStart
+                onLongClick = {},
+                dismissDirection = DismissDirection.EndToStart,
+                isSelectedState = false
             )
         }
     )

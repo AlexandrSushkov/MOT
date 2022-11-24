@@ -4,6 +4,7 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
@@ -22,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -45,16 +47,29 @@ class PaymentListViewModel @Inject constructor(
         get() = _snackBarVisibilityState.asStateFlow()
     private val _snackBarVisibilityState = MutableStateFlow(false)
 
+    val isSelectedState
+        get() = _isSelectedState.asStateFlow()
+    private val _isSelectedState = MutableStateFlow(false)
+
     val deletedItemsCount: Flow<Int>
         get() = _deletedItemsCount.asStateFlow()
     private val _deletedItemsCount = MutableStateFlow(0)
+
+    val selectedItemsCount: Flow<Int>
+        get() = _selectedItemsCount.asStateFlow()
+    private val _selectedItemsCount = MutableStateFlow(0)
 
     val paymentListResult: Flow<MotResult<List<PaymentListItemModel>>>
         get() = _paymentList.asStateFlow()
     private val _paymentList = MutableStateFlow<MotResult<List<PaymentListItemModel>>>(MotResult.Loading)
 
+    val openNewPayment: Flow<OpenPaymentDetailsState>
+        get() = _openNewPayment.asSharedFlow()
+    private val _openNewPayment = MutableStateFlow<OpenPaymentDetailsState>(OpenPaymentDetailsState.None)
+
     private val initialPaymentList = mutableListOf<PaymentListItemModel>()
     private val paymentsToDeleteList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
+    private val selectedItemsList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
     private var deletePaymentJob: Job? = null
 
     init {
@@ -110,6 +125,88 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
+    fun onFabClick() {
+        _openNewPayment.value = OpenPaymentDetailsState.NewPayment
+    }
+
+    fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {
+        if (_isSelectedState.value) {
+            // select mode is on. select this item
+            if (selectedItemsList.contains(payment)) {
+                deselectItem(payment)
+                if (selectedItemsList.isEmpty()) {
+                    _isSelectedState.value = false
+                }
+            } else {
+                selectItem(payment)
+            }
+            _selectedItemsCount.value = selectedItemsList.size
+        } else {
+            // select mode is off. open payment details
+            payment.payment.id?.toInt()?.let {
+                _openNewPayment.value = OpenPaymentDetailsState.ExistingPayment(it)
+            }
+        }
+    }
+
+    fun onCancelSelectionClick() {
+        _isSelectedState.value = false
+        cancelSelection()
+    }
+
+    fun onItemLongClick(payment: PaymentListItemModel.PaymentItemModel) {
+        if (_isSelectedState.value.not()) {
+            // turn on selection state
+            _isSelectedState.value = true
+            // find and select item
+            selectItem(payment)
+        }
+    }
+
+    private fun deselectItem(payment: PaymentListItemModel.PaymentItemModel) {
+        selectedItemsList.remove(payment)
+        val newPayment = payment.payment.copyWith(isSelected = false)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.key)
+        val tempList = _paymentList.value.successOr(emptyList()).map { item ->
+            if (item is PaymentListItemModel.PaymentItemModel) {
+                if (item.payment.id == payment.payment.id) {
+                    newPaymentItemModel
+                } else {
+                    item
+                }
+            } else {
+                item
+            }
+        }
+        _paymentList.value = MotResult.Success(tempList)
+    }
+
+    private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
+//        selectedItemsList.add(payment)
+        val newPayment = payment.payment.copyWith(isSelected = true)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.key)
+        selectedItemsList.add(newPaymentItemModel)
+        val tempList = _paymentList.value.successOr(emptyList()).map { item ->
+            if (item is PaymentListItemModel.PaymentItemModel) {
+                if (item.payment.id == payment.payment.id) {
+                    newPaymentItemModel
+                } else {
+                    item
+                }
+            } else {
+                item
+            }
+        }
+        _paymentList.value = MotResult.Success(tempList)
+    }
+
+    private fun cancelSelection() {
+        _paymentList.value = MotResult.Success(initialPaymentList)
+        selectedItemsList.clear()
+        _selectedItemsCount.value = selectedItemsList.size
+
+    }
+
     fun onDateRangeClick() {
         // open date picker
     }
@@ -148,5 +245,11 @@ class PaymentListViewModel @Inject constructor(
     private sealed class Mode {
         object RecentPayments : Mode()
         object PaymentsForCategory : Mode()
+    }
+
+    sealed class OpenPaymentDetailsState {
+        class ExistingPayment(val id: Int) : OpenPaymentDetailsState()
+        object NewPayment : OpenPaymentDetailsState()
+        object None : OpenPaymentDetailsState()
     }
 }

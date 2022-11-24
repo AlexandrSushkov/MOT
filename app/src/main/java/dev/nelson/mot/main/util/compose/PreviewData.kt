@@ -10,7 +10,6 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import java.io.InputStream
 import java.util.UUID
-import kotlin.random.Random
 
 val categoryNames = listOf(
     "Support",
@@ -55,12 +54,16 @@ object PreviewData {
 
     val categoryEntityPreview = Category(categoryNames.first()).toCategoryEntity()
 
-    val paymentItemPreview = Payment(
-        "payment name",
-        100,
-        category = categoryPreview,
-        message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. "
-    )
+    val paymentItemPreview
+        get() = Payment(
+            "payment name",
+            100,
+            category = categoryPreview,
+            message = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. "
+        )
+
+    val paymentItemModelPreview
+        get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, generateKey())
 
     val paymentListPreview: List<Payment>
         get() = (1..30).map { Payment("payment $it", it * 10, id = it.toLong(), category = categoryPreview) }

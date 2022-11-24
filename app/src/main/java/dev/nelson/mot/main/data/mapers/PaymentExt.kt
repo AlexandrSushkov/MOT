@@ -12,7 +12,8 @@ fun Payment.copyWith(
     date: String? = null,
     dateInMills: Long? = null,
     category: Category? = null,
-    message: String? = null
+    message: String? = null,
+    isSelected: Boolean? = null
 ): Payment = Payment(
         name = name ?: this.name,
         cost = cost ?: this.cost,
@@ -20,7 +21,8 @@ fun Payment.copyWith(
         date = date ?: this.date,
         dateInMills = dateInMills ?: this.dateInMills,
         category = category ?: this.category,
-        message = message ?: this.message
+        message = message ?: this.message,
+        isSelected = isSelected ?: this.isSelected
     )
 
 fun Payment.toPaymentEntity(): PaymentEntity =
