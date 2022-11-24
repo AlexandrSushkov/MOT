@@ -23,6 +23,7 @@ data class Payment(
     val name: String,
     val cost: Int,
     val message: String = StringUtils.EMPTY,
+    // TODO: can be converted to Int
     val id: Long? = null,
     val date: String? = null,
     val dateInMills: Long? = null,

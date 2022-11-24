@@ -31,8 +31,7 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
                 execSQL("INSERT INTO $tempTableName (${PaymentTable.ID}, ${PaymentTable.TITLE}, ${PaymentTable.CATEGORY_ID_KEY}, ${PaymentTable.COST}, ${PaymentTable.SUMMARY}) SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.TITLE}, ${PaymentTableV1.CATEGORY_ID}, ${PaymentTableV1.COST}, ${PaymentTableV1.SUMMARY} FROM ${PaymentTableV1.TABLE_NAME}")
 
                 //migrate date
-                val cursor =
-                    query("SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.DATE} FROM ${PaymentTableV1.TABLE_NAME}")
+                val cursor = query("SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.DATE} FROM ${PaymentTableV1.TABLE_NAME}")
                 if (cursor.count > 0) {
                     cursor.moveToFirst()
                     do {
