@@ -1,17 +1,13 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissValue
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -20,7 +16,6 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.rememberDismissState
@@ -33,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
@@ -57,7 +53,7 @@ fun PaymentListScreen(
     PaymentListLayout(
         openDrawer = openDrawer,
         paymentListResult = paymentListResult,
-        onItemClick = { openPaymentDetails.invoke(it.id?.toInt()) },
+        onItemClick = { payment ->  openPaymentDetails.invoke(payment.id?.toInt()) },
         openPaymentDetails = { openPaymentDetails.invoke(null) },
         onActionIconClick = onActionIconClick,
         snackbarVisibleState = snackbarVisibilityState,
@@ -70,14 +66,14 @@ fun PaymentListScreen(
 @Composable
 fun PaymentListLayout(
     openDrawer: () -> Unit,
-    paymentListResult: MotResult<List<Payment>>,
+    paymentListResult: MotResult<List<PaymentListItemModel>>,
     onItemClick: (Payment) -> Unit,
     openPaymentDetails: (Int?) -> Unit,
     onActionIconClick: () -> Unit,
     snackbarVisibleState: Boolean,
     onUndoButtonClick: () -> Unit,
     deletedItemsCount: Int,
-    onSwipeToDeleteItem: (Payment) -> Unit
+    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit
 ) {
 
     Scaffold(
@@ -119,9 +115,9 @@ fun PaymentListLayout(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentList(
-    paymentListResult: MotResult<List<Payment>>,
+    paymentListResult: MotResult<List<PaymentListItemModel>>,
     onItemClick: (Payment) -> Unit,
-    onSwipeToDeleteItem: (Payment) -> Unit
+    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -142,42 +138,43 @@ fun PaymentList(
             } else {
                 Column {
                     // date range widget
-                    val startDate = paymentList.first().date.orEmpty()
-                    val endDate = paymentList.last().date.orEmpty()
-                    if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
-                        DateRangeWidget(startDate, endDate)
+                    val startDate = paymentList.firstOrNull() { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+                    val endDate = paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+                    if (startDate != null && endDate != null) {
+                        DateRangeWidget(startDate.date, endDate.date)
                     }
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        item {
-
-                        }
-                        paymentList.forEach { payment ->
-                            item(payment.id ?: 0) {
-                                val dismissState = rememberDismissState(
-                                    confirmStateChange = { dismissValue ->
-                                        if (dismissValue == DismissValue.DismissedToStart) {
-                                            onSwipeToDeleteItem.invoke(payment)
-                                            true
-                                        } else {
-                                            false
+                        paymentList.forEach { paymentListItemModel ->
+                            if (paymentListItemModel is PaymentListItemModel.PaymentItemModel) {
+                                item(key = paymentListItemModel.key) {
+                                    val dismissState = rememberDismissState(
+                                        confirmStateChange = { dismissValue ->
+                                            if (dismissValue == DismissValue.DismissedToStart) {
+                                                onSwipeToDeleteItem.invoke(paymentListItemModel)
+                                                true
+                                            } else {
+                                                false
+                                            }
                                         }
-                                    }
-                                )
-                                MotDismissibleListItem(
-                                    dismissState = dismissState,
-                                    dismissContent = {
-                                        PaymentListItem(
-                                            payment,
-                                            onClick = { payment -> onItemClick.invoke(payment) },
-                                            dismissDirection = dismissState.dismissDirection
-                                        )
-                                    }
-                                )
+                                    )
+                                    MotDismissibleListItem(
+                                        dismissState = dismissState,
+                                        dismissContent = {
+                                            PaymentListItem(
+                                                paymentListItemModel.payment,
+                                                onClick = { payment -> onItemClick.invoke(payment) },
+                                                dismissDirection = dismissState.dismissDirection
+                                            )
+                                        }
+                                    )
+                                }
                             }
-                            stickyHeader {
-//                            PaymentListDateItem(date = "12/21/23")
+                            if (paymentListItemModel is PaymentListItemModel.Header) {
+                                stickyHeader(key = paymentListItemModel.key) {
+                                    PaymentListDateItem(date = paymentListItemModel.date)
+                                }
                             }
                         }
                     }
@@ -194,40 +191,15 @@ fun PaymentList(
             }
         }
     }
-
-
-}
-
-@Composable
-private fun DateRangeWidget(startDate: String, endDate: String) {
-    Column(modifier = Modifier.clickable { }) {
-        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = startDate, modifier = Modifier.align(Alignment.Start))
-            }
-            Icon(Icons.Default.ArrowRightAlt, contentDescription = "arrow right")
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = endDate, modifier = Modifier.align(Alignment.End))
-            }
-        }
-        Divider(Modifier.height(1.dp))
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun PaymentListScreenPreview() {
+
     PaymentListLayout(
         openDrawer = {},
-        paymentListResult = Success(PreviewData.paymentListPreview),
+        paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
         onItemClick = {},
         openPaymentDetails = {},
