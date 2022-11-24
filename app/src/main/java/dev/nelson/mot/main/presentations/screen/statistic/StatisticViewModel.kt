@@ -42,10 +42,10 @@ class StatisticViewModel @Inject constructor(
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
             getPaymentListByDateRange.execute(startOfMonthTime, currentTime).collect {
                 Timber.d(it.toString())
-                val sortedByCategoryPaymentMap = it.groupBy { payment -> payment.category }
-                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in this month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.cost }}") }
-                Timber.d("spend in this month total: ${it.sumOf { payment -> payment.cost }}")
-                _currentMonthListResult.value = sortedByCategoryPaymentMap
+//                val sortedByCategoryPaymentMap = it.groupBy { payment -> payment.category }
+//                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in this month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.cost }}") }
+//                Timber.d("spend in this month total: ${it.sumOf { payment -> payment.cost }}")
+//                _currentMonthListResult.value = sortedByCategoryPaymentMap
             }
         }
 
@@ -54,10 +54,10 @@ class StatisticViewModel @Inject constructor(
             val startOfPreviousMonthTime = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
             getPaymentListByDateRange.execute(startOfPreviousMonthTime, startOfMonthTime).collect {
                 Timber.d(it.toString())
-                val sortedByCategoryPaymentMap = it.groupBy { payment -> payment.category }
-                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in previous month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.cost }}") }
-                Timber.d("spend in previous month total: ${it.sumOf { payment -> payment.cost }}")
-                _previousMonthListResult.value = sortedByCategoryPaymentMap
+//                val sortedByCategoryPaymentMap = it.groupBy { payment -> payment.category }
+//                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in previous month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.cost }}") }
+//                Timber.d("spend in previous month total: ${it.sumOf { payment -> payment.cost }}")
+//                _previousMonthListResult.value = sortedByCategoryPaymentMap
             }
         }
     }

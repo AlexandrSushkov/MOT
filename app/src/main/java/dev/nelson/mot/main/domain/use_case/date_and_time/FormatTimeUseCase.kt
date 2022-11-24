@@ -12,17 +12,23 @@ import javax.inject.Inject
  */
 class FormatTimeUseCase @Inject constructor() {
 
+    // TODO: add "Pick date format" to settings.
     /**
      * @param time epoch time in milliseconds
+     * @param timeZone time zone. If null, default system time zone is used
+     * @param dateTimeFormatter date formatter, If null, [DateTimeFormatter.ISO_LOCAL_DATE] format is used
      * @return formatted time as string
+     * @see [TimeZone]
+     * @see [DateTimeFormatter]
      */
-    fun execute(time: Long?): String? { // TODO: add "Pick date format" to settings.
-        return time?.let {
-            val timeZone = TimeZone.currentSystemDefault()
-            val instant: Instant = Instant.fromEpochMilliseconds(time)
-            instant.toLocalDateTime(timeZone)
-                .toJavaLocalDateTime()
-                .format(DateTimeFormatter.ISO_LOCAL_DATE)
-        }
+    fun execute(
+        time: Long,
+        timeZone: TimeZone? = null,
+        dateTimeFormatter: DateTimeFormatter? = null
+    ): String? {
+        return Instant.fromEpochMilliseconds(time)
+            .toLocalDateTime(timeZone ?: TimeZone.currentSystemDefault())
+            .toJavaLocalDateTime()
+            .format(dateTimeFormatter ?: DateTimeFormatter.ISO_LOCAL_DATE)
     }
 }
