@@ -27,9 +27,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -77,6 +78,7 @@ class PaymentListViewModel @Inject constructor(
     private val paymentsToDeleteList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
     private val selectedItemsList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
     private var deletePaymentJob: Job? = null
+    private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
         viewModelScope.launch {
@@ -85,6 +87,7 @@ class PaymentListViewModel @Inject constructor(
             // no end date. otherwise newly added payments wont be shown.
             getPaymentListByDateRange.execute(startOfPreviousMonth, order = SortingOrder.Descending)
                 .collect {
+                    initialPaymentList.clear()
                     initialPaymentList.addAll(it)
                     _paymentList.value = MotResult.Success(it)
                 }
@@ -142,6 +145,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun onFabClick() {
         viewModelScope.launch {
+            cancelSelection()
             _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
         }
     }
@@ -178,6 +182,7 @@ class PaymentListViewModel @Inject constructor(
             paymentsToDeleteList.forEach { paymentItemModel ->
                 // paymentItemModel is not the save in paymentsToDeleteList and temp list, as onCancelSelectionClick() reset list. make a copy from initial list. this is two different objects.
                 val positionOfThePayment = temp.indexOf(temp.find { item -> item.key == paymentItemModel.key })
+                val paymentElement = temp[positionOfThePayment]
                 // TODO:   should be easier to fond element by id and use it as in swipe to delete implementation. And not rely on the position of the element
                 val previousElementPosition = positionOfThePayment - 1
                 val previousElement = temp[previousElementPosition]
@@ -185,24 +190,17 @@ class PaymentListViewModel @Inject constructor(
                     // this it the last element in the list
                     if (previousElement is PaymentListItemModel.Header) {
                         // remove date item if there is only one payment fo this date
-                        // order is important. delete form
-                        temp.removeAt(positionOfThePayment)
-                        temp.removeAt(previousElementPosition) // remove date element
+                        temp.remove(previousElement)
                     }
                 } else {
                     // this element is NOT last in the list
-                    val nextElementPosition = positionOfThePayment + 1
-                    val nextElement = temp[nextElementPosition]
+                    val nextElement = temp[positionOfThePayment + 1]
                     if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
-                        // remove date item if there is only one payment fo this date. payment surrounded with date elements
-                        // order is important. delete form end to start element.
-                        temp.removeAt(positionOfThePayment)
-                        temp.removeAt(previousElementPosition) // remove date element
-                    } else {
-                        // there is several item payment items for the date, remove one
-                        temp.removeAt(positionOfThePayment)
+                        // remove date item if there is only one payment fo this date
+                        temp.remove(previousElement)
                     }
                 }
+                temp.remove(paymentElement)
             }
             _paymentList.value = MotResult.Success(temp)
             _deletedItemsCount.value = paymentsToDeleteList.size
@@ -212,14 +210,13 @@ class PaymentListViewModel @Inject constructor(
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
             hideSnackBar()
             // remove payments from DB
-//            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
         }
     }
 
     fun onCancelSelectionClick() {
-        _isSelectedState.value = false
         cancelSelection()
     }
 
@@ -272,14 +269,32 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun cancelSelection() {
-        _paymentList.value = MotResult.Success(initialPaymentList)
+        _isSelectedState.value = false
         selectedItemsList.clear()
         _selectedItemsCount.value = selectedItemsList.size
-
+        _paymentList.value = MotResult.Success(initialPaymentList)
     }
 
     fun onDateRangeClick() {
         // open date picker
+    }
+
+    fun onChangeDateClick() {
+        // open date picker
+    }
+
+    fun onChangeCategoryClick() {
+        // open category modal
+    }
+
+    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) {
+        viewModelScope.launch {
+            val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
+            val selectedDate: Date = selectedDateCalendar.time
+            val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
+            cancelSelection()
+            modifyListOfPaymentsUseCase.execute(newItems, ModifyListOfPaymentsAction.Edit)
+        }
     }
 
     private fun clearItemsToDeleteList() {

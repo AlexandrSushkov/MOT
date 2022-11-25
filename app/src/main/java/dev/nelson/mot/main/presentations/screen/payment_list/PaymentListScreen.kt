@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
+import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,10 +50,7 @@ import dev.nelson.mot.main.util.MotResult.Loading
 import dev.nelson.mot.main.util.MotResult.Success
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @Composable
 fun PaymentListScreen(
@@ -73,10 +72,10 @@ fun PaymentListScreen(
     LaunchedEffect(
         key1 = Unit,
         block = {
-            viewModel.openPaymentDetailsAction.collect {
-                when (it) {
+            viewModel.openPaymentDetailsAction.collect { action ->
+                when (action) {
                     is OpenPaymentDetailsAction.NewPayment -> openPaymentDetails.invoke(null)
-                    is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(it.id)
+                    is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(action.id)
                 }
             }
         })
@@ -86,13 +85,25 @@ fun PaymentListScreen(
         onBack = { viewModel.onCancelSelectionClick() }
     )
 
+    // TODO: move to VM
+    val context = LocalContext.current
+    val cldr: Calendar = Calendar.getInstance()
+    val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
+    val month: Int = cldr.get(Calendar.MONTH)
+    val year: Int = cldr.get(Calendar.YEAR)
+    val picker = DatePickerDialog(
+        context,
+        { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
+        year,
+        month,
+        day
+    )
+
     PaymentListLayout(
         openDrawer = openDrawer,
         paymentListResult = paymentListResult,
-//        onItemClick = { payment -> openPaymentDetails.invoke(payment.payment.id?.toInt()) },
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
-//        openPaymentDetails = { openPaymentDetails.invoke(null) },
         onFabClick = { viewModel.onFabClick() },
         onActionIconClick = onActionIconClick,
         snackbarVisibleState = snackbarVisibilityState,
@@ -110,6 +121,8 @@ fun PaymentListScreen(
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
+        onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
+        onChangeDateForSelectedItemsClick = { picker.show() }
     )
 }
 
@@ -129,6 +142,8 @@ fun PaymentListLayout(
     selectedItemsCount: Int,
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
+    onChangeDateForSelectedItemsClick: () -> Unit,
+    onChangeCategoryForSelectedItemsClick: () -> Unit,
 ) {
 
     Scaffold(
@@ -138,10 +153,10 @@ fun PaymentListLayout(
                     onNavigationIconClick = onCancelSelectionClick,
                     title = selectedItemsCount.toString(),
                     actions = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = onChangeDateForSelectedItemsClick) {
                             Icon(Icons.Default.EditCalendar, contentDescription = "")
                         }
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = onChangeCategoryForSelectedItemsClick) {
                             Icon(Icons.Default.Category, contentDescription = "")
                         }
                         IconButton(onClick = onDeleteSelectedItemsClick) {
@@ -291,5 +306,7 @@ private fun PaymentListScreenPreview() {
         selectedItemsCount = 0,
         onCancelSelectionClick = {},
         onDeleteSelectedItemsClick = {},
+        onChangeCategoryForSelectedItemsClick = {},
+        onChangeDateForSelectedItemsClick = {},
     )
 }

@@ -80,6 +80,7 @@ fun PaymentDetailsScreen(closeScreen: () -> Unit) {
             }
         )
 
+        // TODO: move to VM
         val context = LocalContext.current
         val cldr: Calendar = Calendar.getInstance()
         val day: Int = cldr.get(Calendar.DAY_OF_MONTH)

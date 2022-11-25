@@ -13,9 +13,7 @@ class ModifyListOfPaymentsUseCase @Inject constructor(private val paymentReposit
     suspend fun execute(payments: List<Payment>, action: ModifyListOfPaymentsAction) {
         val paymentsEntityList = payments.toPaymentEntityList()
         when (action) {
-            ModifyListOfPaymentsAction.Edit -> {
-                // TODO: to be implemented soon
-            }
+            ModifyListOfPaymentsAction.Edit -> paymentRepository.updatePayments(paymentsEntityList)
             ModifyListOfPaymentsAction.Delete -> paymentRepository.deletePayments(paymentsEntityList)
         }
     }

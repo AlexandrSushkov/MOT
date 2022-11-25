@@ -31,6 +31,9 @@ interface PaymentDao {
     @Update
     suspend fun updatePayment(paymentEntity: PaymentEntity)
 
+    @Update
+    suspend fun updatePayments(paymentEntity: List<PaymentEntity>)
+
     @Delete
     suspend fun deletePayment(paymentEntity: PaymentEntity)
 

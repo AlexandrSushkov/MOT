@@ -46,6 +46,8 @@ class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) 
     // EDIT
     suspend fun updatePayment(paymentEntity: PaymentEntity) = paymentDao.updatePayment(paymentEntity)
 
+    suspend fun updatePayments(paymentEntityList: List<PaymentEntity>) = paymentDao.updatePayments(paymentEntityList)
+
     // DELETE
     suspend fun deletePayment(paymentEntity: PaymentEntity) = paymentDao.deletePayment(paymentEntity)
 
