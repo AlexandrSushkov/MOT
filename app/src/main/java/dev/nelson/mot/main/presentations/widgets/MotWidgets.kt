@@ -1,24 +1,21 @@
 package dev.nelson.mot.main.presentations.widgets
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,7 +37,12 @@ fun TopAppBarMot(
                 Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
             }
         },
-        title = { Text(text = title) },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
         actions = {
             IconButton(onClick = onActionIconClick) {
                 Icon(Icons.Default.Settings, contentDescription = "")
@@ -53,7 +55,7 @@ fun TopAppBarMot(
 fun MotSelectionTopAppBar(
     title: String,
     onNavigationIconClick: () -> Unit,
-    onActionIconClick: () -> Unit
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     SmallTopAppBar(
         navigationIcon = {
@@ -61,18 +63,13 @@ fun MotSelectionTopAppBar(
                 Icon(Icons.Default.Close, contentDescription = "close drawer icon")
             }
         },
-        title = { Text(text = title)},
-        actions = {
-            IconButton(onClick = onActionIconClick) {
-                Icon(Icons.Default.EditCalendar, contentDescription = "")
-            }
-            IconButton(onClick = onActionIconClick) {
-                Icon(Icons.Default.Category, contentDescription = "")
-            }
-            IconButton(onClick = onActionIconClick) {
-                Icon(Icons.Default.Delete, contentDescription = "")
-            }
-        }
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        actions = actions
     )
 }
 
@@ -80,9 +77,9 @@ fun MotSelectionTopAppBar(
 @Composable
 private fun MotSelectionTopAppBarPreview() {
     MotSelectionTopAppBar(
-        title = "0",
+        title = "1",
         onNavigationIconClick = {},
-        onActionIconClick = {}
+        actions = {}
     )
 }
 

@@ -14,6 +14,7 @@ import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.SortingOrder
@@ -22,9 +23,11 @@ import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,6 +46,7 @@ class PaymentListViewModel @Inject constructor(
 
     val toolbarElevation = ObservableField<Int>()
 
+    // states
     val snackBarVisibilityState
         get() = _snackBarVisibilityState.asStateFlow()
     private val _snackBarVisibilityState = MutableStateFlow(false)
@@ -63,10 +67,12 @@ class PaymentListViewModel @Inject constructor(
         get() = _paymentList.asStateFlow()
     private val _paymentList = MutableStateFlow<MotResult<List<PaymentListItemModel>>>(MotResult.Loading)
 
-    val openNewPayment: Flow<OpenPaymentDetailsState>
-        get() = _openNewPayment.asSharedFlow()
-    private val _openNewPayment = MutableStateFlow<OpenPaymentDetailsState>(OpenPaymentDetailsState.None)
+    // actions
+    val openPaymentDetailsAction: Flow<OpenPaymentDetailsAction>
+        get() = _openPaymentDetailsAction.asSharedFlow()
+    private val _openPaymentDetailsAction = MutableSharedFlow<OpenPaymentDetailsAction>()
 
+    // private data
     private val initialPaymentList = mutableListOf<PaymentListItemModel>()
     private val paymentsToDeleteList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
     private val selectedItemsList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
@@ -97,10 +103,19 @@ class PaymentListViewModel @Inject constructor(
                 addAll(_paymentList.value.successOr(emptyList()))
                 val positionOfThePayment = indexOf(payment)
                 val previousElement = this[positionOfThePayment - 1]
-                val nextElement = this[positionOfThePayment + 1]
-                if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
-                    // remove date if there is only one payment fo this date
-                    remove(previousElement)
+                if (positionOfThePayment + 1 == this.size) {
+                    // this it the last element in the list
+                    if (previousElement is PaymentListItemModel.Header) {
+                        // remove date item if there is only one payment fo this date
+                        remove(previousElement)
+                    }
+                } else {
+                    // this element is NOT last in the list
+                    val nextElement = this[positionOfThePayment + 1]
+                    if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
+                        // remove date item if there is only one payment fo this date
+                        remove(previousElement)
+                    }
                 }
                 remove(payment)
             }
@@ -126,12 +141,14 @@ class PaymentListViewModel @Inject constructor(
     }
 
     fun onFabClick() {
-        _openNewPayment.value = OpenPaymentDetailsState.NewPayment
+        viewModelScope.launch {
+            _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
+        }
     }
 
     fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {
         if (_isSelectedState.value) {
-            // select mode is on. select this item
+            // select mode is on. select/deselect this item
             if (selectedItemsList.contains(payment)) {
                 deselectItem(payment)
                 if (selectedItemsList.isEmpty()) {
@@ -140,12 +157,64 @@ class PaymentListViewModel @Inject constructor(
             } else {
                 selectItem(payment)
             }
-            _selectedItemsCount.value = selectedItemsList.size
         } else {
             // select mode is off. open payment details
-            payment.payment.id?.toInt()?.let {
-                _openNewPayment.value = OpenPaymentDetailsState.ExistingPayment(it)
+            viewModelScope.launch {
+                payment.payment.id?.toInt()?.let { _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.ExistingPayment(it)) }
             }
+        }
+    }
+
+    fun onDeleteSelectedItemsClick() {
+        // cancel previous jot if exist
+        deletePaymentJob?.cancel()
+        // create new one
+        deletePaymentJob = viewModelScope.launch {
+            paymentsToDeleteList.addAll(selectedItemsList)
+            onCancelSelectionClick() // MUST be before apply list with deleted items. this method reset payment list to initial
+            val temp = mutableListOf<PaymentListItemModel>().apply {
+                addAll(_paymentList.value.successOr(emptyList()))
+            }
+            paymentsToDeleteList.forEach { paymentItemModel ->
+                // paymentItemModel is not the save in paymentsToDeleteList and temp list, as onCancelSelectionClick() reset list. make a copy from initial list. this is two different objects.
+                val positionOfThePayment = temp.indexOf(temp.find { item -> item.key == paymentItemModel.key })
+                // TODO:   should be easier to fond element by id and use it as in swipe to delete implementation. And not rely on the position of the element
+                val previousElementPosition = positionOfThePayment - 1
+                val previousElement = temp[previousElementPosition]
+                if (positionOfThePayment + 1 == temp.size) {
+                    // this it the last element in the list
+                    if (previousElement is PaymentListItemModel.Header) {
+                        // remove date item if there is only one payment fo this date
+                        // order is important. delete form
+                        temp.removeAt(positionOfThePayment)
+                        temp.removeAt(previousElementPosition) // remove date element
+                    }
+                } else {
+                    // this element is NOT last in the list
+                    val nextElementPosition = positionOfThePayment + 1
+                    val nextElement = temp[nextElementPosition]
+                    if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
+                        // remove date item if there is only one payment fo this date. payment surrounded with date elements
+                        // order is important. delete form end to start element.
+                        temp.removeAt(positionOfThePayment)
+                        temp.removeAt(previousElementPosition) // remove date element
+                    } else {
+                        // there is several item payment items for the date, remove one
+                        temp.removeAt(positionOfThePayment)
+                    }
+                }
+            }
+            _paymentList.value = MotResult.Success(temp)
+            _deletedItemsCount.value = paymentsToDeleteList.size
+            showSnackBar()
+            // ui updated, removed items is not visible on the screen
+            // wait
+            delay(SNAKE_BAR_UNDO_DELAY_MILLS)
+            hideSnackBar()
+            // remove payments from DB
+//            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            Timber.e("Deleted: $paymentsToDeleteList")
+            clearItemsToDeleteList()
         }
     }
 
@@ -179,6 +248,7 @@ class PaymentListViewModel @Inject constructor(
             }
         }
         _paymentList.value = MotResult.Success(tempList)
+        _selectedItemsCount.value = selectedItemsList.size
     }
 
     private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
@@ -198,6 +268,7 @@ class PaymentListViewModel @Inject constructor(
             }
         }
         _paymentList.value = MotResult.Success(tempList)
+        _selectedItemsCount.value = selectedItemsList.size
     }
 
     private fun cancelSelection() {
@@ -245,11 +316,5 @@ class PaymentListViewModel @Inject constructor(
     private sealed class Mode {
         object RecentPayments : Mode()
         object PaymentsForCategory : Mode()
-    }
-
-    sealed class OpenPaymentDetailsState {
-        class ExistingPayment(val id: Int) : OpenPaymentDetailsState()
-        object NewPayment : OpenPaymentDetailsState()
-        object None : OpenPaymentDetailsState()
     }
 }

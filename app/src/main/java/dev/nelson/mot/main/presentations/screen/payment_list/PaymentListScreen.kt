@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,23 +13,31 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
@@ -39,6 +48,10 @@ import dev.nelson.mot.main.util.MotResult.Loading
 import dev.nelson.mot.main.util.MotResult.Success
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun PaymentListScreen(
@@ -47,18 +60,31 @@ fun PaymentListScreen(
     openPaymentDetails: (Int?) -> Unit,
     viewModel: PaymentListViewModel
 ) {
+    val haptic = LocalHapticFeedback.current
+
+    // listen states
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
     val isSelectedState by viewModel.isSelectedState.collectAsState(false)
-    val selectedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
-    val openPaymentDetailsFlow by viewModel.openNewPayment.collectAsState(PaymentListViewModel.OpenPaymentDetailsState.None)
+    val selectedItemsCount by viewModel.selectedItemsCount.collectAsState(0)
 
-//    when(openPaymentDetailsFlow){
-//        is PaymentListViewModel.OpenPaymentDetailsState.NewPayment -> openPaymentDetails.invoke(null)
-//        is PaymentListViewModel.OpenPaymentDetailsState.ExistingPayment -> openPaymentDetails.invoke((openPaymentDetailsFlow as PaymentListViewModel.OpenPaymentDetailsState.ExistingPayment).id)
-//        is PaymentListViewModel.OpenPaymentDetailsState.None -> {} // do nothing
-//    }
+    // listen actions
+    LaunchedEffect(
+        key1 = Unit,
+        block = {
+            viewModel.openPaymentDetailsAction.collect {
+                when (it) {
+                    is OpenPaymentDetailsAction.NewPayment -> openPaymentDetails.invoke(null)
+                    is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(it.id)
+                }
+            }
+        })
+
+    BackHandler(
+        enabled = isSelectedState,
+        onBack = { viewModel.onCancelSelectionClick() }
+    )
 
     PaymentListLayout(
         openDrawer = openDrawer,
@@ -70,12 +96,20 @@ fun PaymentListScreen(
         onFabClick = { viewModel.onFabClick() },
         onActionIconClick = onActionIconClick,
         snackbarVisibleState = snackbarVisibilityState,
-        onUndoButtonClick = { viewModel.onUndoDeleteClick() },
+        onUndoButtonClick = {
+            viewModel.onUndoDeleteClick()
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+
+        },
         deletedItemsCount = deletedItemsCount,
         onSwipeToDeleteItem = { paymentItemModel -> viewModel.onSwipeToDelete(paymentItemModel) },
         isSelectedState = isSelectedState,
         selectedItemsCount = selectedItemsCount,
-        onCancelSelectionClick = { viewModel.onCancelSelectionClick() }
+        onCancelSelectionClick = {
+            viewModel.onCancelSelectionClick()
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        },
+        onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
     )
 }
 
@@ -93,7 +127,8 @@ fun PaymentListLayout(
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
     isSelectedState: Boolean,
     selectedItemsCount: Int,
-    onCancelSelectionClick: () -> Unit
+    onCancelSelectionClick: () -> Unit,
+    onDeleteSelectedItemsClick: () -> Unit,
 ) {
 
     Scaffold(
@@ -102,7 +137,17 @@ fun PaymentListLayout(
                 MotSelectionTopAppBar(
                     onNavigationIconClick = onCancelSelectionClick,
                     title = selectedItemsCount.toString(),
-                    onActionIconClick = { }
+                    actions = {
+                        IconButton(onClick = {}) {
+                            Icon(Icons.Default.EditCalendar, contentDescription = "")
+                        }
+                        IconButton(onClick = {}) {
+                            Icon(Icons.Default.Category, contentDescription = "")
+                        }
+                        IconButton(onClick = onDeleteSelectedItemsClick) {
+                            Icon(Icons.Default.Delete, contentDescription = "")
+                        }
+                    }
                 )
             } else {
                 TopAppBarMot(
@@ -244,6 +289,7 @@ private fun PaymentListScreenPreview() {
         onSwipeToDeleteItem = {},
         isSelectedState = false,
         selectedItemsCount = 0,
-        onCancelSelectionClick = {}
+        onCancelSelectionClick = {},
+        onDeleteSelectedItemsClick = {},
     )
 }
