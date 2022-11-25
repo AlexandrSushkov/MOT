@@ -8,6 +8,8 @@ import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
@@ -40,6 +43,8 @@ class PaymentListViewModel @Inject constructor(
     private val getPaymentListByDateRange: GetPaymentListByDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
+    private val getCategoryUseCase: GetCategoryUseCase,
+    getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
 ) : BaseViewModel() {
 
     private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
@@ -56,17 +61,21 @@ class PaymentListViewModel @Inject constructor(
         get() = _isSelectedState.asStateFlow()
     private val _isSelectedState = MutableStateFlow(false)
 
-    val deletedItemsCount: Flow<Int>
+    val deletedItemsCountState: Flow<Int>
         get() = _deletedItemsCount.asStateFlow()
     private val _deletedItemsCount = MutableStateFlow(0)
 
-    val selectedItemsCount: Flow<Int>
+    val selectedItemsCountState: Flow<Int>
         get() = _selectedItemsCount.asStateFlow()
     private val _selectedItemsCount = MutableStateFlow(0)
 
-    val paymentListResult: Flow<MotResult<List<PaymentListItemModel>>>
+    val paymentListState: Flow<MotResult<List<PaymentListItemModel>>>
         get() = _paymentList.asStateFlow()
     private val _paymentList = MutableStateFlow<MotResult<List<PaymentListItemModel>>>(MotResult.Loading)
+
+    val categoriesState: Flow<List<Category>>
+        get() = _categories.asStateFlow()
+    private val _categories = MutableStateFlow<List<Category>>(emptyList())
 
     // actions
     val openPaymentDetailsAction: Flow<OpenPaymentDetailsAction>
@@ -91,6 +100,12 @@ class PaymentListViewModel @Inject constructor(
                     initialPaymentList.addAll(it)
                     _paymentList.value = MotResult.Success(it)
                 }
+        }
+
+        viewModelScope.launch {
+            getCategoriesOrderedByName.execute().collect {
+                _categories.value = it
+            }
         }
     }
 
@@ -312,6 +327,19 @@ class PaymentListViewModel @Inject constructor(
 
     private fun MutableList<PaymentListItemModel.PaymentItemModel>.toPaymentList(): List<Payment> {
         return this.map { it.payment }
+    }
+
+    fun onCategorySelected(category: Category) {
+        viewModelScope.launch {
+            // workaround. for some reason if copy payments with category list isn't update
+            category.id?.let{ categoryId ->
+                getCategoryUseCase.execute(categoryId).collect{ cat ->
+                    val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
+                    cancelSelection()
+                    modifyListOfPaymentsUseCase.execute(newItems, ModifyListOfPaymentsAction.Edit)
+                }
+            }
+        }
     }
 
 

@@ -15,6 +15,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -26,11 +28,13 @@ import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.rememberDismissState
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -38,7 +42,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
@@ -50,6 +56,7 @@ import dev.nelson.mot.main.util.MotResult.Loading
 import dev.nelson.mot.main.util.MotResult.Success
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @Composable
@@ -62,11 +69,12 @@ fun PaymentListScreen(
     val haptic = LocalHapticFeedback.current
 
     // listen states
-    val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
+    val paymentListResult by viewModel.paymentListState.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
-    val deletedItemsCount by viewModel.deletedItemsCount.collectAsState(0)
+    val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
     val isSelectedState by viewModel.isSelectedState.collectAsState(false)
-    val selectedItemsCount by viewModel.selectedItemsCount.collectAsState(0)
+    val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
+    val categories by viewModel.categoriesState.collectAsState(emptyList())
 
     // listen actions
     LaunchedEffect(
@@ -110,7 +118,6 @@ fun PaymentListScreen(
         onUndoButtonClick = {
             viewModel.onUndoDeleteClick()
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-
         },
         deletedItemsCount = deletedItemsCount,
         onSwipeToDeleteItem = { paymentItemModel -> viewModel.onSwipeToDelete(paymentItemModel) },
@@ -122,10 +129,15 @@ fun PaymentListScreen(
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
-        onChangeDateForSelectedItemsClick = { picker.show() }
+        onChangeDateForSelectedItemsClick = { picker.show() },
+        categories = categories,
+        onCategoryClick = {
+                category -> viewModel.onCategorySelected(category)
+        }
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentListLayout(
     openDrawer: () -> Unit,
@@ -144,57 +156,72 @@ fun PaymentListLayout(
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
     onChangeCategoryForSelectedItemsClick: () -> Unit,
-) {
+    categories: List<Category>,
+    onCategoryClick: (Category) -> Unit,
+    ) {
 
-    Scaffold(
-        topBar = {
-            if (isSelectedState) {
-                MotSelectionTopAppBar(
-                    onNavigationIconClick = onCancelSelectionClick,
-                    title = selectedItemsCount.toString(),
-                    actions = {
-                        IconButton(onClick = onChangeDateForSelectedItemsClick) {
-                            Icon(Icons.Default.EditCalendar, contentDescription = "")
+    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
+    ModalBottomSheetLayout(
+        sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
+        sheetState = modalBottomSheetState
+    ) {
+        Scaffold(
+            topBar = {
+                if (isSelectedState) {
+                    MotSelectionTopAppBar(
+                        onNavigationIconClick = onCancelSelectionClick,
+                        title = selectedItemsCount.toString(),
+                        actions = {
+                            val scope = rememberCoroutineScope()
+
+                            IconButton(onClick = onChangeDateForSelectedItemsClick) {
+                                Icon(Icons.Default.EditCalendar, contentDescription = "")
+                            }
+                            IconButton(onClick = {
+                                scope.launch {
+                                    modalBottomSheetState.show()
+                                }
+                            }) {
+                                Icon(Icons.Default.Category, contentDescription = "")
+                            }
+                            IconButton(onClick = onDeleteSelectedItemsClick) {
+                                Icon(Icons.Default.Delete, contentDescription = "")
+                            }
                         }
-                        IconButton(onClick = onChangeCategoryForSelectedItemsClick) {
-                            Icon(Icons.Default.Category, contentDescription = "")
-                        }
-                        IconButton(onClick = onDeleteSelectedItemsClick) {
-                            Icon(Icons.Default.Delete, contentDescription = "")
-                        }
-                    }
+                    )
+                } else {
+                    TopAppBarMot(
+                        title = "Payments list",
+                        onNavigationIconClick = openDrawer,
+                        onActionIconClick = onActionIconClick
+                    )
+                }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = onFabClick,
+                    content = { Icon(Icons.Default.Add, "new payment fab") }
                 )
-            } else {
-                TopAppBarMot(
-                    title = "Payments list",
-                    onNavigationIconClick = openDrawer,
-                    onActionIconClick = onActionIconClick
-                )
+            },
+            snackbarHost = {
+                if (snackbarVisibleState) {
+                    Snackbar(
+                        action = {
+                            TextButton(
+                                onClick = onUndoButtonClick,
+                                content = { Text("Undo") }
+                            )
+                        },
+                        modifier = Modifier.padding(8.dp),
+                        content = { Text(text = "$deletedItemsCount Deleted") }
+                    )
+                }
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onFabClick,
-                content = { Icon(Icons.Default.Add, "new payment fab") }
-            )
-        },
-        snackbarHost = {
-            if (snackbarVisibleState) {
-                Snackbar(
-                    action = {
-                        TextButton(
-                            onClick = onUndoButtonClick,
-                            content = { Text("Undo") }
-                        )
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    content = { Text(text = "$deletedItemsCount Deleted") }
-                )
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                PaymentList(paymentListResult, onItemClick, onItemLongClick, onSwipeToDeleteItem, isSelectedState)
             }
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            PaymentList(paymentListResult, onItemClick, onItemLongClick, onSwipeToDeleteItem, isSelectedState)
         }
     }
 
@@ -308,5 +335,7 @@ private fun PaymentListScreenPreview() {
         onDeleteSelectedItemsClick = {},
         onChangeCategoryForSelectedItemsClick = {},
         onChangeDateForSelectedItemsClick = {},
+        categories = emptyList(),
+        onCategoryClick = {}
     )
 }

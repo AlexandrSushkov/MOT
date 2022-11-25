@@ -141,7 +141,7 @@ fun PaymentListItem(
                             style = MaterialTheme.typography.subtitle1,
                         )
                         paymentItemModel.payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
-//                        payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
+                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
                     }
                     Column(
                         modifier = Modifier.align(alignment = CenterVertically)

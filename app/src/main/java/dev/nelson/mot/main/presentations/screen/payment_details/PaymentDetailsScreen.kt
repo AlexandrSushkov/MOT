@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -207,6 +208,26 @@ fun PaymentDetailsLayout(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                     )
                 }
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .bringIntoViewRequester(bringIntoViewRequester)
+                        .onFocusEvent { event ->
+                            if (event.isFocused) {
+                                scope.launch { bringIntoViewRequester.bringIntoView() }
+                            }
+                        },
+
+                    value = messageFieldValueState,
+                    onValueChange = {
+//                        messageFieldValueState = it
+                        onMessageChange.invoke(it)
+                    },
+                    placeholder = { Text(text = "message") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() })
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
                         .padding(8.dp)
@@ -273,25 +294,7 @@ fun PaymentDetailsLayout(
 //                    modifier = Modifier.align(Alignment.CenterVertically)
 //                )
                 }
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .bringIntoViewRequester(bringIntoViewRequester)
-                        .onFocusEvent { event ->
-                            if (event.isFocused) {
-                                scope.launch { bringIntoViewRequester.bringIntoView() }
-                            }
-                        },
-
-                    value = messageFieldValueState,
-                    onValueChange = {
-//                        messageFieldValueState = it
-                        onMessageChange.invoke(it)
-                    },
-                    placeholder = { Text(text = "message") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() })
-                )
+                Spacer(modifier = Modifier.height(10.dp))
                 MotButton(
                     modifier = Modifier
                         .align(Alignment.End)
