@@ -24,8 +24,7 @@ data class Payment(
     val name: String,
     val cost: Int,
     val message: String = StringUtils.EMPTY,
-    // TODO: can be converted to Int
-    val id: Long? = null,
+    val id: Int? = null,
     val date: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
@@ -36,7 +35,7 @@ data class Payment(
         parcel.readString().orEmpty(), // name
         parcel.readInt(), // cost
         parcel.readString().orEmpty(), // message
-        parcel.readValue(Long::class.java.classLoader) as? Long, //id
+        parcel.readValue(Long::class.java.classLoader) as? Int, //id
         parcel.readString(), // date
         parcel.readValue(Long::class.java.classLoader) as? Long, // date in mills
         parcel.readParcelable(Category::class.java.classLoader), // category

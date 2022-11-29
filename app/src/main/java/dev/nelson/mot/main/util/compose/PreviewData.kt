@@ -66,7 +66,7 @@ object PreviewData {
         get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, generateKey())
 
     val paymentListPreview: List<Payment>
-        get() = (1..30).map { Payment("payment $it", it * 10, id = it.toLong(), category = categoryPreview) }
+        get() = (1..30).map { Payment("payment $it", it * 10, id = it, category = categoryPreview) }
 
     fun jsonString(context: Context, assetFile: String): String {
         val inputStream: InputStream = context.assets.open(assetFile)

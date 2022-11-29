@@ -20,8 +20,7 @@ data class PaymentEntity(
     @ColumnInfo(name = PaymentTable.TITLE) var title: String,
     @ColumnInfo(name = PaymentTable.COST) val cost: Int,
     @PrimaryKey(autoGenerate = true)
-    // TODO: can be converted to Int
-    @ColumnInfo(name = PaymentTable.ID) val id: Long? = null,
+    @ColumnInfo(name = PaymentTable.ID) val id: Int? = null,
     @ColumnInfo(name = PaymentTable.SUMMARY) var summary: String? = null,
     @ColumnInfo(name = PaymentTable.CATEGORY_ID_KEY) val categoryIdKey: Int? = null,
     @Deprecated(message = "store date in epoch milliseconds")
