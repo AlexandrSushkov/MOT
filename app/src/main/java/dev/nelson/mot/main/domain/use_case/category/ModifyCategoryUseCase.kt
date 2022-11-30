@@ -6,7 +6,7 @@ import dev.nelson.mot.main.data.repository.CategoryRepository
 import javax.inject.Inject
 
 /**
- * User to add, edit or delete [Category]
+ * Used to add, edit or delete [Category]
  */
 class ModifyCategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
@@ -18,8 +18,6 @@ class ModifyCategoryUseCase @Inject constructor(private val categoryRepository: 
             ModifyCategoryAction.Delete -> categoryRepository.deleteCategory(categoryEntity)
         }
     }
-
-
 }
 
 sealed class ModifyCategoryAction {

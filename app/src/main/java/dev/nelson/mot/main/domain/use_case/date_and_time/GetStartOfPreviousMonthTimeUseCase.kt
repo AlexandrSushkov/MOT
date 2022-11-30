@@ -10,7 +10,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 /**
- * return 00:00 of the first day of the previous month in milliseconds
+ * return 00:00 of the first day of the previous month in milliseconds.
  */
 class GetStartOfPreviousMonthTimeUseCase @Inject constructor(
     private val getStartOfMonthTimeUseCase: GetStartOfMonthTimeUseCase
@@ -20,7 +20,7 @@ class GetStartOfPreviousMonthTimeUseCase @Inject constructor(
         val systemTZ = TimeZone.currentSystemDefault()
         val date = Instant.fromEpochMilliseconds(time).toLocalDateTime(systemTZ).date
         return if (date.monthNumber == 1) {
-            // month is Jan. Return 1 Dec of previous year
+            // month is Jan. Return 1 Dec of the previous year
             val previousYear = date.year - 1
             Calendar.getInstance()
                 .apply { set(previousYear, 12, 1) }
@@ -28,7 +28,7 @@ class GetStartOfPreviousMonthTimeUseCase @Inject constructor(
                 .time
 
         } else {
-            // take first day of the previous month.
+            // take the first day of the the previous month.
             val previousMonth = date.minus(1, DateTimeUnit.MONTH)
             val thisDayOneMonthBefore = previousMonth.atStartOfDayIn(systemTZ).toEpochMilliseconds()
             getStartOfMonthTimeUseCase.execute(thisDayOneMonthBefore)

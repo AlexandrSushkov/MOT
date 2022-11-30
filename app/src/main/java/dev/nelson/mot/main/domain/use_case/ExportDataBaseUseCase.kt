@@ -20,5 +20,4 @@ class ExportDataBaseUseCase @Inject constructor(private val settingsRepository: 
         settingsRepository.copyFile(dbFile, dbBackupFile)
         return true
     }
-
 }

@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase) {
 
-    fun execute(order: SortingOrder = SortingOrder.Ascending): Flow<List<Category>> = getAllCategoriesOrderedByName.execute(order)
-        .map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
-
+    fun execute(order: SortingOrder = SortingOrder.Ascending): Flow<List<Category>> {
+        return getAllCategoriesOrderedByName.execute(order).map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
+    }
 }

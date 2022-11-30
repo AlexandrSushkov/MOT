@@ -14,7 +14,7 @@ import javax.inject.Inject
 class GetCategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
 
     /**
-     *  return category by Id
+     *  return [Category] by given Id
      */
     fun execute(id: Int): Flow<Category> = categoryRepository.getCategory(id)
         .map { it.toCategory() }

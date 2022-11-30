@@ -23,5 +23,4 @@ class GetAllCategoriesOrderedByNameUseCase @Inject constructor(private val categ
             SortingOrder.Descending -> categoryRepository.getAllCategoriesOrderedByNameDescending()
         }.map { it.toCategoryList() }
     }
-
 }
