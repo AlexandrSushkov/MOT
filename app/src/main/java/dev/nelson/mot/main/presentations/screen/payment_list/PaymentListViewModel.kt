@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
-import androidx.databinding.ObservableField
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,8 +19,8 @@ import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPayment
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.SortingOrder
-import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -29,13 +28,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
@@ -47,12 +47,18 @@ class PaymentListViewModel @Inject constructor(
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
 ) : BaseViewModel() {
 
-    private val mode = if ((extras.get<Category>(Constants.CATEGORY_KEY)) == null) Mode.RecentPayments else Mode.PaymentsForCategory
-    private val category: Category = extras[Constants.CATEGORY_KEY] ?: Category(StringUtils.EMPTY)
-
-    val toolbarElevation = ObservableField<Int>()
+    private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
+    private val screenScreenType = categoryId?.let { ScreenType.PaymentsForCategory(it) } ?: ScreenType.RecentPayments
 
     // states
+    val toolBarTitleState
+        get() = _toolBarTitleState.asStateFlow()
+    private val _toolBarTitleState = MutableStateFlow("")
+
+    val toolbarElevation
+        get() = _toolbarElevation.asStateFlow()
+    private val _toolbarElevation = MutableStateFlow(0)
+
     val snackBarVisibilityState
         get() = _snackBarVisibilityState.asStateFlow()
     private val _snackBarVisibilityState = MutableStateFlow(false)
@@ -91,15 +97,36 @@ class PaymentListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-            val startOfPreviousMonth = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
-            // no end date. otherwise newly added payments wont be shown.
-            getPaymentListByDateRange.execute(startOfPreviousMonth, order = SortingOrder.Descending)
-                .collect {
-                    initialPaymentList.clear()
-                    initialPaymentList.addAll(it)
-                    _paymentList.value = MotResult.Success(it)
+            when (screenScreenType) {
+                is ScreenType.RecentPayments -> {
+                    _toolBarTitleState.value = "recent payments"
+
+                    val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
+                    val startOfPreviousMonth = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
+                    // no end date. otherwise newly added payments won't be shown.
+                    getPaymentListByDateRange.execute(startOfPreviousMonth, order = SortingOrder.Descending)
+                        .collect {
+                            initialPaymentList.clear()
+                            initialPaymentList.addAll(it)
+                            _paymentList.value = MotResult.Success(it)
+                        }
                 }
+                is ScreenType.PaymentsForCategory -> {
+                    getCategoryUseCase.execute(screenScreenType.categoryId)
+                        .flatMapConcat {
+                            _toolBarTitleState.value = it.name
+                            getPaymentListByDateRange.execute(category = it, order = SortingOrder.Descending)
+                        }.collect {
+                            initialPaymentList.clear()
+                            initialPaymentList.addAll(it)
+                            _paymentList.value = MotResult.Success(it)
+                        }
+                }
+            }
+        }
+
+        viewModelScope.launch {
+
         }
 
         viewModelScope.launch {
@@ -247,7 +274,7 @@ class PaymentListViewModel @Inject constructor(
     private fun deselectItem(payment: PaymentListItemModel.PaymentItemModel) {
         selectedItemsList.remove(payment)
         val newPayment = payment.payment.copyWith(isSelected = false)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.key)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.shotCategory, payment.key)
         val tempList = _paymentList.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {
                 if (item.payment.id == payment.payment.id) {
@@ -266,7 +293,7 @@ class PaymentListViewModel @Inject constructor(
     private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
 //        selectedItemsList.add(payment)
         val newPayment = payment.payment.copyWith(isSelected = true)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.key)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.shotCategory, payment.key)
         selectedItemsList.add(newPaymentItemModel)
         val tempList = _paymentList.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {
@@ -332,8 +359,8 @@ class PaymentListViewModel @Inject constructor(
     fun onCategorySelected(category: Category) {
         viewModelScope.launch {
             // workaround. for some reason if copy payments with category list isn't update
-            category.id?.let{ categoryId ->
-                getCategoryUseCase.execute(categoryId).collect{ cat ->
+            category.id?.let { categoryId ->
+                getCategoryUseCase.execute(categoryId).collect { cat ->
                     val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
                     cancelSelection()
                     modifyListOfPaymentsUseCase.execute(newItems, ModifyListOfPaymentsAction.Edit)
@@ -342,22 +369,12 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-
-//    private fun getPaymentList(mode: Mode): Flow<List<Payment>> {
-//
-//        return when (mode) {
-//            is Mode.PaymentsForCategory -> category.id?.let { paymentUseCase.getAllPaymentsWithCategoryByCategoryOrderDateDescFlow(it) }
-//                ?: paymentUseCase.getAllPaymentsWithoutCategory()
-//            is Mode.RecentPayments -> paymentUseCase.getAllPaymentsWithCategoryOrderDateDescFlow()
-//        }
-//    }
-
     companion object {
         const val SNAKE_BAR_UNDO_DELAY_MILLS = 4000L
     }
 
-    private sealed class Mode {
-        object RecentPayments : Mode()
-        object PaymentsForCategory : Mode()
+    private sealed class ScreenType {
+        object RecentPayments : ScreenType()
+        class PaymentsForCategory(val categoryId: Int) : ScreenType()
     }
 }

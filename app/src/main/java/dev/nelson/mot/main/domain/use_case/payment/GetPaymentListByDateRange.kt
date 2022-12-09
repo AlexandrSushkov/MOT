@@ -2,6 +2,7 @@ package dev.nelson.mot.main.domain.use_case.payment
 
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.data.repository.PaymentRepository
@@ -22,14 +23,20 @@ class GetPaymentListByDateRange @Inject constructor(
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
 
-    fun execute(startTime: Long, endTime: Long? = null, order: SortingOrder = SortingOrder.Ascending): Flow<List<PaymentListItemModel>> {
+    fun execute(
+        startTime: Long = 0,
+        endTime: Long? = null,
+        category: Category? = null,
+        order: SortingOrder = SortingOrder.Ascending
+    ): Flow<List<PaymentListItemModel>> {
         val paymentsWithCategoryList = endTime?.let { paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, it, order) }
-            ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, order)
+            ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, order, category?.id)
+
         return paymentsWithCategoryList
             .map { it.toPaymentList() }
             .map { it.formatDate() }
 //            .map { it.toPaymentListItemModel() }
-            .map { it.toPaymentListItemModelNew() }
+            .map { it.toPaymentListItemModelNew(category == null) }
     }
 
     /**
@@ -51,7 +58,7 @@ class GetPaymentListByDateRange @Inject constructor(
     @Deprecated(message = "replace with List<Payment>.toPaymentListItemModelNew()")
     private fun List<Payment>.toPaymentListItemModel(): List<PaymentListItemModel> {
         // represents the day when payment/s was added
-        var dateCursor: String? = null
+       /*var dateCursor: String? = null
         val result = mutableListOf<PaymentListItemModel>()
         this.forEach { payment ->
             if (dateCursor == null) {
@@ -69,18 +76,20 @@ class GetPaymentListByDateRange @Inject constructor(
             }
         }
         // TODO: add footer
-        return result.toList()
+        return result.toList()*/
+        return emptyList()
+
     }
 
     /**
      * Transform [Payment] to [PaymentListItemModel.PaymentItemModel] and divider items with date [PaymentListItemModel.Header]
      */
-    private fun List<Payment>.toPaymentListItemModelNew(): List<PaymentListItemModel> {
+    private fun List<Payment>.toPaymentListItemModelNew(shotCategory: Boolean,): List<PaymentListItemModel> {
         return mutableListOf<PaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.date }
                 .forEach { (date, payments) ->
                     add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.getRandomKey))
-                    addAll(payments.toPaymentItemModelList())
+                    addAll(payments.toPaymentItemModelList(shotCategory))
                 }
             // TODO: add footer
         }
@@ -89,15 +98,15 @@ class GetPaymentListByDateRange @Inject constructor(
     /**
      *Transform list of [Payment] to list of [PaymentListItemModel.PaymentItemModel]
      */
-    private fun List<Payment>.toPaymentItemModelList(): List<PaymentListItemModel> {
-        return this.map { it.toPaymentListItem() }
+    private fun List<Payment>.toPaymentItemModelList(shotCategory: Boolean,): List<PaymentListItemModel> {
+        return this.map { it.toPaymentListItem(shotCategory) }
     }
 
     /**
      *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
      */
-    private fun Payment.toPaymentListItem(): PaymentListItemModel {
-        return PaymentListItemModel.PaymentItemModel(this, UUIDUtils.getRandomKey)
+    private fun Payment.toPaymentListItem(shotCategory: Boolean,): PaymentListItemModel {
+        return PaymentListItemModel.PaymentItemModel(this, shotCategory, UUIDUtils.getRandomKey)
     }
 
 }

@@ -23,10 +23,20 @@ class PaymentRepository @Inject constructor(private val paymentDao: PaymentDao) 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
      */
-    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: SortingOrder): Flow<List<PaymentWithCategory>> {
+    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: SortingOrder, categoryId: Int?): Flow<List<PaymentWithCategory>> {
         return when (order) {
-            SortingOrder.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
-            SortingOrder.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
+            SortingOrder.Ascending -> {
+                categoryId?.let {
+                    paymentDao.getPaymentsWithCategoryByDateRangeAndCategoryOrderedAscending(startTime, it)
+                } ?: paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
+
+            }
+            SortingOrder.Descending -> {
+                categoryId?.let {
+                    paymentDao.getPaymentsWithCategoryByDateRangeAndCategoryOrderedDescending(startTime, it)
+                } ?: paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
+
+            }
         }
     }
 

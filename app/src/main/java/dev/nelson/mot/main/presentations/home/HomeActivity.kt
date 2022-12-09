@@ -50,6 +50,7 @@ import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
+import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -189,13 +190,26 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                                     openPaymentDetails = { paymentId ->
                                         paymentId?.let { navController.navigate(route = "PaymentDetailsScreen?id=$paymentId") }
                                             ?: navController.navigate(route = "PaymentDetailsScreen")
-
-
                                     },
                                     onActionIconClick = { navController.navigate(Settings.route) },
                                     viewModel = hiltViewModel()
                                 )
                             },
+                        )
+                        composable(
+                            route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
+                            content = {
+                                PaymentListScreen(
+                                    openDrawer = { scope.launch { drawerState.open() } },
+                                    openPaymentDetails = { paymentId ->
+                                        paymentId?.let { navController.navigate(route = "PaymentDetailsScreen?id=$paymentId") }
+                                            ?: navController.navigate(route = "PaymentDetailsScreen")
+                                    },
+                                    onActionIconClick = { navController.navigate(Settings.route) },
+                                    viewModel = hiltViewModel()
+                                )
+                            },
+                            arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
                         )
                         composable(
                             route = "PaymentDetailsScreen?id={id}",
@@ -225,7 +239,10 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                                         categoryId?.let { navController.navigate("CategoryDetailsScreen?id=$categoryId") }
                                             ?: navController.navigate("CategoryDetailsScreen")
                                     },
-                                    openPaymentsByCategory = { }
+                                    openPaymentsByCategory = { categoryId ->
+                                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
+                                            ?: navController.popBackStack()
+                                    }
                                 )
                             }
                         )

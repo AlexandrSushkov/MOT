@@ -13,7 +13,11 @@ sealed class PaymentListItemModel {
     /**
      * Payment item model - main model to show category
      */
-    class PaymentItemModel(val payment: Payment, override val key: String) : PaymentListItemModel()
+    class PaymentItemModel(
+        val payment: Payment,
+        val shotCategory: Boolean,
+        override val key: String
+    ) : PaymentListItemModel()
 
     /**
      * Letter - model that show letter to divide categories

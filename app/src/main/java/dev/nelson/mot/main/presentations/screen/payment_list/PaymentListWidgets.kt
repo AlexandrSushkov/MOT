@@ -140,8 +140,10 @@ fun PaymentListItem(
                             text = paymentItemModel.payment.name,
                             style = MaterialTheme.typography.subtitle1,
                         )
-                        paymentItemModel.payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
-                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
+                        if (paymentItemModel.shotCategory) {
+                            paymentItemModel.payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
+                        }
+//                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
                     }
                     Column(
                         modifier = Modifier.align(alignment = CenterVertically)

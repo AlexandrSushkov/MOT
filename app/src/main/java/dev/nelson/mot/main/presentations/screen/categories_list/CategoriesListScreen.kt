@@ -88,7 +88,7 @@ fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
     openDrawer: () -> Unit,
     openCategoryDetails: (Int?) -> Unit,
-    openPaymentsByCategory: (Category) -> Unit
+    openPaymentsByCategory: (Int?) -> Unit
 ) {
 
     val categories by viewModel.categories.collectAsState(initial = Loading)
@@ -130,7 +130,7 @@ fun CategoryListLayout(
     categoryNameState: TextFieldValue,
     openDialog: Boolean,
     openDrawer: () -> Unit,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Int?) -> Unit,
     openCategoryDetails: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
     closeEditCategoryDialog: () -> Unit,
@@ -222,7 +222,7 @@ fun CategoryListLayout(
 fun CategoryList(
     categoriesMotResult: MotResult<List<CategoryListItemModel>>,
     onSwipeCategory: (CategoryItemModel) -> Unit,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
 ) {
@@ -319,7 +319,7 @@ fun CategoryList(
 @Composable
 fun CategoryListItem(
     category: Category,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
 ) {
@@ -329,7 +329,7 @@ fun CategoryListItem(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { onCategoryClick.invoke(category) },
+                onClick = { onCategoryClick.invoke(category.id) },
                 onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
             ),
         shape = RoundedCornerShape(0.dp)

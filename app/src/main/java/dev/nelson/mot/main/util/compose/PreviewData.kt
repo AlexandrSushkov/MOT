@@ -63,7 +63,7 @@ object PreviewData {
         )
 
     val paymentItemModelPreview
-        get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, generateKey())
+        get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, true, generateKey())
 
     val paymentListPreview: List<Payment>
         get() = (1..30).map { Payment("payment $it", it * 10, id = it, category = categoryPreview) }
@@ -83,7 +83,7 @@ object PreviewData {
     }
 
     val paymentListItemsPreview: List<PaymentListItemModel>
-        get() = paymentListPreview.map { PaymentListItemModel.PaymentItemModel(it, generateKey()) as PaymentListItemModel }
+        get() = paymentListPreview.map { PaymentListItemModel.PaymentItemModel(it, true, generateKey()) as PaymentListItemModel }
             .toMutableList()
             .apply {
                 this.add(0, PaymentListItemModel.Header("start", generateKey()))

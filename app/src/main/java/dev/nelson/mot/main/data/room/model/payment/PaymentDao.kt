@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.room.model.category.CategoryTable
 import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
 import kotlinx.coroutines.flow.Flow
@@ -62,8 +63,14 @@ interface PaymentDao {
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
     fun getPaymentsWithCategoryByDateRangeOrderedDescending(startTime: Long): Flow<List<PaymentWithCategory>>
 
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.CATEGORY_ID_KEY} = :categoryId AND ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
+    fun getPaymentsWithCategoryByDateRangeAndCategoryOrderedDescending(startTime: Long, categoryId: Int): Flow<List<PaymentWithCategory>>
+
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} ASC")
     fun getPaymentsWithCategoryByDateRangeOrderedAscending(startTime: Long): Flow<List<PaymentWithCategory>>
+
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.CATEGORY_ID_KEY} = :categoryId AND ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} ASC")
+    fun getPaymentsWithCategoryByDateRangeAndCategoryOrderedAscending(startTime: Long, categoryId: Int): Flow<List<PaymentWithCategory>>
 
     //get payments without category
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} WHERE ${PaymentTable.CATEGORY_ID_KEY} IS NULL")

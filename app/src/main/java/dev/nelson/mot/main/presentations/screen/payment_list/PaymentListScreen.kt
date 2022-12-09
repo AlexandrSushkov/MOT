@@ -69,6 +69,7 @@ fun PaymentListScreen(
     val haptic = LocalHapticFeedback.current
 
     // listen states
+    val toolbarTitle by viewModel.toolBarTitleState.collectAsState("")
     val paymentListResult by viewModel.paymentListState.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
@@ -109,6 +110,7 @@ fun PaymentListScreen(
 
     PaymentListLayout(
         openDrawer = openDrawer,
+        toolbarTitle = toolbarTitle,
         paymentListResult = paymentListResult,
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
@@ -141,6 +143,7 @@ fun PaymentListScreen(
 @Composable
 fun PaymentListLayout(
     openDrawer: () -> Unit,
+    toolbarTitle: String,
     paymentListResult: MotResult<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
@@ -192,7 +195,7 @@ fun PaymentListLayout(
                     )
                 } else {
                     TopAppBarMot(
-                        title = "Payments list",
+                        title = toolbarTitle,
                         onNavigationIconClick = openDrawer,
                         onActionIconClick = onActionIconClick
                     )
@@ -319,6 +322,7 @@ private fun PaymentListScreenPreview() {
 
     PaymentListLayout(
         openDrawer = {},
+        toolbarTitle = "title",
         paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
         onItemClick = {},
