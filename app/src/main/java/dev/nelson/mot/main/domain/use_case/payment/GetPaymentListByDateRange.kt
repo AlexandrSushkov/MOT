@@ -23,6 +23,11 @@ class GetPaymentListByDateRange @Inject constructor(
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
 
+    /**
+     * @param startTime time in epoc milliseconds.
+     * @param endTime time in epoc milliseconds.
+     * @param category to find payments for. if null, ignore category, find any payment.
+     */
     fun execute(
         startTime: Long = 0,
         endTime: Long? = null,
@@ -35,7 +40,6 @@ class GetPaymentListByDateRange @Inject constructor(
         return paymentsWithCategoryList
             .map { it.toPaymentList() }
             .map { it.formatDate() }
-//            .map { it.toPaymentListItemModel() }
             .map { it.toPaymentListItemModelNew(category == null) }
     }
 
@@ -52,44 +56,14 @@ class GetPaymentListByDateRange @Inject constructor(
     }
 
     /**
-     * Transform list [Payment]. Add date divider item
-     * @return list of [PaymentListItemModel]
-     */
-    @Deprecated(message = "replace with List<Payment>.toPaymentListItemModelNew()")
-    private fun List<Payment>.toPaymentListItemModel(): List<PaymentListItemModel> {
-        // represents the day when payment/s was added
-       /*var dateCursor: String? = null
-        val result = mutableListOf<PaymentListItemModel>()
-        this.forEach { payment ->
-            if (dateCursor == null) {
-                dateCursor = payment.date
-                result.add(PaymentListItemModel.Header(payment.date.orEmpty(), UUIDUtils.getRandomKey))
-            }
-            if (dateCursor == payment.date) {
-                // same day
-                result.add(PaymentListItemModel.PaymentItemModel(payment, UUIDUtils.getRandomKey))
-            } else {
-                // next day
-                dateCursor = payment.date
-                result.add(PaymentListItemModel.Header(payment.date.orEmpty(), UUIDUtils.getRandomKey))
-                result.add(PaymentListItemModel.PaymentItemModel(payment, UUIDUtils.getRandomKey))
-            }
-        }
-        // TODO: add footer
-        return result.toList()*/
-        return emptyList()
-
-    }
-
-    /**
      * Transform [Payment] to [PaymentListItemModel.PaymentItemModel] and divider items with date [PaymentListItemModel.Header]
      */
-    private fun List<Payment>.toPaymentListItemModelNew(shotCategory: Boolean,): List<PaymentListItemModel> {
+    private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean,): List<PaymentListItemModel> {
         return mutableListOf<PaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.date }
                 .forEach { (date, payments) ->
                     add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.getRandomKey))
-                    addAll(payments.toPaymentItemModelList(shotCategory))
+                    addAll(payments.toPaymentItemModelList(showCategory))
                 }
             // TODO: add footer
         }
@@ -98,15 +72,15 @@ class GetPaymentListByDateRange @Inject constructor(
     /**
      *Transform list of [Payment] to list of [PaymentListItemModel.PaymentItemModel]
      */
-    private fun List<Payment>.toPaymentItemModelList(shotCategory: Boolean,): List<PaymentListItemModel> {
-        return this.map { it.toPaymentListItem(shotCategory) }
+    private fun List<Payment>.toPaymentItemModelList(showCategory: Boolean,): List<PaymentListItemModel> {
+        return this.map { it.toPaymentListItem(showCategory) }
     }
 
     /**
      *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
      */
-    private fun Payment.toPaymentListItem(shotCategory: Boolean,): PaymentListItemModel {
-        return PaymentListItemModel.PaymentItemModel(this, shotCategory, UUIDUtils.getRandomKey)
+    private fun Payment.toPaymentListItem(showCategory: Boolean,): PaymentListItemModel {
+        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.getRandomKey)
     }
 
 }

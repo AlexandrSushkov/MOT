@@ -18,10 +18,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,6 +55,9 @@ import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
+import dev.nelson.mot.main.presentations.widgets.MotNavBackIcon
+import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
+import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
 import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.launch
 
@@ -186,12 +194,12 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                             route = Payments.route,
                             content = {
                                 PaymentListScreen(
-                                    openDrawer = { scope.launch { drawerState.open() } },
+                                    navigationIcon = { MotNavDrawerIcon { scope.launch { drawerState.open() } } },
                                     openPaymentDetails = { paymentId ->
                                         paymentId?.let { navController.navigate(route = "PaymentDetailsScreen?id=$paymentId") }
                                             ?: navController.navigate(route = "PaymentDetailsScreen")
                                     },
-                                    onActionIconClick = { navController.navigate(Settings.route) },
+                                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
                                     viewModel = hiltViewModel()
                                 )
                             },
@@ -200,12 +208,12 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                             route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
                             content = {
                                 PaymentListScreen(
-                                    openDrawer = { scope.launch { drawerState.open() } },
+                                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                                     openPaymentDetails = { paymentId ->
                                         paymentId?.let { navController.navigate(route = "PaymentDetailsScreen?id=$paymentId") }
                                             ?: navController.navigate(route = "PaymentDetailsScreen")
                                     },
-                                    onActionIconClick = { navController.navigate(Settings.route) },
+                                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
                                     viewModel = hiltViewModel()
                                 )
                             },
@@ -219,13 +227,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                         composable(
                             route = "PaymentDetailsScreen",
                             content = {
-                                PaymentDetailsScreen(closeScreen = {
-                                    if (isOpenedFromWidget) {
-                                        finishAction.invoke()
-                                    } else {
-                                        navController.popBackStack()
-                                    }
-                                }
+                                PaymentDetailsScreen(
+                                    closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() }
                                 )
                             },
                         )
@@ -234,7 +237,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                             content = {
                                 CategoryListScreen(
                                     viewModel = hiltViewModel(),
-                                    openDrawer = { scope.launch { drawerState.open() } },
+                                    navigationIcon = { MotNavDrawerIcon { scope.launch { drawerState.open() } } },
                                     openCategoryDetails = { categoryId ->
                                         categoryId?.let { navController.navigate("CategoryDetailsScreen?id=$categoryId") }
                                             ?: navController.navigate("CategoryDetailsScreen")
@@ -242,7 +245,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                                     openPaymentsByCategory = { categoryId ->
                                         categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
                                             ?: navController.popBackStack()
-                                    }
+                                    },
+                                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } }
                                 )
                             }
                         )
@@ -261,7 +265,12 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                         )
                         composable(
                             route = Settings.route,
-                            content = { SettingsScreen(onNavIconClick = { navController.popBackStack() }, settingsViewModel = hiltViewModel()) },
+                            content = {
+                                SettingsScreen(
+                                    settingsViewModel = hiltViewModel(),
+                                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } }
+                                )
+                            },
                         )
                     }
                 }
@@ -269,3 +278,5 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
         }
     }
 }
+
+

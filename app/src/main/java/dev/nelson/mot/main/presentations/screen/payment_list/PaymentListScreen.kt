@@ -48,6 +48,8 @@ import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBo
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
+import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
 import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.MotResult
@@ -61,8 +63,8 @@ import java.util.Calendar
 
 @Composable
 fun PaymentListScreen(
-    openDrawer: () -> Unit,
-    onActionIconClick: () -> Unit,
+    navigationIcon: @Composable () -> Unit,
+    settingsIcon: @Composable () -> Unit,
     openPaymentDetails: (Int?) -> Unit,
     viewModel: PaymentListViewModel
 ) {
@@ -109,13 +111,13 @@ fun PaymentListScreen(
     )
 
     PaymentListLayout(
-        openDrawer = openDrawer,
+        navigationIcon = navigationIcon,
         toolbarTitle = toolbarTitle,
         paymentListResult = paymentListResult,
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
         onFabClick = { viewModel.onFabClick() },
-        onActionIconClick = onActionIconClick,
+        settingsIcon = settingsIcon,
         snackbarVisibleState = snackbarVisibilityState,
         onUndoButtonClick = {
             viewModel.onUndoDeleteClick()
@@ -133,8 +135,8 @@ fun PaymentListScreen(
         onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
         onChangeDateForSelectedItemsClick = { picker.show() },
         categories = categories,
-        onCategoryClick = {
-                category -> viewModel.onCategorySelected(category)
+        onCategoryClick = { category ->
+            viewModel.onCategorySelected(category)
         }
     )
 }
@@ -142,13 +144,13 @@ fun PaymentListScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentListLayout(
-    openDrawer: () -> Unit,
+    navigationIcon: @Composable () -> Unit,
     toolbarTitle: String,
     paymentListResult: MotResult<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onFabClick: () -> Unit,
-    onActionIconClick: () -> Unit,
+    settingsIcon: @Composable () -> Unit,
     snackbarVisibleState: Boolean,
     onUndoButtonClick: () -> Unit,
     deletedItemsCount: Int,
@@ -161,7 +163,7 @@ fun PaymentListLayout(
     onChangeCategoryForSelectedItemsClick: () -> Unit,
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
-    ) {
+) {
 
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
@@ -196,8 +198,8 @@ fun PaymentListLayout(
                 } else {
                     TopAppBarMot(
                         title = toolbarTitle,
-                        onNavigationIconClick = openDrawer,
-                        onActionIconClick = onActionIconClick
+                        navigationIcon = navigationIcon,
+                        actions = { settingsIcon.invoke() }
                     )
                 }
             },
@@ -321,14 +323,14 @@ fun PaymentList(
 private fun PaymentListScreenPreview() {
 
     PaymentListLayout(
-        openDrawer = {},
-        toolbarTitle = "title",
+        navigationIcon = { MotNavDrawerIcon {} },
+        toolbarTitle = "Title",
         paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
         onItemClick = {},
         onItemLongClick = {},
         onFabClick = {},
-        onActionIconClick = {},
+        settingsIcon = { MotNavSettingsIcon {} },
         snackbarVisibleState = false,
         onUndoButtonClick = {},
         deletedItemsCount = 0,

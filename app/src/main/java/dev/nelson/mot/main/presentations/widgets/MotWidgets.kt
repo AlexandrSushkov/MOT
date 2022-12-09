@@ -10,11 +10,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.runtime.Composable
@@ -24,30 +24,31 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarMot(
     title: String,
-    onNavigationIconClick: () -> Unit,
-    onActionIconClick: () -> Unit
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
-        navigationIcon = {
-            IconButton(onClick = onNavigationIconClick) {
-                Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
-            }
-        },
+        navigationIcon = navigationIcon,
         title = {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge
             )
         },
-        actions = {
-            IconButton(onClick = onActionIconClick) {
-                Icon(Icons.Default.Settings, contentDescription = "")
-            }
-        }
+        actions = actions
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ToolbarMotPreview() {
+    TopAppBarMot(
+        title = "Toolbar",
+        navigationIcon = { MotNavDrawerIcon {} },
+        actions = { MotNavSettingsIcon {} }
     )
 }
 
@@ -79,17 +80,17 @@ private fun MotSelectionTopAppBarPreview() {
     MotSelectionTopAppBar(
         title = "1",
         onNavigationIconClick = {},
-        actions = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ToolbarMotPreview() {
-    TopAppBarMot(
-        title = "Toolbar",
-        onNavigationIconClick = {},
-        onActionIconClick = {}
+        actions = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.CalendarMonth, contentDescription = "")
+            }
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Category, contentDescription = "")
+            }
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Delete, contentDescription = "")
+            }
+        }
     )
 }
 

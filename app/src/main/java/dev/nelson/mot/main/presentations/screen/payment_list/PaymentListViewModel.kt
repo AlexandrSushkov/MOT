@@ -99,7 +99,7 @@ class PaymentListViewModel @Inject constructor(
         viewModelScope.launch {
             when (screenScreenType) {
                 is ScreenType.RecentPayments -> {
-                    _toolBarTitleState.value = "recent payments"
+                    _toolBarTitleState.value = "Recent Payments"
 
                     val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
                     val startOfPreviousMonth = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)

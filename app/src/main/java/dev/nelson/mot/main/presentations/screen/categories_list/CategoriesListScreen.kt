@@ -6,7 +6,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
@@ -56,7 +56,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -86,9 +85,10 @@ import kotlinx.coroutines.delay
 @Composable
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
-    openDrawer: () -> Unit,
+    navigationIcon: @Composable () -> Unit = {},
+    settingsIcon: @Composable () -> Unit = {},
     openCategoryDetails: (Int?) -> Unit,
-    openPaymentsByCategory: (Int?) -> Unit
+    openPaymentsByCategory: (Int?) -> Unit,
 ) {
 
     val categories by viewModel.categories.collectAsState(initial = Loading)
@@ -102,7 +102,8 @@ fun CategoryListScreen(
     val showDeletedMessageToast by viewModel.showDeletedItemsMessageToast.collectAsState(false)
 
     CategoryListLayout(
-        openDrawer = openDrawer,
+        navigationIcon = navigationIcon,
+        settingsIcon = settingsIcon,
         categoriesMotResult = categories,
         categoryToEditId = categoryToEditId,
         onCategoryClick = openPaymentsByCategory,
@@ -129,7 +130,8 @@ fun CategoryListLayout(
     categoriesMotResult: MotResult<List<CategoryListItemModel>>,
     categoryNameState: TextFieldValue,
     openDialog: Boolean,
-    openDrawer: () -> Unit,
+    navigationIcon: @Composable () -> Unit = {},
+    settingsIcon: @Composable () -> Unit = {},
     onCategoryClick: (Int?) -> Unit,
     openCategoryDetails: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
@@ -164,20 +166,14 @@ fun CategoryListLayout(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = openDrawer) {
-                        Icon(
-                            Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.accessibility_drawer_icon)
-                        )
-                    }
-                },
+                navigationIcon = navigationIcon,
                 title = {
                     Text(
                         text = stringResource(R.string.categories),
                         style = MaterialTheme.typography.subtitle1
                     )
-                }
+                },
+                actions = { settingsIcon.invoke() }
             )
         },
         snackbarHost = {
@@ -258,6 +254,7 @@ fun CategoryList(
                                         categoryListItem.category.id?.let {
                                             MotDismissibleListItem(
                                                 dismissState = dismissState,
+                                                directions = setOf(DismissDirection.EndToStart),
                                                 dismissContent = {
                                                     CategoryListItem(
                                                         categoryListItem.category,
@@ -267,7 +264,7 @@ fun CategoryList(
                                                     )
                                                 }
                                             )
-                                        } ?: CategoryListItem(
+                                        } ?: CategoryListItem( // for "No category" category
                                             categoryListItem.category,
                                             onCategoryClick,
                                             onCategoryLongPress,
@@ -456,7 +453,11 @@ private fun CategoryListLayoutPreview() {
         categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
         categoryNameState = TextFieldValue(),
         openDialog = false,
-        openDrawer = {},
+        navigationIcon = {
+            IconButton(onClick = {}) {
+                Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
+            }
+        },
         onCategoryClick = {},
         openCategoryDetails = {},
         onFavoriteClick = { _, _ -> },

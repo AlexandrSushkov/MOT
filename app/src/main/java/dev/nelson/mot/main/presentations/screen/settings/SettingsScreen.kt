@@ -27,13 +27,13 @@ import dev.nelson.mot.main.util.StringUtils
 
 @Composable
 fun SettingsScreen(
-    onNavIconClick: () -> Unit,
     settingsViewModel: SettingsViewModel,
+    navigationIcon: @Composable () -> Unit = {},
 ) {
     val toastMessage by settingsViewModel.showToastAction.collectAsState(StringUtils.EMPTY)
 
     SettingsScreenLayout(
-        onNavIconClick,
+        navigationIcon = navigationIcon,
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
         toastMessage = toastMessage
     )
@@ -42,7 +42,7 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SettingsScreenLayout(
-    onNavIconClick: () -> Unit,
+    navigationIcon: @Composable () -> Unit = {},
     onExportDataBaseClick: () -> Unit,
     toastMessage: String,
 ) {
@@ -54,11 +54,7 @@ private fun SettingsScreenLayout(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = onNavIconClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "drawer icon")
-                    }
-                },
+                navigationIcon = navigationIcon,
                 title = { Text(text = "Settings") },
             )
         },
@@ -72,7 +68,7 @@ private fun SettingsScreenLayout(
                 trailing = {
                     Switch(checked = false, onCheckedChange = {})
                 }) {
-                Text(text = "Theme")
+                Text(text = "Dark theme")
             }
             ListItem(
                 trailing = {
@@ -93,9 +89,12 @@ private fun SettingsScreenLayout(
 @Composable
 private fun SettingsScreenLayoutPreview() {
     SettingsScreenLayout(
-        onNavIconClick = {},
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "back icon")
+            }
+        },
         onExportDataBaseClick = {},
         toastMessage = "",
-
     )
 }
