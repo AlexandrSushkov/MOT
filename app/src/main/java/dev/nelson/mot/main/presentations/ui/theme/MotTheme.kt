@@ -84,11 +84,15 @@ fun MotTheme(
     val colorScheme = when {
         dynamicColor -> {
             val context = LocalContext.current
-            if (darkTheme || forceDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme || forceDark -> DarkColorScheme
         else -> LightColorScheme
     }
+
+//    val context = LocalContext.current
+//    val colorScheme = if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

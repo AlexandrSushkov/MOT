@@ -76,9 +76,10 @@ class HomeActivity : ComponentActivity() {
         }
 
         setContent {
-            val forceDark by splashScreenViewModel.forceDark.collectAsState(false)
+            val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)
+            val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
 
-            MotTheme(forceDark) {
+            MotTheme(forceDark = forceDark, dynamicColor = dynamicColor) {
                 MotApp(
                     isOpenedFromWidget = isOpenedFromWidget,
                     finishAction = { finishAndRemoveTask() }

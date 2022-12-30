@@ -2,14 +2,21 @@ package dev.nelson.mot.main.data.repository
 
 import android.os.Environment
 import android.os.Environment.DIRECTORY_DOWNLOADS
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import dev.nelson.mot.main.BuildConfig
+import dev.nelson.mot.main.data.preferences.MotSwitch
+import dev.nelson.mot.main.data.preferences.PreferencesKeys
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.channels.FileChannel
 import javax.inject.Inject
 
-class SettingsRepository @Inject constructor() {
+class SettingsRepository @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
     fun getDownloadsDir(): File {
         return Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS)
@@ -36,6 +43,14 @@ class SettingsRepository @Inject constructor() {
         dst.transferFrom(src, 0, src.size())
         src.close()
         dst.close()
+    }
+
+    suspend fun setSwitch(motSwitch: MotSwitch, isEnabled: Boolean) {
+        dataStore.edit { preferences -> preferences[motSwitch.key] = isEnabled }
+    }
+
+    suspend fun getSwitch(motSwitch: MotSwitch): Flow<Boolean> {
+        return dataStore.data.map { it[motSwitch.key] ?: false }
     }
 
     companion object {

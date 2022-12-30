@@ -36,12 +36,18 @@ fun SettingsScreen(
     navigationIcon: @Composable () -> Unit = {},
 ) {
     val toastMessage by settingsViewModel.showToastAction.collectAsState(StringUtils.EMPTY)
+    val darkTheme by settingsViewModel.darkThemeSwitchState.collectAsState(false)
+    val colorTheme by settingsViewModel.colorThemeSwitchState.collectAsState(false)
 
     SettingsScreenLayout(
         title = title,
         navigationIcon = navigationIcon,
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        toastMessage = toastMessage
+        toastMessage = toastMessage,
+        darkTheme = darkTheme,
+        colorTheme = colorTheme,
+        onDarkClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
+        onColorClick = { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) }
     )
 }
 
@@ -52,7 +58,12 @@ private fun SettingsScreenLayout(
     navigationIcon: @Composable () -> Unit = {},
     onExportDataBaseClick: () -> Unit,
     toastMessage: String,
-) {
+    darkTheme: Boolean,
+    colorTheme: Boolean,
+    onDarkClick: (Boolean) -> Unit,
+    onColorClick: (Boolean) -> Unit,
+
+    ) {
 
     if (toastMessage.isNotEmpty()) {
         Toast.makeText(LocalContext.current, toastMessage, Toast.LENGTH_SHORT).show()
@@ -69,8 +80,8 @@ private fun SettingsScreenLayout(
             ListItem(
                 trailing = {
                     Switch(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = darkTheme,
+                        onCheckedChange = onDarkClick,
                         colors = SwitchDefaults.colorsMaterial3()
                     )
                 },
@@ -80,8 +91,8 @@ private fun SettingsScreenLayout(
             ListItem(
                 trailing = {
                     Switch(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = colorTheme,
+                        onCheckedChange = onColorClick,
                         colors = SwitchDefaults.colorsMaterial3()
                     )
                 },
@@ -112,6 +123,10 @@ private fun SettingsScreenLayoutLightPreview() {
         },
         onExportDataBaseClick = {},
         toastMessage = "",
+        darkTheme = false,
+        colorTheme = true,
+        onDarkClick = {},
+        onColorClick = {}
     )
 }
 
@@ -128,6 +143,10 @@ private fun SettingsScreenLayoutDarkPreview() {
             },
             onExportDataBaseClick = {},
             toastMessage = "",
+            darkTheme = false,
+            colorTheme = true,
+            onDarkClick = {},
+            onColorClick = {}
         )
     }
 }
