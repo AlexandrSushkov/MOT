@@ -1,14 +1,13 @@
 package dev.nelson.mot.main.presentations.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val MotTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -31,5 +30,16 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
+)
 
+val MotTypographyLight = Typography(
+    bodyLarge = MotTypography.bodyLarge.copy(color = MotColors.Purple40),
+    titleLarge = MotTypography.titleLarge.copy(color = MotColors.Purple40),
+    labelSmall = MotTypography.labelSmall.copy(color = MotColors.Purple40)
+)
+
+val MotTypographyDark = Typography(
+    bodyLarge = MotTypography.bodyLarge.copy(color = MotColors.Pink40),
+    titleLarge = MotTypography.titleLarge.copy(color = MotColors.Pink40),
+    labelSmall = MotTypography.labelSmall.copy(color = MotColors.Pink40)
 )

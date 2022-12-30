@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package dev.nelson.mot.main.presentations.screen.statistic
 
 import android.content.res.Configuration
@@ -9,13 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.NavigationRail
-import androidx.compose.material.NavigationRailItem
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,12 +32,13 @@ import androidx.navigation.NavHostController
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.presentations.motTabRowScreens
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.LineChartMot
 
 @Composable
 fun StatisticScreen(
-    navHostController: NavHostController,
-    viewModel: StatisticViewModel
+    viewModel: StatisticViewModel,
+    navHostController: NavHostController
 ) {
     val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
     val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
@@ -124,10 +128,22 @@ fun StatisticContent() {
 
 @Preview(showBackground = true)
 @Composable
-private fun StatisticLayoutPreview() {
+private fun StatisticLayoutLightPreview() {
     StatisticLayout(
         NavHostController(LocalContext.current),
         currentMonthList = emptyMap(),
         previousMonthList = emptyMap()
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StatisticLayoutDarkPreview() {
+    MotTheme(darkTheme = true) {
+        StatisticLayout(
+            NavHostController(LocalContext.current),
+            currentMonthList = emptyMap(),
+            previousMonthList = emptyMap()
+        )
+    }
 }

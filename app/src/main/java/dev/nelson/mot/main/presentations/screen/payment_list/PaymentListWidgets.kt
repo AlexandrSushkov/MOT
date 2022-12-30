@@ -4,6 +4,7 @@ package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
@@ -14,17 +15,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
-import androidx.compose.material.Chip
+import androidx.compose.material.CheckboxColors
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -34,6 +37,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -47,7 +51,11 @@ fun DateRangeWidget(startDate: String, endDate: String) {
                     .weight(1f)
                     .align(CenterVertically)
             ) {
-                Text(text = startDate, modifier = Modifier.align(Alignment.Start))
+                Text(
+                    text = startDate,
+                    modifier = Modifier.align(Alignment.Start),
+                    style = MaterialTheme.typography.labelSmall
+                )
             }
             Icon(Icons.Default.ArrowRightAlt, contentDescription = "arrow right")
             Column(
@@ -55,43 +63,59 @@ fun DateRangeWidget(startDate: String, endDate: String) {
                     .weight(1f)
                     .align(CenterVertically)
             ) {
-                Text(text = endDate, modifier = Modifier.align(Alignment.End))
+                Text(
+                    text = endDate,
+                    modifier = Modifier.align(Alignment.End),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
-        Divider(Modifier.height(1.dp))
+        Divider(
+            Modifier
+                .height(1.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true)
+@Composable
+private fun DateRangeWidgetLightPreview() {
+    DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DateRangeWidgetDarkPreview() {
+    MotTheme(darkTheme = true) {
+        DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
+    }
+}
+
 @Composable
 fun PaymentListDateItem(date: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
-//        Card(
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .padding(vertical = 6.dp),
-//                elevation = 4.dp,
-//                shape = RoundedCornerShape(20.dp)
-//        ) {
-//            Text(
-//                modifier = Modifier
-//                    .align(Alignment.CenterHorizontally)
-//                    .padding(vertical = 4.dp, horizontal = 12.dp),
-//                text = date,
-//                style = MaterialTheme.typography.body2
-//            )
-//        }
+        Text(
+            text = date,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(vertical = 4.dp),
+            style = MaterialTheme.typography.labelMedium
+        )
+    }
+}
 
-        Chip(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = {}
-        ) {
-            Text(
-                text = date,
-                style = MaterialTheme.typography.caption
-            )
-        }
+@Preview(showBackground = true)
+@Composable
+private fun PaymentListDateItemLightPreview() {
+    PaymentListDateItem("01.11.2022")
+}
 
+@Preview(showBackground = true)
+@Composable
+private fun PaymentListDateItemDarkPreview() {
+    MotTheme(darkTheme = true) {
+        PaymentListDateItem("01.11.2022")
     }
 }
 
@@ -115,22 +139,29 @@ fun PaymentListItem(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
 
-            }
-        ),
+            }),
+        backgroundColor = MaterialTheme.colorScheme.surface,
         elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
         shape = RoundedCornerShape(0.dp)
     ) {
-        Row() {
+        Row {
             if (isSelectedState) {
                 Column(modifier = Modifier.align(CenterVertically)) {
                     Checkbox(
                         checked = paymentItemModel.payment.isSelected,
+                        // adjuster to work with MaterialTheme3
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colorScheme.secondary,
+                            uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            checkmarkColor = MaterialTheme.colorScheme.surface,
+                            disabledColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
+                        ),
                         onCheckedChange = { onClick.invoke(paymentItemModel) }
                     )
                 }
             }
-            Column() {
-                Row(modifier = Modifier.padding(all = 16.dp)) {
+            Column {
+                Row(modifier = Modifier.padding(horizontal = 24.dp)) {
                     Column(
                         modifier = Modifier
                             .weight(1.0f)
@@ -138,19 +169,17 @@ fun PaymentListItem(
                     ) {
                         Text(
                             text = paymentItemModel.payment.name,
-                            style = MaterialTheme.typography.subtitle1,
                         )
                         if (paymentItemModel.shotCategory) {
-                            paymentItemModel.payment.category?.name?.let { Text(it, style = MaterialTheme.typography.subtitle2) }
+                            paymentItemModel.payment.category?.name?.let { Text(it) }
                         }
-//                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.caption) }
+//                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
                     }
                     Column(
                         modifier = Modifier.align(alignment = CenterVertically)
                     ) {
                         Text(
                             paymentItemModel.payment.cost.toString(),
-                            style = MaterialTheme.typography.subtitle2
                         )
                     }
                 }
@@ -164,22 +193,23 @@ fun PaymentListItem(
 
 @Preview(showBackground = true)
 @Composable
-private fun DateRangeWidgetPreview() {
-    DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
+private fun DismissiblePaymentListItemLightPreview() {
+    MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
+        PaymentListItem(
+            paymentItemModel = PreviewData.paymentItemModelPreview,
+            onClick = {},
+            onLongClick = {},
+            dismissDirection = DismissDirection.EndToStart,
+            isSelectedState = false
+        )
+    })
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PaymentListDateItemPreview() {
-    PaymentListDateItem("01.11.2022")
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DismissiblePaymentListItemPreview() {
-    MotDismissibleListItem(
-        dismissState = DismissState(DismissValue.Default),
-        dismissContent = {
+private fun DismissiblePaymentListItemDarkPreview() {
+    MotTheme(darkTheme = true) {
+        MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
             PaymentListItem(
                 paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
@@ -187,7 +217,7 @@ private fun DismissiblePaymentListItemPreview() {
                 dismissDirection = DismissDirection.EndToStart,
                 isSelectedState = false
             )
-        }
-    )
+        })
+    }
 }
 

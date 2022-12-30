@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package dev.nelson.mot.main.presentations.screen.payment_list
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -12,14 +15,8 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Category
@@ -29,23 +26,32 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
@@ -195,12 +201,24 @@ fun PaymentListLayout(
                             }
                         }
                     )
+                    val view = LocalView.current
+                    if (!view.isInEditMode) {
+                        val window = (view.context as Activity).window
+                        window.statusBarColor = MaterialTheme.colorScheme.tertiaryContainer.toArgb()
+                    }
+
                 } else {
                     TopAppBarMot(
                         title = toolbarTitle,
                         navigationIcon = navigationIcon,
                         actions = { settingsIcon.invoke() }
-                    )
+                    ).also {
+                        val view = LocalView.current
+                        if (!view.isInEditMode) {
+                            val window = (view.context as Activity).window
+                            window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
+                        }
+                    }
                 }
             },
             floatingActionButton = {
@@ -209,20 +227,20 @@ fun PaymentListLayout(
                     content = { Icon(Icons.Default.Add, "new payment fab") }
                 )
             },
-            snackbarHost = {
-                if (snackbarVisibleState) {
-                    Snackbar(
-                        action = {
-                            TextButton(
-                                onClick = onUndoButtonClick,
-                                content = { Text("Undo") }
-                            )
-                        },
-                        modifier = Modifier.padding(8.dp),
-                        content = { Text(text = "$deletedItemsCount Deleted") }
-                    )
-                }
-            }
+//            snackbarHost = {
+//                if (snackbarVisibleState) {
+//                    Snackbar(
+//                        action = {
+//                            TextButton(
+//                                onClick = onUndoButtonClick,
+//                                content = { Text("Undo") }
+//                            )
+//                        },
+//                        modifier = Modifier.padding(8.dp),
+//                        content = { Text(text = "$deletedItemsCount Deleted") }
+//                    )
+//                }
+//            }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 PaymentList(paymentListResult, onItemClick, onItemLongClick, onSwipeToDeleteItem, isSelectedState)
@@ -247,6 +265,7 @@ fun PaymentList(
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
         }
+
         is Success -> {
             val paymentList = paymentListResult.successOr(emptyList())
             if (paymentList.isEmpty()) {
@@ -306,6 +325,7 @@ fun PaymentList(
                 }
             }
         }
+
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 ListPlaceholder(
@@ -320,8 +340,7 @@ fun PaymentList(
 
 @Preview(showBackground = true)
 @Composable
-private fun PaymentListScreenPreview() {
-
+private fun PaymentListScreenLightPreview() {
     PaymentListLayout(
         navigationIcon = { MotNavDrawerIcon {} },
         toolbarTitle = "Title",
@@ -344,4 +363,33 @@ private fun PaymentListScreenPreview() {
         categories = emptyList(),
         onCategoryClick = {}
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PaymentListScreenDarkPreview() {
+    MotTheme(darkTheme = true) {
+        PaymentListLayout(
+            navigationIcon = { MotNavDrawerIcon {} },
+            toolbarTitle = "Title",
+            paymentListResult = Success(PreviewData.paymentListItemsPreview),
+//        paymentListResult = Error(IllegalStateException("my error")),
+            onItemClick = {},
+            onItemLongClick = {},
+            onFabClick = {},
+            settingsIcon = { MotNavSettingsIcon {} },
+            snackbarVisibleState = false,
+            onUndoButtonClick = {},
+            deletedItemsCount = 0,
+            onSwipeToDeleteItem = {},
+            isSelectedState = false,
+            selectedItemsCount = 0,
+            onCancelSelectionClick = {},
+            onDeleteSelectedItemsClick = {},
+            onChangeCategoryForSelectedItemsClick = {},
+            onChangeDateForSelectedItemsClick = {},
+            categories = emptyList(),
+            onCategoryClick = {}
+        )
+    }
 }

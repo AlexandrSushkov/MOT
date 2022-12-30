@@ -1,12 +1,9 @@
 package dev.nelson.mot.main.presentations.widgets
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -17,12 +14,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -76,7 +72,7 @@ fun MotExpandableArea(
     Column {
         Box(
             modifier = Modifier
-                .background(cardBgColor)
+//                .background(cardBgColor)
                 .fillMaxWidth()
         ) {
             IconButton(
@@ -138,12 +134,11 @@ fun ExpandableContent(
         Text(
             text = text,
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.caption
         )
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 1)
+@Preview(showBackground = true)
 @Composable
 private fun MotExpandableAreaPreview() {
     MotExpandableArea(

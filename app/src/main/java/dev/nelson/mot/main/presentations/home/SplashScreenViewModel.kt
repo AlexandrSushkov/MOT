@@ -16,11 +16,17 @@ class SplashScreenViewModel @Inject constructor() : BaseViewModel() {
         get() = _isLoading.asStateFlow()
     private val _isLoading = MutableStateFlow(true)
 
+    val forceDark
+        get() = _forceDark.asStateFlow()
+    private val _forceDark = MutableStateFlow(false)
+
     init {
         viewModelScope.launch {
             // do something
+//            delay(1000)
+            // TODO: load from preferences
+//            _forceDark.value = true
             _isLoading.value = false
         }
     }
-
 }

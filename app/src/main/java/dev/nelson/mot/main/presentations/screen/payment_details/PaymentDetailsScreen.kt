@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.payment_details
 
 import android.app.DatePickerDialog
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,22 +19,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,7 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -57,10 +55,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotButton
+import dev.nelson.mot.main.presentations.widgets.MotOutlinedButton
+import dev.nelson.mot.main.presentations.ui.theme.textFieldMaterial3Colors
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
@@ -70,53 +69,53 @@ import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @Composable
-fun PaymentDetailsScreen(closeScreen: () -> Unit) {
+fun PaymentDetailsScreen(
+    viewModel: PaymentDetailsViewModel,
+    closeScreen: () -> Unit
+) {
 
-    MotTheme {
-        val viewModel = hiltViewModel<PaymentDetailsViewModel>()
-        LaunchedEffect(
-            key1 = true,
-            block = {
-                viewModel.finishAction.collect { closeScreen.invoke() }
-            }
-        )
+    LaunchedEffect(
+        key1 = true,
+        block = {
+            viewModel.finishAction.collect { closeScreen.invoke() }
+        }
+    )
 
-        // TODO: move to VM
-        val context = LocalContext.current
-        val cldr: Calendar = Calendar.getInstance()
-        val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
-        val month: Int = cldr.get(Calendar.MONTH)
-        val year: Int = cldr.get(Calendar.YEAR)
-        val picker = DatePickerDialog(
-            context,
-            { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
-            year,
-            month,
-            day
-        )
+    // TODO: move to VM
+    val context = LocalContext.current
+    val cldr: Calendar = Calendar.getInstance()
+    val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
+    val month: Int = cldr.get(Calendar.MONTH)
+    val year: Int = cldr.get(Calendar.YEAR)
+    val picker = DatePickerDialog(
+        context,
+        { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
+        year,
+        month,
+        day
+    )
 
-        val date by viewModel.dateState.collectAsState("")
-        val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
-        PaymentDetailsLayout(
-            paymentNameState = viewModel.paymentNameState,
-            costState = viewModel.costState,
-            date = date,
-            messageState = viewModel.messageState,
-            categories = categories,
-            onNameChange = { viewModel.onPaymentNameChanged(it) },
-            onCostChange = { viewModel.onCostChange(it) },
-            onMessageChange = { viewModel.onMessageChanged(it) },
-            onDateClick = { picker.show() },
-            onCategoryClick = { viewModel.onCategorySelected(it) },
-            onSaveClick = { viewModel.onSaveClick() },
-            categoryNameState = viewModel.categoryNameState,
-        )
-    }
+    val date by viewModel.dateState.collectAsState("")
+    val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
+    PaymentDetailsLayout(
+        paymentNameState = viewModel.paymentNameState,
+        costState = viewModel.costState,
+        date = date,
+        messageState = viewModel.messageState,
+        categories = categories,
+        onNameChange = { viewModel.onPaymentNameChanged(it) },
+        onCostChange = { viewModel.onCostChange(it) },
+        onMessageChange = { viewModel.onMessageChanged(it) },
+        onDateClick = { picker.show() },
+        onCategoryClick = { viewModel.onCategorySelected(it) },
+        onSaveClick = { viewModel.onSaveClick() },
+        categoryNameState = viewModel.categoryNameState,
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PaymentDetailsLayoutPreview() {
+fun PaymentDetailsLayoutLightPreview() {
     PaymentDetailsLayout(
         paymentNameState = MutableStateFlow(TextFieldValue()),
         costState = MutableStateFlow(TextFieldValue()),
@@ -131,6 +130,27 @@ fun PaymentDetailsLayoutPreview() {
         onCategoryClick = {},
         onDateClick = {},
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PaymentDetailsLayoutDarkPreview() {
+    MotTheme(darkTheme = true) {
+        PaymentDetailsLayout(
+            paymentNameState = MutableStateFlow(TextFieldValue()),
+            costState = MutableStateFlow(TextFieldValue()),
+            date = "1/1/2022",
+            categoryNameState = MutableStateFlow("category"),
+            messageState = MutableStateFlow(TextFieldValue()),
+            categories = emptyList(),
+            onNameChange = {},
+            onCostChange = {},
+            onMessageChange = {},
+            onSaveClick = {},
+            onCategoryClick = {},
+            onDateClick = {},
+        )
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -167,11 +187,12 @@ fun PaymentDetailsLayout(
     })
     ModalBottomSheetLayout(
         sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
-        sheetState = modalBottomSheetState
+        sheetState = modalBottomSheetState,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+        sheetContentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surface)
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
         ) {
             Column(
                 modifier = Modifier.verticalScroll(
@@ -194,6 +215,7 @@ fun PaymentDetailsLayout(
                         },
                         placeholder = { Text(text = "new payment") },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        colors = TextFieldDefaults.textFieldMaterial3Colors()
                     )
                     TextField(
                         modifier = Modifier.weight(1f),
@@ -206,6 +228,7 @@ fun PaymentDetailsLayout(
                         },
                         placeholder = { Text(text = "0.0") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        colors = TextFieldDefaults.textFieldMaterial3Colors()
                     )
                 }
                 TextField(
@@ -225,7 +248,9 @@ fun PaymentDetailsLayout(
                     },
                     placeholder = { Text(text = "message") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() })
+                    keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
+                    colors = TextFieldDefaults.textFieldMaterial3Colors()
+
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
@@ -237,39 +262,22 @@ fun PaymentDetailsLayout(
 //                        onDateClick.invoke()
 //                    }
                 ) {
-                    Chip(
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.EditCalendar,
-                                contentDescription = "date icon"
-                            )
-                        },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = Color.White
-                        ),
+                    MotOutlinedButton(
                         onClick = {
                             keyboardController?.hide()
                             focusManager.clearFocus()
                             onDateClick.invoke()
                         },
-                        border = BorderStroke(1.dp, Color.LightGray)
                     ) {
+                        Icon(Icons.Default.EditCalendar, modifier = Modifier.padding(end = 8.dp), contentDescription = "date icon")
+
                         Text(
                             text = date,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    Chip(
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Category,
-                                contentDescription = "category icon"
-                            )
-                        },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = Color.White
-                        ),
+                    MotOutlinedButton(
                         onClick = {
 //                            onCategoryClick.invoke()
                             scope.launch {
@@ -279,8 +287,8 @@ fun PaymentDetailsLayout(
                                 modalBottomSheetState.show()
                             }
                         },
-                        border = BorderStroke(1.dp, Color.LightGray)
                     ) {
+                        Icon(Icons.Default.Category, modifier = Modifier.padding(end = 8.dp), contentDescription = "category icon")
                         Text(
                             text = categoryName,
                             modifier = Modifier.align(Alignment.CenterVertically)
@@ -301,6 +309,7 @@ fun PaymentDetailsLayout(
                         .padding(8.dp),
                     onClick = onSaveClick
                 ) {
+//                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
                     Text(text = "Save")
                 }
 
@@ -313,12 +322,25 @@ fun PaymentDetailsLayout(
 @OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
-fun CategoriesListBottomSheetPreview() {
+fun CategoriesListBottomSheetLightPreview() {
     CategoriesListBottomSheet(
         PreviewData.categoriesSelectListItemsPreview,
         onCategoryClick = {},
         rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     )
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Preview(showBackground = true)
+@Composable
+fun CategoriesListBottomSheetDarkPreview() {
+    MotTheme(darkTheme = true) {
+        CategoriesListBottomSheet(
+            PreviewData.categoriesSelectListItemsPreview,
+            onCategoryClick = {},
+            rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -367,7 +389,7 @@ fun CategoriesListBottomSheet(
                     if (categories.size > nextCategoryIndex) {
                         val nextCategory = categories[index + 1]
                         if (category.isFavorite && !nextCategory.isFavorite) {
-                            Divider()
+                            Divider(color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 }

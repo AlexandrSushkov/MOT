@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package dev.nelson.mot.main.presentations.screen.categories_list
 
 import android.widget.Toast
@@ -24,14 +26,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,6 +37,14 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,7 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -69,7 +70,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
-import dev.nelson.mot.main.presentations.ui.theme.MotColors
+import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.util.Constants
@@ -85,6 +86,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
+    title: String,
     navigationIcon: @Composable () -> Unit = {},
     settingsIcon: @Composable () -> Unit = {},
     openCategoryDetails: (Int?) -> Unit,
@@ -102,6 +104,7 @@ fun CategoryListScreen(
     val showDeletedMessageToast by viewModel.showDeletedItemsMessageToast.collectAsState(false)
 
     CategoryListLayout(
+        title = title,
         navigationIcon = navigationIcon,
         settingsIcon = settingsIcon,
         categoriesMotResult = categories,
@@ -127,6 +130,7 @@ fun CategoryListScreen(
 
 @Composable
 fun CategoryListLayout(
+    title: String,
     categoriesMotResult: MotResult<List<CategoryListItemModel>>,
     categoryNameState: TextFieldValue,
     openDialog: Boolean,
@@ -169,27 +173,28 @@ fun CategoryListLayout(
                 navigationIcon = navigationIcon,
                 title = {
                     Text(
-                        text = stringResource(R.string.categories),
-                        style = MaterialTheme.typography.subtitle1
+                        text = title,
+//                        style = MaterialTheme.typography.subtitle1
                     )
                 },
                 actions = { settingsIcon.invoke() }
             )
         },
-        snackbarHost = {
-            if (snackbarVisibleState) {
-                Snackbar(
-                    action = {
-                        TextButton(
-                            onClick = undoDeleteClick,
-                            content = { Text("Undo") }
-                        )
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    content = { Text(text = deleteItemsSnackbarText) }
-                )
-            }
-        },
+
+//        snackbarHost = {
+//            if (snackbarVisibleState) {
+//                Snackbar(
+//                    action = {
+//                        TextButton(
+//                            onClick = undoDeleteClick,
+//                            content = { Text("Undo") }
+//                        )
+//                    },
+//                    modifier = Modifier.padding(8.dp),
+//                    content = { Text(text = deleteItemsSnackbarText) }
+//                )
+//            }
+//        },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddCategoryClick) {
                 Icon(Icons.Default.Add, stringResource(R.string.accessibility_add_icon))
@@ -272,33 +277,37 @@ fun CategoryList(
                                         )
                                     }
                                 }
+
                                 is Letter -> {
                                     stickyHeader(key = categoryListItem.key) {
                                         Box(
                                             modifier = Modifier
+                                                .background(color = MaterialTheme.colorScheme.secondaryContainer)
                                                 .fillMaxWidth()
-                                                .background(MotColors.PurpleGrey80)
                                         ) {
                                             Text(
-                                                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                                                modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp),
                                                 text = categoryListItem.letter,
-                                                style = MaterialTheme.typography.subtitle2
+//                                                style = MaterialTheme.typography.subtitle2
                                             )
                                         }
                                     }
                                 }
-                                is Footer -> item() { Footer() }
+
+                                is Footer -> item { Footer() }
                             }
                         }
                     }
                 )
             }
         }
+
         is Loading -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(Modifier.align(Alignment.Center))
             }
         }
+
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 ListPlaceholder(
@@ -321,6 +330,8 @@ fun CategoryListItem(
     onFavoriteClick: (Category, Boolean) -> Unit,
 ) {
     var checked by remember { mutableStateOf(category.isFavorite) }
+    val iconColor = if (checked) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondaryContainer
+    val iconTint by animateColorAsState(iconColor)
 
     Card(
         modifier = Modifier
@@ -329,27 +340,31 @@ fun CategoryListItem(
                 onClick = { onCategoryClick.invoke(category.id) },
                 onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
             ),
+        backgroundColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(0.dp)
     ) {
         Row(
             modifier = Modifier
+                .padding(horizontal = 24.dp)
                 .fillMaxWidth()
-                .padding(vertical = 8.dp, horizontal = 16.dp)
+//                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Category,
-                contentDescription = stringResource(id = R.string.accessibility_category_icon),
-                modifier = Modifier
-                    .size(0.dp)
-                    .align(Alignment.CenterVertically)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
+//            Spacer(modifier = Modifier.width(24.dp))
+
+//            Icon(
+//                imageVector = Icons.Default.Category,
+//                contentDescription = stringResource(id = R.string.accessibility_category_icon),
+//                modifier = Modifier
+//                    .size(24.dp)
+//                    .align(Alignment.CenterVertically)
+//            )
+//            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = category.name,
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically),
-                style = MaterialTheme.typography.subtitle1
+//                style = MaterialTheme.typography.subtitle1
             )
             if (category.id != null) {
                 IconToggleButton(
@@ -359,18 +374,15 @@ fun CategoryListItem(
                         onFavoriteClick.invoke(category, isChecked)
                     },
                 ) {
-                    val tint by animateColorAsState(
-                        if (checked) MotColors.FavoriteButtonOnBackground
-                        else MotColors.FavoriteButtonOffBackground
-                    )
                     Icon(
                         Icons.Filled.Star,
                         contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                        tint = tint,
+                        tint = iconTint,
                         modifier = Modifier.size(24.dp)
                     )
                 }
             }
+//            Spacer(modifier = Modifier.width(24.dp))
         }
     }
 }
@@ -429,7 +441,7 @@ fun EditCategoryDialog(
                 val textId = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
                 Text(
                     text = stringResource(textId),
-                    style = MaterialTheme.typography.button
+//                    style = MaterialTheme.typography.button
                 )
             }
         }
@@ -441,15 +453,15 @@ private fun Footer() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
             .heightIn(60.dp)
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun CategoryListLayoutPreview() {
+private fun CategoryListLayoutLightPreview() {
     CategoryListLayout(
+        title = "Categories",
         categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
         categoryNameState = TextFieldValue(),
         openDialog = false,
@@ -474,6 +486,39 @@ private fun CategoryListLayoutPreview() {
         deletedItemsMessage = "toast",
         showDeletedMessageToast = false
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CategoryListLayoutDarkPreview() {
+    MotTheme(darkTheme = true) {
+        CategoryListLayout(
+            title = "Categories",
+            categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
+            categoryNameState = TextFieldValue(),
+            openDialog = false,
+            navigationIcon = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
+                }
+            },
+            onCategoryClick = {},
+            openCategoryDetails = {},
+            onFavoriteClick = { _, _ -> },
+            closeEditCategoryDialog = {},
+            onAddCategoryClick = {},
+            onCategoryNameChanged = {},
+            onCategoryLongPress = {},
+            onSaveCategoryClick = {},
+            onSwipeCategory = {},
+            categoryToEditId = null,
+            snackbarVisibleState = false,
+            deleteItemsSnackbarText = "",
+            undoDeleteClick = {},
+            deletedItemsMessage = "toast",
+            showDeletedMessageToast = false
+        )
+    }
 }
 
 @Preview(showBackground = true)

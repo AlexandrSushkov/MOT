@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import timber.log.Timber
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -32,6 +33,12 @@ abstract class BaseViewModel : ViewModel() {
 
     protected fun hideKeyboard() {
         _hideKeyboardAction.tryEmit(Unit)
+    }
+
+    protected fun handleError(exception: Throwable) {
+        val error = "${Throwable::class.java}: ${exception.message}"
+        showToast(error)
+        Timber.e(error)
     }
 
 }

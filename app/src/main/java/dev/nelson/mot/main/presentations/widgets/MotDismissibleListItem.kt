@@ -16,17 +16,17 @@ import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
-import androidx.compose.material.Icon
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
@@ -38,28 +38,29 @@ fun MotDismissibleListItem(
     directions: Set<DismissDirection> = emptySet(),
     dismissContent: @Composable (RowScope.() -> Unit)
 ) {
+    fun TimeInterpolator.toEasing() = Easing { x -> getInterpolation(x) }
+
     val haptic = LocalHapticFeedback.current
+    val dismissibleBackgroundTargetColor = when (dismissState.targetValue) {
+        DismissValue.Default -> MaterialTheme.colorScheme.surfaceVariant
+        DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.surfaceVariant
+        DismissValue.DismissedToStart -> MaterialTheme.colorScheme.errorContainer
+    }
+    val dismissibleBackgroundColor by animateColorAsState(targetValue = dismissibleBackgroundTargetColor)
+    val dismissibleIconTargetColor = when (dismissState.targetValue) {
+        DismissValue.Default -> MaterialTheme.colorScheme.onSurfaceVariant
+        DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.onSurfaceVariant
+        DismissValue.DismissedToStart -> MaterialTheme.colorScheme.onErrorContainer
+    }
+    val dismissibleIconColor by animateColorAsState(
+        targetValue = dismissibleIconTargetColor,
+        finishedListener = { haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
+    )
 
     SwipeToDismiss(
         state = dismissState,
         background = {
             val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
-            fun TimeInterpolator.toEasing() = Easing { x -> getInterpolation(x) }
-            val color by animateColorAsState(
-                when (dismissState.targetValue) {
-                    DismissValue.Default -> Color.LightGray
-                    DismissValue.DismissedToEnd -> Color.Green
-                    DismissValue.DismissedToStart -> Color.Red
-                }
-            )
-            val iconColor by animateColorAsState(
-                targetValue = when (dismissState.targetValue) {
-                    DismissValue.Default -> Color.DarkGray
-                    DismissValue.DismissedToEnd -> Color.Green
-                    DismissValue.DismissedToStart -> Color.White
-                },
-                finishedListener = { haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
-            )
             val alignment = when (direction) {
                 DismissDirection.StartToEnd -> Alignment.CenterStart
                 DismissDirection.EndToStart -> Alignment.CenterEnd
@@ -74,15 +75,15 @@ fun MotDismissibleListItem(
             )
 
             Box(
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
-                    .background(color)
+                    .background(dismissibleBackgroundColor)
                     .padding(horizontal = 20.dp),
                 contentAlignment = alignment
             ) {
                 Icon(
-                    icon,
-                    tint = iconColor,
+                    imageVector = icon,
+                    tint = dismissibleIconColor,
                     contentDescription = "Localized description",
                     modifier = Modifier.scale(scale)
                 )

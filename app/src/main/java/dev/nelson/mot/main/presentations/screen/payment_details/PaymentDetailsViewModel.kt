@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -78,6 +79,7 @@ class PaymentDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             paymentId?.let { paymentId ->
                 getPaymentUseCase.execute(paymentId)
+                    .catch { exception -> handleError(exception) }
                     .collect {
                         initialPayment = it
                         _paymentName.value = TextFieldValue(it.name, selection = TextRange(it.name.length))
