@@ -10,7 +10,6 @@
     <color name="swift">#3E3853</color>
 
     <!--theme colors-->
-    <color name="color_splash_background">@color/color_white</color>
     <color name="color_toolbar">@color/color_white</color>
     <color name="color_appbar">@color/color_white</color>
     <color name="color_fab">@color/colorAccent</color>
