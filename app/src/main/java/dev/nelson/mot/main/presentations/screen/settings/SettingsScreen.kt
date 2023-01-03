@@ -37,7 +37,7 @@ fun SettingsScreen(
 ) {
     val toastMessage by settingsViewModel.showToastAction.collectAsState(StringUtils.EMPTY)
     val darkTheme by settingsViewModel.darkThemeSwitchState.collectAsState(false)
-    val colorTheme by settingsViewModel.colorThemeSwitchState.collectAsState(false)
+    val colorTheme by settingsViewModel.dynamicColorThemeSwitchState.collectAsState(false)
 
     SettingsScreenLayout(
         title = title,

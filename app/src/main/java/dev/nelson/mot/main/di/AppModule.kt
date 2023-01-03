@@ -11,9 +11,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.nelson.mot.main.util.Constants
 import javax.inject.Singleton
 
-private val Context.dataStore by preferencesDataStore(name = "mot_preferences")
+private val Context.dataStore by preferencesDataStore(name = Constants.DATA_STORE_FILE_NAME)
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -27,8 +28,6 @@ object AppModule {
     fun provideGson(): Gson = GsonBuilder().create()
 
     @Provides
-    fun providePreferences(context: Context): DataStore<Preferences> {
-        return context.dataStore
-    }
-
+    @Singleton
+    fun provideDataStore(context: Context): DataStore<Preferences>  = context.dataStore
 }

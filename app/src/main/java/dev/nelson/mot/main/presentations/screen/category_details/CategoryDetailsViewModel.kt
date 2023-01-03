@@ -40,7 +40,7 @@ class CategoryDetailsViewModel @Inject constructor(
     private var initialCategory: Category? = null
 
     init {
-        viewModelScope.launch {
+        launch {
             categoryId?.let { categoryId ->
                 getCategoryUseCase.execute(categoryId)
                     .collect { category ->
@@ -56,21 +56,21 @@ class CategoryDetailsViewModel @Inject constructor(
     }
 
     fun onSaveClick() {
-        viewModelScope.launch {
+        launch {
             initialCategory?.let { editCategory(it) } ?: addNewCategory()
             _closeScreenAction.emit(Unit)
         }
     }
 
     private fun addNewCategory() {
-        viewModelScope.launch {
+        launch {
             val category = Category(_categoryNameState.value.text)
             modifyCategoryUseCase.execute(category, ModifyCategoryAction.Add)
         }
     }
 
     private fun editCategory(category: Category) {
-        viewModelScope.launch {
+        launch {
             val enteredName = _categoryNameState.value.text
             if (category.name != enteredName) {
                 val modifiedCategory = category.copyWith(enteredName)

@@ -1,13 +1,22 @@
 package dev.nelson.mot.main.presentations.base
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
-abstract class BaseViewModel : ViewModel() {
+abstract class BaseViewModel : ViewModel(), CoroutineScope {
+
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, e -> handleThrowable(e) }
+
+    override val coroutineContext: CoroutineContext
+        get() = viewModelScope.coroutineContext + coroutineExceptionHandler
 
     val hideKeyboardAction
         get() = _hideKeyboardAction.asStateFlow()
@@ -35,7 +44,7 @@ abstract class BaseViewModel : ViewModel() {
         _hideKeyboardAction.tryEmit(Unit)
     }
 
-    protected fun handleError(exception: Throwable) {
+    protected fun handleThrowable(exception: Throwable) {
         val error = "${Throwable::class.java}: ${exception.message}"
         showToast(error)
         Timber.e(error)

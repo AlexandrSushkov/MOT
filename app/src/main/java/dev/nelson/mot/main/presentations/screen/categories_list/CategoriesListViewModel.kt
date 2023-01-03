@@ -89,7 +89,7 @@ class CategoriesListViewModel @Inject constructor(
     private val categoriesToDeleteList = mutableListOf<Category>()
 
     init {
-        viewModelScope.launch {
+        launch {
             getCategoryListItemsUseCase.execute().collect {
                 initialCategoriesList.clear()
                 initialCategoriesList.addAll(it)
@@ -98,7 +98,7 @@ class CategoriesListViewModel @Inject constructor(
         }
     }
 
-    fun onFavoriteClick(category: Category, isChecked: Boolean) = viewModelScope.launch {
+    fun onFavoriteClick(category: Category, isChecked: Boolean) = launch {
         val checkedCat = Category(category.name, isChecked, category.id)
         modifyCategoryUseCase.execute(checkedCat, ModifyCategoryAction.Edit)
     }
@@ -110,7 +110,7 @@ class CategoriesListViewModel @Inject constructor(
      * @param category which name will be modified
      */
     fun onCategoryLongPress(category: Category) {
-        viewModelScope.launch {
+        launch {
             initialCategory = category
             _categoryToEditId.value = category.id
             _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))
@@ -124,14 +124,14 @@ class CategoriesListViewModel @Inject constructor(
      *
      */
     fun onAddCategoryClick() {
-        viewModelScope.launch {
+        launch {
             _categoryNameState.value = TextFieldValue("")
             _showEditCategoryDialogAction.emit(true)
         }
     }
 
     fun onSaveCategoryClick() {
-        viewModelScope.launch {
+        launch {
             initialCategory?.let { editCategory(it) } ?: addNewCategory()
             _showEditCategoryDialogAction.emit(false)
         }
@@ -142,7 +142,7 @@ class CategoriesListViewModel @Inject constructor(
     }
 
     fun closeEditCategoryDialog() {
-        viewModelScope.launch {
+        launch {
             initialCategory = null
             _categoryToEditId.value = null
             _showEditCategoryDialogAction.emit(false)
@@ -150,14 +150,14 @@ class CategoriesListViewModel @Inject constructor(
     }
 
     private fun addNewCategory() {
-        viewModelScope.launch {
+        launch {
             val category = Category(_categoryNameState.value.text)
             modifyCategoryUseCase.execute(category, ModifyCategoryAction.Add)
         }
     }
 
     private fun editCategory(category: Category) {
-        viewModelScope.launch {
+        launch {
             val enteredName = _categoryNameState.value.text
             if (category.name != enteredName) {
                 val modifiedCategory = category.copyWith(enteredName)
@@ -170,7 +170,7 @@ class CategoriesListViewModel @Inject constructor(
         // cancel previous jot if exist
         deleteCategoryJob?.cancel()
         // create new one
-        deleteCategoryJob = viewModelScope.launch {
+        deleteCategoryJob = launch {
             categoriesToDeleteList.add(categoryItemModel.category)
             showSnackBar()
             val temp = mutableListOf<CategoryListItemModel>().apply {

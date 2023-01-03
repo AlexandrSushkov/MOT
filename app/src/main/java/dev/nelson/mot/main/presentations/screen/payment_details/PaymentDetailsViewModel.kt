@@ -79,7 +79,7 @@ class PaymentDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             paymentId?.let { paymentId ->
                 getPaymentUseCase.execute(paymentId)
-                    .catch { exception -> handleError(exception) }
+                    .catch { exception -> handleThrowable(exception) }
                     .collect {
                         initialPayment = it
                         _paymentName.value = TextFieldValue(it.name, selection = TextRange(it.name.length))

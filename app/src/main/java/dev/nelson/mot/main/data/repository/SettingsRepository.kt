@@ -49,7 +49,7 @@ class SettingsRepository @Inject constructor(private val dataStore: DataStore<Pr
         dataStore.edit { preferences -> preferences[motSwitch.key] = isEnabled }
     }
 
-    suspend fun getSwitch(motSwitch: MotSwitch): Flow<Boolean> {
+    fun getSwitch(motSwitch: MotSwitch): Flow<Boolean> {
         return dataStore.data.map { it[motSwitch.key] ?: false }
     }
 

@@ -23,19 +23,19 @@ class SettingsViewModel @Inject constructor(
         get() = _darkTheme.asStateFlow()
     private val _darkTheme = MutableStateFlow(false)
 
-    val colorThemeSwitchState
-        get() = _colorTheme.asStateFlow()
-    private val _colorTheme = MutableStateFlow(false)
+    val dynamicColorThemeSwitchState
+        get() = _dynamicColorTheme.asStateFlow()
+    private val _dynamicColorTheme = MutableStateFlow(false)
 
     init {
-        viewModelScope.launch {
+        launch {
             getSwitchStatusUseCase.execute(MotSwitch.DarkTheme)
                 .collect { _darkTheme.value = it }
         }
 
-        viewModelScope.launch {
+        launch {
             getSwitchStatusUseCase.execute(MotSwitch.DynamicColorTheme)
-                .collect { _colorTheme.value = it }
+                .collect { _dynamicColorTheme.value = it }
         }
     }
 
@@ -43,7 +43,7 @@ class SettingsViewModel @Inject constructor(
      * only one them can be set at the time
      */
     fun onDarkThemeCheckedChange(isChecked: Boolean) {
-        viewModelScope.launch {
+        launch {
             if (isChecked) {
                 setSwitchStatusUseCase.execute(MotSwitch.DynamicColorTheme, false) // force turn off dynamic color theme
             }
@@ -55,7 +55,7 @@ class SettingsViewModel @Inject constructor(
      * only one them can be set at the time
      */
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) {
-        viewModelScope.launch {
+        launch {
             if (isChecked) {
                 setSwitchStatusUseCase.execute(MotSwitch.DarkTheme, false) // force turn off dark theme
             }
@@ -64,7 +64,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onExportDataBaseClick() {
-        viewModelScope.launch {
+        launch {
             val isExported = exportDataBaseUseCase.execute()
             val toastMessage = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
             showToast(toastMessage)
