@@ -8,9 +8,11 @@ import javax.inject.Inject
 /**
  * Copy application data base to the Downloads folder.
  */
-class ExportDataBaseUseCase @Inject constructor(private val settingsRepository: SettingsRepository) {
+class ExportDataBaseUseCase @Inject constructor(
+    private val settingsRepository: SettingsRepository
+) : UseCaseSuspend<Nothing?, Boolean> {
 
-    fun execute(): Boolean {
+    override suspend fun execute(params: Nothing?): Boolean {
         val dataBasesDir = settingsRepository.getDataBaseDir()
         val downloadsDir = settingsRepository.getDownloadsDir()
         val dbFile = File(dataBasesDir, MotDatabaseInfo.NAME)

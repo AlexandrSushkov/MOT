@@ -1,6 +1,8 @@
 package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.domain.use_case.UseCaseFlow
+import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
@@ -10,9 +12,12 @@ import javax.inject.Inject
 /**
  * Used on [PaymentDetailsScreen] to show categories selection list.
  */
-class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase) {
+class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(
+    private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase
+) : UseCaseFlow<SortingOrder, List<Category>> {
 
-    fun execute(order: SortingOrder = SortingOrder.Ascending): Flow<List<Category>> {
-        return getAllCategoriesOrderedByName.execute(order).map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
+    override fun execute(params: SortingOrder): Flow<List<Category>> {
+        return getAllCategoriesOrderedByName.execute(params)
+            .map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
     }
 }

@@ -3,12 +3,12 @@ package dev.nelson.mot.main.presentations.screen.category_details
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
+import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,27 +55,23 @@ class CategoryDetailsViewModel @Inject constructor(
         _categoryNameState.value = textFieldValue
     }
 
-    fun onSaveClick() {
-        launch {
-            initialCategory?.let { editCategory(it) } ?: addNewCategory()
-            _closeScreenAction.emit(Unit)
-        }
+    fun onSaveClick() = launch {
+        initialCategory?.let { editCategory(it) } ?: addNewCategory()
+        _closeScreenAction.emit(Unit)
     }
 
-    private fun addNewCategory() {
-        launch {
-            val category = Category(_categoryNameState.value.text)
-            modifyCategoryUseCase.execute(category, ModifyCategoryAction.Add)
-        }
+    private fun addNewCategory() = launch {
+        val category = Category(_categoryNameState.value.text)
+        val params = ModifyCategoryParams(category, ModifyCategoryAction.Add)
+        modifyCategoryUseCase.execute(params)
     }
 
-    private fun editCategory(category: Category) {
-        launch {
-            val enteredName = _categoryNameState.value.text
-            if (category.name != enteredName) {
-                val modifiedCategory = category.copyWith(enteredName)
-                modifyCategoryUseCase.execute(modifiedCategory, ModifyCategoryAction.Edit)
-            }
+    private fun editCategory(category: Category) = launch {
+        val enteredName = _categoryNameState.value.text
+        if (category.name != enteredName) {
+            val modifiedCategory = category.copyWith(enteredName)
+            val params = ModifyCategoryParams(modifiedCategory, ModifyCategoryAction.Edit)
+            modifyCategoryUseCase.execute(params)
         }
     }
 }

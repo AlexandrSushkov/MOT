@@ -58,7 +58,7 @@ class GetPaymentListByDateRange @Inject constructor(
     /**
      * Transform [Payment] to [PaymentListItemModel.PaymentItemModel] and divider items with date [PaymentListItemModel.Header]
      */
-    private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean,): List<PaymentListItemModel> {
+    private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean): List<PaymentListItemModel> {
         return mutableListOf<PaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.date }
                 .forEach { (date, payments) ->
@@ -72,14 +72,14 @@ class GetPaymentListByDateRange @Inject constructor(
     /**
      *Transform list of [Payment] to list of [PaymentListItemModel.PaymentItemModel]
      */
-    private fun List<Payment>.toPaymentItemModelList(showCategory: Boolean,): List<PaymentListItemModel> {
+    private fun List<Payment>.toPaymentItemModelList(showCategory: Boolean): List<PaymentListItemModel> {
         return this.map { it.toPaymentListItem(showCategory) }
     }
 
     /**
      *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
      */
-    private fun Payment.toPaymentListItem(showCategory: Boolean,): PaymentListItemModel {
+    private fun Payment.toPaymentListItem(showCategory: Boolean): PaymentListItemModel {
         return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.getRandomKey)
     }
 

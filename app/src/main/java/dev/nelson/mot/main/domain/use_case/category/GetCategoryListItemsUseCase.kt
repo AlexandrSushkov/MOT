@@ -2,6 +2,7 @@ package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
+import dev.nelson.mot.main.domain.use_case.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils
@@ -12,17 +13,19 @@ import javax.inject.Inject
 /**
  * Used on [CategoryListScreen] to show all categories.
  */
-class GetCategoryListItemsUseCase @Inject constructor(private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase) {
+class GetCategoryListItemsUseCase @Inject constructor(
+    private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase
+) : UseCaseFlow<SortingOrder, List<CategoryListItemModel>> {
 
     /**
      * Get list of [Category] ordered in a particular order.
      *
      * Transform it to [CategoryListItemModel].
      *
-     * @param order [SortingOrder] represents order
+     * @param params [SortingOrder] represents order
      * @return list of [CategoryListItemModel]
      */
-    fun execute(order: SortingOrder = SortingOrder.Ascending): Flow<List<CategoryListItemModel>> = getAllCategoriesOrderedByName.execute(order)
+    override fun execute(params: SortingOrder): Flow<List<CategoryListItemModel>> = getAllCategoriesOrderedByName.execute(params)
         .map { it.groupBy { category: Category -> category.name.first().uppercaseChar() } }
         .map { titleCharToCategoryMap: Map<Char, List<Category>> -> createCategoryListViewRepresentation(titleCharToCategoryMap) }
 

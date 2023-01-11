@@ -1,13 +1,12 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
+import dev.nelson.mot.main.domain.use_case.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +36,7 @@ class StatisticViewModel @Inject constructor(
     private val _previousMonthListResult = MutableStateFlow<Map<Category?, List<Payment>>>(emptyMap())
 
     init {
-        viewModelScope.launch {
+        launch {
             val currentTime = getCurrentTimeUseCase.execute()
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
             getPaymentListByDateRange.execute(startOfMonthTime, currentTime).collect {
@@ -49,7 +48,7 @@ class StatisticViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch {
+        launch {
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
             val startOfPreviousMonthTime = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
             getPaymentListByDateRange.execute(startOfPreviousMonthTime, startOfMonthTime).collect {

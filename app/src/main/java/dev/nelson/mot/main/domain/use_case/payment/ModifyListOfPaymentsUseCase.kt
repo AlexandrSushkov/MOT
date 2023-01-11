@@ -3,21 +3,26 @@ package dev.nelson.mot.main.domain.use_case.payment
 import dev.nelson.mot.main.data.mapers.toPaymentEntityList
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepository
+import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
 import javax.inject.Inject
 
 /**
  * The same as [ModifyPaymentUseCase] but works with list
  */
-class ModifyListOfPaymentsUseCase @Inject constructor(private val paymentRepository: PaymentRepository) {
+class ModifyListOfPaymentsUseCase @Inject constructor(
+    private val paymentRepository: PaymentRepository
+) : UseCaseSuspend<ModifyListOfPaymentsParams, Unit> {
 
-    suspend fun execute(payments: List<Payment>, action: ModifyListOfPaymentsAction) {
-        val paymentsEntityList = payments.toPaymentEntityList()
-        when (action) {
+    override suspend fun execute(params: ModifyListOfPaymentsParams) {
+        val paymentsEntityList = params.payments.toPaymentEntityList()
+        when (params.action) {
             ModifyListOfPaymentsAction.Edit -> paymentRepository.updatePayments(paymentsEntityList)
             ModifyListOfPaymentsAction.Delete -> paymentRepository.deletePayments(paymentsEntityList)
         }
     }
 }
+
+data class ModifyListOfPaymentsParams(val payments: List<Payment>, val action: ModifyListOfPaymentsAction)
 
 sealed class ModifyListOfPaymentsAction {
     object Edit : ModifyListOfPaymentsAction()

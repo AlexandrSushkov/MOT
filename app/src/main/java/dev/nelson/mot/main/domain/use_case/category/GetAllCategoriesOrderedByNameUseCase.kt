@@ -4,12 +4,15 @@ import dev.nelson.mot.main.data.mapers.toCategoryList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepository
 import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import dev.nelson.mot.main.domain.use_case.UseCaseFlow
 import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetAllCategoriesOrderedByNameUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
+class GetAllCategoriesOrderedByNameUseCase @Inject constructor(
+    private val categoryRepository: CategoryRepository
+) : UseCaseFlow<SortingOrder, List<Category>> {
 
     /**
      * Get list of [CategoryEntity] from DB in a particular order. Transform it to [Category].
@@ -17,8 +20,8 @@ class GetAllCategoriesOrderedByNameUseCase @Inject constructor(private val categ
      * @param order [SortingOrder] represents order
      * @return list of [Category]
      */
-    fun execute(order: SortingOrder = SortingOrder.Ascending): Flow<List<Category>> {
-        return when (order) {
+    override fun execute(params: SortingOrder): Flow<List<Category>> {
+        return when (params) {
             SortingOrder.Ascending -> categoryRepository.getAllCategoriesOrderedByNameAscending()
             SortingOrder.Descending -> categoryRepository.getAllCategoriesOrderedByNameDescending()
         }.map { it.toCategoryList() }

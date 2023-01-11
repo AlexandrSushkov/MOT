@@ -10,24 +10,21 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
+import dev.nelson.mot.main.domain.use_case.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
+import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
+import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.constant.NetworkConstants
 import dev.nelson.mot.main.util.extention.leaveOnlyDigits
 import dev.nelson.mot.main.util.toFormattedDate
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +61,7 @@ class PaymentDetailsViewModel @Inject constructor(
     // data
     private val paymentId: Int? = handle.get<Int>("id")
     private val mode: SavePaymentMode = paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
-    private val _categories: Flow<List<Category>> = getCategoriesOrderedByName.execute()
+    private val _categories: Flow<List<Category>> = getCategoriesOrderedByName.execute(SortingOrder.Ascending)
     private val _paymentName = MutableStateFlow(TextFieldValue()) // _ before name means mutable
     private val _cost = MutableStateFlow(TextFieldValue())
     private val _message = MutableStateFlow(TextFieldValue())
@@ -76,7 +73,7 @@ class PaymentDetailsViewModel @Inject constructor(
     private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
-        viewModelScope.launch {
+        launch {
             paymentId?.let { paymentId ->
                 getPaymentUseCase.execute(paymentId)
                     .catch { exception -> handleThrowable(exception) }
@@ -95,7 +92,7 @@ class PaymentDetailsViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch {
+        launch {
             val startOfTheMonth = getStartOfCurrentMonthTimeUseCase.execute()
             Timber.d("startOfTheMonth:$startOfTheMonth")
         }
@@ -137,39 +134,37 @@ class PaymentDetailsViewModel @Inject constructor(
         _categoryName.value = category.name
     }
 
-    private fun addNewPayment() {
-        viewModelScope.launch {
-            val currentDateInMills = System.currentTimeMillis()
-            val payment = Payment(
-                _paymentName.value.text,
-                (_cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0),
-                dateInMills = currentDateInMills,
-                category = selectedCategory,
-                message = _message.value.text
-            )
-            modifyPaymentUseCase.execute(payment, ModifyPaymentAction.Add)
-            Timber.e("payment $payment")
-            _finishAction.emit(Unit)
-        }
+    private fun addNewPayment() = launch {
+        val currentDateInMills = System.currentTimeMillis()
+        val payment = Payment(
+            _paymentName.value.text,
+            (_cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0),
+            dateInMills = currentDateInMills,
+            category = selectedCategory,
+            message = _message.value.text
+        )
+        val params = ModifyPaymentParams(payment, ModifyPaymentAction.Add)
+        modifyPaymentUseCase.execute(params)
+        Timber.e("payment $payment")
+        _finishAction.emit(Unit)
     }
 
-    private fun editPayment() {
-        viewModelScope.launch {
-            val payment = Payment(
-                name = _paymentName.value.text,
-                cost = _cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0,
-                message = _message.value.text,
-                id = initialPayment?.id,
-                date = initialPayment?.date,
-                dateInMills = dateInMills,
-                category = selectedCategory
-            )
-            if (initialPayment != payment) {
-                modifyPaymentUseCase.execute(payment, ModifyPaymentAction.Edit)
-            }
-            Timber.e("updated payment $payment")
-            _finishAction.emit(Unit)
+    private fun editPayment() = launch {
+        val payment = Payment(
+            name = _paymentName.value.text,
+            cost = _cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0,
+            message = _message.value.text,
+            id = initialPayment?.id,
+            date = initialPayment?.date,
+            dateInMills = dateInMills,
+            category = selectedCategory
+        )
+        if (initialPayment != payment) {
+            val params = ModifyPaymentParams(payment, ModifyPaymentAction.Edit)
+            modifyPaymentUseCase.execute(params)
         }
+        Timber.e("updated payment $payment")
+        _finishAction.emit(Unit)
     }
 
     private fun setInitialDate() {
@@ -192,7 +187,7 @@ class PaymentDetailsViewModel @Inject constructor(
     /**
      * Returns true if text contains maximum 6 digits
      */
-    val String.isValidFormattableAmount
+    private val String.isValidFormattableAmount
         get(): Boolean = isNotBlank()
 //        && isDigitsOnly()
             && length <= 7

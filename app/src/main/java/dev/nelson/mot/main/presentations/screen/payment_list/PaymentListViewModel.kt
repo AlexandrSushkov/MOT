@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
@@ -11,8 +10,10 @@ import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFa
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
+import dev.nelson.mot.main.domain.use_case.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
+import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
@@ -23,16 +24,10 @@ import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
@@ -96,7 +91,7 @@ class PaymentListViewModel @Inject constructor(
     private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
-        viewModelScope.launch {
+        launch {
             when (screenScreenType) {
                 is ScreenType.RecentPayments -> {
                     _toolBarTitleState.value = "Recent Payments"
@@ -125,12 +120,12 @@ class PaymentListViewModel @Inject constructor(
             }
         }
 
-        viewModelScope.launch {
+        launch {
 
         }
 
-        viewModelScope.launch {
-            getCategoriesOrderedByName.execute().collect {
+        launch {
+            getCategoriesOrderedByName.execute(SortingOrder.Ascending).collect {
                 _categories.value = it
             }
         }
@@ -140,7 +135,7 @@ class PaymentListViewModel @Inject constructor(
         // cancel previous jot if exist
         deletePaymentJob?.cancel()
         // create new one
-        deletePaymentJob = viewModelScope.launch {
+        deletePaymentJob = launch {
             paymentsToDeleteList.add(payment)
             _deletedItemsCount.value = paymentsToDeleteList.size
             showSnackBar()
@@ -170,7 +165,8 @@ class PaymentListViewModel @Inject constructor(
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
             hideSnackBar()
             // remove payments from DB
-            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            val params = ModifyListOfPaymentsParams(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            modifyListOfPaymentsUseCase.execute(params)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
         }
@@ -185,11 +181,9 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    fun onFabClick() {
-        viewModelScope.launch {
-            cancelSelection()
-            _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
-        }
+    fun onFabClick() = launch {
+        cancelSelection()
+        _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
     }
 
     fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {
@@ -205,7 +199,7 @@ class PaymentListViewModel @Inject constructor(
             }
         } else {
             // select mode is off. open payment details
-            viewModelScope.launch {
+            launch {
                 payment.payment.id?.toInt()?.let { _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.ExistingPayment(it)) }
             }
         }
@@ -215,7 +209,7 @@ class PaymentListViewModel @Inject constructor(
         // cancel previous jot if exist
         deletePaymentJob?.cancel()
         // create new one
-        deletePaymentJob = viewModelScope.launch {
+        deletePaymentJob = launch {
             paymentsToDeleteList.addAll(selectedItemsList)
             onCancelSelectionClick() // MUST be before apply list with deleted items. this method reset payment list to initial
             val temp = mutableListOf<PaymentListItemModel>().apply {
@@ -252,7 +246,8 @@ class PaymentListViewModel @Inject constructor(
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
             hideSnackBar()
             // remove payments from DB
-            modifyListOfPaymentsUseCase.execute(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            val params = ModifyListOfPaymentsParams(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            modifyListOfPaymentsUseCase.execute(params)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
         }
@@ -329,14 +324,13 @@ class PaymentListViewModel @Inject constructor(
         // open category modal
     }
 
-    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) {
-        viewModelScope.launch {
-            val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
-            val selectedDate: Date = selectedDateCalendar.time
-            val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
-            cancelSelection()
-            modifyListOfPaymentsUseCase.execute(newItems, ModifyListOfPaymentsAction.Edit)
-        }
+    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) = launch {
+        val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
+        val selectedDate: Date = selectedDateCalendar.time
+        val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
+        cancelSelection()
+        val params = ModifyListOfPaymentsParams(newItems, ModifyListOfPaymentsAction.Edit)
+        modifyListOfPaymentsUseCase.execute(params)
     }
 
     private fun clearItemsToDeleteList() {
@@ -356,15 +350,14 @@ class PaymentListViewModel @Inject constructor(
         return this.map { it.payment }
     }
 
-    fun onCategorySelected(category: Category) {
-        viewModelScope.launch {
-            // workaround. for some reason if copy payments with category list isn't update
-            category.id?.let { categoryId ->
-                getCategoryUseCase.execute(categoryId).collect { cat ->
-                    val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
-                    cancelSelection()
-                    modifyListOfPaymentsUseCase.execute(newItems, ModifyListOfPaymentsAction.Edit)
-                }
+    fun onCategorySelected(category: Category) = launch {
+        // workaround. for some reason if copy payments with category list isn't update
+        category.id?.let { categoryId ->
+            getCategoryUseCase.execute(categoryId).collect { cat ->
+                val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
+                cancelSelection()
+                val params = ModifyListOfPaymentsParams(newItems, ModifyListOfPaymentsAction.Edit)
+                modifyListOfPaymentsUseCase.execute(params)
             }
         }
     }
