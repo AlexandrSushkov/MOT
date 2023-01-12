@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    getSwitchStatusUseCase: GetSwitchStatusUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
-    private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase
 ) : BaseViewModel() {
 

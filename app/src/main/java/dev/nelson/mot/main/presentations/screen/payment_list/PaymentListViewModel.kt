@@ -34,12 +34,12 @@ import javax.inject.Inject
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
+    getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
     private val getPaymentListByDateRange: GetPaymentListByDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     private val getCategoryUseCase: GetCategoryUseCase,
-    getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))

@@ -29,68 +29,57 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentDetailsViewModel @Inject constructor(
-    private val modifyPaymentUseCase: ModifyPaymentUseCase,
-    getPaymentUseCase: GetPaymentUseCase,
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
-    handle: SavedStateHandle
+    handle: SavedStateHandle,
+    private val getPaymentUseCase: GetPaymentUseCase,
+    private val modifyPaymentUseCase: ModifyPaymentUseCase
 ) : BaseViewModel() {
 
     //states
     val paymentNameState
         get() = _paymentName.asStateFlow()
+    private val _paymentName = MutableStateFlow(TextFieldValue()) // _ before name means mutable
+
     val costState
         get() = _cost.asStateFlow()
+    private val _cost = MutableStateFlow(TextFieldValue())
+
     val messageState
         get() = _message.asStateFlow()
+    private val _message = MutableStateFlow(TextFieldValue())
+
     val categoryNameState
         get() = _categoryName.asStateFlow()
+    private val _categoryName = MutableStateFlow("No Category")
+
     val dateState
         get() = _date.asStateFlow()
+    private val _date = MutableStateFlow("")
+
     val categoriesState: Flow<List<Category>>
         get() = _categories
+    private val _categories: Flow<List<Category>> = getCategoriesOrderedByName.execute(SortingOrder.Ascending)
 
     // actions
     val finishAction
         get() = _finishAction.asSharedFlow()
     private val _finishAction = MutableSharedFlow<Unit>()
+
     val onDateClickAction
         get() = _onDateClickAction.asSharedFlow()
     private val _onDateClickAction = MutableSharedFlow<Unit>()
 
-    // data
+    // private data
     private val paymentId: Int? = handle.get<Int>("id")
     private val mode: SavePaymentMode = paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
-    private val _categories: Flow<List<Category>> = getCategoriesOrderedByName.execute(SortingOrder.Ascending)
-    private val _paymentName = MutableStateFlow(TextFieldValue()) // _ before name means mutable
-    private val _cost = MutableStateFlow(TextFieldValue())
-    private val _message = MutableStateFlow(TextFieldValue())
-    private val _categoryName = MutableStateFlow("Category")
-    private val _date = MutableStateFlow("")
     private var selectedCategory: Category? = null
     private var initialPayment: Payment? = null
     private var dateInMills = 0L
     private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
-        launch {
-            paymentId?.let { paymentId ->
-                getPaymentUseCase.execute(paymentId)
-                    .catch { exception -> handleThrowable(exception) }
-                    .collect {
-                        initialPayment = it
-                        _paymentName.value = TextFieldValue(it.name, selection = TextRange(it.name.length))
-                        _cost.value = TextFieldValue(it.cost.toString(), selection = TextRange(it.cost.toString().length))
-                        _message.value = TextFieldValue(it.message, selection = TextRange(it.message.length))
-                        selectedCategory = it.category
-                        dateInMills = it.dateInMills ?: DateUtils.getCurrentDate().time
-                        setDate(dateInMills)
-                        it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
-                    }
-            } ?: kotlin.run {
-                setInitialDate()
-            }
-        }
+        initializePaymentData()
 
         launch {
             val startOfTheMonth = getStartOfCurrentMonthTimeUseCase.execute()
@@ -132,6 +121,25 @@ class PaymentDetailsViewModel @Inject constructor(
     fun onCategorySelected(category: Category) {
         selectedCategory = category
         _categoryName.value = category.name
+    }
+
+    private fun initializePaymentData() = launch {
+        paymentId?.let { paymentId ->
+            getPaymentUseCase.execute(paymentId)
+                .catch { exception -> handleThrowable(exception) }
+                .collect {
+                    initialPayment = it
+                    _paymentName.value = TextFieldValue(it.name, selection = TextRange(it.name.length))
+                    _cost.value = TextFieldValue(it.cost.toString(), selection = TextRange(it.cost.toString().length))
+                    _message.value = TextFieldValue(it.message, selection = TextRange(it.message.length))
+                    selectedCategory = it.category
+                    dateInMills = it.dateInMills ?: DateUtils.getCurrentDate().time
+                    setDate(dateInMills)
+                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
+                }
+        } ?: kotlin.run {
+            setInitialDate()
+        }
     }
 
     private fun addNewPayment() = launch {
