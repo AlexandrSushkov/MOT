@@ -279,7 +279,7 @@ fun PaymentList(
             } else {
                 Column {
                     // date range widget
-                    val startDate = paymentList.firstOrNull() { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+                    val startDate = paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
                     val endDate = paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
                     if (startDate != null && endDate != null) {
                         DateRangeWidget(startDate.date, endDate.date)

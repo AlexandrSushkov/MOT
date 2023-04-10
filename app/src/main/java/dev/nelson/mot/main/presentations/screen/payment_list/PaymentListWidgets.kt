@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -93,14 +94,20 @@ private fun DateRangeWidgetDarkPreview() {
 
 @Composable
 fun PaymentListDateItem(date: String) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = date,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 4.dp),
-            style = MaterialTheme.typography.labelMedium
-        )
+    Box(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.secondaryContainer)
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = date,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 4.dp),
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
     }
 }
 
@@ -116,6 +123,30 @@ private fun PaymentListDateItemDarkPreview() {
     MotTheme(darkTheme = true) {
         PaymentListDateItem("01.11.2022")
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PaymentListItemLightPreview() {
+    PaymentListItem(
+        paymentItemModel = PreviewData.paymentItemModelPreview,
+        onClick = {},
+        onLongClick = {},
+        dismissDirection = DismissDirection.EndToStart,
+        isSelectedState = false
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PaymentListItemSelectedLightPreview() {
+    PaymentListItem(
+        paymentItemModel = PreviewData.paymentItemModelPreview,
+        onClick = {},
+        onLongClick = {},
+        dismissDirection = DismissDirection.EndToStart,
+        isSelectedState = true
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -147,6 +178,7 @@ fun PaymentListItem(
             if (isSelectedState) {
                 Column(modifier = Modifier.align(CenterVertically)) {
                     Checkbox(
+                        modifier = Modifier.padding(horizontal = 8.dp),
                         checked = paymentItemModel.payment.isSelected,
                         // adjuster to work with MaterialTheme3
                         colors = CheckboxDefaults.colors(
@@ -160,7 +192,7 @@ fun PaymentListItem(
                 }
             }
             Column {
-                Row(modifier = Modifier.padding(horizontal = 24.dp)) {
+                Row(modifier = Modifier.padding(start = if (isSelectedState) 0.dp else 24.dp, end = 24.dp, top = 16.dp, bottom = 16.dp)) {
                     Column(
                         modifier = Modifier
                             .weight(1.0f)

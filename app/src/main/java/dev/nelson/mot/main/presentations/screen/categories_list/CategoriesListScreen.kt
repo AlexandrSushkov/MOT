@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -288,13 +287,13 @@ fun CategoryList(
                                             Text(
                                                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp),
                                                 text = categoryListItem.letter,
-//                                                style = MaterialTheme.typography.subtitle2
+                                                style = MaterialTheme.typography.titleLarge
                                             )
                                         }
                                     }
                                 }
 
-                                is Footer -> item { Footer() }
+                                is Footer -> item { CardFooter() }
                             }
                         }
                     }
@@ -345,7 +344,7 @@ fun CategoryListItem(
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
+                .padding(start = 24.dp)
                 .fillMaxWidth()
 //                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
@@ -363,11 +362,13 @@ fun CategoryListItem(
                 text = category.name,
                 modifier = Modifier
                     .weight(1f)
+                    .padding(vertical = 16.dp)
                     .align(Alignment.CenterVertically),
-//                style = MaterialTheme.typography.subtitle1
+                style = MaterialTheme.typography.titleMedium
             )
             if (category.id != null) {
                 IconToggleButton(
+                    modifier = Modifier.padding(end = 16.dp),
                     checked = checked,
                     onCheckedChange = { isChecked ->
                         checked = isChecked
@@ -382,7 +383,6 @@ fun CategoryListItem(
                     )
                 }
             }
-//            Spacer(modifier = Modifier.width(24.dp))
         }
     }
 }
@@ -449,12 +449,13 @@ fun EditCategoryDialog(
 }
 
 @Composable
-private fun Footer() {
-    Box(
+private fun CardFooter() {
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(60.dp)
-    )
+            .heightIn(80.dp),
+        backgroundColor = MaterialTheme.colorScheme.surface,
+    ) {}
 }
 
 @Preview(showBackground = true)

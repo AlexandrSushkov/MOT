@@ -16,6 +16,7 @@ import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.IconToggleButton
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -77,16 +78,21 @@ fun MotDismissibleListItem(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(dismissibleBackgroundColor)
-                    .padding(horizontal = 20.dp),
+                    .background(dismissibleBackgroundColor),
                 contentAlignment = alignment
             ) {
-                Icon(
-                    imageVector = icon,
-                    tint = dismissibleIconColor,
-                    contentDescription = "Localized description",
-                    modifier = Modifier.scale(scale)
-                )
+                IconToggleButton(
+                    modifier = Modifier.padding(end = 16.dp),
+                    checked = false,
+                    onCheckedChange = {}
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        tint = dismissibleIconColor,
+                        contentDescription = "Localized description",
+                        modifier = Modifier.scale(scale)
+                    )
+                }
             }
         },
         dismissContent = dismissContent,
