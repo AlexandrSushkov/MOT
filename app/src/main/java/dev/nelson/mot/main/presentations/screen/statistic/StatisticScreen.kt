@@ -31,6 +31,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.motTabRowScreens
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.LineChartMot
@@ -49,7 +50,7 @@ fun StatisticScreen(
 @Composable
 fun StatisticLayout(
     navHostController: NavHostController,
-    currentMonthList: Map<Category?, List<Payment>>,
+    currentMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
     previousMonthList: Map<Category?, List<Payment>>
 ) {
     Scaffold(
@@ -96,7 +97,7 @@ fun StatisticLayout(
                         item {
                             Row() {
                                 Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = currentMonthList[it].let { pl -> pl?.sumOf { payment -> payment.cost } ?: 0 }.toString())
+                                Text(text = currentMonthList[it].let { pl -> pl?.sumOf { payment -> payment.payment.cost } ?: 0 }.toString())
                             }
 
                         }

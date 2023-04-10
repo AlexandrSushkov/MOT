@@ -269,7 +269,7 @@ class PaymentListViewModel @Inject constructor(
     private fun deselectItem(payment: PaymentListItemModel.PaymentItemModel) {
         selectedItemsList.remove(payment)
         val newPayment = payment.payment.copyWith(isSelected = false)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.shotCategory, payment.key)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
         val tempList = _paymentList.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {
                 if (item.payment.id == payment.payment.id) {
@@ -288,7 +288,7 @@ class PaymentListViewModel @Inject constructor(
     private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
 //        selectedItemsList.add(payment)
         val newPayment = payment.payment.copyWith(isSelected = true)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.shotCategory, payment.key)
+        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
         selectedItemsList.add(newPaymentItemModel)
         val tempList = _paymentList.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {

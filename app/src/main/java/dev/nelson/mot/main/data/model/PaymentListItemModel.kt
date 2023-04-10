@@ -15,7 +15,7 @@ sealed class PaymentListItemModel {
      */
     class PaymentItemModel(
         val payment: Payment,
-        val shotCategory: Boolean,
+        val showCategory: Boolean,
         override val key: String
     ) : PaymentListItemModel()
 

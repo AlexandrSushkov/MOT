@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxColors
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
@@ -170,7 +169,7 @@ fun PaymentListItem(
                         Text(
                             text = paymentItemModel.payment.name,
                         )
-                        if (paymentItemModel.shotCategory) {
+                        if (paymentItemModel.showCategory) {
                             paymentItemModel.payment.category?.name?.let { Text(it) }
                         }
 //                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.bodySmall) }

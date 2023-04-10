@@ -3,6 +3,7 @@ package dev.nelson.mot.main.presentations.screen.statistic
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
@@ -27,9 +28,9 @@ class StatisticViewModel @Inject constructor(
     /**
      * list of categories with total spendings
      */
-    val currentMonthListResult: Flow<Map<Category?, List<Payment>>>
+    val currentMonthListResult: Flow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>
         get() = _currentMonthListResult.asStateFlow()
-    private val _currentMonthListResult = MutableStateFlow<Map<Category?, List<Payment>>>(emptyMap())
+    private val _currentMonthListResult = MutableStateFlow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>(emptyMap())
 
     val previousMonthListResult: Flow<Map<Category?, List<Payment>>>
         get() = _previousMonthListResult.asStateFlow()
@@ -41,10 +42,11 @@ class StatisticViewModel @Inject constructor(
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
             getPaymentListByDateRange.execute(startOfMonthTime, currentTime).collect {
                 Timber.d(it.toString())
-//                val sortedByCategoryPaymentMap = it.groupBy { payment -> payment.category }
-//                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in this month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.cost }}") }
-//                Timber.d("spend in this month total: ${it.sumOf { payment -> payment.cost }}")
-//                _currentMonthListResult.value = sortedByCategoryPaymentMap
+                val paymentModelsList = it.filterIsInstance<PaymentListItemModel.PaymentItemModel>()
+                val sortedByCategoryPaymentMap = paymentModelsList.groupBy { paymentModel -> paymentModel.payment.category }
+                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in this month for ${category?.name ?: "No Category"}: ${payments.sumOf { payment -> payment.payment.cost }}") }
+                Timber.d("spend in this month total: ${paymentModelsList.sumOf{ paymetn  -> paymetn.payment.cost }}")
+                _currentMonthListResult.value = sortedByCategoryPaymentMap
             }
         }
 

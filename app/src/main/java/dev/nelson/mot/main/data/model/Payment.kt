@@ -13,8 +13,8 @@ import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
  * @property cost
  * @property message
  * @property id
- * @property date - formatted string representation of the mills
- * @property dateInMills - date in epoch milliseconds
+ * @property date formatted string representation of the mills
+ * @property dateInMills date in epoch milliseconds
  * @property category
  * @property isExpanded used in payment list to show/hide message
  * @property isSelected used in payment list to show/hide selection checkbox
