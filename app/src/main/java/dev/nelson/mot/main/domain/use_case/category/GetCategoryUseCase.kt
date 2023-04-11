@@ -2,7 +2,7 @@ package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.mapers.toCategory
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.repository.CategoryRepository
+import dev.nelson.mot.main.data.repository.CategoryRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Used on [CategoryDetailsScreen] to load [Category] info.
  */
 class GetCategoryUseCase @Inject constructor(
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepositoryImpl
 ) : UseCaseFlow<Int, Category> {
 
     /**

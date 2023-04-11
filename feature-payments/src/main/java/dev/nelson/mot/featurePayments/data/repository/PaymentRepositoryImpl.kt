@@ -1,7 +1,7 @@
 package dev.nelson.mot.featurePayments.data.repository
 
-import dev.nelson.mot.coreDB.TestDB
-import dev.nelson.mot.coreDB.TestDBImpl
+import dev.nelson.mot.core.TestDB
+import dev.nelson.mot.core.TestDBImpl
 
 class PaymentRepositoryImpl : PaymentRepository {
 

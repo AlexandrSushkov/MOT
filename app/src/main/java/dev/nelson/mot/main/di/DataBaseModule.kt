@@ -22,7 +22,7 @@ object DataBaseModule {
     @Singleton
     fun provideRoomDb(@ApplicationContext context: Context): MotDatabase =
         Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.NAME)
-            .createFromAsset("mot.db")
+            .createFromAsset(MotDatabaseInfo.NAME)
             .addMigrations(MIGRATION_1_2)
             .allowMainThreadQueries()
             .build()

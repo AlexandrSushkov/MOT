@@ -2,7 +2,7 @@ package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.repository.CategoryRepository
+import dev.nelson.mot.main.data.repository.CategoryRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
 import javax.inject.Inject
 
@@ -10,7 +10,7 @@ import javax.inject.Inject
  * Used to add, edit or delete [Category]
  */
 class ModifyCategoryUseCase @Inject constructor(
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepositoryImpl
 ) : UseCaseSuspend<ModifyCategoryParams, Unit> {
 
     override suspend fun execute(params: ModifyCategoryParams) {

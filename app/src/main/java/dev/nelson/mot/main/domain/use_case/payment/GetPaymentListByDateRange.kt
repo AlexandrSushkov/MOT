@@ -5,7 +5,7 @@ import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.data.repository.PaymentRepository
+import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * By default it returns list of [Payment] for current month sorted by the time, starting from the latest added [Payment].
  */
 class GetPaymentListByDateRange @Inject constructor(
-    private val paymentRepository: PaymentRepository,
+    private val paymentRepository: PaymentRepositoryImpl,
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
 

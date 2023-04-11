@@ -20,23 +20,27 @@ android {
     namespace 'dev.nelson.mot'
 }
 
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://repo1.maven.org/maven2' }
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    def libs = rootProject.ext.libs
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //android support
-    implementation libs.cardView
-    implementation libs.recyclerView
-    implementation libs.material
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
 
     //test
-    testImplementation libs.jUnit
+    testImplementation'junit:junit:4.12'
 
     //other
-    implementation libs.MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha07'
-}
-repositories {
-    mavenCentral()
 }

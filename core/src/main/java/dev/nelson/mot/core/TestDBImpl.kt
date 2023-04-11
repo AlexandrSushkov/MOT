@@ -1,4 +1,4 @@
-package dev.nelson.mot.coreDB
+package dev.nelson.mot.core
 
 class TestDBImpl: TestDB {
 

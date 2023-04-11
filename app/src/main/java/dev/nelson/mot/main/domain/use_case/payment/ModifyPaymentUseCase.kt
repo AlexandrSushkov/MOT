@@ -2,12 +2,12 @@ package dev.nelson.mot.main.domain.use_case.payment
 
 import dev.nelson.mot.main.data.mapers.toPaymentEntity
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.repository.PaymentRepository
+import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
 import javax.inject.Inject
 
 class ModifyPaymentUseCase @Inject constructor(
-    private val paymentRepository: PaymentRepository
+    private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseSuspend<ModifyPaymentParams, Unit> {
 
     override suspend fun execute(params: ModifyPaymentParams) {
