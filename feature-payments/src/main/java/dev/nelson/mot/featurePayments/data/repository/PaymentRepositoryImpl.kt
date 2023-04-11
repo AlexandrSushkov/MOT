@@ -1,12 +1,11 @@
 package dev.nelson.mot.featurePayments.data.repository
 
-import dev.nelson.mot.core.TestDB
-import dev.nelson.mot.core.TestDBImpl
+import dev.nelson.mot.core.TestCoreClass
 
 class PaymentRepositoryImpl : PaymentRepository {
 
     override fun getPayment(): String {
-        val testDb: TestDB = TestDBImpl()
+        val testDb: TestDB = TestCoreClass()
         return testDb.getDB()
     }
 }

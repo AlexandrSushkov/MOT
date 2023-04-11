@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.util.typeconverter
+package dev.nelson.mot.db.typeconverter
 
 import androidx.room.TypeConverter
 import java.time.OffsetDateTime

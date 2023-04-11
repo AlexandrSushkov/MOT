@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.domain.use_case
 
 import dev.nelson.mot.main.data.repository.SettingsRepository
-import dev.nelson.mot.main.data.room.MotDatabaseInfo
+import dev.nelson.mot.db.MotDatabaseInfo
 import java.io.File
 import javax.inject.Inject
 

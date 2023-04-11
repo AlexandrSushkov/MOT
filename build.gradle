@@ -1,5 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
 
     ext.application_id = 'dev.nelson.mot'
@@ -15,8 +14,7 @@ buildscript {
     ext.build_tools_version = '30.0.3'
 
     // dependencies versions
-    ext.kotlin_version = '1.6.21'
-//    ext.compose_version = '1.2.0-beta02'
+    ext.kotlin_version = '1.8.10'
     ext.test_runner = 'dev.nelson.mot.main.MotTestRunner'
 
     // google
@@ -41,9 +39,9 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.google.devtools.ksp' version '1.8.10-1.0.9' apply false
-}
+//plugins {
+//    id 'com.google.devtools.ksp' version '1.8.10-1.0.9' apply false
+//}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

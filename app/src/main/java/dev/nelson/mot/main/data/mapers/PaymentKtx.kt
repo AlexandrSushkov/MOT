@@ -2,9 +2,9 @@ package dev.nelson.mot.main.data.mapers
 
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
-import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.category.CategoryEntity
+import dev.nelson.mot.db.model.payment.PaymentEntity
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
 
 fun Payment.copyWith(
     name: String? = null,

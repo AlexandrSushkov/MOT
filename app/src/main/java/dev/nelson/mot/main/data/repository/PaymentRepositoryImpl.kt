@@ -1,14 +1,16 @@
 package dev.nelson.mot.main.data.repository
 
 import dev.nelson.mot.main.data.repository.base.PaymentRepository
-import dev.nelson.mot.main.data.room.model.payment.PaymentDao
-import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.payment.PaymentDao
+import dev.nelson.mot.db.model.payment.PaymentEntity
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
 import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class PaymentRepositoryImpl @Inject constructor(private val paymentDao: PaymentDao):PaymentRepository {
+class PaymentRepositoryImpl @Inject constructor(
+    private val paymentDao: PaymentDao
+):PaymentRepository {
 
     //GET
     /**

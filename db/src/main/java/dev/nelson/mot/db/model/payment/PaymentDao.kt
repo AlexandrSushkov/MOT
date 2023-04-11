@@ -1,13 +1,12 @@
-package dev.nelson.mot.main.data.room.model.payment
+package dev.nelson.mot.db.model.payment
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.room.model.category.CategoryTable
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.category.CategoryTable
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao

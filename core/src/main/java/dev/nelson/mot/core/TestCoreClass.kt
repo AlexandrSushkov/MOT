@@ -1,8 +1,8 @@
 package dev.nelson.mot.core
 
-class TestDBImpl: TestDB {
+class TestCoreClass {
 
-    override fun getDB():String {
+    fun testFun():String {
         return "testDB"
     }
 }

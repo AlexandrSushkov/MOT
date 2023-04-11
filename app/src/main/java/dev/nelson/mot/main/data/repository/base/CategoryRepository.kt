@@ -1,6 +1,6 @@
 package dev.nelson.mot.main.data.repository.base
 
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import dev.nelson.mot.db.model.category.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {

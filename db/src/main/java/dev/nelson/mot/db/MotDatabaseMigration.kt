@@ -1,12 +1,12 @@
-package dev.nelson.mot.main.data.room
+package dev.nelson.mot.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import dev.nelson.mot.main.data.room.model.category.CategoryTable
-import dev.nelson.mot.main.data.room.model.payment.PaymentTable
-import dev.nelson.mot.main.data.room.model.payment_tag.PaymentTagTable
+import dev.nelson.mot.db.model.category.CategoryTable
+import dev.nelson.mot.db.model.payment.PaymentTable
+import dev.nelson.mot.db.model.payment_tag.PaymentTagTable
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

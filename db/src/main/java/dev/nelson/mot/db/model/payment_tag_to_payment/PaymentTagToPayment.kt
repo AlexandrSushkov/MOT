@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.data.room.model.payment_tag_to_payment
+package dev.nelson.mot.db.model.payment_tag_to_payment
 
 object PaymentTagToPayment {
     const val TABLE_NAME = "payment_tag_to_payment_table"

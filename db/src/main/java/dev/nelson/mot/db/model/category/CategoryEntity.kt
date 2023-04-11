@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.data.room.model.category
+package dev.nelson.mot.db.model.category
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

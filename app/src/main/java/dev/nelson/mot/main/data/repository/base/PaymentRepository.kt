@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.data.repository.base
 
-import dev.nelson.mot.main.data.room.model.payment.PaymentEntity
-import dev.nelson.mot.main.data.room.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.payment.PaymentEntity
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
 import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 

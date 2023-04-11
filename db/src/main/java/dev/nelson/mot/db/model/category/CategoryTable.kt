@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.data.room.model.category
+package dev.nelson.mot.db.model.category
 
 object CategoryTable {
     const val TABLE_NAME = "categories"

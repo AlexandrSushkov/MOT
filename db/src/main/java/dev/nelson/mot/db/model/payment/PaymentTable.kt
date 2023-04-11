@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.data.room.model.payment
+package dev.nelson.mot.db.model.payment
 
 object PaymentTable {
     const val TABLE_NAME = "payments"

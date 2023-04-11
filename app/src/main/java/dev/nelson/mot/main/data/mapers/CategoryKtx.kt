@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.data.mapers
 
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import dev.nelson.mot.db.model.category.CategoryEntity
 import dev.nelson.mot.main.util.StringUtils
 
 fun CategoryEntity.toCategory(): Category = Category(

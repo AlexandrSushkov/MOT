@@ -1,33 +1,38 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
+    def config = rootProject.extensions.getByName("ext")
+
     namespace 'dev.nelson.mot.db'
-    compileSdk 33
-//
-//    defaultConfig {
-//        minSdk 24
-//
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        consumerProguardFiles "consumer-rules.pro"
-//    }
-//
-//    buildTypes {
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//        }
-//    }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-//    kotlinOptions {
-//        jvmTarget = '1.8'
-//    }
+    compileSdkVersion config["compile_sdk"]
+
+    defaultConfig {
+        minSdkVersion config["min_sdk"]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    kapt {
+        correctErrorTypes true
+    }
 }
 
 repositories {
@@ -39,10 +44,8 @@ repositories {
 dependencies {
     implementation project(':core')
 
-    implementation 'androidx.core:core-ktx:1.10.0'
-
-    def room_version = "2.3.0"
-    ksp "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version" //Kotlin Extensions and Coroutines support for Room
+    def room_version = "2.5.1"
+    kapt "androidx.room:room-compiler:$room_version"
+    api "androidx.room:room-runtime:$room_version"
+    api "androidx.room:room-ktx:$room_version" //Kotlin Extensions and Coroutines support for Room
 }

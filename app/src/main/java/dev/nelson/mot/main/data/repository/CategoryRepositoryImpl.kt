@@ -1,12 +1,14 @@
 package dev.nelson.mot.main.data.repository
 
 import dev.nelson.mot.main.data.repository.base.CategoryRepository
-import dev.nelson.mot.main.data.room.model.category.CategoryDao
-import dev.nelson.mot.main.data.room.model.category.CategoryEntity
+import dev.nelson.mot.db.model.category.CategoryDao
+import dev.nelson.mot.db.model.category.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CategoryRepositoryImpl @Inject constructor(private val categoryDao: CategoryDao) : CategoryRepository {
+class CategoryRepositoryImpl @Inject constructor(
+    private val categoryDao: CategoryDao
+) : CategoryRepository {
 
     override fun getAllCategoriesOrderedByNameDescending(): Flow<List<CategoryEntity>> {
         return categoryDao.getAllCategoriesOrderedByNameDescending()
