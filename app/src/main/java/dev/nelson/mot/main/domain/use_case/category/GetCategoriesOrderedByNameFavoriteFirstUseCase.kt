@@ -1,8 +1,7 @@
 package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.domain.use_case.UseCaseFlow
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow

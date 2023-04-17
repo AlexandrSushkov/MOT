@@ -10,7 +10,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.execute
+import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentParams

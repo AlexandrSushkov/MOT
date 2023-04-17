@@ -3,7 +3,7 @@ package dev.nelson.mot.main.domain.use_case.payment
 import dev.nelson.mot.main.data.mapers.toPaymentEntity
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import javax.inject.Inject
 
 class ModifyPaymentUseCase @Inject constructor(

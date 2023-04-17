@@ -93,48 +93,36 @@ fun Buttons() {
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(8.dp),
-            onClick = { }
-        ) {
-            Text(text = "ElevatedButton")
-        }
+            onClick = { },
+            content = {
+                Text(text = "ElevatedButton")
+            })
         OutlinedButton(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(8.dp),
-            onClick = { }
-        ) {
-            Text(text = "OutlinedButton")
-        }
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { }
-        ) {
-            Icon(Icons.Default.Save, contentDescription = "IconButton")
-        }
-        ExtendedFloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            text = { Text(text = "ExtendedFloatingActionButton") },
-            onClick = { }
+            onClick = { },
+            content = { Text(text = "OutlinedButton") }
         )
-        FilledTonalButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { }
-        ) {
-            Text(text = "FilledTonalButton")
-        }
-        TextButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { }
-        ) {
-            Text(text = "TextButton")
-        }
     }
+    IconButton(
+        modifier = Modifier.padding(8.dp),
+        onClick = { },
+        content = { Icon(Icons.Default.Save, contentDescription = "IconButton") }
+    )
+    ExtendedFloatingActionButton(
+        modifier = Modifier.padding(8.dp),
+        onClick = { },
+        content = { Text(text = "ExtendedFloatingActionButton") }
+    )
+    FilledTonalButton(
+        modifier = Modifier.padding(8.dp),
+        onClick = { },
+        content = { Text(text = "FilledTonalButton") }
+    )
+    TextButton(
+        modifier = Modifier.padding(8.dp),
+        onClick = { },
+        content = { Text(text = "TextButton") }
+    )
 }

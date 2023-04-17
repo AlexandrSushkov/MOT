@@ -3,7 +3,7 @@ package dev.nelson.mot.main.domain.use_case.category
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepositoryImpl
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import javax.inject.Inject
 
 /**

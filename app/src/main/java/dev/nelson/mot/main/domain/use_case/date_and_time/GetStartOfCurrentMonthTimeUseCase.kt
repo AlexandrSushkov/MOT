@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.domain.use_case.date_and_time
 
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
-import dev.nelson.mot.main.domain.use_case.execute
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.execute
 import javax.inject.Inject
 
 /**

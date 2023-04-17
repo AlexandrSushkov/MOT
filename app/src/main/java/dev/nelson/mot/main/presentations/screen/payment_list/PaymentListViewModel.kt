@@ -10,7 +10,7 @@ import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFa
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.execute
+import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams

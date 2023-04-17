@@ -7,7 +7,7 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.execute
+import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow

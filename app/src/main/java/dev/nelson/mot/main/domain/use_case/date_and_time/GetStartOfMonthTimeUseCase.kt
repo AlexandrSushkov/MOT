@@ -1,6 +1,6 @@
 package dev.nelson.mot.main.domain.use_case.date_and_time
 
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import kotlinx.datetime.*
 import javax.inject.Inject
 

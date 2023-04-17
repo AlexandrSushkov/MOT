@@ -2,7 +2,7 @@ package dev.nelson.mot.main.domain.use_case.category
 
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
-import dev.nelson.mot.main.domain.use_case.UseCaseFlow
+import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils

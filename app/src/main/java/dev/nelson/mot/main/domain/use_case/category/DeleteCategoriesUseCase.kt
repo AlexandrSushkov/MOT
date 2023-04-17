@@ -3,7 +3,7 @@ package dev.nelson.mot.main.domain.use_case.category
 import dev.nelson.mot.main.data.mapers.toCategoryEntityList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.base.CategoryRepository
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import javax.inject.Inject
 

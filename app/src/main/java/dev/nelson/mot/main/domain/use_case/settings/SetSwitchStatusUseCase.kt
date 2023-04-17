@@ -2,7 +2,7 @@ package dev.nelson.mot.main.domain.use_case.settings
 
 import dev.nelson.mot.main.data.preferences.MotSwitch
 import dev.nelson.mot.main.data.repository.SettingsRepository
-import dev.nelson.mot.main.domain.use_case.UseCaseSuspend
+import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import javax.inject.Inject
 
 class SetSwitchStatusUseCase @Inject constructor(
