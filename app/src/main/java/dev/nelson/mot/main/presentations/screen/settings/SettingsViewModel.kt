@@ -32,6 +32,10 @@ class SettingsViewModel @Inject constructor(
         get() = _restartAppAction.asSharedFlow()
     private val _restartAppAction = MutableSharedFlow<Unit>()
 
+    val showPermissionDialogAction
+        get() = _showPermissionDialogAction.asSharedFlow()
+    private val _showPermissionDialogAction = MutableSharedFlow<Unit>()
+
 
     // states
     val darkThemeSwitchState
@@ -84,13 +88,12 @@ class SettingsViewModel @Inject constructor(
 
     fun onExportDataBaseClick() = launch {
         runCatching { exportDataBaseUseCase.execute() }
-            .onFailure {
-                Timber.e(it.message) // TODO: 2021-09-10 handle error
-            }
             .onSuccess { isExported ->
                 val toastMessage = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
                 showToast(toastMessage)
                 Timber.d(toastMessage)
+            }.onFailure {
+                Timber.e(it.message) // TODO: 2021-09-10 handle error
             }
     }
 

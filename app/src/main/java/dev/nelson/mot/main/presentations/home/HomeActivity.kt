@@ -2,6 +2,8 @@
 
 package dev.nelson.mot.main.presentations.home
 
+import android.Manifest
+import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -34,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -77,6 +80,12 @@ class HomeActivity : ComponentActivity() {
         installSplashScreen().apply {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
+
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.CAMERA),
+            10
+        )
 
         setContent {
             val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)

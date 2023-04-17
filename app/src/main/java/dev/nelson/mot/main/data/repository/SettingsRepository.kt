@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.os.Environment.DIRECTORY_DOWNLOADS
+import android.provider.MediaStore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -60,27 +61,13 @@ class SettingsRepository @Inject constructor(
         val appDataBasesDir = getDataBaseDir()
         val downloadsDir = Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS)
         if (downloadsDir.exists().not()) return false
-        if (motDatabase.isOpen) motDatabase.close()
-        val appDataBaseFile = File(appDataBasesDir, MotDatabaseInfo.NAME)
+        val appDataBaseFile = File(appDataBasesDir, MotDatabaseInfo.FILE_NAME)
         if (appDataBaseFile.exists().not()) return false
-        val backupDatabaseFile = File(downloadsDir, MotDatabaseInfo.BACKUP_NAME)
-        if (backupDatabaseFile.exists()) {
-            backupDatabaseFile.delete()
-        }
+        if (motDatabase.isOpen) motDatabase.close()
+        val backupDataBaseFileName = getDataBaseBackupUniqueName(downloadsDir, MotDatabaseInfo.BACKUP_FILE_NAME)
+        val backupDatabaseFile = File(downloadsDir, backupDataBaseFileName)
         copyFile(appDataBaseFile, backupDatabaseFile)
         return true
-    }
-
-    fun renameFile(oldFile: File, newFile: File) {
-        if (oldFile.exists()) {
-            oldFile.renameTo(newFile)
-        }
-    }
-
-    fun deleteFile(file: File) {
-        if (file.exists()) {
-            file.delete()
-        }
     }
 
     suspend fun setSwitch(motSwitch: MotSwitch, isEnabled: Boolean) {
@@ -91,6 +78,17 @@ class SettingsRepository @Inject constructor(
         return dataStore.data.map { it[motSwitch.key] ?: false }
     }
 
+    private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {
+        var uniqueFileName = fileName
+        var count = 1
+        while (File(directory, uniqueFileName).exists()) {
+            val extension = uniqueFileName.substringAfterLast(DOT)
+            val baseName = uniqueFileName.substringBeforeLast(DOT).substringBefore(OPEN_BRACKET)
+            uniqueFileName = "$baseName($count).$extension"
+            count++
+        }
+        return uniqueFileName
+    }
 
     /**
      * Create copy of the file.
@@ -110,6 +108,7 @@ class SettingsRepository @Inject constructor(
         const val DATA_DIR_NAME = "data"
         const val DATABASES_DIR_NAME = "databases"
         const val DATABASES_TEMP_DIR_NAME = "databases-temp"
+        const val DOT = "."
+        const val OPEN_BRACKET = "("
     }
-
 }

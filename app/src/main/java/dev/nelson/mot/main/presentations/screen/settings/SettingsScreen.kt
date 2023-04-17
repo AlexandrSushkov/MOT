@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -37,17 +36,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.ui.theme.colorsMaterial3
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
 import dev.nelson.mot.main.util.StringUtils
-import timber.log.Timber
-
 
 @Composable
 fun SettingsScreen(
@@ -93,7 +87,6 @@ fun SettingsScreen(
         colorTheme = colorTheme,
         onDarkClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
         onColorClick = { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) },
-//        onRequestPermission = { settingsViewModel.onRequestPermission() },
     )
 }
 
@@ -109,9 +102,7 @@ private fun SettingsScreenLayout(
     colorTheme: Boolean,
     onDarkClick: (Boolean) -> Unit,
     onColorClick: (Boolean) -> Unit,
-//    onRequestPermission: () -> Unit,
-
-    ) {
+) {
 
     val context = LocalContext.current
     if (toastMessage.isNotEmpty()) {
@@ -121,20 +112,6 @@ private fun SettingsScreenLayout(
     val filePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { onImportDataBaseEvent.invoke(it) }
     }
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission Accepted: Do something
-            Timber.d("PERMISSION GRANTED")
-
-        } else {
-            // Permission Denied: Do something
-            Timber.d("PERMISSION DENIED")
-        }
-    }
-
-    val writeExternalStoragePermissionState = rememberPermissionState(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
 
     Scaffold(
         topBar = { TopAppBarMot(title = title, navigationIcon = navigationIcon) }
@@ -154,7 +131,6 @@ private fun SettingsScreenLayout(
                 },
                 text = { Text(text = "Dark theme") }
             )
-            // TODO: show only for android 12+
             ListItem(
                 trailing = {
                     Switch(
@@ -167,36 +143,16 @@ private fun SettingsScreenLayout(
             )
             ListItem(
                 trailing = {
-                    TextButton(onClick = {
-//                        if (writeExternalStoragePermissionState.status.isGranted) {
-//                            onExportDataBaseClick.invoke()
-//                        } else {
-                            writeExternalStoragePermissionState.launchPermissionRequest()
-//                            val textToShow = if (writeExternalStoragePermissionState.status.shouldShowRationale) {
-//                                "The camera is important for this app. Please grant the permission."
-//                            } else {
-//                                "Camera not available"
-//                            }
-//
-//                            Text(textToShow)
-//                            Spacer(modifier = Modifier.height(8.dp))
-//                            Button(onClick = { writeExternalStoragePermissionState.launchPermissionRequest() }) {
-//                                Text("Request permission")
-//                            }
-//                        }
-                    }) { Text(text = "Export") }
+                    TextButton(onClick = { onExportDataBaseClick.invoke() }) { Text(text = "Export") }
                 },
                 text = { Text(text = "Export data base to the Downloads folder") }
             )
             ListItem(
                 trailing = {
-                    TextButton(onClick = {
-                        filePickerLauncher.launch("*/*")
-                    }) { Text(text = "Import") }
+                    TextButton(onClick = { filePickerLauncher.launch("*/*") }) { Text(text = "Import") }
                 },
                 text = { Text(text = "Import data base") }
             )
-            Sample()
             Spacer(modifier = Modifier.weight(1f))
             ListItem(
                 text = { Text(text = "App version: ${BuildConfig.VERSION_NAME}") },
@@ -245,55 +201,6 @@ private fun SettingsScreenLayoutDarkPreview() {
             onDarkClick = {},
             onColorClick = {}
         )
-    }
-}
-
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun Sample() {
-    val locationPermissionsState = rememberMultiplePermissionsState(
-        listOf(
-            android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.ACCESS_FINE_LOCATION,
-        )
-    )
-
-    if (locationPermissionsState.allPermissionsGranted) {
-        Text("Thanks! I can access your exact location :D")
-    } else {
-        Column {
-            val allPermissionsRevoked =
-                locationPermissionsState.permissions.size ==
-                    locationPermissionsState.revokedPermissions.size
-
-            val textToShow = if (!allPermissionsRevoked) {
-                // If not all the permissions are revoked, it's because the user accepted the COARSE
-                // location permission, but not the FINE one.
-                "Yay! Thanks for letting me access your approximate location. " +
-                    "But you know what would be great? If you allow me to know where you " +
-                    "exactly are. Thank you!"
-            } else if (locationPermissionsState.shouldShowRationale) {
-                // Both location permissions have been denied
-                "Getting your exact location is important for this app. " +
-                    "Please grant us fine location. Thank you :D"
-            } else {
-                // First time the user sees this feature or the user doesn't want to be asked again
-                "This feature requires location permission"
-            }
-
-            val buttonText = if (!allPermissionsRevoked) {
-                "Allow precise location"
-            } else {
-                "Request permissions"
-            }
-
-            Text(text = textToShow)
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { locationPermissionsState.launchMultiplePermissionRequest() }) {
-                Text(buttonText)
-            }
-        }
     }
 }
 

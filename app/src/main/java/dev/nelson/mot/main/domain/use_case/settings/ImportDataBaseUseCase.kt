@@ -16,7 +16,7 @@ class ImportDataBaseUseCase @Inject constructor(
         val tempDataBaseDir = settingsRepository.getDataBaseTempDir().apply {
             mkdir()
         }
-        val tempDataBaseFile = File(tempDataBaseDir, MotDatabaseInfo.NAME)
+        val tempDataBaseFile = File(tempDataBaseDir, MotDatabaseInfo.FILE_NAME)
         settingsRepository.copyFileFromUri(params.uri, tempDataBaseFile)
         appDataBasesDir.deleteRecursively()
         val newDataBaseDir = settingsRepository.getDataBaseDir()

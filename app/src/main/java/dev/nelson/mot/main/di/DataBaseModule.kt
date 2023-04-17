@@ -21,7 +21,7 @@ object DataBaseModule {
     @Provides
     @Singleton
     fun provideRoomDb(@ApplicationContext context: Context): MotDatabase =
-        Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.NAME)
+        Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
 //            .createFromAsset(MotDatabaseInfo.NAME)
             .addMigrations(MIGRATION_1_2)
             .allowMainThreadQueries()
