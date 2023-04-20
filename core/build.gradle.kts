@@ -4,11 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "dev.nelson.mot.core"
-    compileSdk = rootProject.extra["compileSDK"] as Int
+    val appId: String by rootProject.extra
+    namespace = "$appId.core"
+    compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig{
-        minSdk = rootProject.extra["minSDK"] as Int
+        minSdk = rootProject.extra["minSdk"] as Int
     }
 }
 
@@ -29,13 +30,14 @@ dependencies {
     
     api ("com.google.code.gson:gson:2.9.0")
     api ("androidx.core:core-ktx:1.10.0")
-
-    // Kotlin Coroutines
-    api ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    testApi ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-
     api ("com.jakewharton.timber:timber:4.7.1")
 
-//    testApi ("junit:junit:5.9.2")
-//    testApi ("org.junit.jupiter:junit-jupiter:5.9.2")
+    // Kotlin Coroutines
+    val coroutinesVersion = "1.6.4"
+    api ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    testApi ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
+
+    val junitVersion= "5.9.2"
+    testApi ("junit:junit:$junitVersion")
+    testApi ("org.junit.jupiter:junit-jupiter:$junitVersion")
 }

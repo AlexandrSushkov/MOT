@@ -1,15 +1,16 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "dev.nelson.mot.db"
-    compileSdk = rootProject.extra["compileSDK"] as Int
+    val appId: String by rootProject.extra
+    namespace = "$appId.db"
+    compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
-        minSdk = rootProject.extra["minSDK"] as Int
+        minSdk = rootProject.extra["minSdk"] as Int
     }
 
     buildTypes {
@@ -27,10 +28,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    kapt {
-        correctErrorTypes = true
-    }
 }
 
 repositories {
@@ -43,7 +40,7 @@ dependencies {
     implementation(project(":core"))
 
     val roomVersion = "2.5.1"
-    kapt ("androidx.room:room-compiler:$roomVersion")
-    api ("androidx.room:room-runtime:$roomVersion")
-    api ("androidx.room:room-ktx:$roomVersion") //Kotlin Extensions and Coroutines support for Room
+    ksp("androidx.room:room-compiler:$roomVersion")
+    api("androidx.room:room-runtime:$roomVersion")
+    api("androidx.room:room-ktx:$roomVersion") //Kotlin Extensions and Coroutines support for Room
 }

@@ -13,31 +13,24 @@ plugins {
     id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
 }
 
-ext {
-    extra["applicationId"] = "dev.nelson.mot"
+val appId by extra("dev.nelson.mot")
+// App version
+val versionName by extra("1.0.0") // X.Y.Z; X = Major, Y = minor, Z = Patch level
+val versionCode by extra(9)
 
-    // App version
-    extra["versionName"] = "1.0.0" // X.Y.Z; X = Major, Y = minor, Z = Patch level
-    extra["versionCode"] = 9
+// SDK and tools
+val compileSdk by extra(33)
+val targetSdk by extra(33)
+val minSdk by extra(32)
+val buildToolsVersion by extra("30.0.3")
 
-    // SDK and tools
-    extra["compileSDK"] = 33
-    extra["targetSDK"] = 33
-    extra["minSDK"] = 32
-    extra["buildToolsVersion"] = "30.0.3"
-
-    // dependencies versions
-    extra["kotlinVersion"] = "1.8.10"
-    extra["testRunner"] = "dev.nelson.mot.main.MotTestRunner"
-
-    // google
-    extra["googleServices"] = "4.3.10"
-}
+// dependencies versions
+val kotlinVersion by extra("1.8.10")
+val testRunner by extra("dev.nelson.mot.main.MotTestRunner")
 
 buildscript {
     dependencies {
-        val nav_version = "2.5.3"
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
     }
 }
 

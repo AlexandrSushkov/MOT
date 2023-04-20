@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    namespace = "dev.nelson.mot.legacy"
+    val appId: String by rootProject.extra
+    namespace = "$appId.legacy"
 
-    compileSdk = rootProject.extra["compileSDK"] as Int
+    compileSdk = rootProject.extra["compileSdk"] as Int
     buildToolsVersion = rootProject.extra["buildToolsVersion"] as String
 
     defaultConfig {
-        minSdk = rootProject.extra["minSDK"] as Int
-        targetSdk = rootProject.extra["targetSDK"] as Int
+        minSdk = rootProject.extra["minSdk"] as Int
     }
 
     buildTypes {
