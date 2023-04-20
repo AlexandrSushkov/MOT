@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
@@ -18,36 +16,36 @@ abstract class BaseViewModel : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = viewModelScope.coroutineContext + coroutineExceptionHandler
 
+    //actions
     val hideKeyboardAction
-        get() = _hideKeyboardAction.asStateFlow()
-    private val _hideKeyboardAction = MutableStateFlow(Unit)
+        get() = _hideKeyboardAction.asSharedFlow()
+    private val _hideKeyboardAction = MutableSharedFlow<Unit>()
 
     val showKeyboardAction
-        get() = _showKeyboardAction.asStateFlow()
-    private val _showKeyboardAction = MutableStateFlow(Unit)
+        get() = _showKeyboardAction.asSharedFlow()
+    private val _showKeyboardAction = MutableSharedFlow<Unit>()
 
-    val showToastAction
+    // states
+    val showToastState
         get() = _showToast.asSharedFlow()
     private val _showToast = MutableSharedFlow<String>()
 
     fun handleBaseError(throwable: Throwable) = throwable.printStackTrace()
 
-    protected fun showToast(message: String) {
-        _showToast.tryEmit(message)
+    protected suspend fun showToast(message: String) {
+        _showToast.emit(message)
     }
 
-    protected fun showKeyboard() {
-        _showKeyboardAction.tryEmit(Unit)
+    protected suspend fun showKeyboard() {
+        _showKeyboardAction.emit(Unit)
     }
 
-    protected fun hideKeyboard() {
-        _hideKeyboardAction.tryEmit(Unit)
+    protected suspend fun hideKeyboard() {
+        _hideKeyboardAction.emit(Unit)
     }
 
     protected fun handleThrowable(exception: Throwable) {
         val error = "${Throwable::class.java}: ${exception.message}"
-        showToast(error)
         Timber.e(error)
     }
-
 }

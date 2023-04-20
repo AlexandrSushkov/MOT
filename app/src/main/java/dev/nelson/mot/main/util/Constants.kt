@@ -9,6 +9,4 @@ object Constants {
     //intent bundle/extras keys
     const val CATEGORY_ID_KEY = "category_id"
     const val IS_OPENED_FROM_WIDGET = "openedFromWidget"
-
-
 }

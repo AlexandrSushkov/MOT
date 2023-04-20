@@ -35,9 +35,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.ui.theme.colorsMaterial3
 import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
@@ -49,7 +49,7 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
     navigationIcon: @Composable () -> Unit = {},
 ) {
-    val toastMessage by settingsViewModel.showToastAction.collectAsState(StringUtils.EMPTY)
+    val toastMessage by settingsViewModel.showToastState.collectAsState(StringUtils.EMPTY)
     val darkTheme by settingsViewModel.darkThemeSwitchState.collectAsState(false)
     val colorTheme by settingsViewModel.dynamicColorThemeSwitchState.collectAsState(false)
     val alertDialogState by settingsViewModel.showAlertDialogState.collectAsState(false to null)
@@ -72,9 +72,11 @@ fun SettingsScreen(
     )
 
     if (alertDialogState.first) {
-        alertDialogState.second?.let {
-            MotAlertDialog(it.message, it.onPositiveClickCallback, it.onNegativeClickCallback)
-        }
+        alertDialogState.second?.let { MotAlertDialog(it) }
+    }
+
+    if (toastMessage.isNotEmpty()) {
+        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
     }
 
     SettingsScreenLayout(
@@ -82,32 +84,24 @@ fun SettingsScreen(
         navigationIcon = navigationIcon,
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
         onImportDataBaseEvent = { settingsViewModel.onImportDataBaseEvent(it) },
-        toastMessage = toastMessage,
         darkTheme = darkTheme,
         colorTheme = colorTheme,
         onDarkClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
-        onColorClick = { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) },
-    )
+    ) { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     onExportDataBaseClick: () -> Unit,
     onImportDataBaseEvent: (uri: Uri) -> Unit,
-    toastMessage: String,
     darkTheme: Boolean,
     colorTheme: Boolean,
     onDarkClick: (Boolean) -> Unit,
     onColorClick: (Boolean) -> Unit,
 ) {
-
-    val context = LocalContext.current
-    if (toastMessage.isNotEmpty()) {
-        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
-    }
 
     val filePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { onImportDataBaseEvent.invoke(it) }
@@ -174,12 +168,10 @@ private fun SettingsScreenLayoutLightPreview() {
         },
         onExportDataBaseClick = {},
         onImportDataBaseEvent = {},
-        toastMessage = "",
         darkTheme = false,
         colorTheme = true,
-        onDarkClick = {},
-        onColorClick = {}
-    )
+        onDarkClick = {}
+    ) {}
 }
 
 @Preview(showBackground = true)
@@ -195,24 +187,17 @@ private fun SettingsScreenLayoutDarkPreview() {
             },
             onExportDataBaseClick = {},
             onImportDataBaseEvent = {},
-            toastMessage = "",
             darkTheme = false,
             colorTheme = true,
-            onDarkClick = {},
-            onColorClick = {}
-        )
+            onDarkClick = {}
+        ) {}
     }
 }
 
 @Composable
-fun MotAlertDialog(
-    message: String,
-    onConfirmClick: () -> Unit,
-    onDismissClick: () -> Unit,
-) {
-
+fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
     AlertDialog(
-        onDismissRequest = onDismissClick,
+        onDismissRequest = alertDialogParams.dismissClickCallback,
         icon = {
             Icon(
                 imageVector = Icons.Default.Info,
@@ -224,18 +209,20 @@ fun MotAlertDialog(
         },
         text = {
             Text(
-                text = message,
+                text = alertDialogParams.message,
                 style = MaterialTheme.typography.body1
             )
         },
         dismissButton = {
-            TextButton(onClick = onDismissClick) {
-                Text(text = "Cancel")
+            alertDialogParams.onNegativeClickCallback?.let {
+                TextButton(onClick = it) {
+                    Text(text = stringResource(android.R.string.cancel))
+                }
             }
         },
         confirmButton = {
-            TextButton(onClick = onConfirmClick) {
-                Text(text = "Ok")
+            TextButton(onClick = alertDialogParams.onPositiveClickCallback) {
+                Text(text = stringResource(android.R.string.ok))
             }
         }
     )

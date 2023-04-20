@@ -84,7 +84,7 @@ class SettingsRepository @Inject constructor(
         while (File(directory, uniqueFileName).exists()) {
             val extension = uniqueFileName.substringAfterLast(DOT)
             val baseName = uniqueFileName.substringBeforeLast(DOT).substringBefore(OPEN_BRACKET)
-            uniqueFileName = "$baseName($count).$extension"
+            uniqueFileName = "$baseName$OPEN_BRACKET$count$CLOSE_BRACKET$DOT$extension" // pattern: fileName(1).ext
             count++
         }
         return uniqueFileName
@@ -110,5 +110,6 @@ class SettingsRepository @Inject constructor(
         const val DATABASES_TEMP_DIR_NAME = "databases-temp"
         const val DOT = "."
         const val OPEN_BRACKET = "("
+        const val CLOSE_BRACKET = ")"
     }
 }

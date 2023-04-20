@@ -10,6 +10,7 @@ import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseParams
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
+import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,9 +90,13 @@ class SettingsViewModel @Inject constructor(
     fun onExportDataBaseClick() = launch {
         runCatching { exportDataBaseUseCase.execute() }
             .onSuccess { isExported ->
-                val toastMessage = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
-                showToast(toastMessage)
-                Timber.d(toastMessage)
+                val message = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
+                val alertDialogParams = AlertDialogParams(
+                    message = message,
+                    dismissClickCallback = { hideAlertDialog() },
+                    onPositiveClickCallback = { hideAlertDialog() },
+                )
+                _showAlertDialogState.emit(true to alertDialogParams)
             }.onFailure {
                 Timber.e(it.message) // TODO: 2021-09-10 handle error
             }
@@ -100,7 +105,8 @@ class SettingsViewModel @Inject constructor(
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = AlertDialogParams(
             message = "Are you sure you want to import this data base?",
-            onPositiveClickCallback = { importDataBase(uri)},
+            dismissClickCallback = { hideAlertDialog() },
+            onPositiveClickCallback = { importDataBase(uri) },
             onNegativeClickCallback = { hideAlertDialog() }
         )
         _showAlertDialogState.emit(true to alertDialogParams)
@@ -113,22 +119,13 @@ class SettingsViewModel @Inject constructor(
             }
             .onSuccess { _restartAppAction.emit(Unit) }
     }
+
     private fun hideAlertDialog() = launch {
         _showAlertDialogState.emit(false to null)
     }
 
-    fun onRequestPermission() {
-        TODO("Not yet implemented")
-    }
-
     companion object {
-        const val DATA_BASE_EXPORTED_SUCCESSFULLY = "data base was exported successfully. Please, check Downloads folder."
+        const val DATA_BASE_EXPORTED_SUCCESSFULLY = "data base was exported successfully. \nPlease, check Downloads folder."
         const val DATA_BASE_EXPORT_FAILED = "Oops! data base export failed."
     }
 }
-
-data class AlertDialogParams(
-    val message: String,
-    val onPositiveClickCallback: () -> Unit,
-    val onNegativeClickCallback: () -> Unit = {},
-)
