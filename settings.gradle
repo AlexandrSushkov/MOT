@@ -1,5 +1,0 @@
-include ':app' //main app
-include ':core' //core modules
-include ':feature-payments' //feature modules
-include ':lagacy'//legacy module
-include ':db'
