@@ -20,7 +20,7 @@ val versionCode by extra(9)
 // SDK and tools
 val compileSdk by extra(33)
 val targetSdk by extra(33)
-val minSdk by extra(32)
+val minSdk by extra(33)
 val buildToolsVersion by extra("30.0.3")
 
 // Dependencies

@@ -18,11 +18,20 @@ class ImportDataBaseUseCase @Inject constructor(
         }
         val tempDataBaseFile = File(tempDataBaseDir, MotDatabaseInfo.FILE_NAME)
         settingsRepository.copyFileFromUri(params.uri, tempDataBaseFile)
-        appDataBasesDir.deleteRecursively()
-        val newDataBaseDir = settingsRepository.getDataBaseDir()
-        tempDataBaseDir.renameTo(newDataBaseDir)
-        tempDataBaseDir.delete()
-        return true
+        try {
+            val isIntegrityCheckPassed = settingsRepository.checkDataBaseIntegrity(tempDataBaseFile)
+            if (isIntegrityCheckPassed) {
+                appDataBasesDir.deleteRecursively()
+                val newDataBaseDir = settingsRepository.getDataBaseDir()
+                tempDataBaseDir.renameTo(newDataBaseDir)
+                return true
+            }
+        } catch (e: Exception) {
+            tempDataBaseDir.deleteRecursively()
+            throw e
+        }
+        tempDataBaseDir.deleteRecursively()
+        return false
     }
 }
 

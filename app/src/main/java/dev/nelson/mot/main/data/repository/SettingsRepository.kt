@@ -4,10 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.os.Environment.DIRECTORY_DOWNLOADS
-import android.provider.MediaStore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.room.Room
+import dev.nelson.mot.db.MIGRATION_1_2
 import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.BuildConfig
@@ -55,6 +56,23 @@ class SettingsRepository @Inject constructor(
         } catch (e: Exception) {
             // handle the exception here
         }
+    }
+
+    /**
+     * Check integrity of the database from a database file.
+     * @return true if the given database pass integrity_check, false otherwise.
+     */
+    fun checkDataBaseIntegrity(file: File): Boolean {
+        val database = Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
+            .createFromFile(file)
+            .addMigrations(MIGRATION_1_2)
+            .allowMainThreadQueries()
+            .build()
+
+        return database.openHelper
+            .readableDatabase
+            .isDatabaseIntegrityOk
+            .also { database.close() }
     }
 
     fun backupDatabase(): Boolean {

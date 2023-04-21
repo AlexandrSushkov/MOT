@@ -97,8 +97,11 @@ class SettingsViewModel @Inject constructor(
                     onPositiveClickCallback = { hideAlertDialog() },
                 )
                 _showAlertDialogState.emit(true to alertDialogParams)
-            }.onFailure {
-                Timber.e(it.message) // TODO: 2021-09-10 handle error
+            }.onFailure { throwable ->
+                throwable.message?.let {
+                    showToast(it)
+                    Timber.e(it)
+                }
             }
     }
 
@@ -106,7 +109,10 @@ class SettingsViewModel @Inject constructor(
         val alertDialogParams = AlertDialogParams(
             message = "Are you sure you want to import this data base?",
             dismissClickCallback = { hideAlertDialog() },
-            onPositiveClickCallback = { importDataBase(uri) },
+            onPositiveClickCallback = {
+                hideAlertDialog()
+                importDataBase(uri)
+            },
             onNegativeClickCallback = { hideAlertDialog() }
         )
         _showAlertDialogState.emit(true to alertDialogParams)
@@ -114,10 +120,19 @@ class SettingsViewModel @Inject constructor(
 
     private fun importDataBase(uri: Uri) = launch {
         runCatching { importDataBaseUseCase.execute(ImportDataBaseParams(uri)) }
-            .onFailure {
-                // TODO: 2021-09-10 handle error
+            .onSuccess { isImported ->
+                if (isImported) {
+                    _restartAppAction.emit(Unit)
+                } else {
+                    showToast("Oops! data base import failed.")
+                }
             }
-            .onSuccess { _restartAppAction.emit(Unit) }
+            .onFailure { throwable ->
+                throwable.message?.let {
+                    showToast(it)
+                    Timber.e(it)
+                }
+            }
     }
 
     private fun hideAlertDialog() = launch {
