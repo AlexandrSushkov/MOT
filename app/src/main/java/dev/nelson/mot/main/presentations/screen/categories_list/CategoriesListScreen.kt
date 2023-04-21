@@ -25,6 +25,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Snackbar
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -35,7 +36,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -72,6 +72,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
@@ -92,20 +93,35 @@ fun CategoryListScreen(
     openPaymentsByCategory: (Int?) -> Unit,
 ) {
 
-    val categories by viewModel.categories.collectAsState(initial = Loading)
+    val categories by viewModel.categories.collectAsState(Loading)
     val categoryToEditId by viewModel.categoryToEditId.collectAsState()
     val categoryNameState by viewModel.categoryNameState.collectAsState()
-    val openDialog by viewModel.showEditCategoryDialogAction.collectAsState(initial = false)
-    val categoryToEdit by viewModel.showEditCategoryDialogAction.collectAsState(initial = false)
+    val openDialog by viewModel.showEditCategoryDialogAction.collectAsState(false)
+    val categoryToEdit by viewModel.showEditCategoryDialogAction.collectAsState(false)
     val snackbarVisibleState by viewModel.snackBarVisibilityState.collectAsState()
     val deleteItemsSnackbarText by viewModel.deleteItemsSnackbarText.collectAsState(StringUtils.EMPTY)
     val deletedItemsMessage by viewModel.deletedItemsMessage.collectAsState(StringUtils.EMPTY)
     val showDeletedMessageToast by viewModel.showDeletedItemsMessageToast.collectAsState(false)
 
+    if (openDialog) {
+        EditCategoryDialog(
+            categoryToEditId = categoryToEditId,
+            categoryNameState = categoryNameState,
+            closeEditCategoryDialog = { viewModel.closeEditCategoryDialog() },
+            onCategoryNameChanged = { viewModel.onNameChanged(it) },
+            onSaveCategoryClick = { viewModel.onSaveCategoryClick() },
+            openCategoryDetails = openCategoryDetails
+        )
+    }
+
+    if (showDeletedMessageToast) {
+        Toast.makeText(LocalContext.current, deletedItemsMessage, Toast.LENGTH_SHORT).show()
+    }
+
     CategoryListLayout(
-        title = title,
-        navigationIcon = navigationIcon,
-        settingsIcon = settingsIcon,
+        appBarTitle = title,
+        appBarNavigationIcon = navigationIcon,
+        settingsNavigationIcon = settingsIcon,
         categoriesMotResult = categories,
         categoryToEditId = categoryToEditId,
         onCategoryClick = openPaymentsByCategory,
@@ -114,14 +130,14 @@ fun CategoryListScreen(
         onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) },
         closeEditCategoryDialog = { viewModel.closeEditCategoryDialog() },
         openDialog = openDialog,
-        onAddCategoryClick = { viewModel.onAddCategoryClick() },
+        onAddCategoryClickEvent = { viewModel.onAddCategoryClick() },
         onCategoryNameChanged = { viewModel.onNameChanged(it) },
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
         onSaveCategoryClick = { viewModel.onSaveCategoryClick() },
         onSwipeCategory = { viewModel.onSwipeCategory(it) },
         snackbarVisibleState = snackbarVisibleState,
-        deleteItemsSnackbarText = deleteItemsSnackbarText,
-        undoDeleteClick = { viewModel.onUndoDeleteClick() },
+        deleteItemsCountText = deleteItemsSnackbarText,
+        undoDeleteClickEvent = { viewModel.onUndoDeleteClick() },
         deletedItemsMessage = deletedItemsMessage,
         showDeletedMessageToast = showDeletedMessageToast
     )
@@ -129,73 +145,52 @@ fun CategoryListScreen(
 
 @Composable
 fun CategoryListLayout(
-    title: String,
+    appBarTitle: String,
     categoriesMotResult: MotResult<List<CategoryListItemModel>>,
     categoryNameState: TextFieldValue,
     openDialog: Boolean,
-    navigationIcon: @Composable () -> Unit = {},
-    settingsIcon: @Composable () -> Unit = {},
+    appBarNavigationIcon: @Composable () -> Unit = {},
+    settingsNavigationIcon: @Composable () -> Unit = {},
     onCategoryClick: (Int?) -> Unit,
     openCategoryDetails: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
     closeEditCategoryDialog: () -> Unit,
-    onAddCategoryClick: () -> Unit,
+    onAddCategoryClickEvent: () -> Unit,
     onCategoryNameChanged: (TextFieldValue) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onSaveCategoryClick: () -> Unit,
     onSwipeCategory: (CategoryItemModel) -> Unit,
     categoryToEditId: Int?,
     snackbarVisibleState: Boolean,
-    deleteItemsSnackbarText: String,
-    undoDeleteClick: () -> Unit,
+    deleteItemsCountText: String,
+    undoDeleteClickEvent: () -> Unit,
     deletedItemsMessage: String,
     showDeletedMessageToast: Boolean,
 ) {
-
-    if (openDialog) {
-        EditCategoryDialog(
-            categoryToEditId = categoryToEditId,
-            categoryNameState = categoryNameState,
-            closeEditCategoryDialog = closeEditCategoryDialog,
-            onCategoryNameChanged = onCategoryNameChanged,
-            onSaveCategoryClick = onSaveCategoryClick,
-            openCategoryDetails = openCategoryDetails
-        )
-    }
-
-    if (showDeletedMessageToast) {
-        Toast.makeText(LocalContext.current, deletedItemsMessage, Toast.LENGTH_SHORT).show()
-    }
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                navigationIcon = navigationIcon,
-                title = {
-                    Text(
-                        text = title,
-//                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                actions = { settingsIcon.invoke() }
+            MotTopAppBar(
+                title = appBarTitle,
+                navigationIcon = appBarNavigationIcon,
+                actions = { settingsNavigationIcon.invoke() }
             )
         },
-
-//        snackbarHost = {
-//            if (snackbarVisibleState) {
-//                Snackbar(
-//                    action = {
-//                        TextButton(
-//                            onClick = undoDeleteClick,
-//                            content = { Text("Undo") }
-//                        )
-//                    },
-//                    modifier = Modifier.padding(8.dp),
-//                    content = { Text(text = deleteItemsSnackbarText) }
-//                )
-//            }
-//        },
+        snackbarHost = {
+            if (snackbarVisibleState) {
+                Snackbar(
+                    action = {
+                        TextButton(
+                            onClick = undoDeleteClickEvent,
+                            content = { Text(stringResource(R.string.text_undo)) }
+                        )
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    content = { Text(text = deleteItemsCountText) }
+                )
+            }
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddCategoryClick) {
+            FloatingActionButton(onClick = onAddCategoryClickEvent) {
                 Icon(Icons.Default.Add, stringResource(R.string.accessibility_add_icon))
             }
         },
@@ -234,7 +229,7 @@ fun CategoryList(
                     ListPlaceholder(
                         Modifier.align(Alignment.Center),
                         Icons.Default.Filter,
-                        "empty"
+                        stringResource(R.string.text_empty)
                     )
                 }
             } else {
@@ -312,7 +307,7 @@ fun CategoryList(
                 ListPlaceholder(
                     Modifier.align(Alignment.Center),
                     Icons.Default.Error,
-                    "error"
+                    stringResource(R.string.text_error)
                 )
             }
         }
@@ -330,7 +325,7 @@ fun CategoryListItem(
 ) {
     var checked by remember { mutableStateOf(category.isFavorite) }
     val iconColor = if (checked) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.secondaryContainer
-    val iconTint by animateColorAsState(iconColor)
+    val iconTint by animateColorAsState(iconColor, label = "icon tint animation state")
 
     Card(
         modifier = Modifier
@@ -396,7 +391,7 @@ fun EditCategoryDialog(
     onSaveCategoryClick: () -> Unit,
     openCategoryDetails: (Int?) -> Unit,
 ) {
-    val categoryNameFocusRequester = remember { FocusRequester.Default }
+    val categoryNameFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(
         key1 = Unit,
@@ -462,11 +457,11 @@ private fun CardFooter() {
 @Composable
 private fun CategoryListLayoutLightPreview() {
     CategoryListLayout(
-        title = "Categories",
+        appBarTitle = "Categories",
         categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
         categoryNameState = TextFieldValue(),
         openDialog = false,
-        navigationIcon = {
+        appBarNavigationIcon = {
             IconButton(onClick = {}) {
                 Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
             }
@@ -475,15 +470,15 @@ private fun CategoryListLayoutLightPreview() {
         openCategoryDetails = {},
         onFavoriteClick = { _, _ -> },
         closeEditCategoryDialog = {},
-        onAddCategoryClick = {},
+        onAddCategoryClickEvent = {},
         onCategoryNameChanged = {},
         onCategoryLongPress = {},
         onSaveCategoryClick = {},
         onSwipeCategory = {},
         categoryToEditId = null,
         snackbarVisibleState = false,
-        deleteItemsSnackbarText = "",
-        undoDeleteClick = {},
+        deleteItemsCountText = "",
+        undoDeleteClickEvent = {},
         deletedItemsMessage = "toast",
         showDeletedMessageToast = false
     )
@@ -494,11 +489,11 @@ private fun CategoryListLayoutLightPreview() {
 private fun CategoryListLayoutDarkPreview() {
     MotTheme(darkTheme = true) {
         CategoryListLayout(
-            title = "Categories",
+            appBarTitle = stringResource(R.string.categories),
             categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
             categoryNameState = TextFieldValue(),
             openDialog = false,
-            navigationIcon = {
+            appBarNavigationIcon = {
                 IconButton(onClick = {}) {
                     Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
                 }
@@ -507,15 +502,15 @@ private fun CategoryListLayoutDarkPreview() {
             openCategoryDetails = {},
             onFavoriteClick = { _, _ -> },
             closeEditCategoryDialog = {},
-            onAddCategoryClick = {},
+            onAddCategoryClickEvent = {},
             onCategoryNameChanged = {},
             onCategoryLongPress = {},
             onSaveCategoryClick = {},
             onSwipeCategory = {},
             categoryToEditId = null,
             snackbarVisibleState = false,
-            deleteItemsSnackbarText = "",
-            undoDeleteClick = {},
+            deleteItemsCountText = "",
+            undoDeleteClickEvent = {},
             deletedItemsMessage = "toast",
             showDeletedMessageToast = false
         )

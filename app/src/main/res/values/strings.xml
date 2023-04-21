@@ -23,6 +23,11 @@
     <string name="text_payments" translatable="false">Payments</string>
     <string name="text_add" translatable="false">Add</string>
     <string name="text_edit" translatable="false">Edit</string>
+    <string name="text_undo">Undo</string>
+    <string name="text_empty">Empty</string>
+    <string name="text_error">Error</string>
+    <string name="text_deleted_item_format">%d item deleted</string>
+    <string name="text_deleted_items_format" translatable="false">%d items deleted</string>
 
     <!--Accessibility text-->
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>

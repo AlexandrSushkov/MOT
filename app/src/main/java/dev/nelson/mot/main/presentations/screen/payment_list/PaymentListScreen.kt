@@ -17,6 +17,9 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Snackbar
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Category
@@ -34,7 +37,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -45,8 +47,10 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
+import androidx.compose.ui.unit.dp
+import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
@@ -57,11 +61,12 @@ import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
 import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
-import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
+import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
 import dev.nelson.mot.main.util.MotResult.Loading
 import dev.nelson.mot.main.util.MotResult.Success
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.launch
@@ -77,7 +82,7 @@ fun PaymentListScreen(
     val haptic = LocalHapticFeedback.current
 
     // listen states
-    val toolbarTitle by viewModel.toolBarTitleState.collectAsState("")
+    val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
     val paymentListResult by viewModel.paymentListState.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
@@ -125,7 +130,7 @@ fun PaymentListScreen(
         onFabClick = { viewModel.onFabClick() },
         settingsIcon = settingsIcon,
         snackbarVisibleState = snackbarVisibilityState,
-        onUndoButtonClick = {
+        onUndoButtonClickEvent = {
             viewModel.onUndoDeleteClick()
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
@@ -158,7 +163,7 @@ fun PaymentListLayout(
     onFabClick: () -> Unit,
     settingsIcon: @Composable () -> Unit,
     snackbarVisibleState: Boolean,
-    onUndoButtonClick: () -> Unit,
+    onUndoButtonClickEvent: () -> Unit,
     deletedItemsCount: Int,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
     isSelectedState: Boolean,
@@ -208,7 +213,7 @@ fun PaymentListLayout(
                     }
 
                 } else {
-                    TopAppBarMot(
+                    MotTopAppBar(
                         title = toolbarTitle,
                         navigationIcon = navigationIcon,
                         actions = { settingsIcon.invoke() }
@@ -227,23 +232,36 @@ fun PaymentListLayout(
                     content = { Icon(Icons.Default.Add, "new payment fab") }
                 )
             },
-//            snackbarHost = {
-//                if (snackbarVisibleState) {
-//                    Snackbar(
-//                        action = {
-//                            TextButton(
-//                                onClick = onUndoButtonClick,
-//                                content = { Text("Undo") }
-//                            )
-//                        },
-//                        modifier = Modifier.padding(8.dp),
-//                        content = { Text(text = "$deletedItemsCount Deleted") }
-//                    )
-//                }
-//            }
+            snackbarHost = {
+                if (snackbarVisibleState) {
+                    Snackbar(
+                        action = {
+                            TextButton(
+                                onClick = onUndoButtonClickEvent,
+                                content = { Text(stringResource(R.string.text_undo)) }
+                            )
+                        },
+                        modifier = Modifier.padding(8.dp),
+                        content = {
+                            val deletedItemText = if (deletedItemsCount == 1) {
+                                stringResource(R.string.text_deleted_item_format, deletedItemsCount)
+                            } else {
+                                stringResource(R.string.text_deleted_items_format, deletedItemsCount)
+                            }
+                            Text(text = deletedItemText)
+                        }
+                    )
+                }
+            }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                PaymentList(paymentListResult, onItemClick, onItemLongClick, onSwipeToDeleteItem, isSelectedState)
+                PaymentList(
+                    paymentListResult,
+                    onItemClick,
+                    onItemLongClick,
+                    onSwipeToDeleteItem,
+                    isSelectedState
+                )
             }
         }
     }
@@ -351,7 +369,7 @@ private fun PaymentListScreenLightPreview() {
         onFabClick = {},
         settingsIcon = { MotNavSettingsIcon {} },
         snackbarVisibleState = false,
-        onUndoButtonClick = {},
+        onUndoButtonClickEvent = {},
         deletedItemsCount = 0,
         onSwipeToDeleteItem = {},
         isSelectedState = false,
@@ -379,7 +397,7 @@ private fun PaymentListScreenDarkPreview() {
             onFabClick = {},
             settingsIcon = { MotNavSettingsIcon {} },
             snackbarVisibleState = false,
-            onUndoButtonClick = {},
+            onUndoButtonClickEvent = {},
             deletedItemsCount = 0,
             onSwipeToDeleteItem = {},
             isSelectedState = false,

@@ -81,12 +81,6 @@ class HomeActivity : ComponentActivity() {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
         }
 
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.CAMERA),
-            10
-        )
-
         setContent {
             val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)
             val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)

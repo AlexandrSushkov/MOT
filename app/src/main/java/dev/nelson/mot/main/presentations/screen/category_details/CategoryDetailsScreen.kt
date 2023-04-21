@@ -65,7 +65,7 @@ fun CategoryDetailsLayout(
 //    val category: Category by categoryNameState.collectAsState(initial = Category.empty())
 //    var categoryNameValueState by remember { mutableStateOf(TextFieldValue(text = category.name, selection = TextRange(category.name.length))) }
     val categoryNameValueState by nameState.collectAsState()
-    val categoryNameFocusRequester = remember { FocusRequester.Default }
+    val categoryNameFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(
         key1 = Unit,
@@ -76,6 +76,7 @@ fun CategoryDetailsLayout(
 //                categoryNameValueState = TextFieldValue(text = category.name, selection = TextRange(category.name.length))
 //            }
         })
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -105,7 +106,6 @@ fun CategoryDetailsLayout(
 @Preview(showBackground = true)
 @Composable
 fun CategoryDetailsLayoutLightPreview() {
-
     CategoryDetailsLayout(
         innerPadding = PaddingValues(),
         nameState = MutableStateFlow(TextFieldValue()),
