@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,12 +40,12 @@ fun ListPlaceholder(modifier: Modifier, imageVector: ImageVector, text: String) 
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = "spec:width=1080px,height=2340px,dpi=440", showSystemUi = true)
 @Composable
 fun ListPlaceholderPreview() {
     ListPlaceholder(
         modifier = Modifier.size(24.dp),
-        imageVector = Icons.Default.Abc,
+        imageVector = Icons.Default.List,
         text = "placeholder"
     )
 }

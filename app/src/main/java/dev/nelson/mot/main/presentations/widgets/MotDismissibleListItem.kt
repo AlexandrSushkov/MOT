@@ -47,7 +47,7 @@ fun MotDismissibleListItem(
         DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.surfaceVariant
         DismissValue.DismissedToStart -> MaterialTheme.colorScheme.errorContainer
     }
-    val dismissibleBackgroundColor by animateColorAsState(targetValue = dismissibleBackgroundTargetColor)
+    val dismissibleBackgroundColor by animateColorAsState(targetValue = dismissibleBackgroundTargetColor, label = "dismissible Background  Color")
     val dismissibleIconTargetColor = when (dismissState.targetValue) {
         DismissValue.Default -> MaterialTheme.colorScheme.onSurfaceVariant
         DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.onSurfaceVariant
@@ -55,7 +55,8 @@ fun MotDismissibleListItem(
     }
     val dismissibleIconColor by animateColorAsState(
         targetValue = dismissibleIconTargetColor,
-        finishedListener = { haptic.performHapticFeedback(HapticFeedbackType.LongPress) }
+        finishedListener = { haptic.performHapticFeedback(HapticFeedbackType.LongPress) },
+        label = "dismissible Icon Color"
     )
 
     SwipeToDismiss(
@@ -73,6 +74,7 @@ fun MotDismissibleListItem(
             val scale by animateFloatAsState(
                 targetValue = if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.1f,
                 animationSpec = FloatTweenSpec(500, 0, AnticipateOvershootInterpolator().toEasing()),
+                label = "scale",
             )
 
             Box(

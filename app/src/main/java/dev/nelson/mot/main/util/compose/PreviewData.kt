@@ -11,39 +11,6 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import java.io.InputStream
 import java.util.UUID
 
-val categoryNames = listOf(
-    "Support",
-    "Legal",
-    "Sales",
-    "Human Resources",
-    "Support",
-    "Product Management",
-    "Legal",
-    "Legal",
-    "Research and Development",
-    "Engineering",
-    "Product Management",
-    "Engineering",
-    "Support",
-    "Engineering",
-    "Training",
-    "Support",
-    "Marketing",
-    "Business Development",
-    "Human Resources",
-    "Sales",
-    "Human Resources",
-    "Product Management",
-    "Human Resources",
-    "Services",
-    "Legal",
-    "Accounting",
-    "Training",
-    "Services",
-    "Support",
-    "Support",
-)
-
 object PreviewData {
 
     val categoryPreview: Category
@@ -134,3 +101,36 @@ class PaymentPreviewProvider : PreviewParameterProvider<Payment> {
 class CategoryPreviewProvider : PreviewParameterProvider<Category> {
     override val values = sequenceOf(Category("category"))
 }
+
+val categoryNames = listOf(
+    "Support",
+    "Legal",
+    "Sales",
+    "Human Resources",
+    "Support",
+    "Product Management",
+    "Legal",
+    "Legal",
+    "Research and Development",
+    "Engineering",
+    "Product Management",
+    "Engineering",
+    "Support",
+    "Engineering",
+    "Training",
+    "Support",
+    "Marketing",
+    "Business Development",
+    "Human Resources",
+    "Sales",
+    "Human Resources",
+    "Product Management",
+    "Human Resources",
+    "Services",
+    "Legal",
+    "Accounting",
+    "Training",
+    "Services",
+    "Support",
+    "Support",
+)

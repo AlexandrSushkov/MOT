@@ -1,10 +1,14 @@
 package dev.nelson.mot.main.presentations.widgets
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -26,12 +30,6 @@ fun MotButton(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
 ) {
-//    FilledTonalButton(
-//        modifier = modifier,
-//        onClick = onClick,
-//        content = content
-//    )
-
     Button(
         modifier = modifier,
         onClick = onClick,
@@ -52,77 +50,84 @@ fun MotOutlinedButton(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "regularButton")
 @Composable
 fun MotButtonPreview() {
     MotButton(
         onClick = {},
         modifier = Modifier,
         content = {
-            Icon(Icons.Default.Save, modifier = Modifier.padding(end = 4.dp), contentDescription = "IconButton")
+            Icon(
+                Icons.Default.Save,
+                modifier = Modifier.padding(end = 4.dp),
+                contentDescription = "IconButton"
+            )
             Text(text = "Mot Button")
         }
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun MotIconButtonPreview() {
-    IconButton(
-        onClick = {},
-        modifier = Modifier,
-        content = {
-            Icon(Icons.Default.Save, modifier = Modifier.padding(end = 4.dp), contentDescription = "IconButton")
-        }
-    )
+fun MotNavBackIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(Icons.Default.ArrowBack, contentDescription = "back icon")
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "imageButton")
 @Composable
-fun Buttons() {
-    Column {
-        Button(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { }
-        ) {
-            Text(text = "Button")
-        }
-        ElevatedButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { },
-            content = {
-                Text(text = "ElevatedButton")
-            })
-        OutlinedButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp),
-            onClick = { },
-            content = { Text(text = "OutlinedButton") }
+private fun MotNavIconsPreview() {
+    Row {
+        MotNavBackIcon {}
+        MotNavDrawerIcon {}
+        MotNavSettingsIconPreview()
+    }
+}
+
+@Preview(showBackground = true, group = "imageButton")
+@Composable
+private fun MotNavBackIconPreview() {
+    MotNavBackIcon {}
+}
+
+@Composable
+fun MotNavDrawerIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(Icons.Default.Menu, contentDescription = "drawer menu icon")
+    }
+}
+
+@Preview(showBackground = true, group = "imageButton")
+@Composable
+private fun MotNavDrawerIconPreview() {
+    MotNavDrawerIcon {}
+}
+
+@Composable
+fun MotNavSettingsIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(Icons.Default.Settings, contentDescription = "settings icon")
+    }
+}
+
+@Preview(showBackground = true, group = "imageButton")
+@Composable
+private fun MotNavSettingsIconPreview() {
+    MotNavSettingsIcon {}
+}
+
+@Composable
+fun MotSaveIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            Icons.Default.Save,
+            contentDescription = "save icon"
         )
     }
-    IconButton(
-        modifier = Modifier.padding(8.dp),
-        onClick = { },
-        content = { Icon(Icons.Default.Save, contentDescription = "IconButton") }
-    )
-    ExtendedFloatingActionButton(
-        modifier = Modifier.padding(8.dp),
-        onClick = { },
-        content = { Text(text = "ExtendedFloatingActionButton") }
-    )
-    FilledTonalButton(
-        modifier = Modifier.padding(8.dp),
-        onClick = { },
-        content = { Text(text = "FilledTonalButton") }
-    )
-    TextButton(
-        modifier = Modifier.padding(8.dp),
-        onClick = { },
-        content = { Text(text = "TextButton") }
-    )
+}
+
+@Preview(showBackground = true, group = "imageButton")
+@Composable
+fun MotSaveIconButtonPreview() {
+    MotSaveIcon {}
 }

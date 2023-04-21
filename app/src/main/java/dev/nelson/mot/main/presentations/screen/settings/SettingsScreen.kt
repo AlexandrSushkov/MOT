@@ -40,7 +40,7 @@ import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.ui.theme.colorsMaterial3
-import dev.nelson.mot.main.presentations.widgets.TopAppBarMot
+import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 
 @Composable
@@ -108,7 +108,7 @@ private fun SettingsScreenLayout(
     }
 
     Scaffold(
-        topBar = { TopAppBarMot(title = title, navigationIcon = navigationIcon) }
+        topBar = { MotTopAppBar(title = title, navigationIcon = navigationIcon) }
     ) { innerPadding ->
         Column(
             modifier = Modifier

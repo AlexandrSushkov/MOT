@@ -13,31 +13,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 
 @Composable
-fun TopAppBarMot(
+fun MotTopAppBar(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         navigationIcon = navigationIcon,
-        title = { Text(text = title) },
+        title = { Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge
+        ) },
         actions = actions
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "toolbar")
 @Composable
-private fun ToolbarMotLightPreview() {
+private fun MotTopAppBarLightPreview() {
     MotTheme(darkTheme = false) {
-        TopAppBarMot(
+        MotTopAppBar(
             title = "Toolbar",
             navigationIcon = { MotNavDrawerIcon {} },
             actions = { MotNavSettingsIcon {} }
@@ -45,11 +48,11 @@ private fun ToolbarMotLightPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "toolbar")
 @Composable
-private fun ToolbarMotDarkPreview() {
+private fun MotTopAppBarDarkPreview() {
     MotTheme(darkTheme = true) {
-        TopAppBarMot(
+        MotTopAppBar(
             title = "Toolbar",
             navigationIcon = { MotNavDrawerIcon {} },
             actions = { MotNavSettingsIcon {} }
@@ -63,7 +66,7 @@ fun MotSelectionTopAppBar(
     onNavigationIconClick: () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    SmallTopAppBar(
+    TopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigationIconClick) {
                 Icon(Icons.Default.Close, contentDescription = "close drawer icon")
@@ -80,7 +83,7 @@ fun MotSelectionTopAppBar(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showSystemUi = false, group = "toolbar")
 @Composable
 private fun MotSelectionTopAppBarLightPreview() {
     MotTheme(darkTheme = false) {
@@ -102,7 +105,7 @@ private fun MotSelectionTopAppBarLightPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, group = "toolbar")
 @Composable
 private fun MotSelectionTopAppBarDarkPreview() {
     MotTheme(darkTheme = true) {
