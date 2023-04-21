@@ -211,7 +211,7 @@ class PaymentListViewModel @Inject constructor(
         // create new one
         deletePaymentJob = launch {
             paymentsToDeleteList.addAll(selectedItemsList)
-            onCancelSelectionClick() // MUST be before apply list with deleted items. this method reset payment list to initial
+            onCancelSelectionClickEvent() // MUST be before apply list with deleted items. this method reset payment list to initial
             val temp = mutableListOf<PaymentListItemModel>().apply {
                 addAll(_paymentList.value.successOr(emptyList()))
             }
@@ -253,7 +253,7 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    fun onCancelSelectionClick() {
+    fun onCancelSelectionClickEvent() {
         cancelSelection()
     }
 

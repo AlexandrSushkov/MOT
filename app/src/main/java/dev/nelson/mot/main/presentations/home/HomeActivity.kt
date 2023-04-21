@@ -2,8 +2,6 @@
 
 package dev.nelson.mot.main.presentations.home
 
-import android.Manifest
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,19 +33,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.main.presentations.nav.Categories
 import dev.nelson.mot.main.presentations.nav.CategoryDetails
+import dev.nelson.mot.main.presentations.nav.MotDestinations
 import dev.nelson.mot.main.presentations.nav.PaymentDetails
 import dev.nelson.mot.main.presentations.nav.Payments
 import dev.nelson.mot.main.presentations.nav.Settings
@@ -85,7 +81,10 @@ class HomeActivity : ComponentActivity() {
             val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)
             val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
 
-            MotTheme(forceDark = forceDark, dynamicColor = dynamicColor) {
+            MotTheme(
+                forceDark = forceDark,
+                dynamicColor = dynamicColor
+            ) {
                 MotApp(
                     isOpenedFromWidget = isOpenedFromWidget,
                     finishAction = { finishAndRemoveTask() }
@@ -99,26 +98,32 @@ class HomeActivity : ComponentActivity() {
 @Composable
 fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
+    val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
     val navigationDrawerValue = if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
     val navigationDrawerState = rememberDrawerState(navigationDrawerValue)
-    val coroutineScope = rememberCoroutineScope()
-    val items = drawerItemsList
-    val selectedRoute = remember { mutableStateOf(items.first().route) }
+    val drawerItems = drawerItemsList
+    val selectedRoute = remember { mutableStateOf(drawerItems.first().route) }
 
-    navController.addOnDestinationChangedListener(listener = { _, destination, _ ->
+    navController.addOnDestinationChangedListener { _, destination, _ ->
         destination.route?.let { currentRoute ->
-            if (drawerItemsList.map { drawerItem -> drawerItem.route }.contains(currentRoute)) {
+            if (drawerItems.map { drawerItem -> drawerItem.route }.contains(currentRoute)) {
                 selectedRoute.value = currentRoute
             }
         }
-    })
+    }
 
+    /**
+     * Close the navigation drawer back handler.
+     */
     BackHandler(
         enabled = navigationDrawerState.isOpen,
         onBack = { coroutineScope.launch { navigationDrawerState.close() } }
     )
 
+    /**
+     * Close the app back handler.
+     */
     BackHandler(
         enabled = isOpenedFromWidget,
         onBack = { coroutineScope.launch { finishAction.invoke() } }
@@ -132,15 +137,16 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
             drawerContent = {
                 NavigationDrawerContent(
                     navController = navController,
+                    drawerItems = drawerItems,
                     selectedRoute = selectedRoute
                 ) { coroutineScope.launch { navigationDrawerState.close() } }
             },
             content = {
                 MotNavHost(
-                    navController,
-                    navigationDrawerState,
-                    isOpenedFromWidget,
-                    finishAction
+                    navController = navController,
+                    navigationDrawerState = navigationDrawerState,
+                    isOpenedFromWidget = isOpenedFromWidget,
+                    finishAction = finishAction
                 )
             }
         )
@@ -150,48 +156,26 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 @Composable
 private fun NavigationDrawerContent(
     navController: NavHostController,
+    drawerItems: List<MotDestinations>,
     selectedRoute: MutableState<String>,
     closeNavDrawer: () -> Unit
 ) {
     ModalDrawerSheet {
         Spacer(Modifier.height(12.dp))
-        NavigationDrawerItem(
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-            icon = { Icon(Payments.icon, contentDescription = "${Payments::class.java} drawer item") },
-            label = { Text(text = Payments.route) },
-            onClick = {
-                if (navController.currentDestination?.route != Payments.route) {
-                    navController.popBackStack(Payments.route, false)
-                }
-                closeNavDrawer.invoke()
-            },
-            selected = selectedRoute.value == Payments.route
-        )
-        NavigationDrawerItem(
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-            icon = { Icon(Categories.icon, contentDescription = "${Categories::class.java} drawer item") },
-            label = { Text(text = Categories.route) },
-            onClick = {
-                if (navController.currentDestination?.route != Categories.route) {
-                    navController.navigate(Categories.route)
-                }
-                closeNavDrawer.invoke()
-            },
-            selected = selectedRoute.value == Categories.route,
-
+        drawerItems.forEach { drawerItem ->
+            NavigationDrawerItem(
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                icon = { Icon(drawerItem.icon, contentDescription = "${drawerItem.route} drawer item") },
+                label = { Text(text = drawerItem.route) },
+                onClick = {
+                    if (navController.currentDestination?.route != drawerItem.route) {
+                        navController.navigate(drawerItem.route)
+                    }
+                    closeNavDrawer.invoke()
+                },
+                selected = selectedRoute.value == drawerItem.route
             )
-        NavigationDrawerItem(
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-            icon = { Icon(Statistic.icon, contentDescription = "${Categories::class.java} drawer item") },
-            label = { Text(text = Statistic.route) },
-            onClick = {
-                if (navController.currentDestination?.route != Statistic.route) {
-                    navController.navigate(Statistic.route)
-                }
-                closeNavDrawer.invoke()
-            },
-            selected = selectedRoute.value == Statistic.route,
-        )
+        }
     }
 }
 

@@ -60,6 +60,7 @@ import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotButton
 import dev.nelson.mot.main.presentations.widgets.MotOutlinedButton
 import dev.nelson.mot.main.presentations.ui.theme.textFieldMaterial3Colors
+import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
@@ -74,6 +75,9 @@ fun PaymentDetailsScreen(
     closeScreen: () -> Unit
 ) {
 
+    /**
+     * Close screen effect
+     */
     LaunchedEffect(
         key1 = true,
         block = {
@@ -97,6 +101,7 @@ fun PaymentDetailsScreen(
 
     val date by viewModel.dateState.collectAsState("")
     val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
+
     PaymentDetailsLayout(
         paymentNameState = viewModel.paymentNameState,
         costState = viewModel.costState,
@@ -171,7 +176,7 @@ fun PaymentDetailsLayout(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
     val paymentNameFocusRequester = remember { FocusRequester() }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -185,11 +190,9 @@ fun PaymentDetailsLayout(
         delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial. Otherwise keyboard won't pop on
         paymentNameFocusRequester.requestFocus()
     })
-    ModalBottomSheetLayout(
+    MotModalBottomSheetLayout(
         sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
         sheetState = modalBottomSheetState,
-        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-        sheetContentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surface)
     ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -237,7 +240,7 @@ fun PaymentDetailsLayout(
                         .bringIntoViewRequester(bringIntoViewRequester)
                         .onFocusEvent { event ->
                             if (event.isFocused) {
-                                scope.launch { bringIntoViewRequester.bringIntoView() }
+                                coroutineScope.launch { bringIntoViewRequester.bringIntoView() }
                             }
                         },
 
@@ -280,7 +283,7 @@ fun PaymentDetailsLayout(
                     MotOutlinedButton(
                         onClick = {
 //                            onCategoryClick.invoke()
-                            scope.launch {
+                            coroutineScope.launch {
                                 keyboardController?.hide()
                                 delay(Constants.DEFAULT_ANIMATION_DELAY)
                                 focusManager.clearFocus()

@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 
 package dev.nelson.mot.main.presentations.screen.payment_list
 
@@ -16,6 +16,7 @@ import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -58,6 +59,7 @@ import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPayment
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
 import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
@@ -72,6 +74,7 @@ import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentListScreen(
     navigationIcon: @Composable () -> Unit,
@@ -80,6 +83,8 @@ fun PaymentListScreen(
     viewModel: PaymentListViewModel
 ) {
     val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     // listen states
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
@@ -90,7 +95,9 @@ fun PaymentListScreen(
     val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
     val categories by viewModel.categoriesState.collectAsState(emptyList())
 
-    // listen actions
+    /**
+     * Open payment details
+     */
     LaunchedEffect(
         key1 = Unit,
         block = {
@@ -102,19 +109,29 @@ fun PaymentListScreen(
             }
         })
 
+    /**
+     * Back handler to cancel selection
+     */
     BackHandler(
-        enabled = isSelectedState,
-        onBack = { viewModel.onCancelSelectionClick() }
+        enabled = isSelectedState && modalBottomSheetState.isVisible.not(),
+        onBack = { viewModel.onCancelSelectionClickEvent() }
+    )
+
+    /**
+     * Back handler to hide modal bottom sheet
+     */
+    BackHandler(
+        enabled = modalBottomSheetState.isVisible,
+        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
     )
 
     // TODO: move to VM
-    val context = LocalContext.current
     val cldr: Calendar = Calendar.getInstance()
     val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
     val month: Int = cldr.get(Calendar.MONTH)
     val year: Int = cldr.get(Calendar.YEAR)
     val picker = DatePickerDialog(
-        context,
+        LocalContext.current,
         { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
         year,
         month,
@@ -139,16 +156,16 @@ fun PaymentListScreen(
         isSelectedState = isSelectedState,
         selectedItemsCount = selectedItemsCount,
         onCancelSelectionClick = {
-            viewModel.onCancelSelectionClick()
+            viewModel.onCancelSelectionClickEvent()
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
         onChangeDateForSelectedItemsClick = { picker.show() },
         categories = categories,
-        onCategoryClick = { category ->
-            viewModel.onCategorySelected(category)
-        }
+        onCategoryClick = { category -> viewModel.onCategorySelected(category) },
+        modalBottomSheetState = modalBottomSheetState
+
     )
 }
 
@@ -174,11 +191,9 @@ fun PaymentListLayout(
     onChangeCategoryForSelectedItemsClick: () -> Unit,
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
+    modalBottomSheetState: ModalBottomSheetState,
 ) {
-
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-    ModalBottomSheetLayout(
+    MotModalBottomSheetLayout(
         sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
         sheetState = modalBottomSheetState
     ) {
@@ -356,6 +371,7 @@ fun PaymentList(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun PaymentListScreenLightPreview() {
@@ -376,10 +392,11 @@ private fun PaymentListScreenLightPreview() {
         selectedItemsCount = 0,
         onCancelSelectionClick = {},
         onDeleteSelectedItemsClick = {},
-        onChangeCategoryForSelectedItemsClick = {},
         onChangeDateForSelectedItemsClick = {},
+        onChangeCategoryForSelectedItemsClick = {},
         categories = emptyList(),
-        onCategoryClick = {}
+        onCategoryClick = {},
+        modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     )
 }
 
@@ -404,10 +421,11 @@ private fun PaymentListScreenDarkPreview() {
             selectedItemsCount = 0,
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
-            onChangeCategoryForSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
+            onChangeCategoryForSelectedItemsClick = {},
             categories = emptyList(),
-            onCategoryClick = {}
+            onCategoryClick = {},
+            modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         )
     }
 }
