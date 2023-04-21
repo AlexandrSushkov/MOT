@@ -12,7 +12,7 @@ import dev.nelson.mot.db.MIGRATION_1_2
 import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.BuildConfig
-import dev.nelson.mot.main.data.preferences.MotSwitch
+import dev.nelson.mot.main.data.preferences.MotSwitchType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -88,12 +88,12 @@ class SettingsRepository @Inject constructor(
         return true
     }
 
-    suspend fun setSwitch(motSwitch: MotSwitch, isEnabled: Boolean) {
-        dataStore.edit { preferences -> preferences[motSwitch.key] = isEnabled }
+    suspend fun setSwitch(motSwitchType: MotSwitchType, isEnabled: Boolean) {
+        dataStore.edit { preferences -> preferences[motSwitchType.key] = isEnabled }
     }
 
-    fun getSwitch(motSwitch: MotSwitch): Flow<Boolean> {
-        return dataStore.data.map { it[motSwitch.key] ?: false }
+    fun getSwitch(motSwitchType: MotSwitchType): Flow<Boolean> {
+        return dataStore.data.map { it[motSwitchType.key] ?: false }
     }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {

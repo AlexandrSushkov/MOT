@@ -40,6 +40,7 @@ import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.ui.theme.colorsMaterial3
+import dev.nelson.mot.main.presentations.widgets.MotSwitch
 import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 
@@ -116,36 +117,34 @@ private fun SettingsScreenLayout(
                 .fillMaxSize()
         ) {
             ListItem(
+                text = { Text(text = "Dark theme") },
                 trailing = {
-                    Switch(
+                    MotSwitch(
                         checked = darkTheme,
-                        onCheckedChange = onDarkClick,
-                        colors = SwitchDefaults.colorsMaterial3()
+                        onCheckedChange = onDarkClick
                     )
-                },
-                text = { Text(text = "Dark theme") }
+                }
             )
             ListItem(
+                text = { Text(text = "Dynamic color theme") },
                 trailing = {
-                    Switch(
+                    MotSwitch(
                         checked = colorTheme,
-                        onCheckedChange = onColorClick,
-                        colors = SwitchDefaults.colorsMaterial3()
+                        onCheckedChange = onColorClick
                     )
-                },
-                text = { Text(text = "Dynamic color theme") }
+                }
             )
             ListItem(
+                text = { Text(text = "Export data base to the Downloads folder") },
                 trailing = {
                     TextButton(onClick = { onExportDataBaseClick.invoke() }) { Text(text = "Export") }
-                },
-                text = { Text(text = "Export data base to the Downloads folder") }
+                }
             )
             ListItem(
+                text = { Text(text = "Import data base") },
                 trailing = {
                     TextButton(onClick = { filePickerLauncher.launch("*/*") }) { Text(text = "Import") }
-                },
-                text = { Text(text = "Import data base") }
+                }
             )
             Spacer(modifier = Modifier.weight(1f))
             ListItem(

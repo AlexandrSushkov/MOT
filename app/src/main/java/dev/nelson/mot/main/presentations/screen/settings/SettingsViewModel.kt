@@ -3,7 +3,7 @@ package dev.nelson.mot.main.presentations.screen.settings
 import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.R
-import dev.nelson.mot.main.data.preferences.MotSwitch
+import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
@@ -53,12 +53,12 @@ class SettingsViewModel @Inject constructor(
 
     init {
         launch {
-            getSwitchStatusUseCase.execute(MotSwitch.DarkTheme)
+            getSwitchStatusUseCase.execute(MotSwitchType.DarkTheme)
                 .collect { _darkTheme.value = it }
         }
 
         launch {
-            getSwitchStatusUseCase.execute(MotSwitch.DynamicColorTheme)
+            getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme)
                 .collect { _dynamicColorTheme.value = it }
         }
     }
@@ -68,10 +68,10 @@ class SettingsViewModel @Inject constructor(
      */
     fun onDarkThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
-            val params = SetSwitchStatusParams(MotSwitch.DynamicColorTheme, false) // force turn off dynamic color theme
+            val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, false) // force turn off dynamic color theme
             setSwitchStatusUseCase.execute(params)
         }
-        val params = SetSwitchStatusParams(MotSwitch.DarkTheme, isChecked)
+        val params = SetSwitchStatusParams(MotSwitchType.DarkTheme, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
 
@@ -80,10 +80,10 @@ class SettingsViewModel @Inject constructor(
      */
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
-            val params = SetSwitchStatusParams(MotSwitch.DarkTheme, false) // force turn off dark theme
+            val params = SetSwitchStatusParams(MotSwitchType.DarkTheme, false) // force turn off dark theme
             setSwitchStatusUseCase.execute(params)
         }
-        val params = SetSwitchStatusParams(MotSwitch.DynamicColorTheme, isChecked)
+        val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
 

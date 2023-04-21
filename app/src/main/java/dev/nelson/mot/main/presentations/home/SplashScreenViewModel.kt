@@ -1,9 +1,8 @@
 package dev.nelson.mot.main.presentations.home
 
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.nelson.mot.main.data.preferences.MotSwitch
+import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,12 +35,12 @@ class SplashScreenViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getSwitchStatusUseCase.execute(MotSwitch.DarkTheme)
+            getSwitchStatusUseCase.execute(MotSwitchType.DarkTheme)
                 .collect { _forceDark.value = it }
         }
 
         viewModelScope.launch {
-            getSwitchStatusUseCase.execute(MotSwitch.DynamicColorTheme)
+            getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme)
                 .collect { _dynamicColorEnabled.value = it }
         }
     }
