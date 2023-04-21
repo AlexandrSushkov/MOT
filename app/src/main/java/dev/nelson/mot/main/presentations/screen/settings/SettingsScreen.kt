@@ -163,7 +163,7 @@ private fun SettingsScreenLayoutLightPreview() {
         title = "Settings",
         navigationIcon = {
             IconButton(onClick = { }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "back icon")
+                Icon(Icons.Default.ArrowBack, contentDescription = "")
             }
         },
         onExportDataBaseClick = {},
@@ -182,7 +182,7 @@ private fun SettingsScreenLayoutDarkPreview() {
             title = "Settings",
             navigationIcon = {
                 IconButton(onClick = { }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "back icon")
+                    Icon(Icons.Default.ArrowBack, contentDescription = "")
                 }
             },
             onExportDataBaseClick = {},
@@ -209,7 +209,7 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
         },
         text = {
             Text(
-                text = alertDialogParams.message,
+                text = stringResource(alertDialogParams.message),
                 style = MaterialTheme.typography.body1
             )
         },

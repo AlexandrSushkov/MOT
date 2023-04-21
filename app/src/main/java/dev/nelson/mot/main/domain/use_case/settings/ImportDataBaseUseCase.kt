@@ -9,15 +9,15 @@ import javax.inject.Inject
 
 class ImportDataBaseUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
-) : UseCaseSuspend<ImportDataBaseParams, Boolean> {
+) : UseCaseSuspend<Uri, Boolean> {
     @Throws(FileAlreadyExistException::class)
-    override suspend fun execute(params: ImportDataBaseParams): Boolean {
+    override suspend fun execute(params: Uri): Boolean {
         val appDataBasesDir = settingsRepository.getDataBaseDir()
         val tempDataBaseDir = settingsRepository.getDataBaseTempDir().apply {
             mkdir()
         }
         val tempDataBaseFile = File(tempDataBaseDir, MotDatabaseInfo.FILE_NAME)
-        settingsRepository.copyFileFromUri(params.uri, tempDataBaseFile)
+        settingsRepository.copyFileFromUri(params, tempDataBaseFile)
         try {
             val isIntegrityCheckPassed = settingsRepository.checkDataBaseIntegrity(tempDataBaseFile)
             if (isIntegrityCheckPassed) {
@@ -34,8 +34,3 @@ class ImportDataBaseUseCase @Inject constructor(
         return false
     }
 }
-
-data class ImportDataBaseParams(
-    val uri: Uri,
-    val isOverride: Boolean = false
-)

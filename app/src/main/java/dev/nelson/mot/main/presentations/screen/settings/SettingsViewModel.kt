@@ -2,11 +2,11 @@ package dev.nelson.mot.main.presentations.screen.settings
 
 import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitch
-import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
+import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
-import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseParams
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
@@ -90,7 +90,7 @@ class SettingsViewModel @Inject constructor(
     fun onExportDataBaseClick() = launch {
         runCatching { exportDataBaseUseCase.execute() }
             .onSuccess { isExported ->
-                val message = if (isExported) DATA_BASE_EXPORTED_SUCCESSFULLY else DATA_BASE_EXPORT_FAILED
+                val message = if (isExported) R.string.database_exported_successfully_dialog_message else R.string.database_export_failed_dialog_message
                 val alertDialogParams = AlertDialogParams(
                     message = message,
                     dismissClickCallback = { hideAlertDialog() },
@@ -107,7 +107,7 @@ class SettingsViewModel @Inject constructor(
 
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = AlertDialogParams(
-            message = "Are you sure you want to import this data base?",
+            message = R.string.import_database_dialog_message,
             dismissClickCallback = { hideAlertDialog() },
             onPositiveClickCallback = {
                 hideAlertDialog()
@@ -119,7 +119,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun importDataBase(uri: Uri) = launch {
-        runCatching { importDataBaseUseCase.execute(ImportDataBaseParams(uri)) }
+        runCatching { importDataBaseUseCase.execute(uri) }
             .onSuccess { isImported ->
                 if (isImported) {
                     _restartAppAction.emit(Unit)
@@ -137,10 +137,5 @@ class SettingsViewModel @Inject constructor(
 
     private fun hideAlertDialog() = launch {
         _showAlertDialogState.emit(false to null)
-    }
-
-    companion object {
-        const val DATA_BASE_EXPORTED_SUCCESSFULLY = "data base was exported successfully. \nPlease, check Downloads folder."
-        const val DATA_BASE_EXPORT_FAILED = "Oops! data base export failed."
     }
 }
