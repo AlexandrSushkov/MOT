@@ -9,9 +9,7 @@ android {
     namespace = "$appId.db"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
-    defaultConfig {
-        minSdk = rootProject.extra["minSdk"] as Int
-    }
+    defaultConfig { minSdk = rootProject.extra["minSdk"] as Int }
 
     buildTypes {
         getByName("release") {
@@ -25,9 +23,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions { jvmTarget = "1.8" }
 }
 
 repositories {

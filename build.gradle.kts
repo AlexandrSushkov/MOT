@@ -7,14 +7,13 @@
 plugins {
     id("com.android.application") version "7.4.0" apply false
     id("org.jetbrains.kotlin.android") version "1.8.10" apply false
-//    id ("com.google.gms:google-services") version "4.3.10" apply false
-//    id ("com.neenbedankt.gradle.plugins:android-apt") version "1.8" apply false
     id("com.google.dagger.hilt.android") version "2.44" apply false
     id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
 }
 
 val appId by extra("dev.nelson.mot")
-// App version
+
+// App
 val versionName by extra("1.0.0") // X.Y.Z; X = Major, Y = minor, Z = Patch level
 val versionCode by extra(9)
 
@@ -24,7 +23,7 @@ val targetSdk by extra(33)
 val minSdk by extra(32)
 val buildToolsVersion by extra("30.0.3")
 
-// dependencies versions
+// Dependencies
 val kotlinVersion by extra("1.8.10")
 val testRunner by extra("dev.nelson.mot.main.MotTestRunner")
 

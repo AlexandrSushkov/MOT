@@ -43,12 +43,12 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
-    implementation("com.google.android.material:material:1.0.0-rc01")
+    implementation("com.google.android.material:material:1.0.0")
 
     //test
     testImplementation("junit:junit:4.12")
 
     //other
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation("android.arch.navigation:navigation-fragment:1.0.0-alpha07")
+    implementation("android.arch.navigation:navigation-fragment:1.0.0")
 }

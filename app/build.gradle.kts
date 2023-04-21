@@ -40,13 +40,9 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions { jvmTarget = "1.8" }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
-    }
+    composeOptions { kotlinCompilerExtensionVersion = "1.4.4" }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -64,9 +60,7 @@ android {
         }
     }
 
-    kapt {
-        correctErrorTypes = true
-    }
+    kapt { correctErrorTypes = true }
 
     defaultConfig.multiDexEnabled = true
     android.buildFeatures.dataBinding = true
@@ -95,10 +89,7 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-analytics-impl:18.0.2")
     implementation("androidx.compose.material3:material3:1.0.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.test:runner:1.5.2")
-
-    //material
     implementation("com.google.android.material:material:1.10.0-alpha01")
     implementation("androidx.core:core-splashscreen:1.0.1")
 
@@ -108,21 +99,22 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.5.7")
 
     //navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
-    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
-    implementation("androidx.navigation:navigation-compose:2.5.3")
+    val navVersion = "2.5.3"
+    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 
     //compose
     val composeVersion = "1.4.2"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling:$composeVersion") // Tooling support (Previews, etc.)
-    implementation("androidx.compose.runtime:runtime:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion") // Foundation (Border, Background, shapes, animations, etc.)
     implementation("androidx.compose.material:material:$composeVersion") // Material Design
     implementation("androidx.compose.material:material-icons-core:$composeVersion") // Material design icons
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion") // Integration with observables
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
     implementation("androidx.compose.compiler:compiler:1.4.6")
@@ -135,17 +127,19 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
 
     // Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //DI
-    kapt("com.google.dagger:hilt-compiler:2.44")
-    implementation("com.google.dagger:hilt-android:2.44")
+    val hiltVersion = "2.44"
+    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
 
     //other
