@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.TextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Scaffold
@@ -27,8 +26,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
+import dev.nelson.mot.main.presentations.widgets.MotTextField
 import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -82,7 +81,7 @@ fun CategoryDetailsLayout(
             .fillMaxWidth()
             .padding(innerPadding)
     ) {
-        TextField(
+        MotTextField(
             value = categoryNameValueState,
             onValueChange = { onNameChanged.invoke(it) },
             placeholder = { Text(text = "Category name") },

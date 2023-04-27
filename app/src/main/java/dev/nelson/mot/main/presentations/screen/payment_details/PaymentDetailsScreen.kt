@@ -21,12 +21,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
@@ -58,9 +54,9 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotButton
-import dev.nelson.mot.main.presentations.widgets.MotOutlinedButton
-import dev.nelson.mot.main.presentations.ui.theme.textFieldMaterial3Colors
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
+import dev.nelson.mot.main.presentations.widgets.MotOutlinedButton
+import dev.nelson.mot.main.presentations.widgets.MotTextField
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
@@ -204,7 +200,7 @@ fun PaymentDetailsLayout(
                 )
             ) {
                 Row {
-                    TextField(
+                    MotTextField(
                         modifier = Modifier
                             .focusRequester(paymentNameFocusRequester)
                             .weight(2f),
@@ -218,9 +214,8 @@ fun PaymentDetailsLayout(
                         },
                         placeholder = { Text(text = "new payment") },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                        colors = TextFieldDefaults.textFieldMaterial3Colors()
                     )
-                    TextField(
+                    MotTextField(
                         modifier = Modifier.weight(1f),
                         value = costFieldValueState,
                         singleLine = true,
@@ -231,10 +226,9 @@ fun PaymentDetailsLayout(
                         },
                         placeholder = { Text(text = "0.0") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-                        colors = TextFieldDefaults.textFieldMaterial3Colors()
                     )
                 }
-                TextField(
+                MotTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .bringIntoViewRequester(bringIntoViewRequester)
@@ -252,7 +246,6 @@ fun PaymentDetailsLayout(
                     placeholder = { Text(text = "message") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
-                    colors = TextFieldDefaults.textFieldMaterial3Colors()
 
                 )
                 Spacer(modifier = Modifier.height(10.dp))
