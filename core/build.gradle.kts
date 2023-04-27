@@ -11,6 +11,13 @@ android {
     defaultConfig{
         minSdk = rootProject.extra["minSdk"] as Int
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions { jvmTarget = "17" }
 }
 
 repositories {
@@ -37,7 +44,6 @@ dependencies {
     api ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     testApi ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
-    val junitVersion= "5.9.2"
+    val junitVersion= "4.13.2"
     testApi ("junit:junit:$junitVersion")
-    testApi ("org.junit.jupiter:junit-jupiter:$junitVersion")
 }
