@@ -40,8 +40,6 @@ dependencies {
     api(libs.androidx.ktx)
     api(libs.gson)
     api(libs.timber)
-
-    // Kotlin Coroutines
     api(libs.coroutines.core)
     testApi(libs.coroutines.test)
     testApi(libs.junit)

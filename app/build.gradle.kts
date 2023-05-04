@@ -93,9 +93,9 @@ dependencies {
     )
 
     implementation(libs.play.services.analytics.impl)
+    implementation(libs.material)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runner)
-    implementation(libs.material)
     implementation(libs.androidx.core.splashscreen)
 
     //android support
@@ -107,6 +107,16 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
+
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.common.java8)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
+
+    // Preferences
+    implementation(libs.androidx.datastore.preferences)
 
     //compose
     implementation(libs.compose.ui)
@@ -124,16 +134,6 @@ dependencies {
     implementation(libs.activity.compose) // Integration with activities
     implementation(libs.viewmodel.compose) // Integration with ViewModels
     implementation(libs.accompanist.permissions) // compose permissions
-
-    //Lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.common.java8)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.extensions)
-
-    // Preferences
-    implementation(libs.androidx.datastore.preferences)
 
     //DI
     kapt(libs.hilt.compiler)
