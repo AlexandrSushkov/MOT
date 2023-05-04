@@ -1,8 +1,9 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.hilt.android)
     kotlin("android")
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs.kotlin")
 }
 
@@ -30,7 +31,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
 
         getByName("debug") {
@@ -40,13 +44,14 @@ android {
         }
     }
 
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 
-    composeOptions { kotlinCompilerExtensionVersion = "1.4.4" }
+    composeOptions { kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get() }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        val javaVersion: JavaVersion by rootProject.extra
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 
     buildFeatures {
@@ -54,7 +59,7 @@ android {
         viewBinding = true
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -87,62 +92,58 @@ dependencies {
         )
     )
 
-    implementation("com.google.android.gms:play-services-analytics-impl:18.0.2")
-    implementation("androidx.compose.material3:material3:1.0.1")
-    implementation("androidx.test:runner:1.5.2")
-    implementation("com.google.android.material:material:1.10.0-alpha01")
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.play.services.analytics.impl)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.runner)
+    implementation(libs.material)
+    implementation(libs.androidx.core.splashscreen)
 
     //android support
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.appcompat:appcompat:1.7.0-alpha02")
-    implementation("androidx.fragment:fragment-ktx:1.5.7")
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragment.ktx)
 
     //navigation
-    val navVersion = "2.5.3"
-    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
-    implementation("androidx.navigation:navigation-compose:$navVersion")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
 
     //compose
-    val composeVersion = "1.4.2"
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling:$composeVersion") // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.compose.foundation:foundation:$composeVersion") // Foundation (Border, Background, shapes, animations, etc.)
-    implementation("androidx.compose.material:material:$composeVersion") // Material Design
-    implementation("androidx.compose.material:material-icons-core:$composeVersion") // Material design icons
-    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
-    implementation("androidx.compose.runtime:runtime:$composeVersion")
-    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion") // Integration with observables
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    implementation("androidx.compose.compiler:compiler:1.4.6")
-    implementation("androidx.activity:activity-compose:1.7.1") // Integration with activities
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1") // Integration with ViewModels
-    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling) // Tooling support (Previews, etc.)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.foundation) // Foundation (Border, Background, shapes, animations, etc.)
+    implementation(libs.compose.material) // Material Design
+    implementation(libs.compose.material.icons.core) // Material design icons
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.runtime.livedata) // Integration with observables
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
+    implementation(libs.compose.compiler)
+    implementation(libs.activity.compose) // Integration with activities
+    implementation(libs.viewmodel.compose) // Integration with ViewModels
+    implementation(libs.accompanist.permissions) // compose permissions
 
     //Lifecycle
-    val lifecycleVersion = "2.6.1"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.common.java8)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.extensions)
 
     // Preferences
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.datastore.preferences)
 
     //DI
-    val hiltVersion = "2.44"
-    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.androidx.hilt.compiler)
 
     //other
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.chart)
 }

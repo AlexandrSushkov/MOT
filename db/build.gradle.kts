@@ -1,7 +1,8 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -14,16 +15,20 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        val javaVersion: JavaVersion by rootProject.extra
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 }
 
 repositories {
@@ -35,8 +40,7 @@ repositories {
 dependencies {
     implementation(project(":core"))
 
-    val roomVersion = "2.5.1"
-    ksp("androidx.room:room-compiler:$roomVersion")
-    api("androidx.room:room-runtime:$roomVersion")
-    api("androidx.room:room-ktx:$roomVersion") //Kotlin Extensions and Coroutines support for Room
+    ksp(libs.room.compiler)
+    api(libs.room.runtime)
+    api(libs.room.ktx) // Kotlin Extensions and Coroutines support for Room
 }

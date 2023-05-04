@@ -4,11 +4,12 @@
  *  dependencies that are common to all modules in the project.
  *  In addition, the top-level build file contains code to clean your build directory.
  */
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("com.android.application") version "8.0.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.10" apply false
-    id("com.google.dagger.hilt.android") version "2.44" apply false
-    id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 val appId by extra("dev.nelson.mot")
@@ -23,13 +24,15 @@ val targetSdk by extra(33)
 val minSdk by extra(33)
 val buildToolsVersion by extra("30.0.3")
 
+val javaVersion by extra(JavaVersion.VERSION_17)
+val jvmTarget by extra("17")
+
 // Dependencies
-val kotlinVersion by extra("1.8.10")
 val testRunner by extra("dev.nelson.mot.main.MotTestRunner")
 
 buildscript {
     dependencies {
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
+        classpath(libs.androidx.navigation.safe.args.gradle.plugin)
     }
 }
 

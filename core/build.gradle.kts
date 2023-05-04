@@ -1,6 +1,7 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id ("com.android.library")
-    id ("org.jetbrains.kotlin.android")
+    id("com.android.library")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -8,16 +9,17 @@ android {
     namespace = "$appId.core"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
-    defaultConfig{
+    defaultConfig {
         minSdk = rootProject.extra["minSdk"] as Int
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        val javaVersion: JavaVersion by rootProject.extra
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 }
 
 repositories {
@@ -34,16 +36,13 @@ dependencies {
             )
         )
     )
-    
-    api ("com.google.code.gson:gson:2.9.0")
-    api ("androidx.core:core-ktx:1.10.0")
-    api ("com.jakewharton.timber:timber:4.7.1")
+
+    api(libs.androidx.ktx)
+    api(libs.gson)
+    api(libs.timber)
 
     // Kotlin Coroutines
-    val coroutinesVersion = "1.6.4"
-    api ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    testApi ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
-
-    val junitVersion= "4.13.2"
-    testApi ("junit:junit:$junitVersion")
+    api(libs.coroutines.core)
+    testApi(libs.coroutines.test)
+    testApi(libs.junit)
 }
