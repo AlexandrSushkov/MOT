@@ -29,11 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.motTabRowScreens
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.LineChartMot
 
 @Composable
@@ -140,7 +140,7 @@ private fun StatisticLayoutLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun StatisticLayoutDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         StatisticLayout(
             NavHostController(LocalContext.current),
             currentMonthList = emptyMap(),

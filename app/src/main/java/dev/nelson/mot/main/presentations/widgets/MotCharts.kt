@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.mikephil.charting.charts.BarChart
-import dev.nelson.mot.main.presentations.ui.theme.MotColors
+import dev.theme.MotColors
 import kotlin.random.Random
 
 @Preview(showBackground = true)

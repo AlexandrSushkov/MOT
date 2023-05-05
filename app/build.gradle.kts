@@ -82,6 +82,8 @@ repositories {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:test"))
     implementation(project(":db"))
     implementation(
         fileTree(
@@ -94,7 +96,6 @@ dependencies {
 
     implementation(libs.play.services.analytics.impl)
     implementation(libs.material)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.runner)
     implementation(libs.androidx.core.splashscreen)
 
@@ -118,19 +119,19 @@ dependencies {
     // Preferences
     implementation(libs.androidx.datastore.preferences)
 
-    //compose
-    implementation(libs.compose.ui)
-    implementation(libs.compose.ui.tooling) // Tooling support (Previews, etc.)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.foundation) // Foundation (Border, Background, shapes, animations, etc.)
-    implementation(libs.compose.material) // Material Design
-    implementation(libs.compose.material.icons.core) // Material design icons
-    implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.runtime)
-    implementation(libs.compose.runtime.livedata) // Integration with observables
+//    //compose
+//    implementation(libs.compose.ui)
+//    implementation(libs.compose.ui.tooling) // Tooling support (Previews, etc.)
+//    implementation(libs.compose.ui.tooling.preview)
+//    implementation(libs.compose.foundation) // Foundation (Border, Background, shapes, animations, etc.)
+//    implementation(libs.compose.material) // Material Design
+//    implementation(libs.compose.material.icons.core) // Material design icons
+//    implementation(libs.compose.material.icons.extended)
+//    implementation(libs.compose.runtime)
+//    implementation(libs.compose.runtime.livedata) // Integration with observables
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
-    implementation(libs.compose.compiler)
+//    implementation(libs.compose.compiler)
     implementation(libs.activity.compose) // Integration with activities
     implementation(libs.viewmodel.compose) // Integration with ViewModels
     implementation(libs.accompanist.permissions) // compose permissions

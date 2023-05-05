@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -35,13 +33,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
-import dev.nelson.mot.main.presentations.ui.theme.colorsMaterial3
-import dev.nelson.mot.main.presentations.widgets.MotSwitch
-import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
+import dev.nelson.mot.core.ui.MotSwitch
+import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 
 @Composable
@@ -176,7 +173,7 @@ private fun SettingsScreenLayoutLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenLayoutDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         SettingsScreenLayout(
             title = "Settings",
             navigationIcon = {

@@ -15,7 +15,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Snackbar
@@ -51,19 +50,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
-import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
-import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
-import dev.nelson.mot.main.presentations.widgets.MotSelectionTopAppBar
-import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
+import dev.nelson.mot.core.ui.MotNavSettingsIcon
+import dev.nelson.mot.core.ui.MotSelectionTopAppBar
+import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
 import dev.nelson.mot.main.util.MotResult.Loading
@@ -403,7 +402,7 @@ private fun PaymentListScreenLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PaymentListScreenDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         PaymentListLayout(
             navigationIcon = { MotNavDrawerIcon {} },
             toolbarTitle = "Title",

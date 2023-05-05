@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.widgets
+package dev.nelson.mot.core.ui.test
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview(showBackground = true, group = "testButton")
 @Composable
-fun Buttons() {
+internal fun Buttons() {
     Column {
         Button(
             modifier = Modifier

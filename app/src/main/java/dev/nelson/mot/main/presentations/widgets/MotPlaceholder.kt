@@ -40,7 +40,11 @@ fun ListPlaceholder(modifier: Modifier, imageVector: ImageVector, text: String) 
     }
 }
 
-@Preview(showBackground = true, device = "spec:width=1080px,height=2340px,dpi=440", showSystemUi = true)
+@Preview(
+    showBackground = true,
+    device = "spec:width=1080px,height=2340px,dpi=440",
+    showSystemUi = true
+)
 @Composable
 fun ListPlaceholderPreview() {
     ListPlaceholder(

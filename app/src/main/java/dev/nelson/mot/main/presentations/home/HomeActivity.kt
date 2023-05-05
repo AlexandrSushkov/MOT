@@ -42,6 +42,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.nav.Categories
 import dev.nelson.mot.main.presentations.nav.CategoryDetails
 import dev.nelson.mot.main.presentations.nav.MotDestinations
@@ -56,10 +57,9 @@ import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsSc
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
-import dev.nelson.mot.main.presentations.widgets.MotNavBackIcon
-import dev.nelson.mot.main.presentations.widgets.MotNavDrawerIcon
-import dev.nelson.mot.main.presentations.widgets.MotNavSettingsIcon
+import dev.nelson.mot.core.ui.MotNavBackIcon
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
+import dev.nelson.mot.core.ui.MotNavSettingsIcon
 import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.launch
 
@@ -71,7 +71,8 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val isOpenedFromWidget = intent?.extras?.getBoolean(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, false) ?: false
+        val isOpenedFromWidget =
+            intent?.extras?.getBoolean(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, false) ?: false
 
         installSplashScreen().apply {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
@@ -81,7 +82,7 @@ class HomeActivity : ComponentActivity() {
             val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)
             val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
 
-            MotTheme(
+            MotMaterialTheme(
                 forceDark = forceDark,
                 dynamicColor = dynamicColor
             ) {
@@ -100,7 +101,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val navigationDrawerValue = if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
+    val navigationDrawerValue =
+        if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
     val navigationDrawerState = rememberDrawerState(navigationDrawerValue)
     val drawerItems = drawerItemsList
     val selectedRoute = remember { mutableStateOf(drawerItems.first().route) }
@@ -165,7 +167,12 @@ private fun NavigationDrawerContent(
         drawerItems.forEach { drawerItem ->
             NavigationDrawerItem(
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                icon = { Icon(drawerItem.icon, contentDescription = "${drawerItem.route} drawer item") },
+                icon = {
+                    Icon(
+                        drawerItem.icon,
+                        contentDescription = "${drawerItem.route} drawer item"
+                    )
+                },
                 label = { Text(text = drawerItem.route) },
                 onClick = {
                     if (navController.currentDestination?.route != drawerItem.route) {
@@ -248,12 +255,14 @@ private fun MotNavHost(
                     title = Categories.route,
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCategoryDetails = { categoryId ->
-                        categoryId?.let { navController.navigate("${CategoryDetails.route}?id=$categoryId") } ?: navController.navigate(
-                            CategoryDetails.route
-                        )
+                        categoryId?.let { navController.navigate("${CategoryDetails.route}?id=$categoryId") }
+                            ?: navController.navigate(
+                                CategoryDetails.route
+                            )
                     },
                     openPaymentsByCategory = { categoryId ->
-                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") } ?: navController.popBackStack()
+                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
+                            ?: navController.popBackStack()
                     },
                     settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
             }
@@ -311,7 +320,7 @@ private fun MotAppLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun MotAppDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         MotApp(
             isOpenedFromWidget = false,
             finishAction = {}

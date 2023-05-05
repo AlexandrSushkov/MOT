@@ -16,3 +16,5 @@ include(":core") //core modules
 //feature modules
 include(":lagacy") //legacy module
 include(":db")
+include(":core:ui")
+include(":core:test")

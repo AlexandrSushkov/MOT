@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.ui.theme
+package dev.theme
 
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha

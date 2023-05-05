@@ -1,6 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class
+)
 
-package dev.nelson.mot.main.presentations.widgets
+package dev.nelson.mot.core.ui
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
@@ -18,7 +21,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 
 @Composable
 fun MotTopAppBar(
@@ -28,10 +30,12 @@ fun MotTopAppBar(
 ) {
     CenterAlignedTopAppBar(
         navigationIcon = navigationIcon,
-        title = { Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge
-        ) },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
         actions = actions
     )
 }
@@ -39,25 +43,24 @@ fun MotTopAppBar(
 @Preview(showBackground = true, group = "toolbar")
 @Composable
 private fun MotTopAppBarLightPreview() {
-    MotTheme(darkTheme = false) {
-        MotTopAppBar(
-            title = "Toolbar",
-            navigationIcon = { MotNavDrawerIcon {} },
-            actions = { MotNavSettingsIcon {} }
-        )
-    }
+    MotTopAppBarDarkPreviewData()
 }
 
 @Preview(showBackground = true, group = "toolbar")
 @Composable
 private fun MotTopAppBarDarkPreview() {
-    MotTheme(darkTheme = true) {
-        MotTopAppBar(
-            title = "Toolbar",
-            navigationIcon = { MotNavDrawerIcon {} },
-            actions = { MotNavSettingsIcon {} }
-        )
+    MotMaterialTheme(darkTheme = true) {
+        MotTopAppBarDarkPreviewData()
     }
+}
+
+@Composable
+private fun MotTopAppBarDarkPreviewData() {
+    MotTopAppBar(
+        title = "Toolbar",
+        navigationIcon = { MotNavDrawerIcon {} },
+        actions = { MotNavSettingsIcon {} }
+    )
 }
 
 @Composable
@@ -86,43 +89,34 @@ fun MotSelectionTopAppBar(
 @Preview(showSystemUi = false, group = "toolbar")
 @Composable
 private fun MotSelectionTopAppBarLightPreview() {
-    MotTheme(darkTheme = false) {
-        MotSelectionTopAppBar(
-            title = "1",
-            onNavigationIconClick = {},
-            actions = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Category, contentDescription = "")
-                }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Delete, contentDescription = "")
-                }
-            }
-        )
+    MotMaterialTheme(darkTheme = false) {
+        MotSelectionTopAppBarPreviewData()
     }
 }
 
 @Preview(showBackground = true, group = "toolbar")
 @Composable
 private fun MotSelectionTopAppBarDarkPreview() {
-    MotTheme(darkTheme = true) {
-        MotSelectionTopAppBar(
-            title = "1",
-            onNavigationIconClick = {},
-            actions = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.CalendarMonth, contentDescription = "")
-                }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Category, contentDescription = "")
-                }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Delete, contentDescription = "")
-                }
-            }
-        )
+    MotMaterialTheme(darkTheme = true) {
+        MotSelectionTopAppBarPreviewData()
     }
+}
+
+@Composable
+private fun MotSelectionTopAppBarPreviewData() {
+    MotSelectionTopAppBar(
+        title = "1",
+        onNavigationIconClick = {},
+        actions = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.CalendarMonth, contentDescription = "")
+            }
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Category, contentDescription = "")
+            }
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.Delete, contentDescription = "")
+            }
+        }
+    )
 }

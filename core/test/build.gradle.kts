@@ -1,4 +1,4 @@
-@Suppress("DSL_SCOPE_VIOLATION")
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
@@ -6,20 +6,22 @@ plugins {
 
 android {
     val appId: String by rootProject.extra
-    namespace = "$appId.core"
+    namespace = "$appId.core.test"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {
         minSdk = rootProject.extra["minSdk"] as Int
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
+
+    kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 
     compileOptions {
         val javaVersion: JavaVersion by rootProject.extra
         sourceCompatibility = javaVersion
         targetCompatibility = javaVersion
     }
-
-    kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 }
 
 repositories {
@@ -28,17 +30,8 @@ repositories {
 }
 
 dependencies {
-    implementation(
-        fileTree(
-            mapOf(
-                "dir" to "libs",
-                "include" to listOf("*.jar")
-            )
-        )
-    )
-
-    api(libs.androidx.ktx)
-    api(libs.gson)
-    api(libs.timber)
-    api(libs.coroutines.core)
+    testApi(libs.junit)
+    testApi(libs.coroutines.test)
+    androidTestApi(libs.androidx.test.ext.junit)
+    androidTestApi(libs.espresso.core)
 }

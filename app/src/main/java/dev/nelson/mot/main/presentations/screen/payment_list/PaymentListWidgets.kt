@@ -36,8 +36,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -87,7 +87,7 @@ private fun DateRangeWidgetLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun DateRangeWidgetDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
     }
 }
@@ -120,7 +120,7 @@ private fun PaymentListDateItemLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun PaymentListDateItemDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         PaymentListDateItem("01.11.2022")
     }
 }
@@ -239,7 +239,7 @@ private fun DismissiblePaymentListItemLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun DismissiblePaymentListItemDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
             PaymentListItem(
                 paymentItemModel = PreviewData.paymentItemModelPreview,

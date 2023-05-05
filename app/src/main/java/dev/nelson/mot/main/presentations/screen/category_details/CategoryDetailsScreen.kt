@@ -26,8 +26,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
-import dev.nelson.mot.main.presentations.widgets.MotTextField
+import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.main.util.Constants
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -116,7 +116,7 @@ fun CategoryDetailsLayoutLightPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CategoryDetailsLayoutDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         CategoryDetailsLayout(
             innerPadding = PaddingValues(),
             nameState = MutableStateFlow(TextFieldValue()),

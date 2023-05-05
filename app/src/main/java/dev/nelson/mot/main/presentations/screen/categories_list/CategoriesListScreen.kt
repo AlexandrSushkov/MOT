@@ -62,17 +62,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
-import dev.nelson.mot.main.presentations.widgets.MotTextField
-import dev.nelson.mot.main.presentations.widgets.MotTopAppBar
+import dev.nelson.mot.core.ui.MotTextField
+import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
@@ -489,7 +489,7 @@ private fun CategoryListLayoutLightPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun CategoryListLayoutDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         CategoryListLayout(
             appBarTitle = stringResource(R.string.categories),
             categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),

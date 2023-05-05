@@ -51,12 +51,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.presentations.ui.theme.MotTheme
-import dev.nelson.mot.main.presentations.widgets.MotButton
+import dev.nelson.mot.core.ui.MotButton
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
-import dev.nelson.mot.main.presentations.widgets.MotOutlinedButton
-import dev.nelson.mot.main.presentations.widgets.MotTextField
+import dev.nelson.mot.core.ui.MotOutlinedButton
+import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.main.util.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
@@ -136,7 +136,7 @@ fun PaymentDetailsLayoutLightPreview() {
 @Preview(showBackground = true)
 @Composable
 fun PaymentDetailsLayoutDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         PaymentDetailsLayout(
             paymentNameState = MutableStateFlow(TextFieldValue()),
             costState = MutableStateFlow(TextFieldValue()),
@@ -330,7 +330,7 @@ fun CategoriesListBottomSheetLightPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CategoriesListBottomSheetDarkPreview() {
-    MotTheme(darkTheme = true) {
+    MotMaterialTheme(darkTheme = true) {
         CategoriesListBottomSheet(
             PreviewData.categoriesSelectListItemsPreview,
             onCategoryClick = {},
