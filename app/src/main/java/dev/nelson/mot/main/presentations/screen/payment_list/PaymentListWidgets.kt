@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
@@ -25,6 +23,8 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
 
@@ -170,8 +170,7 @@ fun PaymentListItem(
                 }
 
             }),
-        backgroundColor = MaterialTheme.colorScheme.surface,
-        elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
+//        elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
         shape = RoundedCornerShape(0.dp)
     ) {
         Row {
@@ -180,19 +179,19 @@ fun PaymentListItem(
                     Checkbox(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         checked = paymentItemModel.payment.isSelected,
-                        // adjuster to work with MaterialTheme3
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = MaterialTheme.colorScheme.secondary,
-                            uncheckedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            checkmarkColor = MaterialTheme.colorScheme.surface,
-                            disabledColor = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled),
-                        ),
                         onCheckedChange = { onClick.invoke(paymentItemModel) }
                     )
                 }
             }
             Column {
-                Row(modifier = Modifier.padding(start = if (isSelectedState) 0.dp else 24.dp, end = 24.dp, top = 16.dp, bottom = 16.dp)) {
+                Row(
+                    modifier = Modifier.padding(
+                        start = if (isSelectedState) 0.dp else 24.dp,
+                        end = 24.dp,
+                        top = 16.dp,
+                        bottom = 16.dp
+                    )
+                ) {
                     Column(
                         modifier = Modifier
                             .weight(1.0f)

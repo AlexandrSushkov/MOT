@@ -34,7 +34,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.motTabRowScreens
-import dev.nelson.mot.main.presentations.widgets.LineChartMot
+import dev.nelson.mot.core.ui.LineChartMot
 
 @Composable
 fun StatisticScreen(

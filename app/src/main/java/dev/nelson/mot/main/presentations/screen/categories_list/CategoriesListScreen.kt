@@ -70,7 +70,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
-import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.Constants

@@ -1,4 +1,6 @@
-package dev.nelson.mot.main.presentations.widgets
+@file:OptIn(ExperimentalMaterialApi::class)
+
+package dev.nelson.mot.core.ui
 
 import android.animation.TimeInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
@@ -17,12 +19,16 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.IconToggleButton
+import androidx.compose.material.ListItem
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,9 +36,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MotDismissibleListItem(
     dismissState: DismissState,
@@ -43,11 +49,14 @@ fun MotDismissibleListItem(
 
     val haptic = LocalHapticFeedback.current
     val dismissibleBackgroundTargetColor = when (dismissState.targetValue) {
-        DismissValue.Default -> MaterialTheme.colorScheme.surfaceVariant
+        DismissValue.Default -> MaterialTheme.colorScheme.background
         DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.surfaceVariant
         DismissValue.DismissedToStart -> MaterialTheme.colorScheme.errorContainer
     }
-    val dismissibleBackgroundColor by animateColorAsState(targetValue = dismissibleBackgroundTargetColor, label = "dismissible Background  Color")
+    val dismissibleBackgroundColor by animateColorAsState(
+        targetValue = dismissibleBackgroundTargetColor,
+        label = "dismissible Background  Color"
+    )
     val dismissibleIconTargetColor = when (dismissState.targetValue) {
         DismissValue.Default -> MaterialTheme.colorScheme.onSurfaceVariant
         DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.onSurfaceVariant
@@ -73,7 +82,11 @@ fun MotDismissibleListItem(
             }
             val scale by animateFloatAsState(
                 targetValue = if (dismissState.targetValue == DismissValue.Default) 0.8f else 1.1f,
-                animationSpec = FloatTweenSpec(500, 0, AnticipateOvershootInterpolator().toEasing()),
+                animationSpec = FloatTweenSpec(
+                    500,
+                    0,
+                    AnticipateOvershootInterpolator().toEasing()
+                ),
                 label = "scale",
             )
 
@@ -100,5 +113,46 @@ fun MotDismissibleListItem(
         dismissContent = dismissContent,
         directions = directions,
         dismissThresholds = { FractionalThreshold(0.35f) }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MotDismissibleListItemPreviewLight() {
+    MotMaterialTheme(darkTheme = false) {
+        MotDismissibleListItemPreviewData()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MotDismissibleListItemPreviewDark() {
+    MotMaterialTheme(darkTheme = true) {
+        MotDismissibleListItemPreviewData()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MotDismissibleListItemPreviewDynamic() {
+    MotMaterialTheme(dynamicColor = true) {
+        MotDismissibleListItemPreviewData()
+    }
+}
+
+@Composable
+private fun MotDismissibleListItemPreviewData() {
+    MotDismissibleListItem(
+        dismissState = DismissState(DismissValue.Default),
+//        dismissState = DismissState(DismissValue.DismissedToStart),
+        directions = setOf(DismissDirection.EndToStart),
+        dismissContent = {
+            Card {
+                ListItem(
+                    trailing = { },
+                    text = { Text(text = "MotDismissibleListItem") }
+                )
+            }
+        }
     )
 }

@@ -57,7 +57,7 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
-import dev.nelson.mot.main.presentations.widgets.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotNavSettingsIcon
@@ -336,7 +336,7 @@ fun PaymentList(
                                         dismissState = dismissState,
                                         directions = if (isSelectedState.not()) setOf(DismissDirection.EndToStart) else emptySet(),
                                         dismissContent = {
-                                            PaymentListItem(
+                                                PaymentListItem(
                                                 paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
                                                 dismissDirection = dismissState.dismissDirection,
