@@ -73,7 +73,7 @@ import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
-import dev.nelson.mot.main.util.Constants
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.MotResult.Error
 import dev.nelson.mot.main.util.MotResult.Loading

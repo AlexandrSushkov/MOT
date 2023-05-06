@@ -57,7 +57,7 @@ import dev.nelson.mot.core.ui.MotButton
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.core.ui.MotTextField
-import dev.nelson.mot.main.util.Constants
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

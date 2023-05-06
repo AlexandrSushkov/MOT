@@ -17,7 +17,7 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
-import dev.nelson.mot.main.util.Constants
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.MotResult
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.successOr

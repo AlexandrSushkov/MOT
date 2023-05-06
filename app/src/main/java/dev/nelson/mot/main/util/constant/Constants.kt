@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.util
+package dev.nelson.mot.main.util.constant
 
 object Constants {
 

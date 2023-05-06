@@ -60,7 +60,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotNavSettingsIcon
-import dev.nelson.mot.main.util.Constants
+import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
