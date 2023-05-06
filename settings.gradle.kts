@@ -12,9 +12,9 @@ pluginManagement {
 rootProject.name = "MOT"
 
 include(":app") //main app
-include(":core") //core modules
-//feature modules
-include(":lagacy") //legacy module
 include(":db")
 include(":core:ui")
 include(":core:test")
+include(":core:common")
+//feature modules
+include(":lagacy") //legacy module

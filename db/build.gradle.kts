@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core:common"))
 
     ksp(libs.room.compiler)
     api(libs.room.runtime)

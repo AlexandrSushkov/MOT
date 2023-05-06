@@ -81,7 +81,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core:common"))
     implementation(project(":core:ui"))
     implementation(project(":core:test"))
     implementation(project(":db"))
@@ -119,19 +119,9 @@ dependencies {
     // Preferences
     implementation(libs.androidx.datastore.preferences)
 
-//    //compose
-//    implementation(libs.compose.ui)
-//    implementation(libs.compose.ui.tooling) // Tooling support (Previews, etc.)
-//    implementation(libs.compose.ui.tooling.preview)
-//    implementation(libs.compose.foundation) // Foundation (Border, Background, shapes, animations, etc.)
-//    implementation(libs.compose.material) // Material Design
-//    implementation(libs.compose.material.icons.core) // Material design icons
-//    implementation(libs.compose.material.icons.extended)
-//    implementation(libs.compose.runtime)
-//    implementation(libs.compose.runtime.livedata) // Integration with observables
+    //compose
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
-//    implementation(libs.compose.compiler)
     implementation(libs.activity.compose) // Integration with activities
     implementation(libs.viewmodel.compose) // Integration with ViewModels
     implementation(libs.accompanist.permissions) // compose permissions
