@@ -18,3 +18,4 @@ include(":core:test")
 include(":core:common")
 //feature modules
 include(":lagacy") //legacy module
+include(":feature:settings")

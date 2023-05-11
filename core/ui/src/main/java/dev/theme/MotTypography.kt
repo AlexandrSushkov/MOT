@@ -31,15 +31,3 @@ val MotTypography = Typography(
         letterSpacing = 0.5.sp
     )
 )
-
-val MotTypographyLight = Typography(
-    bodyLarge = MotTypography.bodyLarge.copy(color = MotColors.Purple40),
-    titleLarge = MotTypography.titleLarge.copy(color = MotColors.Purple40),
-    labelSmall = MotTypography.labelSmall.copy(color = MotColors.Purple40)
-)
-
-val MotTypographyDark = Typography(
-    bodyLarge = MotTypography.bodyLarge.copy(color = MotColors.Pink40),
-    titleLarge = MotTypography.titleLarge.copy(color = MotColors.Pink40),
-    labelSmall = MotTypography.labelSmall.copy(color = MotColors.Pink40)
-)

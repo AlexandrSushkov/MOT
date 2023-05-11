@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.core.ui
 
@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
@@ -19,14 +20,15 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.IconToggleButton
-import androidx.compose.material.ListItem
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +51,7 @@ fun MotDismissibleListItem(
 
     val haptic = LocalHapticFeedback.current
     val dismissibleBackgroundTargetColor = when (dismissState.targetValue) {
-        DismissValue.Default -> MaterialTheme.colorScheme.background
+        DismissValue.Default -> MaterialTheme.colorScheme.surfaceVariant
         DismissValue.DismissedToEnd -> MaterialTheme.colorScheme.surfaceVariant
         DismissValue.DismissedToStart -> MaterialTheme.colorScheme.errorContainer
     }
@@ -147,10 +149,12 @@ private fun MotDismissibleListItemPreviewData() {
 //        dismissState = DismissState(DismissValue.DismissedToStart),
         directions = setOf(DismissDirection.EndToStart),
         dismissContent = {
-            Card {
-                ListItem(
-                    trailing = { },
-                    text = { Text(text = "MotDismissibleListItem") }
+            MotCard {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    content = { Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = "MotDismissibleListItem") }
                 )
             }
         }

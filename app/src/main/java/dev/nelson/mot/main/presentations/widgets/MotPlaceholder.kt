@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
 import androidx.compose.material.icons.filled.List
@@ -25,7 +26,7 @@ fun ListPlaceholder(modifier: Modifier, imageVector: ImageVector, text: String) 
             imageVector = imageVector,
             contentDescription = "empty list icon",
             modifier = Modifier
-                .size(42.dp)
+                .size(60.dp)
                 .align(Alignment.CenterHorizontally)
         )
         Spacer(

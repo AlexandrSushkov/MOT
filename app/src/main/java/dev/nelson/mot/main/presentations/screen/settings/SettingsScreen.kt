@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.settings
 
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +40,8 @@ import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 
+private const val FILE_PICKER_FORMAT = "*/*"
+
 @Composable
 fun SettingsScreen(
     title: String,
@@ -53,6 +54,7 @@ fun SettingsScreen(
     val alertDialogState by settingsViewModel.showAlertDialogState.collectAsState(false to null)
 
     val context = LocalContext.current
+
     LaunchedEffect(
         key1 = Unit,
         block = {
@@ -77,13 +79,18 @@ fun SettingsScreen(
         Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
     }
 
+    val filePickerLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { settingsViewModel.onImportDataBaseEvent(it) }
+        }
+
     SettingsScreenLayout(
         title = title,
         navigationIcon = navigationIcon,
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        onImportDataBaseEvent = { settingsViewModel.onImportDataBaseEvent(it) },
         darkTheme = darkTheme,
         colorTheme = colorTheme,
+        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) },
         onDarkClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
     ) { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) }
 }
@@ -94,16 +101,12 @@ private fun SettingsScreenLayout(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     onExportDataBaseClick: () -> Unit,
-    onImportDataBaseEvent: (uri: Uri) -> Unit,
     darkTheme: Boolean,
     colorTheme: Boolean,
+    onImportDataBaseClick: () -> Unit,
     onDarkClick: (Boolean) -> Unit,
     onColorClick: (Boolean) -> Unit,
 ) {
-
-    val filePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { onImportDataBaseEvent.invoke(it) }
-    }
 
     Scaffold(
         topBar = { MotTopAppBar(title = title, navigationIcon = navigationIcon) }
@@ -134,13 +137,13 @@ private fun SettingsScreenLayout(
             ListItem(
                 text = { Text(text = "Export data base to the Downloads folder") },
                 trailing = {
-                    TextButton(onClick = { onExportDataBaseClick.invoke() }) { Text(text = "Export") }
+                    TextButton(onClick = onExportDataBaseClick) { Text(text = "Export") }
                 }
             )
             ListItem(
                 text = { Text(text = "Import data base") },
                 trailing = {
-                    TextButton(onClick = { filePickerLauncher.launch("*/*") }) { Text(text = "Import") }
+                    TextButton(onClick = onImportDataBaseClick) { Text(text = "Import") }
                 }
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -149,44 +152,6 @@ private fun SettingsScreenLayout(
                 secondaryText = { Text(text = "Build: ${BuildConfig.VERSION_CODE}") }
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingsScreenLayoutLightPreview() {
-    SettingsScreenLayout(
-        title = "Settings",
-        navigationIcon = {
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "")
-            }
-        },
-        onExportDataBaseClick = {},
-        onImportDataBaseEvent = {},
-        darkTheme = false,
-        colorTheme = true,
-        onDarkClick = {}
-    ) {}
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingsScreenLayoutDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
-        SettingsScreenLayout(
-            title = "Settings",
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "")
-                }
-            },
-            onExportDataBaseClick = {},
-            onImportDataBaseEvent = {},
-            darkTheme = false,
-            colorTheme = true,
-            onDarkClick = {}
-        ) {}
     }
 }
 
@@ -221,5 +186,48 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
                 Text(text = stringResource(android.R.string.ok))
             }
         }
+    )
+}
+
+
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenLayoutLightPreview() {
+    MotMaterialTheme(darkTheme = false) {
+        SettingsScreenLayoutPreviewData()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenLayoutDarkPreview() {
+    MotMaterialTheme(darkTheme = true) {
+        SettingsScreenLayoutPreviewData()
+    }
+}
+@Preview(showBackground = true)
+@Composable
+private fun SettingsScreenLayoutDynamicPreview() {
+    MotMaterialTheme(dynamicColor = true) {
+        SettingsScreenLayoutPreviewData()
+    }
+}
+
+@Composable
+private fun SettingsScreenLayoutPreviewData(){
+    SettingsScreenLayout(
+        title = "Settings",
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "")
+            }
+        },
+        onExportDataBaseClick = {},
+        darkTheme = false,
+        colorTheme = true,
+        onDarkClick = {},
+        onImportDataBaseClick = {},
+        onColorClick = {}
     )
 }

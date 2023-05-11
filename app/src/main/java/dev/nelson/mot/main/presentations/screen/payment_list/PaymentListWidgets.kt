@@ -36,6 +36,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.MotDismissibleListItem
@@ -160,7 +161,7 @@ fun PaymentListItem(
 ) {
     val haptic = LocalHapticFeedback.current
 
-    Card(
+    MotCard(
         modifier = Modifier.combinedClickable(
             onClick = { onClick.invoke(paymentItemModel) },
             onLongClick = {
@@ -171,7 +172,6 @@ fun PaymentListItem(
 
             }),
 //        elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
-        shape = RoundedCornerShape(0.dp)
     ) {
         Row {
             if (isSelectedState) {

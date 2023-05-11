@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesListViewModel @Inject constructor(
-    getCategoryListItemsUseCase: GetCategoryListItemsUseCase,
+    private val getCategoryListItemsUseCase: GetCategoryListItemsUseCase,
     private val deleteCategoriesUseCase: DeleteCategoriesUseCase,
     private val modifyCategoryUseCase: ModifyCategoryUseCase,
 ) : BaseViewModel() {
@@ -38,11 +38,10 @@ class CategoriesListViewModel @Inject constructor(
         get() = _categoryToEditId.asStateFlow()
     private val _categoryToEditId = MutableStateFlow<Int?>(null)
 
-    val categories
-        get() = _categories.asStateFlow()
-
-    //    private val _categories = MutableStateFlow<List<CategoryListItemModel>>(emptyList())
-    private val _categories = MutableStateFlow<MotResult<List<CategoryListItemModel>>>(MotResult.Loading)
+    val categoriesResult
+        get() = _categoriesResult.asStateFlow()
+    private val _categoriesResult =
+        MutableStateFlow<MotResult<List<CategoryListItemModel>>>(MotResult.Loading)
 
     val deleteItemsSnackbarText: Flow<String>
         get() = _deleteItemsSnackbarText.asStateFlow()
@@ -72,13 +71,7 @@ class CategoriesListViewModel @Inject constructor(
     private val categoriesToDeleteList = mutableListOf<Category>()
 
     init {
-        launch {
-            getCategoryListItemsUseCase.execute(SortingOrder.Ascending).collect {
-                initialCategoriesList.clear()
-                initialCategoriesList.addAll(it)
-                _categories.value = MotResult.Success(it)
-            }
-        }
+        initialCategoriesLoading()
     }
 
     fun onFavoriteClick(category: Category, isChecked: Boolean) = launch {
@@ -96,7 +89,8 @@ class CategoriesListViewModel @Inject constructor(
     fun onCategoryLongPress(category: Category) = launch {
         initialCategory = category
         _categoryToEditId.value = category.id
-        _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))
+        _categoryNameState.value =
+            TextFieldValue(category.name, selection = TextRange(category.name.length))
         _showEditCategoryDialogAction.emit(true)
     }
 
@@ -133,10 +127,10 @@ class CategoriesListViewModel @Inject constructor(
             categoriesToDeleteList.add(categoryItemModel.category)
             showSnackBar()
             val temp = mutableListOf<CategoryListItemModel>().apply {
-                addAll(_categories.value.successOr(emptyList()))
+                addAll(_categoriesResult.value.successOr(emptyList()))
                 remove(categoryItemModel)
             }
-            _categories.value = MotResult.Success(temp)
+            _categoriesResult.value = MotResult.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(4000)
@@ -152,9 +146,18 @@ class CategoriesListViewModel @Inject constructor(
     fun onUndoDeleteClick() {
         hideSnackBar()
         deleteCategoryJob?.let {
-            _categories.value = MotResult.Success(initialCategoriesList)
+            _categoriesResult.value = MotResult.Success(initialCategoriesList)
             clearItemsToDeleteList()
             it.cancel()
+        }
+    }
+
+    private fun initialCategoriesLoading() = launch {
+        getCategoryListItemsUseCase.execute(SortingOrder.Ascending).collect {
+            delay(500)
+            initialCategoriesList.clear()
+            initialCategoriesList.addAll(it)
+            _categoriesResult.value = MotResult.Success(it)
         }
     }
 
@@ -202,5 +205,4 @@ class CategoriesListViewModel @Inject constructor(
     private fun hideSnackBar() {
         _snackBarVisibilityState.value = false
     }
-
 }

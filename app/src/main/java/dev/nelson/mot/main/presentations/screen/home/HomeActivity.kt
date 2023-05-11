@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package dev.nelson.mot.main.presentations.home
+package dev.nelson.mot.main.presentations.screen.home
 
 import android.appwidget.AppWidgetManager
 import android.os.Bundle
@@ -254,17 +254,11 @@ private fun MotNavHost(
                     viewModel = hiltViewModel(),
                     title = Categories.route,
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
-                    openCategoryDetails = { categoryId ->
-                        categoryId?.let { navController.navigate("${CategoryDetails.route}?id=$categoryId") }
-                            ?: navController.navigate(
-                                CategoryDetails.route
-                            )
-                    },
-                    openPaymentsByCategory = { categoryId ->
-                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
-                            ?: navController.popBackStack()
-                    },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
+                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } }
+                ) { categoryId ->
+                    categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
+                        ?: navController.popBackStack()
+                }
             }
         )
         composable(

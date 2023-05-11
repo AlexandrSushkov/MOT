@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.home
+package dev.nelson.mot.main.presentations.screen.home
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -37,7 +37,6 @@ class SettingsViewModel @Inject constructor(
         get() = _showPermissionDialogAction.asSharedFlow()
     private val _showPermissionDialogAction = MutableSharedFlow<Unit>()
 
-
     // states
     val darkThemeSwitchState
         get() = _darkTheme.asStateFlow()
@@ -64,7 +63,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
-     * only one them can be set at the time
+     * Only one them can be set at the time
      */
     fun onDarkThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
@@ -76,7 +75,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
-     * only one them can be set at the time
+     * Only one them can be set at the time
      */
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
