@@ -37,6 +37,7 @@ import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.core.ui.MotSwitch
+import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 
@@ -49,9 +50,7 @@ fun SettingsScreen(
     navigationIcon: @Composable () -> Unit = {},
 ) {
     val toastMessage by settingsViewModel.showToastState.collectAsState(StringUtils.EMPTY)
-    val darkTheme by settingsViewModel.darkThemeSwitchState.collectAsState(false)
-    val colorTheme by settingsViewModel.dynamicColorThemeSwitchState.collectAsState(false)
-    val alertDialogState by settingsViewModel.showAlertDialogState.collectAsState(false to null)
+    val viewState by settingsViewModel.settingsViewState.collectAsState()
 
     val context = LocalContext.current
 
@@ -71,9 +70,7 @@ fun SettingsScreen(
         }
     )
 
-    if (alertDialogState.first) {
-        alertDialogState.second?.let { MotAlertDialog(it) }
-    }
+    viewState.alertDialog?.let { MotAlertDialog(it) }
 
     if (toastMessage.isNotEmpty()) {
         Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
@@ -87,12 +84,16 @@ fun SettingsScreen(
     SettingsScreenLayout(
         title = title,
         navigationIcon = navigationIcon,
+        viewState = viewState,
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        darkTheme = darkTheme,
-        colorTheme = colorTheme,
         onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) },
-        onDarkClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
-    ) { isChecked -> settingsViewModel.onDynamicColorThemeCheckedChange(isChecked) }
+        onDarkThemeSwitchClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
+        onDynamicColorThemeSwitchClick = { isChecked ->
+            settingsViewModel.onDynamicColorThemeCheckedChange(
+                isChecked
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -100,12 +101,11 @@ fun SettingsScreen(
 private fun SettingsScreenLayout(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
+    viewState: SettingsViewState,
     onExportDataBaseClick: () -> Unit,
-    darkTheme: Boolean,
-    colorTheme: Boolean,
     onImportDataBaseClick: () -> Unit,
-    onDarkClick: (Boolean) -> Unit,
-    onColorClick: (Boolean) -> Unit,
+    onDarkThemeSwitchClick: (Boolean) -> Unit,
+    onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
 ) {
 
     Scaffold(
@@ -120,8 +120,8 @@ private fun SettingsScreenLayout(
                 text = { Text(text = "Dark theme") },
                 trailing = {
                     MotSwitch(
-                        checked = darkTheme,
-                        onCheckedChange = onDarkClick
+                        checked = viewState.isDarkThemeSwitchOn,
+                        onCheckedChange = onDarkThemeSwitchClick
                     )
                 }
             )
@@ -129,22 +129,18 @@ private fun SettingsScreenLayout(
                 text = { Text(text = "Dynamic color theme") },
                 trailing = {
                     MotSwitch(
-                        checked = colorTheme,
-                        onCheckedChange = onColorClick
+                        checked = viewState.isDynamicThemeSwitchOn,
+                        onCheckedChange = onDynamicColorThemeSwitchClick
                     )
                 }
             )
             ListItem(
                 text = { Text(text = "Export data base to the Downloads folder") },
-                trailing = {
-                    TextButton(onClick = onExportDataBaseClick) { Text(text = "Export") }
-                }
+                trailing = { MotTextButton(onClick = onExportDataBaseClick, text = "Export") }
             )
             ListItem(
                 text = { Text(text = "Import data base") },
-                trailing = {
-                    TextButton(onClick = onImportDataBaseClick) { Text(text = "Import") }
-                }
+                trailing = { MotTextButton(onClick = onImportDataBaseClick, text = "Import") }
             )
             Spacer(modifier = Modifier.weight(1f))
             ListItem(
@@ -190,7 +186,6 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenLayoutLightPreview() {
@@ -206,6 +201,7 @@ private fun SettingsScreenLayoutDarkPreview() {
         SettingsScreenLayoutPreviewData()
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenLayoutDynamicPreview() {
@@ -215,19 +211,21 @@ private fun SettingsScreenLayoutDynamicPreview() {
 }
 
 @Composable
-private fun SettingsScreenLayoutPreviewData(){
+private fun SettingsScreenLayoutPreviewData() {
     SettingsScreenLayout(
         title = "Settings",
+        viewState = SettingsViewState(
+            isDarkThemeSwitchOn = false,
+            isDynamicThemeSwitchOn = true
+        ),
         navigationIcon = {
             IconButton(onClick = { }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "")
             }
         },
         onExportDataBaseClick = {},
-        darkTheme = false,
-        colorTheme = true,
-        onDarkClick = {},
+        onDarkThemeSwitchClick = {},
         onImportDataBaseClick = {},
-        onColorClick = {}
+        onDynamicColorThemeSwitchClick = {}
     )
 }

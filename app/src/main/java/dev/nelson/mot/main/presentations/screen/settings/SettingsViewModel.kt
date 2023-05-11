@@ -33,32 +33,26 @@ class SettingsViewModel @Inject constructor(
         get() = _restartAppAction.asSharedFlow()
     private val _restartAppAction = MutableSharedFlow<Unit>()
 
-    val showPermissionDialogAction
-        get() = _showPermissionDialogAction.asSharedFlow()
-    private val _showPermissionDialogAction = MutableSharedFlow<Unit>()
-
     // states
-    val darkThemeSwitchState
-        get() = _darkTheme.asStateFlow()
-    private val _darkTheme = MutableStateFlow(false)
-
-    val dynamicColorThemeSwitchState
-        get() = _dynamicColorTheme.asStateFlow()
-    private val _dynamicColorTheme = MutableStateFlow(false)
-
-    val showAlertDialogState
-        get() = _showAlertDialogState.asStateFlow()
-    private val _showAlertDialogState = MutableStateFlow<Pair<Boolean, AlertDialogParams?>>(false to null)
+    private val defaultSettingsViewState = SettingsViewState(
+        isDarkThemeSwitchOn = false,
+        isDynamicThemeSwitchOn = false
+    )
+    val settingsViewState
+        get() = _viewState.asStateFlow()
+    private val _viewState = MutableStateFlow(defaultSettingsViewState)
 
     init {
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.DarkTheme)
-                .collect { _darkTheme.value = it }
+            getSwitchStatusUseCase.execute(MotSwitchType.DarkTheme).collect {
+                _viewState.value = _viewState.value.copy(isDarkThemeSwitchOn = it)
+            }
         }
 
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme)
-                .collect { _dynamicColorTheme.value = it }
+            getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme).collect {
+                _viewState.value = _viewState.value.copy(isDynamicThemeSwitchOn = it)
+            }
         }
     }
 
@@ -67,8 +61,7 @@ class SettingsViewModel @Inject constructor(
      */
     fun onDarkThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
-            val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, false) // force turn off dynamic color theme
-            setSwitchStatusUseCase.execute(params)
+            resetSwitch(MotSwitchType.DynamicColorTheme)
         }
         val params = SetSwitchStatusParams(MotSwitchType.DarkTheme, isChecked)
         setSwitchStatusUseCase.execute(params)
@@ -79,42 +72,50 @@ class SettingsViewModel @Inject constructor(
      */
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) = launch {
         if (isChecked) {
-            val params = SetSwitchStatusParams(MotSwitchType.DarkTheme, false) // force turn off dark theme
-            setSwitchStatusUseCase.execute(params)
+            resetSwitch(MotSwitchType.DarkTheme)
         }
         val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
 
     fun onExportDataBaseClick() = launch {
-        runCatching { exportDataBaseUseCase.execute() }
-            .onSuccess { isExported ->
-                val message = if (isExported) R.string.database_exported_successfully_dialog_message else R.string.database_export_failed_dialog_message
-                val alertDialogParams = AlertDialogParams(
-                    message = message,
-                    dismissClickCallback = { hideAlertDialog() },
-                    onPositiveClickCallback = { hideAlertDialog() },
-                )
-                _showAlertDialogState.emit(true to alertDialogParams)
-            }.onFailure { throwable ->
-                throwable.message?.let {
-                    showToast(it)
-                    Timber.e(it)
-                }
+        runCatching { exportDataBaseUseCase.execute() }.onSuccess { isExported ->
+            val message = if (isExported) {
+                R.string.database_exported_successfully_dialog_message
+            } else {
+                R.string.database_export_failed_dialog_message
             }
+            val alertDialogParams = getExportDataBaseDialog(message)
+            _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
+        }.onFailure { throwable ->
+            throwable.message?.let {
+                showToast(it)
+                Timber.e(it)
+            }
+        }
     }
 
     fun onImportDataBaseEvent(uri: Uri) = launch {
-        val alertDialogParams = AlertDialogParams(
-            message = R.string.import_database_dialog_message,
+        val alertDialogParams = getImportDataBaseDialog(uri)
+        _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
+    }
+
+    private fun getExportDataBaseDialog(message: Int): AlertDialogParams {
+        return AlertDialogParams(
+            message = message,
+            dismissClickCallback = { hideAlertDialog() },
+            onPositiveClickCallback = { hideAlertDialog() },
+        )
+    }
+
+    private fun getImportDataBaseDialog(uri: Uri): AlertDialogParams {
+        return AlertDialogParams(message = R.string.import_database_dialog_message,
             dismissClickCallback = { hideAlertDialog() },
             onPositiveClickCallback = {
                 hideAlertDialog()
                 importDataBase(uri)
             },
-            onNegativeClickCallback = { hideAlertDialog() }
-        )
-        _showAlertDialogState.emit(true to alertDialogParams)
+            onNegativeClickCallback = { hideAlertDialog() })
     }
 
     private fun importDataBase(uri: Uri) = launch {
@@ -125,8 +126,7 @@ class SettingsViewModel @Inject constructor(
                 } else {
                     showToast("Oops! data base import failed.")
                 }
-            }
-            .onFailure { throwable ->
+            }.onFailure { throwable ->
                 throwable.message?.let {
                     showToast(it)
                     Timber.e(it)
@@ -134,7 +134,17 @@ class SettingsViewModel @Inject constructor(
             }
     }
 
+    /**
+     * Force turn off switch.
+     */
+    private suspend fun resetSwitch(motSwitchType: MotSwitchType) {
+        val params = SetSwitchStatusParams(motSwitchType, false)
+        setSwitchStatusUseCase.execute(params)
+    }
+
     private fun hideAlertDialog() = launch {
-        _showAlertDialogState.emit(false to null)
+        _viewState.value = _viewState.value.copy(
+            alertDialog = null
+        )
     }
 }
