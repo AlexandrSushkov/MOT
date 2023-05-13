@@ -18,7 +18,7 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.MotResult
+import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.FlowPreview
@@ -70,9 +70,9 @@ class PaymentListViewModel @Inject constructor(
         get() = _selectedItemsCount.asStateFlow()
     private val _selectedItemsCount = MutableStateFlow(0)
 
-    val paymentListState: Flow<MotResult<List<PaymentListItemModel>>>
+    val paymentListState: Flow<MotUiState<List<PaymentListItemModel>>>
         get() = _paymentList.asStateFlow()
-    private val _paymentList = MutableStateFlow<MotResult<List<PaymentListItemModel>>>(MotResult.Loading)
+    private val _paymentList = MutableStateFlow<MotUiState<List<PaymentListItemModel>>>(MotUiState.Loading)
 
     val categoriesState: Flow<List<Category>>
         get() = _categories.asStateFlow()
@@ -103,7 +103,7 @@ class PaymentListViewModel @Inject constructor(
                         .collect {
                             initialPaymentList.clear()
                             initialPaymentList.addAll(it)
-                            _paymentList.value = MotResult.Success(it)
+                            _paymentList.value = MotUiState.Success(it)
                         }
                 }
                 is ScreenType.PaymentsForCategory -> {
@@ -114,7 +114,7 @@ class PaymentListViewModel @Inject constructor(
                         }.collect {
                             initialPaymentList.clear()
                             initialPaymentList.addAll(it)
-                            _paymentList.value = MotResult.Success(it)
+                            _paymentList.value = MotUiState.Success(it)
                         }
                 }
             }
@@ -159,7 +159,7 @@ class PaymentListViewModel @Inject constructor(
                 }
                 remove(payment)
             }
-            _paymentList.value = MotResult.Success(temp)
+            _paymentList.value = MotUiState.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
@@ -176,7 +176,7 @@ class PaymentListViewModel @Inject constructor(
         hideSnackBar()
         deletePaymentJob?.let {
             it.cancel()
-            _paymentList.value = MotResult.Success(initialPaymentList)
+            _paymentList.value = MotUiState.Success(initialPaymentList)
             clearItemsToDeleteList()
         }
     }
@@ -238,7 +238,7 @@ class PaymentListViewModel @Inject constructor(
                 }
                 temp.remove(paymentElement)
             }
-            _paymentList.value = MotResult.Success(temp)
+            _paymentList.value = MotUiState.Success(temp)
             _deletedItemsCount.value = paymentsToDeleteList.size
             showSnackBar()
             // ui updated, removed items is not visible on the screen
@@ -281,7 +281,7 @@ class PaymentListViewModel @Inject constructor(
                 item
             }
         }
-        _paymentList.value = MotResult.Success(tempList)
+        _paymentList.value = MotUiState.Success(tempList)
         _selectedItemsCount.value = selectedItemsList.size
     }
 
@@ -301,7 +301,7 @@ class PaymentListViewModel @Inject constructor(
                 item
             }
         }
-        _paymentList.value = MotResult.Success(tempList)
+        _paymentList.value = MotUiState.Success(tempList)
         _selectedItemsCount.value = selectedItemsList.size
     }
 
@@ -309,7 +309,7 @@ class PaymentListViewModel @Inject constructor(
         _isSelectedState.value = false
         selectedItemsList.clear()
         _selectedItemsCount.value = selectedItemsList.size
-        _paymentList.value = MotResult.Success(initialPaymentList)
+        _paymentList.value = MotUiState.Success(initialPaymentList)
     }
 
     fun onDateRangeClick() {

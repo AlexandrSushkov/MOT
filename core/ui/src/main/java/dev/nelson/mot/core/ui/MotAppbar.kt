@@ -1,10 +1,8 @@
-@file:OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3Api::class
-)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.core.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -24,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MotTopAppBar(
-    title: String,
+    appBarTitle: String,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
@@ -32,7 +30,7 @@ fun MotTopAppBar(
         navigationIcon = navigationIcon,
         title = {
             Text(
-                text = title,
+                text = appBarTitle,
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -40,24 +38,26 @@ fun MotTopAppBar(
     )
 }
 
-@Preview(showBackground = true, group = "toolbar")
+@Preview(showBackground = true)
 @Composable
-private fun MotTopAppBarLightPreview() {
-    MotTopAppBarDarkPreviewData()
-}
-
-@Preview(showBackground = true, group = "toolbar")
-@Composable
-private fun MotTopAppBarDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
-        MotTopAppBarDarkPreviewData()
+private fun MotTopAppBarPreview() {
+    Column {
+        MotMaterialTheme(darkTheme = false) {
+            MotTopAppBarDarkPreviewData()
+        }
+        MotMaterialTheme(darkTheme = true) {
+            MotTopAppBarDarkPreviewData()
+        }
+        MotMaterialTheme(dynamicColor = true) {
+            MotTopAppBarDarkPreviewData()
+        }
     }
 }
 
 @Composable
 private fun MotTopAppBarDarkPreviewData() {
     MotTopAppBar(
-        title = "Toolbar",
+        appBarTitle = "Toolbar",
         navigationIcon = { MotNavDrawerIcon {} },
         actions = { MotNavSettingsIcon {} }
     )
@@ -88,17 +88,17 @@ fun MotSelectionTopAppBar(
 
 @Preview(showSystemUi = false, group = "toolbar")
 @Composable
-private fun MotSelectionTopAppBarLightPreview() {
-    MotMaterialTheme(darkTheme = false) {
-        MotSelectionTopAppBarPreviewData()
-    }
-}
-
-@Preview(showBackground = true, group = "toolbar")
-@Composable
-private fun MotSelectionTopAppBarDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
-        MotSelectionTopAppBarPreviewData()
+private fun MotSelectionTopAppBarPreview() {
+    Column {
+        MotMaterialTheme(darkTheme = false) {
+            MotSelectionTopAppBarPreviewData()
+        }
+        MotMaterialTheme(darkTheme = true) {
+            MotSelectionTopAppBarPreviewData()
+        }
+        MotMaterialTheme(dynamicColor = true) {
+            MotSelectionTopAppBarPreviewData()
+        }
     }
 }
 

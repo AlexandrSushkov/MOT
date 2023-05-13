@@ -186,6 +186,7 @@ private fun NavigationDrawerContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MotNavHost(
     navController: NavHostController,
@@ -252,14 +253,14 @@ private fun MotNavHost(
             content = {
                 CategoryListScreen(
                     viewModel = hiltViewModel(),
-                    title = Categories.route,
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } }
-                ) { categoryId ->
-                    categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
-                        ?: navController.popBackStack()
-                }
-            }
+                    actionsIcons = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
+                    openPaymentsByCategoryAction = { categoryId ->
+                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
+                            ?: navController.popBackStack()
+                    }
+                )
+            },
         )
         composable(
             route = "${CategoryDetails.route}?id={id}",

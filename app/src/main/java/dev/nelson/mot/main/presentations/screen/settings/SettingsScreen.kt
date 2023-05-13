@@ -1,3 +1,8 @@
+@file:OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalMaterialApi::class
+)
+
 package dev.nelson.mot.main.presentations.screen.settings
 
 import android.content.Intent
@@ -70,8 +75,6 @@ fun SettingsScreen(
         }
     )
 
-    viewState.alertDialog?.let { MotAlertDialog(it) }
-
     if (toastMessage.isNotEmpty()) {
         Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
     }
@@ -85,18 +88,13 @@ fun SettingsScreen(
         title = title,
         navigationIcon = navigationIcon,
         viewState = viewState,
+        onDarkThemeSwitchClick = { settingsViewModel.onDarkThemeCheckedChange(it) },
+        onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) },
-        onDarkThemeSwitchClick = { isChecked -> settingsViewModel.onDarkThemeCheckedChange(isChecked) },
-        onDynamicColorThemeSwitchClick = { isChecked ->
-            settingsViewModel.onDynamicColorThemeCheckedChange(
-                isChecked
-            )
-        }
+        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) }
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
     title: String,
@@ -108,8 +106,10 @@ private fun SettingsScreenLayout(
     onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
 ) {
 
+    viewState.alertDialog?.let { MotAlertDialog(it) }
+
     Scaffold(
-        topBar = { MotTopAppBar(title = title, navigationIcon = navigationIcon) }
+        topBar = { MotTopAppBar(appBarTitle = title, navigationIcon = navigationIcon) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -186,7 +186,7 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 private fun SettingsScreenLayoutLightPreview() {
     MotMaterialTheme(darkTheme = false) {
@@ -212,12 +212,20 @@ private fun SettingsScreenLayoutDynamicPreview() {
 
 @Composable
 private fun SettingsScreenLayoutPreviewData() {
+    val alertDialogParams = AlertDialogParams(
+        message = R.string.database_export_failed_dialog_message,
+        onPositiveClickCallback = {},
+//        onNegativeClickCallback = {},
+        dismissClickCallback = {}
+    )
+    val viewState = SettingsViewState(
+        isDarkThemeSwitchOn = false,
+        isDynamicThemeSwitchOn = true,
+//        alertDialog = alertDialogParams,
+    )
     SettingsScreenLayout(
         title = "Settings",
-        viewState = SettingsViewState(
-            isDarkThemeSwitchOn = false,
-            isDynamicThemeSwitchOn = true
-        ),
+        viewState = viewState,
         navigationIcon = {
             IconButton(onClick = { }) {
                 Icon(Icons.Default.ArrowBack, contentDescription = "")

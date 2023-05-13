@@ -3,12 +3,13 @@ package dev.nelson.mot.main.presentations.screen.categories_list
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.domain.use_case.category.*
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.util.MotResult
+import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
@@ -34,6 +35,10 @@ class CategoriesListViewModel @Inject constructor(
         get() = _categoryNameState.asStateFlow()
     private val _categoryNameState = MutableStateFlow(TextFieldValue())
 
+    val titleStringRes
+        get() = _title.asStateFlow()
+    private val _title = MutableStateFlow(R.string.categories)
+
     val categoryToEditId
         get() = _categoryToEditId.asStateFlow()
     private val _categoryToEditId = MutableStateFlow<Int?>(null)
@@ -41,7 +46,7 @@ class CategoriesListViewModel @Inject constructor(
     val categoriesResult
         get() = _categoriesResult.asStateFlow()
     private val _categoriesResult =
-        MutableStateFlow<MotResult<List<CategoryListItemModel>>>(MotResult.Loading)
+        MutableStateFlow<MotUiState<List<CategoryListItemModel>>>(MotUiState.Loading)
 
     val deleteItemsSnackbarText: Flow<String>
         get() = _deleteItemsSnackbarText.asStateFlow()
@@ -130,7 +135,7 @@ class CategoriesListViewModel @Inject constructor(
                 addAll(_categoriesResult.value.successOr(emptyList()))
                 remove(categoryItemModel)
             }
-            _categoriesResult.value = MotResult.Success(temp)
+            _categoriesResult.value = MotUiState.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(4000)
@@ -146,7 +151,7 @@ class CategoriesListViewModel @Inject constructor(
     fun onUndoDeleteClick() {
         hideSnackBar()
         deleteCategoryJob?.let {
-            _categoriesResult.value = MotResult.Success(initialCategoriesList)
+            _categoriesResult.value = MotUiState.Success(initialCategoriesList)
             clearItemsToDeleteList()
             it.cancel()
         }
@@ -157,7 +162,7 @@ class CategoriesListViewModel @Inject constructor(
             delay(500)
             initialCategoriesList.clear()
             initialCategoriesList.addAll(it)
-            _categoriesResult.value = MotResult.Success(it)
+            _categoriesResult.value = MotUiState.Success(it)
         }
     }
 

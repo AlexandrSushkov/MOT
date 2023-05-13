@@ -5,5 +5,5 @@ import dev.nelson.mot.main.presentations.AlertDialogParams
 data class SettingsViewState(
     val isDarkThemeSwitchOn: Boolean,
     val isDynamicThemeSwitchOn: Boolean,
-    val alertDialog: AlertDialogParams? = null
+    val alertDialog: AlertDialogParams? = null,
 )

@@ -63,10 +63,10 @@ import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotNavSettingsIcon
 import dev.nelson.mot.core.ui.MotSelectionTopAppBar
 import dev.nelson.mot.core.ui.MotTopAppBar
-import dev.nelson.mot.main.util.MotResult
-import dev.nelson.mot.main.util.MotResult.Error
-import dev.nelson.mot.main.util.MotResult.Loading
-import dev.nelson.mot.main.util.MotResult.Success
+import dev.nelson.mot.main.util.MotUiState
+import dev.nelson.mot.main.util.MotUiState.Error
+import dev.nelson.mot.main.util.MotUiState.Loading
+import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
@@ -173,7 +173,7 @@ fun PaymentListScreen(
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
     toolbarTitle: String,
-    paymentListResult: MotResult<List<PaymentListItemModel>>,
+    paymentListResult: MotUiState<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onFabClick: () -> Unit,
@@ -228,7 +228,7 @@ fun PaymentListLayout(
 
                 } else {
                     MotTopAppBar(
-                        title = toolbarTitle,
+                        appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
                         actions = { settingsIcon.invoke() }
                     ).also {
@@ -285,7 +285,7 @@ fun PaymentListLayout(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PaymentList(
-    paymentListResult: MotResult<List<PaymentListItemModel>>,
+    paymentListResult: MotUiState<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,

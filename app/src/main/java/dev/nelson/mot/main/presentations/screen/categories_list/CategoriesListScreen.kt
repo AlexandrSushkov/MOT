@@ -1,14 +1,13 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 
 package dev.nelson.mot.main.presentations.screen.categories_list
 
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -35,6 +34,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -70,10 +71,10 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
-import dev.nelson.mot.main.util.MotResult
-import dev.nelson.mot.main.util.MotResult.Error
-import dev.nelson.mot.main.util.MotResult.Loading
-import dev.nelson.mot.main.util.MotResult.Success
+import dev.nelson.mot.main.util.MotUiState
+import dev.nelson.mot.main.util.MotUiState.Error
+import dev.nelson.mot.main.util.MotUiState.Loading
+import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
@@ -83,13 +84,13 @@ import kotlinx.coroutines.delay
 @Composable
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
-    title: String,
     navigationIcon: @Composable () -> Unit = {},
-    settingsIcon: @Composable () -> Unit = {},
-    openPaymentsByCategory: (Int?) -> Unit,
+    actionsIcons: @Composable RowScope.() -> Unit = {},
+    openPaymentsByCategoryAction: (Int?) -> Unit,
 ) {
 
-    val categoriesResult by viewModel.categoriesResult.collectAsState(Loading)
+    val titleStringsRes by viewModel.titleStringRes.collectAsState(R.string.categories)
+    val categoriesListUiState by viewModel.categoriesResult.collectAsState()
     val categoryToEditId by viewModel.categoryToEditId.collectAsState()
     val categoryNameState by viewModel.categoryNameState.collectAsState()
     val showEditCategoryDialog by viewModel.showEditCategoryDialogAction.collectAsState(false)
@@ -113,11 +114,11 @@ fun CategoryListScreen(
     }
 
     CategoryListLayout(
-        appBarTitle = title,
-        categoriesMotResult = categoriesResult,
+        appBarTitle = stringResource(titleStringsRes),
         appBarNavigationIcon = navigationIcon,
-        settingsNavigationIcon = settingsIcon,
-        onCategoryClick = openPaymentsByCategory,
+        settingsNavigationIcon = actionsIcons,
+        categoriesListUiState = categoriesListUiState,
+        onCategoryClick = openPaymentsByCategoryAction,
         onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) },
         onAddCategoryClickEvent = { viewModel.onAddCategoryClick() },
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
@@ -127,12 +128,13 @@ fun CategoryListScreen(
     ) { viewModel.onUndoDeleteClick() }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryListLayout(
     appBarTitle: String,
-    categoriesMotResult: MotResult<List<CategoryListItemModel>>,
+    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    settingsNavigationIcon: @Composable () -> Unit = {},
+    settingsNavigationIcon: @Composable RowScope.() -> Unit = {},
     onCategoryClick: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
     onAddCategoryClickEvent: () -> Unit,
@@ -145,9 +147,9 @@ fun CategoryListLayout(
     Scaffold(
         topBar = {
             MotTopAppBar(
-                title = appBarTitle,
+                appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                actions = { settingsNavigationIcon.invoke() }
+                actions = settingsNavigationIcon
             )
         },
         snackbarHost = {
@@ -176,7 +178,7 @@ fun CategoryListLayout(
                 .padding(innerPadding)
         ) {
             CategoryList(
-                categoriesMotResult,
+                categoriesListUiState,
                 onSwipeCategory,
                 onCategoryClick,
                 onCategoryLongPress,
@@ -190,15 +192,15 @@ fun CategoryListLayout(
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun CategoryList(
-    categoriesMotResult: MotResult<List<CategoryListItemModel>>,
+    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
     onSwipeCategory: (CategoryItemModel) -> Unit,
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
 ) {
-    when (categoriesMotResult) {
+    when (categoriesListUiState) {
         is Success -> {
-            val categories = categoriesMotResult.successOr(emptyList())
+            val categories = categoriesListUiState.successOr(emptyList())
             if (categories.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     ListPlaceholder(
@@ -249,20 +251,17 @@ fun CategoryList(
 
                                 is Letter -> {
                                     stickyHeader(key = categoryListItem.key) {
-                                        Box(
-                                            modifier = Modifier
-                                                .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                                                .fillMaxWidth()
-                                        ) {
-                                            Text(
-                                                modifier = Modifier.padding(
-                                                    vertical = 8.dp,
-                                                    horizontal = 24.dp
-                                                ),
-                                                text = categoryListItem.letter,
-                                                style = MaterialTheme.typography.titleLarge
-                                            )
-                                        }
+                                        ListItem(
+                                            headlineText = {
+                                                Text(
+                                                    text = categoryListItem.letter,
+                                                    style = MaterialTheme.typography.titleSmall
+                                                )
+                                            },
+                                            colors = ListItemDefaults.colors(
+                                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                            ),
+                                        )
                                     }
                                 }
 
@@ -314,48 +313,32 @@ fun CategoryListItem(
                 onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
             ),
     ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 24.dp)
-                .fillMaxWidth()
-//                .padding(vertical = 8.dp, horizontal = 16.dp)
-        ) {
-//            Spacer(modifier = Modifier.width(24.dp))
-
-//            Icon(
-//                imageVector = Icons.Default.Category,
-//                contentDescription = stringResource(id = R.string.accessibility_category_icon),
-//                modifier = Modifier
-//                    .size(24.dp)
-//                    .align(Alignment.CenterVertically)
-//            )
-//            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = category.name,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 16.dp)
-                    .align(Alignment.CenterVertically),
-                style = MaterialTheme.typography.titleMedium
-            )
-            if (category.id != null) {
-                IconToggleButton(
-                    modifier = Modifier.padding(end = 16.dp),
-                    checked = checked,
-                    onCheckedChange = { isChecked ->
-                        checked = isChecked
-                        onFavoriteClick.invoke(category, isChecked)
-                    },
-                ) {
-                    Icon(
-                        Icons.Filled.Star,
-                        contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                        tint = iconTint,
-                        modifier = Modifier.size(24.dp)
-                    )
+        ListItem(
+            headlineText = {
+                Text(
+                    text = category.name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            trailingContent = {
+                category.id?.let {
+                    IconToggleButton(
+                        checked = checked,
+                        onCheckedChange = { isChecked ->
+                            checked = isChecked
+                            onFavoriteClick.invoke(category, isChecked)
+                        },
+                    ) {
+                        Icon(
+                            Icons.Filled.Star,
+                            contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
+                            tint = iconTint,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
-        }
+        )
     }
 }
 
@@ -381,19 +364,6 @@ fun EditCategoryDialog(
 
     AlertDialog(
         onDismissRequest = closeEditCategoryDialog,
-//        icon = {
-//            IconButton(
-//                onClick = { openCategoryDetails.invoke(null) }
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Default.Category,
-//                    contentDescription = stringResource(R.string.accessibility_category_icon),
-//                    modifier = Modifier
-//                        .width(40.dp)
-//                        .height(40.dp)
-//                )
-//            }
-//        },
         text = {
             MotTextField(
                 value = categoryNameState,
@@ -437,7 +407,7 @@ private fun CardFooter() {
 private fun CategoryListLayoutLightPreview() {
     CategoryListLayout(
         appBarTitle = "Categories",
-        categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
+        categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
         appBarNavigationIcon = {
             IconButton(onClick = {}) {
                 Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
@@ -453,15 +423,13 @@ private fun CategoryListLayoutLightPreview() {
     ) {}
 }
 
-@Preview(
-    showBackground = true,
-)
+@Preview(showBackground = true)
 @Composable
 private fun CategoryListLayoutDarkPreview() {
     MotMaterialTheme(darkTheme = true) {
         CategoryListLayout(
             appBarTitle = stringResource(R.string.categories),
-            categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
+            categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
             appBarNavigationIcon = {
                 IconButton(onClick = {}) {
                     Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
@@ -482,7 +450,7 @@ private fun CategoryListLayoutDarkPreview() {
 @Composable
 private fun CategoryListWithDataPreview() {
     CategoryList(
-        categoriesMotResult = Success(PreviewData.categoriesListItemsPreview),
+        categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
         onCategoryClick = {},
         onFavoriteClick = { _, _ -> },
         onCategoryLongPress = {},
@@ -494,7 +462,7 @@ private fun CategoryListWithDataPreview() {
 @Composable
 private fun CategoryListWithEmptyDataPreview() {
     CategoryList(
-        categoriesMotResult = Success(emptyList()),
+        categoriesListUiState = Success(emptyList()),
         onCategoryClick = {},
         onFavoriteClick = { _, _ -> },
         onCategoryLongPress = {},
@@ -506,7 +474,7 @@ private fun CategoryListWithEmptyDataPreview() {
 @Composable
 private fun CategoryListLoadingPreview() {
     CategoryList(
-        categoriesMotResult = Loading,
+        categoriesListUiState = Loading,
         onCategoryClick = {},
         onFavoriteClick = { _, _ -> },
         onCategoryLongPress = {},
@@ -518,7 +486,7 @@ private fun CategoryListLoadingPreview() {
 @Composable
 private fun CategoryListErrorPreview() {
     CategoryList(
-        categoriesMotResult = Error(IllegalStateException("mot error")),
+        categoriesListUiState = Error(IllegalStateException("mot error")),
         onCategoryClick = {},
         onFavoriteClick = { _, _ -> },
         onCategoryLongPress = {},
