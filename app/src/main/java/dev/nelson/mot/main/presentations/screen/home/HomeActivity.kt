@@ -83,13 +83,10 @@ class HomeActivity : ComponentActivity() {
             val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
 
             MotMaterialTheme(
-                forceDark = forceDark,
-                dynamicColor = dynamicColor
+                forceDark = forceDark, dynamicColor = dynamicColor
             ) {
-                MotApp(
-                    isOpenedFromWidget = isOpenedFromWidget,
-                    finishAction = { finishAndRemoveTask() }
-                )
+                MotApp(isOpenedFromWidget = isOpenedFromWidget,
+                    finishAction = { finishAndRemoveTask() })
             }
         }
     }
@@ -118,30 +115,24 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
     /**
      * Close the navigation drawer back handler.
      */
-    BackHandler(
-        enabled = navigationDrawerState.isOpen,
-        onBack = { coroutineScope.launch { navigationDrawerState.close() } }
-    )
+    BackHandler(enabled = navigationDrawerState.isOpen,
+        onBack = { coroutineScope.launch { navigationDrawerState.close() } })
 
     /**
      * Close the app back handler.
      */
-    BackHandler(
-        enabled = isOpenedFromWidget,
-        onBack = { coroutineScope.launch { finishAction.invoke() } }
-    )
+    BackHandler(enabled = isOpenedFromWidget,
+        onBack = { coroutineScope.launch { finishAction.invoke() } })
 
     Scaffold { innerPadding ->
-        ModalNavigationDrawer(
-            drawerState = navigationDrawerState,
+        ModalNavigationDrawer(drawerState = navigationDrawerState,
             modifier = Modifier.padding(innerPadding),
             gesturesEnabled = navigationDrawerState.isOpen,
             drawerContent = {
-                NavigationDrawerContent(
-                    navController = navController,
+                NavigationDrawerContent(navController = navController,
                     drawerItems = drawerItems,
-                    selectedRoute = selectedRoute
-                ) { coroutineScope.launch { navigationDrawerState.close() } }
+                    selectedRoute = selectedRoute,
+                    closeNavDrawer = { coroutineScope.launch { navigationDrawerState.close() } })
             },
             content = {
                 MotNavHost(
@@ -150,8 +141,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                     isOpenedFromWidget = isOpenedFromWidget,
                     finishAction = finishAction
                 )
-            }
-        )
+            })
     }
 }
 
@@ -169,14 +159,19 @@ private fun NavigationDrawerContent(
                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                 icon = {
                     Icon(
-                        drawerItem.icon,
-                        contentDescription = "${drawerItem.route} drawer item"
+                        drawerItem.icon, contentDescription = "${drawerItem.route} drawer item icon"
                     )
                 },
                 label = { Text(text = drawerItem.route) },
                 onClick = {
                     if (navController.currentDestination?.route != drawerItem.route) {
-                        navController.navigate(drawerItem.route)
+                        val isRouteInTheBackStack = navController.backQueue
+                            .any { it.destination.route == drawerItem.route }
+                        if (isRouteInTheBackStack) {
+                            navController.popBackStack(drawerItem.route, inclusive = false)
+                        } else {
+                            navController.navigate(drawerItem.route)
+                        }
                     }
                     closeNavDrawer.invoke()
                 },
@@ -198,106 +193,80 @@ private fun MotNavHost(
     val startDestination = if (isOpenedFromWidget) PaymentDetails else Payments
 
     NavHost(
-        navController = navController,
-        startDestination = startDestination.route
+        navController = navController, startDestination = startDestination.route
     ) {
         composable(
             route = Payments.route,
             content = {
-                PaymentListScreen(
-                    viewModel = hiltViewModel(),
+                PaymentListScreen(viewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
                             ?: navController.navigate(route = PaymentDetails.route)
                     },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } }
-                )
+                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
             },
         )
         composable(
             route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
             content = {
-                PaymentListScreen(
-                    viewModel = hiltViewModel(),
+                PaymentListScreen(viewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
                             ?: navController.navigate(route = PaymentDetails.route)
                     },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } }
-                )
+                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
-        composable(
-            route = "${PaymentDetails.route}?id={id}",
-            content = {
-                PaymentDetailsScreen(
-                    viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() }
-                )
-            },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        composable(route = "${PaymentDetails.route}?id={id}", content = {
+            PaymentDetailsScreen(viewModel = hiltViewModel(),
+                closeScreen = { navController.popBackStack() })
+        }, arguments = listOf(navArgument("id") { type = NavType.IntType })
         )
-        composable(
-            route = PaymentDetails.route,
-            content = {
-                PaymentDetailsScreen(
-                    viewModel = hiltViewModel(),
-                    closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() })
-            }
-        )
+        composable(route = PaymentDetails.route, content = {
+            PaymentDetailsScreen(viewModel = hiltViewModel(),
+                closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() })
+        })
         composable(
             route = Categories.route,
             content = {
-                CategoryListScreen(
-                    viewModel = hiltViewModel(),
-                    navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                CategoryListScreen(viewModel = hiltViewModel(),
+                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     actionsIcons = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
                     openPaymentsByCategoryAction = { categoryId ->
                         categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
                             ?: navController.popBackStack()
-                    }
-                )
+                    })
             },
         )
-        composable(
-            route = "${CategoryDetails.route}?id={id}",
-            content = {
-                CategoryDetailsScreen(
-                    viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() }
-                )
-            },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        composable(route = "${CategoryDetails.route}?id={id}", content = {
+            CategoryDetailsScreen(viewModel = hiltViewModel(),
+                closeScreen = { navController.popBackStack() })
+        }, arguments = listOf(navArgument("id") { type = NavType.IntType })
         )
         composable(
             route = CategoryDetails.route,
             content = {
-                CategoryDetailsScreen(
-                    viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() }
-                )
+                CategoryDetailsScreen(viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() })
             },
         )
         composable(
             route = Statistic.route,
             content = {
                 StatisticScreen(
-                    viewModel = hiltViewModel(),
-                    navHostController = navController
+                    viewModel = hiltViewModel(), navHostController = navController
                 )
             },
         )
         composable(
             route = Settings.route,
             content = {
-                SettingsScreen(
-                    title = Settings.route,
+                SettingsScreen(title = Settings.route,
                     settingsViewModel = hiltViewModel(),
-                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } }
-                )
+                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } })
             },
         )
     }
@@ -306,19 +275,13 @@ private fun MotNavHost(
 @Preview(showBackground = true)
 @Composable
 private fun MotAppLightPreview() {
-    MotApp(
-        isOpenedFromWidget = false,
-        finishAction = {}
-    )
+    MotApp(isOpenedFromWidget = false, finishAction = {})
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun MotAppDarkPreview() {
     MotMaterialTheme(darkTheme = true) {
-        MotApp(
-            isOpenedFromWidget = false,
-            finishAction = {}
-        )
+        MotApp(isOpenedFromWidget = false, finishAction = {})
     }
 }
