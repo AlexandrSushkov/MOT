@@ -84,7 +84,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
-    navigationIcon: @Composable () -> Unit = {},
+    appBarNavigationIcon: @Composable () -> Unit = {},
     actionsIcons: @Composable RowScope.() -> Unit = {},
     openPaymentsByCategoryAction: (Int?) -> Unit,
 ) {
@@ -115,7 +115,7 @@ fun CategoryListScreen(
 
     CategoryListLayout(
         appBarTitle = stringResource(titleStringsRes),
-        appBarNavigationIcon = navigationIcon,
+        appBarNavigationIcon = appBarNavigationIcon,
         settingsNavigationIcon = actionsIcons,
         categoriesListUiState = categoriesListUiState,
         onCategoryClick = openPaymentsByCategoryAction,
@@ -124,17 +124,18 @@ fun CategoryListScreen(
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
         onSwipeCategory = { viewModel.onSwipeCategory(it) },
         snackbarVisibleState = snackbarVisibleState,
-        deleteItemsCountText = deleteItemsSnackbarText
-    ) { viewModel.onUndoDeleteClick() }
+        deleteItemsCountText = deleteItemsSnackbarText,
+        undoDeleteClickEvent = { viewModel.onUndoDeleteClick() }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryListLayout(
     appBarTitle: String,
-    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
     appBarNavigationIcon: @Composable () -> Unit = {},
     settingsNavigationIcon: @Composable RowScope.() -> Unit = {},
+    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
     onCategoryClick: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
     onAddCategoryClickEvent: () -> Unit,

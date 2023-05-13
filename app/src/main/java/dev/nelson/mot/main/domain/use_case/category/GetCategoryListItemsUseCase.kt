@@ -25,11 +25,17 @@ class GetCategoryListItemsUseCase @Inject constructor(
      * @param params [SortingOrder] represents order
      * @return list of [CategoryListItemModel]
      */
-    override fun execute(params: SortingOrder): Flow<List<CategoryListItemModel>> = getAllCategoriesOrderedByName.execute(params)
-        .map { it.groupBy { category: Category -> category.name.first().uppercaseChar() } }
-        .map { titleCharToCategoryMap: Map<Char, List<Category>> -> createCategoryListViewRepresentation(titleCharToCategoryMap) }
+    override fun execute(params: SortingOrder): Flow<List<CategoryListItemModel>> =
+        getAllCategoriesOrderedByName.execute(params)
+            .map { it.groupBy { category: Category -> category.name.first().uppercaseChar() } }
+            .map { titleCharToCategoryMap: Map<Char, List<Category>> ->
+                createCategoryListViewRepresentation(
+                    titleCharToCategoryMap
+                )
+            }
 
     private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<CategoryListItemModel> {
+        if (value.isEmpty()) return emptyList()
         return mutableListOf<CategoryListItemModel>().apply {
             // add no category item
             val noCategory = Category("No category")
