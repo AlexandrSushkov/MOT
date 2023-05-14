@@ -38,7 +38,7 @@ data class Payment(
         parcel.readValue(Long::class.java.classLoader) as? Int, //id
         parcel.readString(), // date
         parcel.readValue(Long::class.java.classLoader) as? Long, // date in mills
-        parcel.readParcelable(Category::class.java.classLoader), // category
+        parcel.readParcelable(Category::class.java.classLoader, Category::class.java), // category
         parcel.readBoolean(), // is expanded
         parcel.readBoolean() // is selected
     )

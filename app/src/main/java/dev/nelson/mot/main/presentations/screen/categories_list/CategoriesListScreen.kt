@@ -253,7 +253,7 @@ fun CategoryList(
                                 is Letter -> {
                                     stickyHeader(key = categoryListItem.key) {
                                         ListItem(
-                                            headlineText = {
+                                            headlineContent = {
                                                 Text(
                                                     text = categoryListItem.letter,
                                                     style = MaterialTheme.typography.titleSmall
@@ -315,7 +315,7 @@ fun CategoryListItem(
             ),
     ) {
         ListItem(
-            headlineText = {
+            headlineContent = {
                 Text(
                     text = category.name,
                     style = MaterialTheme.typography.titleMedium

@@ -44,11 +44,6 @@ object PreviewData {
         return String(buffer, Charsets.UTF_8)
     }
 
-    fun getTestJson(context: Context) {
-        val jsonString = jsonString(context, "test.json")
-        val gson = Gson().fromJson(jsonString, Payment::class.java)
-    }
-
     val paymentListItemsPreview: List<PaymentListItemModel>
         get() = paymentListPreview.map { PaymentListItemModel.PaymentItemModel(it, true, generateKey()) as PaymentListItemModel }
             .toMutableList()

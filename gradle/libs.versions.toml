@@ -1,15 +1,15 @@
 [versions]
 androidGradlePlugin = "8.0.0"
-kotlinAndroidPlugin = "1.8.10"
+kotlinAndroidPlugin = "1.8.21"
 hiltPlugin = "2.44"
-kotlinAnnotationProcessingPlugin = "1.8.10-1.0.9"
+kotlinAnnotationProcessingPlugin = "1.8.21-1.0.11"
 
 appcompat = "1.7.0-alpha02"
 constraintlayout = "2.1.4"
-core-splashscreen = "1.0.1"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
-androidxCore = "1.9.0"
-fragment-ktx = "1.5.7"
+androidxCore = "1.10.0"
+fragmentKtx = "1.5.7"
 hilt = "2.46"
 hiltCompiler = "1.0.0"
 hiltNavigationCompose = "1.0.0"
@@ -17,9 +17,9 @@ kotlinxDatetime = "0.4.0"
 ktx = "1.10.0"
 lifecycleExtensions = "2.2.0"
 lifecycle = "2.6.1"
-material = "1.10.0-alpha01"
-play-services-analytics-impl = "18.0.2"
-material3 = "1.0.1"
+material = "1.10.0-alpha02"
+playServicesAnalyticsImpl = "18.0.2"
+material3 = "1.1.0"
 navavigation = "2.5.3"
 runner = "1.5.2"
 timber = "5.0.1"
@@ -27,14 +27,14 @@ gson = "2.10.1"
 coroutines = "1.6.4"
 junit = "4.13.2"
 room = "2.5.1"
-compose = "1.4.2"
-composeCompiler = "1.4.4"
+compose = "1.4.3"
+composeCompiler = "1.4.7"
 activityCompose = "1.7.1"
 viewModelCompose = "2.6.1"
 accompanist = "0.30.1"
 chart = "v3.1.0"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
+androidxTestExtJunit = "1.1.5"
+espressoCore = "3.5.1"
 
 [libraries]
 kotlinx-datetime =                              { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -46,13 +46,13 @@ hilt-android-testing =                          { group = "com.google.dagger", n
 hilt-android =                                  { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler =                                 { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 material =                                      { group = "com.google.android.material", name = "material", version.ref = "material" }
-play-services-analytics-impl =                  { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "play-services-analytics-impl" }
+play-services-analytics-impl =                  { group = "com.google.android.gms", name = "play-services-analytics-impl", version.ref = "playServicesAnalyticsImpl" }
 
 androidx-appcompat =                            { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-constraintlayout =                     { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-androidx-core-splashscreen =                    { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
+androidx-core-splashscreen =                    { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences =                { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
-androidx-fragment-ktx =                         { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment-ktx" }
+androidx-fragment-ktx =                         { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 androidx-hilt-compiler =                        { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompiler" }
 androidx-hilt-navigation-compose =              { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-ktx =                                  { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -89,8 +89,8 @@ gson =                                          { group = "com.google.code.gson"
 junit =                                         { group = "junit", name = "junit", version.ref = "junit" }
 timber =                                        { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 chart =                                         { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "chart" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 
 
