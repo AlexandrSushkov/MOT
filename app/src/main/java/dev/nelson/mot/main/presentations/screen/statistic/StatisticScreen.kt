@@ -13,6 +13,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationRail
@@ -43,7 +44,11 @@ fun StatisticScreen(
 ) {
     val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
     val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
-    StatisticLayout(navHostController, currentMonth, previousMonthList)
+    StatisticLayout(
+        navHostController,
+        currentMonth,
+        previousMonthList
+    )
 
 }
 
@@ -56,7 +61,7 @@ fun StatisticLayout(
     Scaffold(
         bottomBar = {
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                BottomNavigation() {
+                BottomNavigation {
                     motTabRowScreens.forEach { screen ->
                         BottomNavigationItem(
                             icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
@@ -75,7 +80,7 @@ fun StatisticLayout(
         ) {
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row {
-                    NavigationRail() {
+                    NavigationRail {
                         motTabRowScreens.forEach { screen ->
                             NavigationRailItem(
                                 label = { Text(screen.route) },
@@ -91,25 +96,39 @@ fun StatisticLayout(
                 }
             } else {
                 StatisticContent()
-                Text(text = "Current month:")
+                val paymentsForCurrentMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
+                currentMonthList.entries.forEach {
+                    paymentsForCurrentMonth.addAll(it.value)
+                }
+                val sumForCurrentMonth = paymentsForCurrentMonth.sumOf { payment -> payment.payment.cost }
+                Text(text = "Current month total: $sumForCurrentMonth")
+                Divider()
+                Text(text = "Current month :")
                 LazyColumn(content = {
                     currentMonthList.keys.forEach {
                         item {
-                            Row() {
+                            Row {
                                 Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = currentMonthList[it].let { pl -> pl?.sumOf { payment -> payment.payment.cost } ?: 0 }.toString())
+                                Text(text = currentMonthList[it].let { pl ->
+                                    pl?.sumOf { payment -> payment.payment.cost } ?: 0
+                                }.toString())
                             }
 
                         }
                     }
                 })
-                Text(text = "Previous month:")
+                Divider()
+                Text(text = "Previous month total:")
+                Divider()
+                Text(text = "Previous month by categories:")
                 LazyColumn(content = {
                     previousMonthList.keys.forEach {
                         item {
-                            Row() {
+                            Row {
                                 Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = previousMonthList[it].let { pl -> pl?.sumOf { payment -> payment.cost } ?: 0 }.toString())
+                                Text(text = previousMonthList[it].let { pl ->
+                                    pl?.sumOf { payment -> payment.cost } ?: 0
+                                }.toString())
                             }
 
                         }

@@ -63,11 +63,12 @@ class SettingsRepository @Inject constructor(
      * @return true if the given database pass integrity_check, false otherwise.
      */
     fun checkDataBaseIntegrity(file: File): Boolean {
-        val database = Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
-            .createFromFile(file)
-            .addMigrations(MIGRATION_1_2)
-            .allowMainThreadQueries()
-            .build()
+        val database =
+            Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
+                .createFromFile(file)
+                .addMigrations(MIGRATION_1_2)
+                .allowMainThreadQueries()
+                .build()
 
         return database.openHelper
             .readableDatabase
@@ -82,18 +83,20 @@ class SettingsRepository @Inject constructor(
         val appDataBaseFile = File(appDataBasesDir, MotDatabaseInfo.FILE_NAME)
         if (appDataBaseFile.exists().not()) return false
         if (motDatabase.isOpen) motDatabase.close()
-        val backupDataBaseFileName = getDataBaseBackupUniqueName(downloadsDir, MotDatabaseInfo.BACKUP_FILE_NAME)
+        val backupDataBaseFileName =
+            getDataBaseBackupUniqueName(downloadsDir, MotDatabaseInfo.BACKUP_FILE_NAME)
         val backupDatabaseFile = File(downloadsDir, backupDataBaseFileName)
         copyFile(appDataBaseFile, backupDatabaseFile)
         return true
     }
 
-    suspend fun setSwitch(motSwitchType: MotSwitchType, isEnabled: Boolean) {
+    suspend fun setSwitchState(motSwitchType: MotSwitchType, isEnabled: Boolean) {
         dataStore.edit { preferences -> preferences[motSwitchType.key] = isEnabled }
     }
 
-    fun getSwitch(motSwitchType: MotSwitchType): Flow<Boolean> {
-        return dataStore.data.map { it[motSwitchType.key] ?: false }
+    fun getSwitchState(motSwitchType: MotSwitchType): Flow<Boolean> {
+        val defaultValue = motSwitchType is MotSwitchType.ShowCents
+        return dataStore.data.map { it[motSwitchType.key] ?: defaultValue }
     }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {
@@ -102,7 +105,8 @@ class SettingsRepository @Inject constructor(
         while (File(directory, uniqueFileName).exists()) {
             val extension = uniqueFileName.substringAfterLast(DOT)
             val baseName = uniqueFileName.substringBeforeLast(DOT).substringBefore(OPEN_BRACKET)
-            uniqueFileName = "$baseName$OPEN_BRACKET$count$CLOSE_BRACKET$DOT$extension" // pattern: fileName(1).ext
+            uniqueFileName =
+                "$baseName$OPEN_BRACKET$count$CLOSE_BRACKET$DOT$extension" // pattern: fileName(1).ext
             count++
         }
         return uniqueFileName

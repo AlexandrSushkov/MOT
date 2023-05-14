@@ -1,7 +1,4 @@
-@file:OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
-    ExperimentalMaterialApi::class
-)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.main.presentations.screen.settings
 
@@ -15,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -25,6 +20,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,13 +34,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.BuildConfig
-import dev.nelson.mot.main.R
-import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.PriceText
+import dev.nelson.mot.main.BuildConfig
+import dev.nelson.mot.main.R
+import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.util.StringUtils
+import java.util.Locale
 
 private const val FILE_PICKER_FORMAT = "*/*"
 
@@ -91,7 +89,8 @@ fun SettingsScreen(
         onDarkThemeSwitchClick = { settingsViewModel.onDarkThemeCheckedChange(it) },
         onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) }
+        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) },
+        onShowCentsClick = { settingsViewModel.onShowCentsCheckedChange(it) },
     )
 }
 
@@ -104,21 +103,45 @@ private fun SettingsScreenLayout(
     onImportDataBaseClick: () -> Unit,
     onDarkThemeSwitchClick: (Boolean) -> Unit,
     onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
+    onShowCentsClick: (Boolean) -> Unit,
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
 
     Scaffold(
-        topBar = { MotTopAppBar(appBarTitle = title, navigationIcon = navigationIcon) }
+        topBar = {
+            MotTopAppBar(
+                appBarTitle = title,
+                navigationIcon = navigationIcon
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
+            HeadingListItem(text = "Appearance")
             ListItem(
-                text = { Text(text = "Dark theme") },
-                trailing = {
+                headlineContent = { Text(text = "Show cents") },
+                supportingContent = {
+                    PriceText(
+                        locale = Locale.getDefault(),
+                        isShowCents = viewState.isShowCents,
+                        priceInCents = 999999
+                    )
+                },
+                trailingContent = {
+                    MotSwitch(
+                        checked = viewState.isShowCents,
+                        onCheckedChange = onShowCentsClick
+                    )
+                }
+            )
+            HeadingListItem(text = "Theme")
+            ListItem(
+                headlineContent = { Text(text = "Dark theme") },
+                trailingContent = {
                     MotSwitch(
                         checked = viewState.isDarkThemeSwitchOn,
                         onCheckedChange = onDarkThemeSwitchClick
@@ -126,29 +149,52 @@ private fun SettingsScreenLayout(
                 }
             )
             ListItem(
-                text = { Text(text = "Dynamic color theme") },
-                trailing = {
+                headlineContent = { Text(text = "Dynamic color theme") },
+                trailingContent = {
                     MotSwitch(
                         checked = viewState.isDynamicThemeSwitchOn,
                         onCheckedChange = onDynamicColorThemeSwitchClick
                     )
                 }
             )
+            HeadingListItem(text = "Data base")
             ListItem(
-                text = { Text(text = "Export data base to the Downloads folder") },
-                trailing = { MotTextButton(onClick = onExportDataBaseClick, text = "Export") }
+                headlineContent = { Text(text = "Export data base to the Downloads folder") },
+                trailingContent = {
+                    MotTextButton(
+                        onClick = onExportDataBaseClick,
+                        text = "Export"
+                    )
+                }
             )
             ListItem(
-                text = { Text(text = "Import data base") },
-                trailing = { MotTextButton(onClick = onImportDataBaseClick, text = "Import") }
+                headlineContent = { Text(text = "Import data base") },
+                trailingContent = {
+                    MotTextButton(
+                        onClick = onImportDataBaseClick,
+                        text = "Import"
+                    )
+                }
             )
             Spacer(modifier = Modifier.weight(1f))
             ListItem(
-                text = { Text(text = "App version: ${BuildConfig.VERSION_NAME}") },
-                secondaryText = { Text(text = "Build: ${BuildConfig.VERSION_CODE}") }
+                headlineContent = { Text(text = "App version: ${BuildConfig.VERSION_NAME}") },
+                supportingContent = { Text(text = "Build: ${BuildConfig.VERSION_CODE}") }
             )
         }
     }
+}
+
+@Composable
+private fun HeadingListItem(text: String) {
+    ListItem(
+        headlineContent = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.h6
+            )
+        },
+    )
 }
 
 @Composable
@@ -221,6 +267,7 @@ private fun SettingsScreenLayoutPreviewData() {
     val viewState = SettingsViewState(
         isDarkThemeSwitchOn = false,
         isDynamicThemeSwitchOn = true,
+        isShowCents = false
 //        alertDialog = alertDialogParams,
     )
     SettingsScreenLayout(
@@ -234,6 +281,7 @@ private fun SettingsScreenLayoutPreviewData() {
         onExportDataBaseClick = {},
         onDarkThemeSwitchClick = {},
         onImportDataBaseClick = {},
-        onDynamicColorThemeSwitchClick = {}
+        onDynamicColorThemeSwitchClick = {},
+        onShowCentsClick = {}
     )
 }

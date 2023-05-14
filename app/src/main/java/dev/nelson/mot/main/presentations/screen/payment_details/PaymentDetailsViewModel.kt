@@ -163,7 +163,7 @@ class PaymentDetailsViewModel @Inject constructor(
             cost = _cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0,
             message = _message.value.text,
             id = initialPayment?.id,
-            date = initialPayment?.date,
+            dateString = initialPayment?.dateString,
             dateInMills = dateInMills,
             category = selectedCategory
         )

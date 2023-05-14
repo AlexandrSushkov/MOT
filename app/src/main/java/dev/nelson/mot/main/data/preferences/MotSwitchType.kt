@@ -9,5 +9,8 @@ import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 sealed class MotSwitchType(val key: Preferences.Key<Boolean>) {
 
     object DarkTheme : MotSwitchType(PreferencesKeys.DARK_THEME_ENABLED)
+
     object DynamicColorTheme : MotSwitchType(PreferencesKeys.DYNAMIC_COLOR_THEME_ENABLED)
+
+    object ShowCents : MotSwitchType(PreferencesKeys.SHOW_CENTS_ENABLED)
 }

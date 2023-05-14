@@ -34,8 +34,18 @@ class GetPaymentListByDateRange @Inject constructor(
         category: Category? = null,
         order: SortingOrder = SortingOrder.Ascending
     ): Flow<List<PaymentListItemModel>> {
-        val paymentsWithCategoryList = endTime?.let { paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, it, order) }
-            ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(startTime, order, category?.id)
+        val paymentsWithCategoryList = endTime?.let {
+            paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(
+                startTime,
+                it,
+                order
+            )
+        }
+            ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(
+                startTime,
+                order,
+                category?.id
+            )
 
         return paymentsWithCategoryList
             .map { it.toPaymentList() }
@@ -51,7 +61,15 @@ class GetPaymentListByDateRange @Inject constructor(
         dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
-            payment.dateInMills?.let { mills -> payment.copyWith(date = formatTimeUseCase.execute(mills, timeZone, dateTimeFormatter)) } ?: payment
+            payment.dateInMills?.let { mills ->
+                payment.copyWith(
+                    date = formatTimeUseCase.execute(
+                        mills,
+                        timeZone,
+                        dateTimeFormatter
+                    )
+                )
+            } ?: payment
         }
     }
 
@@ -60,7 +78,7 @@ class GetPaymentListByDateRange @Inject constructor(
      */
     private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean): List<PaymentListItemModel> {
         return mutableListOf<PaymentListItemModel>().apply {
-            this@toPaymentListItemModelNew.groupBy { payment -> payment.date }
+            this@toPaymentListItemModelNew.groupBy { payment -> payment.dateString }
                 .forEach { (date, payments) ->
                     add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.getRandomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))

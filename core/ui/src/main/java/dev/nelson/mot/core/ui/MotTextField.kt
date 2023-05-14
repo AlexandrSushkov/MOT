@@ -6,9 +6,9 @@ import android.content.res.Configuration
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -98,13 +98,12 @@ fun MotTextFieldPreviewDynamicOff() {
 @Composable
 private fun PreviewDataTextField() {
     ListItem(
-        trailing = {
+        headlineContent = {
             MotTextField(
                 TextFieldValue("Hello World!"),
                 onValueChange = {},
                 placeholder = { Text("Placeholder") }
             )
-        },
-        text = {}
+        }
     )
 }

@@ -42,6 +42,8 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun DateRangeWidget(startDate: String, endDate: String) {
@@ -208,9 +210,7 @@ fun PaymentListItem(
                     Column(
                         modifier = Modifier.align(alignment = CenterVertically)
                     ) {
-                        Text(
-                            paymentItemModel.payment.cost.toString(),
-                        )
+                        Text(paymentItemModel.payment.cost.toString())
                     }
                 }
                 if (paymentItemModel.payment.message.isNotEmpty()) {

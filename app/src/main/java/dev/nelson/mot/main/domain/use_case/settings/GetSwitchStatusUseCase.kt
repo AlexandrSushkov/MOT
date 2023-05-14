@@ -11,6 +11,6 @@ class GetSwitchStatusUseCase @Inject constructor(
 ) : UseCaseFlow<MotSwitchType, Boolean> {
 
     override fun execute(params: MotSwitchType): Flow<Boolean> {
-        return settingsRepository.getSwitch(params)
+        return settingsRepository.getSwitchState(params)
     }
 }

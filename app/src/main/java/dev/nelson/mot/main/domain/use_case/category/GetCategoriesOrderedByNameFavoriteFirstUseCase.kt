@@ -17,6 +17,8 @@ class GetCategoriesOrderedByNameFavoriteFirstUseCase @Inject constructor(
 
     override fun execute(params: SortingOrder): Flow<List<Category>> {
         return getAllCategoriesOrderedByName.execute(params)
-            .map { categoryList -> categoryList.sortedByDescending { category -> category.isFavorite } }
+            .map { categoryList ->
+                categoryList.sortedByDescending { category -> category.isFavorite }
+            }
     }
 }

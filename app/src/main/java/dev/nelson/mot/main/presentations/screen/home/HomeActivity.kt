@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,8 +72,9 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val isOpenedFromWidget =
-            intent?.extras?.getBoolean(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, false) ?: false
+        val isOpenedFromWidget = intent
+            ?.extras
+            ?.getBoolean(AppWidgetManager.EXTRA_CUSTOM_EXTRAS, false) ?: false
 
         installSplashScreen().apply {
             setKeepOnScreenCondition { splashScreenViewModel.isLoading.value }
@@ -83,10 +85,13 @@ class HomeActivity : ComponentActivity() {
             val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
 
             MotMaterialTheme(
-                forceDark = forceDark, dynamicColor = dynamicColor
+                forceDark = forceDark,
+                dynamicColor = dynamicColor
             ) {
-                MotApp(isOpenedFromWidget = isOpenedFromWidget,
-                    finishAction = { finishAndRemoveTask() })
+                MotApp(
+                    isOpenedFromWidget = isOpenedFromWidget,
+                    finishAction = { finishAndRemoveTask() }
+                )
             }
         }
     }
@@ -98,41 +103,37 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
     val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
-    val navigationDrawerValue =
-        if (LocalInspectionMode.current) DrawerValue.Open else DrawerValue.Closed
-    val navigationDrawerState = rememberDrawerState(navigationDrawerValue)
+    val navigationDrawerState = rememberDrawerState(DrawerValue.Closed)
     val drawerItems = drawerItemsList
     val selectedRoute = remember { mutableStateOf(drawerItems.first().route) }
-
-    navController.addOnDestinationChangedListener { _, destination, _ ->
-        destination.route?.let { currentRoute ->
-            if (drawerItems.map { drawerItem -> drawerItem.route }.contains(currentRoute)) {
-                selectedRoute.value = currentRoute
-            }
-        }
-    }
-
-    /**
-     * Close the navigation drawer back handler.
-     */
-    BackHandler(enabled = navigationDrawerState.isOpen,
-        onBack = { coroutineScope.launch { navigationDrawerState.close() } })
 
     /**
      * Close the app back handler.
      */
-    BackHandler(enabled = isOpenedFromWidget,
-        onBack = { coroutineScope.launch { finishAction.invoke() } })
+    BackHandler(
+        enabled = isOpenedFromWidget,
+        onBack = { coroutineScope.launch { finishAction.invoke() } }
+    )
+
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        destination.route?.let { currentRoute ->
+            drawerItems.filter { drawerItem -> drawerItem.route == currentRoute }
+                .map { selectedRoute.value = it.route }
+        }
+    }
 
     Scaffold { innerPadding ->
-        ModalNavigationDrawer(drawerState = navigationDrawerState,
+        ModalNavigationDrawer(
+            drawerState = navigationDrawerState,
             modifier = Modifier.padding(innerPadding),
             gesturesEnabled = navigationDrawerState.isOpen,
             drawerContent = {
-                NavigationDrawerContent(navController = navController,
+                NavigationDrawerContent(
+                    navController = navController,
                     drawerItems = drawerItems,
                     selectedRoute = selectedRoute,
-                    closeNavDrawer = { coroutineScope.launch { navigationDrawerState.close() } })
+                    closeNavDrawer = { coroutineScope.launch { navigationDrawerState.close() } }
+                )
             },
             content = {
                 MotNavHost(
@@ -141,7 +142,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                     isOpenedFromWidget = isOpenedFromWidget,
                     finishAction = finishAction
                 )
-            })
+            }
+        )
     }
 }
 
@@ -192,8 +194,18 @@ private fun MotNavHost(
     val coroutineScope = rememberCoroutineScope()
     val startDestination = if (isOpenedFromWidget) PaymentDetails else Payments
 
+    /**
+     * Close the navigation drawer back handler.
+     * DO NOT move this handler outside of the NavHost! It will not work.
+     */
+    BackHandler(
+        enabled = navigationDrawerState.isOpen,
+        onBack = { coroutineScope.launch { navigationDrawerState.close() } }
+    )
+
     NavHost(
-        navController = navController, startDestination = startDestination.route
+        navController = navController,
+        startDestination = startDestination.route
     ) {
         composable(
             route = Payments.route,
@@ -220,19 +232,27 @@ private fun MotNavHost(
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
-        composable(route = "${PaymentDetails.route}?id={id}", content = {
-            PaymentDetailsScreen(viewModel = hiltViewModel(),
-                closeScreen = { navController.popBackStack() })
-        }, arguments = listOf(navArgument("id") { type = NavType.IntType })
+        composable(
+            route = "${PaymentDetails.route}?id={id}",
+            content = {
+                PaymentDetailsScreen(viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() })
+            },
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
         )
-        composable(route = PaymentDetails.route, content = {
-            PaymentDetailsScreen(viewModel = hiltViewModel(),
-                closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() })
-        })
+        composable(
+            route = PaymentDetails.route,
+            content = {
+                PaymentDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() })
+            }
+        )
         composable(
             route = Categories.route,
             content = {
-                CategoryListScreen(viewModel = hiltViewModel(),
+                CategoryListScreen(
+                    viewModel = hiltViewModel(),
                     appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     actionsIcons = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
                     openPaymentsByCategoryAction = { categoryId ->
@@ -241,23 +261,31 @@ private fun MotNavHost(
                     })
             },
         )
-        composable(route = "${CategoryDetails.route}?id={id}", content = {
-            CategoryDetailsScreen(viewModel = hiltViewModel(),
-                closeScreen = { navController.popBackStack() })
-        }, arguments = listOf(navArgument("id") { type = NavType.IntType })
+        composable(
+            route = "${CategoryDetails.route}?id={id}",
+            content = {
+                CategoryDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
+            },
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
         )
         composable(
             route = CategoryDetails.route,
             content = {
-                CategoryDetailsScreen(viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() })
+                CategoryDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
             },
         )
         composable(
             route = Statistic.route,
             content = {
                 StatisticScreen(
-                    viewModel = hiltViewModel(), navHostController = navController
+                    viewModel = hiltViewModel(),
+                    navHostController = navController
                 )
             },
         )

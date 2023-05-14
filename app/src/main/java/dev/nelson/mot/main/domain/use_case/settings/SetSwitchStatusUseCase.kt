@@ -10,7 +10,7 @@ class SetSwitchStatusUseCase @Inject constructor(
 ) : UseCaseSuspend<SetSwitchStatusParams, Unit> {
 
     override suspend fun execute(params: SetSwitchStatusParams) {
-        settingsRepository.setSwitch(params.motSwitchType, params.isEnabled)
+        settingsRepository.setSwitchState(params.motSwitchType, params.isEnabled)
     }
 }
 

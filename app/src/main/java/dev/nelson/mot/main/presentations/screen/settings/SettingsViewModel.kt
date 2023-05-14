@@ -34,10 +34,7 @@ class SettingsViewModel @Inject constructor(
     private val _restartAppAction = MutableSharedFlow<Unit>()
 
     // states
-    private val defaultSettingsViewState = SettingsViewState(
-        isDarkThemeSwitchOn = false,
-        isDynamicThemeSwitchOn = false
-    )
+    private val defaultSettingsViewState = SettingsViewState()
     val settingsViewState
         get() = _viewState.asStateFlow()
     private val _viewState = MutableStateFlow(defaultSettingsViewState)
@@ -52,6 +49,12 @@ class SettingsViewModel @Inject constructor(
         launch {
             getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme).collect {
                 _viewState.value = _viewState.value.copy(isDynamicThemeSwitchOn = it)
+            }
+        }
+
+        launch {
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowCents).collect {
+                _viewState.value = _viewState.value.copy(isShowCents = it)
             }
         }
     }
@@ -75,6 +78,11 @@ class SettingsViewModel @Inject constructor(
             resetSwitch(MotSwitchType.DarkTheme)
         }
         val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, isChecked)
+        setSwitchStatusUseCase.execute(params)
+    }
+
+    fun onShowCentsCheckedChange(isChecked: Boolean) = launch {
+        val params = SetSwitchStatusParams(MotSwitchType.ShowCents, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
 
@@ -147,4 +155,5 @@ class SettingsViewModel @Inject constructor(
             alertDialog = null
         )
     }
+
 }

@@ -13,7 +13,7 @@ import dev.nelson.mot.db.model.payment.PaymentEntity
  * @property cost
  * @property message
  * @property id
- * @property date formatted string representation of the mills
+ * @property dateString formatted string representation of the mills
  * @property dateInMills date in epoch milliseconds
  * @property category
  * @property isExpanded used in payment list to show/hide message
@@ -25,7 +25,7 @@ data class Payment(
     val cost: Int,
     val message: String = StringUtils.EMPTY,
     val id: Int? = null,
-    val date: String? = null,
+    val dateString: String? = null,
     val dateInMills: Long? = null,
     val category: Category? = null,
     var isExpanded: Boolean = false,
@@ -49,7 +49,7 @@ data class Payment(
             cost: $cost
             message: $message
             id: $id
-            date: $date
+            date: $dateString
             dateInMills: $dateInMills
             category: $category
         """
@@ -60,7 +60,7 @@ data class Payment(
         parcel.writeInt(cost)
         parcel.writeString(message)
         parcel.writeValue(id)
-        parcel.writeString(date)
+        parcel.writeString(dateString)
         parcel.writeValue(dateInMills)
         parcel.writeParcelable(category, flags)
         parcel.writeBoolean(isExpanded)
