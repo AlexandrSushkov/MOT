@@ -6,6 +6,7 @@ import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
+import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
@@ -25,7 +26,8 @@ class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
-    private val setSwitchStatusUseCase: SetSwitchStatusUseCase
+    private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
+    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
 ) : BaseViewModel() {
 
     // actions
@@ -57,6 +59,19 @@ class SettingsViewModel @Inject constructor(
                 _viewState.value = _viewState.value.copy(isShowCents = it)
             }
         }
+
+        launch {
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol).collect {
+                _viewState.value = _viewState.value.copy(isShowCurrencySymbol = it)
+            }
+        }
+
+        launch {
+            getSelectedLocaleUseCase.execute().collect { locale ->
+                _viewState.value = _viewState.value.copy(selectedLocale = locale)
+            }
+        }
+
     }
 
     /**
@@ -85,6 +100,12 @@ class SettingsViewModel @Inject constructor(
         val params = SetSwitchStatusParams(MotSwitchType.ShowCents, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
+
+    fun onShowCurrencySymbolChange(isChecked: Boolean) = launch {
+        val params = SetSwitchStatusParams(MotSwitchType.ShowCurrencySymbol, isChecked)
+        setSwitchStatusUseCase.execute(params)
+    }
+
 
     fun onExportDataBaseClick() = launch {
         runCatching { exportDataBaseUseCase.execute() }.onSuccess { isExported ->

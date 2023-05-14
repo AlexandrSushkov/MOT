@@ -14,11 +14,13 @@ import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.channels.FileChannel
+import java.util.Locale
 import javax.inject.Inject
 
 class SettingsRepository @Inject constructor(
@@ -98,6 +100,8 @@ class SettingsRepository @Inject constructor(
         val defaultValue = motSwitchType is MotSwitchType.ShowCents
         return dataStore.data.map { it[motSwitchType.key] ?: defaultValue }
     }
+
+    fun getSelectedLocale(): Flow<Locale> = flow { emit(Locale.Builder().setRegion("UA").build()) }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {
         var uniqueFileName = fileName

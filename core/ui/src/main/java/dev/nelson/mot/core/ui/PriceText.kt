@@ -15,9 +15,10 @@ import java.util.Locale
 fun PriceText(
     locale: Locale,
     isShowCents: Boolean,
-    priceInCents: Int
+    priceInCents: Int,
+    isShowCurrencySymbol: Boolean
 ) {
-    val formattedCost = formatPrice(locale, priceInCents, isShowCents)
+    val formattedCost = formatPrice(locale, priceInCents, isShowCents, isShowCurrencySymbol)
     Text(
         text = formattedCost,
         style = MaterialTheme.typography.labelMedium,
@@ -57,6 +58,7 @@ private fun PriceTextPreviewData() {
 //                Locale.getDefault(),
                 Locale.Builder().setLanguage("ua").setRegion("UA").build(),
                 isShowCents = true,
+                isShowCurrencySymbol = true,
                 priceInCents = 999999
             )
         },

@@ -6,4 +6,5 @@ object PreferencesKeys {
     val DARK_THEME_ENABLED = booleanPreferencesKey("dark_theme_enabled")
     val DYNAMIC_COLOR_THEME_ENABLED = booleanPreferencesKey("dynamic_color_theme_enabled")
     val SHOW_CENTS_ENABLED = booleanPreferencesKey("show_cents_enabled")
+    val SHOW_CURRENCY_SYMBOL_ENABLED = booleanPreferencesKey("show_currency_symbol_enabled")
 }

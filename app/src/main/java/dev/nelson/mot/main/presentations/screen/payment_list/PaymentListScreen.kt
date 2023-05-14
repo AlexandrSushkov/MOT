@@ -72,6 +72,7 @@ import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -87,12 +88,15 @@ fun PaymentListScreen(
 
     // listen states
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
-    val paymentListResult by viewModel.paymentListState.collectAsState(Loading)
+    val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
     val isSelectedState by viewModel.isSelectedState.collectAsState(false)
     val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
     val categories by viewModel.categoriesState.collectAsState(emptyList())
+    val showCents by viewModel.showCents.collectAsState(false)
+    val showCurrencySymbol by viewModel.showCurrencySymbol.collectAsState(false)
+    val selectedLocale by viewModel.selectedLocale.collectAsState(Locale.getDefault())
 
     /**
      * Open payment details
@@ -131,7 +135,15 @@ fun PaymentListScreen(
     val year: Int = cldr.get(Calendar.YEAR)
     val picker = DatePickerDialog(
         LocalContext.current,
-        { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
+        { _, selectedYear, monthOfYear, dayOfMonth ->
+            run {
+                viewModel.onDateSet(
+                    selectedYear,
+                    monthOfYear,
+                    dayOfMonth
+                )
+            }
+        },
         year,
         month,
         day
@@ -163,8 +175,10 @@ fun PaymentListScreen(
         onChangeDateForSelectedItemsClick = { picker.show() },
         categories = categories,
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
-        modalBottomSheetState = modalBottomSheetState
-
+        modalBottomSheetState = modalBottomSheetState,
+        locale = selectedLocale,
+        showCents = showCents,
+        showCurrencySymbol = showCurrencySymbol,
     )
 }
 
@@ -191,9 +205,18 @@ fun PaymentListLayout(
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState,
+    showCents: Boolean,
+    showCurrencySymbol: Boolean,
+    locale: Locale
 ) {
     MotModalBottomSheetLayout(
-        sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
+        sheetContent = {
+            CategoriesListBottomSheet(
+                categories,
+                onCategoryClick,
+                modalBottomSheetState
+            )
+        },
         sheetState = modalBottomSheetState
     ) {
         Scaffold(
@@ -260,7 +283,10 @@ fun PaymentListLayout(
                             val deletedItemText = if (deletedItemsCount == 1) {
                                 stringResource(R.string.text_deleted_item_format, deletedItemsCount)
                             } else {
-                                stringResource(R.string.text_deleted_items_format, deletedItemsCount)
+                                stringResource(
+                                    R.string.text_deleted_items_format,
+                                    deletedItemsCount
+                                )
                             }
                             Text(text = deletedItemText)
                         }
@@ -274,7 +300,10 @@ fun PaymentListLayout(
                     onItemClick,
                     onItemLongClick,
                     onSwipeToDeleteItem,
-                    isSelectedState
+                    isSelectedState,
+                    locale,
+                    showCents,
+                    showCurrencySymbol,
                 )
             }
         }
@@ -289,7 +318,10 @@ fun PaymentList(
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    isSelectedState: Boolean
+    isSelectedState: Boolean,
+    locale: Locale,
+    showCents: Boolean,
+    showCurrencySymbol: Boolean,
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -311,8 +343,10 @@ fun PaymentList(
             } else {
                 Column {
                     // date range widget
-                    val startDate = paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
-                    val endDate = paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+                    val startDate =
+                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+                    val endDate =
+                        paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
                     if (startDate != null && endDate != null) {
                         DateRangeWidget(startDate.date, endDate.date)
                     }
@@ -334,14 +368,23 @@ fun PaymentList(
                                     )
                                     MotDismissibleListItem(
                                         dismissState = dismissState,
-                                        directions = if (isSelectedState.not()) setOf(DismissDirection.EndToStart) else emptySet(),
+                                        directions = if (isSelectedState.not()) setOf(
+                                            DismissDirection.EndToStart
+                                        ) else emptySet(),
                                         dismissContent = {
-                                                PaymentListItem(
+                                            PaymentListItem(
                                                 paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
                                                 dismissDirection = dismissState.dismissDirection,
-                                                onLongClick = { payment -> onItemLongClick.invoke(payment) },
-                                                isSelectedState = isSelectedState
+                                                onLongClick = { payment ->
+                                                    onItemLongClick.invoke(
+                                                        payment
+                                                    )
+                                                },
+                                                isSelectedState = isSelectedState,
+                                                locale = locale,
+                                                showCents = showCents,
+                                                showCurrencySymbol = showCurrencySymbol
                                             )
                                         }
                                     )
@@ -395,7 +438,10 @@ private fun PaymentListScreenLightPreview() {
         onChangeCategoryForSelectedItemsClick = {},
         categories = emptyList(),
         onCategoryClick = {},
-        modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+        modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+        showCents = true,
+        showCurrencySymbol = true,
+        locale = Locale.getDefault()
     )
 }
 
@@ -424,7 +470,10 @@ private fun PaymentListScreenDarkPreview() {
             onChangeCategoryForSelectedItemsClick = {},
             categories = emptyList(),
             onCategoryClick = {},
-            modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+            modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
+            showCents = true,
+            showCurrencySymbol = true,
+            locale = Locale.getDefault()
         )
     }
 }

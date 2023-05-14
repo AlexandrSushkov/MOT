@@ -11,13 +11,20 @@ import java.util.Locale
 fun formatPrice(
     locale: Locale,
     price: Int,
-    isShowCents: Boolean
+    isShowCents: Boolean,
+    isShowCurrencySymbol: Boolean
 ): String {
     val formatter = NumberFormat.getCurrencyInstance(locale)
-    return if (isShowCents) {
+
+    val formattedPrice = if (isShowCents) {
         formatter.format(price.toDouble() / 100)
     } else {
         formatter.maximumFractionDigits = 0
         formatter.format(price / 100)
+    }
+    return if (isShowCurrencySymbol) {
+        formattedPrice
+    } else {
+        formatter.currency?.let { formattedPrice.replace(it.symbol, "") } ?: formattedPrice
     }
 }

@@ -1,14 +1,7 @@
-@file:OptIn(
-    ExperimentalMaterialApi::class,
-    ExperimentalMaterialApi::class,
-    ExperimentalMaterialApi::class
-)
-
 package dev.nelson.mot.core.ui
 
 import android.content.res.Configuration
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,7 +76,6 @@ fun MotSwitchPreviewDynamicOff() {
 @Composable
 private fun MotSwitchPreviewData(checked: Boolean) {
     ListItem(
-        trailing = { MotSwitch(checked = checked, onCheckedChange = {}) },
-        text = {}
+        headlineContent = { MotSwitch(checked = checked, onCheckedChange = {}) },
     )
 }

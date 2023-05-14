@@ -42,9 +42,8 @@ import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.constant.Constants
 import java.util.Locale
-
-private const val FILE_PICKER_FORMAT = "*/*"
 
 @Composable
 fun SettingsScreen(
@@ -89,8 +88,9 @@ fun SettingsScreen(
         onDarkThemeSwitchClick = { settingsViewModel.onDarkThemeCheckedChange(it) },
         onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
-        onImportDataBaseClick = { filePickerLauncher.launch(FILE_PICKER_FORMAT) },
+        onImportDataBaseClick = { filePickerLauncher.launch(Constants.FILE_PICKER_FORMAT) },
         onShowCentsClick = { settingsViewModel.onShowCentsCheckedChange(it) },
+        onShowCurrencySymbolClick = { settingsViewModel.onShowCurrencySymbolChange(it) },
     )
 }
 
@@ -104,6 +104,7 @@ private fun SettingsScreenLayout(
     onDarkThemeSwitchClick: (Boolean) -> Unit,
     onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
     onShowCentsClick: (Boolean) -> Unit,
+    onShowCurrencySymbolClick: (Boolean) -> Unit,
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
@@ -126,8 +127,9 @@ private fun SettingsScreenLayout(
                 headlineContent = { Text(text = "Show cents") },
                 supportingContent = {
                     PriceText(
-                        locale = Locale.getDefault(),
+                        locale = viewState.selectedLocale,
                         isShowCents = viewState.isShowCents,
+                        isShowCurrencySymbol = viewState.isShowCurrencySymbol,
                         priceInCents = 999999
                     )
                 },
@@ -135,6 +137,23 @@ private fun SettingsScreenLayout(
                     MotSwitch(
                         checked = viewState.isShowCents,
                         onCheckedChange = onShowCentsClick
+                    )
+                }
+            )
+            ListItem(
+                headlineContent = { Text(text = "Show currency symbol") },
+                supportingContent = {
+                    PriceText(
+                        locale = viewState.selectedLocale,
+                        isShowCents = viewState.isShowCents,
+                        isShowCurrencySymbol = viewState.isShowCurrencySymbol,
+                        priceInCents = 999999
+                    )
+                },
+                trailingContent = {
+                    MotSwitch(
+                        checked = viewState.isShowCurrencySymbol,
+                        onCheckedChange = onShowCurrencySymbolClick
                     )
                 }
             )
@@ -282,6 +301,7 @@ private fun SettingsScreenLayoutPreviewData() {
         onDarkThemeSwitchClick = {},
         onImportDataBaseClick = {},
         onDynamicColorThemeSwitchClick = {},
-        onShowCentsClick = {}
+        onShowCentsClick = {},
+        onShowCurrencySymbolClick = {}
     )
 }

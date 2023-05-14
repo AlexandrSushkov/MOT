@@ -40,6 +40,7 @@ import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.MotDismissibleListItem
+import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
 import dev.nelson.mot.main.util.compose.PreviewData
 import java.text.NumberFormat
@@ -136,7 +137,10 @@ fun PaymentListItemLightPreview() {
         onClick = {},
         onLongClick = {},
         dismissDirection = DismissDirection.EndToStart,
-        isSelectedState = false
+        isSelectedState = false,
+        locale = Locale.getDefault(),
+        showCents = true,
+        showCurrencySymbol = true
     )
 }
 
@@ -148,7 +152,10 @@ fun PaymentListItemSelectedLightPreview() {
         onClick = {},
         onLongClick = {},
         dismissDirection = DismissDirection.EndToStart,
-        isSelectedState = true
+        isSelectedState = true,
+        locale = Locale.getDefault(),
+        showCents = true,
+        showCurrencySymbol = true
     )
 }
 
@@ -159,7 +166,10 @@ fun PaymentListItem(
     onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     dismissDirection: DismissDirection?,
-    isSelectedState: Boolean
+    isSelectedState: Boolean,
+    locale: Locale,
+    showCents: Boolean,
+    showCurrencySymbol: Boolean
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -210,7 +220,12 @@ fun PaymentListItem(
                     Column(
                         modifier = Modifier.align(alignment = CenterVertically)
                     ) {
-                        Text(paymentItemModel.payment.cost.toString())
+                        PriceText(
+                            locale = locale,
+                            isShowCents = showCents,
+                            priceInCents = paymentItemModel.payment.cost,
+                            isShowCurrencySymbol = showCurrencySymbol
+                        )
                     }
                 }
                 if (paymentItemModel.payment.message.isNotEmpty()) {
@@ -230,11 +245,15 @@ private fun DismissiblePaymentListItemLightPreview() {
             onClick = {},
             onLongClick = {},
             dismissDirection = DismissDirection.EndToStart,
-            isSelectedState = false
+            isSelectedState = false,
+            locale = Locale.getDefault(),
+            showCents = true,
+            showCurrencySymbol = true
         )
     })
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview(showBackground = true)
 @Composable
 private fun DismissiblePaymentListItemDarkPreview() {
@@ -245,7 +264,10 @@ private fun DismissiblePaymentListItemDarkPreview() {
                 onClick = {},
                 onLongClick = {},
                 dismissDirection = DismissDirection.EndToStart,
-                isSelectedState = false
+                isSelectedState = false,
+                locale = Locale.getDefault(),
+                showCents = true,
+                showCurrencySymbol = true
             )
         })
     }

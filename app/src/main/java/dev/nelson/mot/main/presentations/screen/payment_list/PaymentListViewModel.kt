@@ -6,6 +6,7 @@ import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
@@ -15,6 +16,8 @@ import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
+import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
+import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.constant.Constants
@@ -40,10 +43,13 @@ class PaymentListViewModel @Inject constructor(
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     private val getCategoryUseCase: GetCategoryUseCase,
+    private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
+    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
-    private val screenScreenType = categoryId?.let { ScreenType.PaymentsForCategory(it) } ?: ScreenType.RecentPayments
+    private val screenScreenType =
+        categoryId?.let { ScreenType.PaymentsForCategory(it) } ?: ScreenType.RecentPayments
 
     // states
     val toolBarTitleState
@@ -70,9 +76,23 @@ class PaymentListViewModel @Inject constructor(
         get() = _selectedItemsCount.asStateFlow()
     private val _selectedItemsCount = MutableStateFlow(0)
 
-    val paymentListState: Flow<MotUiState<List<PaymentListItemModel>>>
-        get() = _paymentList.asStateFlow()
-    private val _paymentList = MutableStateFlow<MotUiState<List<PaymentListItemModel>>>(MotUiState.Loading)
+    val paymentListResult: Flow<MotUiState<List<PaymentListItemModel>>>
+        get() = _paymentListResult.asStateFlow()
+    private val _paymentListResult =
+        MutableStateFlow<MotUiState<List<PaymentListItemModel>>>(MotUiState.Loading)
+
+    val selectedLocale: Flow<Locale>
+        get() = _selectedLocale.asStateFlow()
+    private val _selectedLocale = MutableStateFlow<Locale>(Locale.getDefault())
+
+    val showCents: Flow<Boolean>
+        get() = _showCents.asStateFlow()
+    private val _showCents = MutableStateFlow(false)
+
+    val showCurrencySymbol: Flow<Boolean>
+        get() = _showCurrencySymbol.asStateFlow()
+    private val _showCurrencySymbol = MutableStateFlow(false)
+
 
     val categoriesState: Flow<List<Category>>
         get() = _categories.asStateFlow()
@@ -97,36 +117,58 @@ class PaymentListViewModel @Inject constructor(
                     _toolBarTitleState.value = "Recent Payments"
 
                     val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-                    val startOfPreviousMonth = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
+                    val startOfPreviousMonth =
+                        getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
                     // no end date. otherwise newly added payments won't be shown.
-                    getPaymentListByDateRange.execute(startOfPreviousMonth, order = SortingOrder.Descending)
+                    getPaymentListByDateRange.execute(
+                        startOfPreviousMonth,
+                        order = SortingOrder.Descending
+                    )
                         .collect {
                             initialPaymentList.clear()
                             initialPaymentList.addAll(it)
-                            _paymentList.value = MotUiState.Success(it)
+                            _paymentListResult.value = MotUiState.Success(it)
                         }
                 }
+
                 is ScreenType.PaymentsForCategory -> {
                     getCategoryUseCase.execute(screenScreenType.categoryId)
                         .flatMapConcat {
                             _toolBarTitleState.value = it.name
-                            getPaymentListByDateRange.execute(category = it, order = SortingOrder.Descending)
+                            getPaymentListByDateRange.execute(
+                                category = it,
+                                order = SortingOrder.Descending
+                            )
                         }.collect {
                             initialPaymentList.clear()
                             initialPaymentList.addAll(it)
-                            _paymentList.value = MotUiState.Success(it)
+                            _paymentListResult.value = MotUiState.Success(it)
                         }
                 }
             }
         }
 
         launch {
-
+            getCategoriesOrderedByName.execute(SortingOrder.Ascending).collect {
+                _categories.value = it
+            }
         }
 
         launch {
-            getCategoriesOrderedByName.execute(SortingOrder.Ascending).collect {
-                _categories.value = it
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowCents).collect {
+                _showCents.value = it
+            }
+        }
+
+        launch {
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol).collect {
+                _showCurrencySymbol.value = it
+            }
+        }
+
+        launch {
+            getSelectedLocaleUseCase.execute().collect { locale ->
+                _selectedLocale.value = locale
             }
         }
     }
@@ -140,7 +182,7 @@ class PaymentListViewModel @Inject constructor(
             _deletedItemsCount.value = paymentsToDeleteList.size
             showSnackBar()
             val temp = mutableListOf<PaymentListItemModel>().apply {
-                addAll(_paymentList.value.successOr(emptyList()))
+                addAll(_paymentListResult.value.successOr(emptyList()))
                 val positionOfThePayment = indexOf(payment)
                 val previousElement = this[positionOfThePayment - 1]
                 if (positionOfThePayment + 1 == this.size) {
@@ -159,13 +201,16 @@ class PaymentListViewModel @Inject constructor(
                 }
                 remove(payment)
             }
-            _paymentList.value = MotUiState.Success(temp)
+            _paymentListResult.value = MotUiState.Success(temp)
             // ui updated, removed items is not visible on the screen
             // wait
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
             hideSnackBar()
             // remove payments from DB
-            val params = ModifyListOfPaymentsParams(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            val params = ModifyListOfPaymentsParams(
+                paymentsToDeleteList.toPaymentList(),
+                ModifyListOfPaymentsAction.Delete
+            )
             modifyListOfPaymentsUseCase.execute(params)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
@@ -176,7 +221,7 @@ class PaymentListViewModel @Inject constructor(
         hideSnackBar()
         deletePaymentJob?.let {
             it.cancel()
-            _paymentList.value = MotUiState.Success(initialPaymentList)
+            _paymentListResult.value = MotUiState.Success(initialPaymentList)
             clearItemsToDeleteList()
         }
     }
@@ -200,7 +245,11 @@ class PaymentListViewModel @Inject constructor(
         } else {
             // select mode is off. open payment details
             launch {
-                payment.payment.id?.toInt()?.let { _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.ExistingPayment(it)) }
+                payment.payment.id?.toInt()?.let {
+                    _openPaymentDetailsAction.emit(
+                        OpenPaymentDetailsAction.ExistingPayment(it)
+                    )
+                }
             }
         }
     }
@@ -213,11 +262,12 @@ class PaymentListViewModel @Inject constructor(
             paymentsToDeleteList.addAll(selectedItemsList)
             onCancelSelectionClickEvent() // MUST be before apply list with deleted items. this method reset payment list to initial
             val temp = mutableListOf<PaymentListItemModel>().apply {
-                addAll(_paymentList.value.successOr(emptyList()))
+                addAll(_paymentListResult.value.successOr(emptyList()))
             }
             paymentsToDeleteList.forEach { paymentItemModel ->
                 // paymentItemModel is not the save in paymentsToDeleteList and temp list, as onCancelSelectionClick() reset list. make a copy from initial list. this is two different objects.
-                val positionOfThePayment = temp.indexOf(temp.find { item -> item.key == paymentItemModel.key })
+                val positionOfThePayment =
+                    temp.indexOf(temp.find { item -> item.key == paymentItemModel.key })
                 val paymentElement = temp[positionOfThePayment]
                 // TODO:   should be easier to fond element by id and use it as in swipe to delete implementation. And not rely on the position of the element
                 val previousElementPosition = positionOfThePayment - 1
@@ -238,7 +288,7 @@ class PaymentListViewModel @Inject constructor(
                 }
                 temp.remove(paymentElement)
             }
-            _paymentList.value = MotUiState.Success(temp)
+            _paymentListResult.value = MotUiState.Success(temp)
             _deletedItemsCount.value = paymentsToDeleteList.size
             showSnackBar()
             // ui updated, removed items is not visible on the screen
@@ -246,7 +296,10 @@ class PaymentListViewModel @Inject constructor(
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
             hideSnackBar()
             // remove payments from DB
-            val params = ModifyListOfPaymentsParams(paymentsToDeleteList.toPaymentList(), ModifyListOfPaymentsAction.Delete)
+            val params = ModifyListOfPaymentsParams(
+                paymentsToDeleteList.toPaymentList(),
+                ModifyListOfPaymentsAction.Delete
+            )
             modifyListOfPaymentsUseCase.execute(params)
             Timber.e("Deleted: $paymentsToDeleteList")
             clearItemsToDeleteList()
@@ -269,8 +322,9 @@ class PaymentListViewModel @Inject constructor(
     private fun deselectItem(payment: PaymentListItemModel.PaymentItemModel) {
         selectedItemsList.remove(payment)
         val newPayment = payment.payment.copyWith(isSelected = false)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
-        val tempList = _paymentList.value.successOr(emptyList()).map { item ->
+        val newPaymentItemModel =
+            PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
+        val tempList = _paymentListResult.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {
                 if (item.payment.id == payment.payment.id) {
                     newPaymentItemModel
@@ -281,16 +335,17 @@ class PaymentListViewModel @Inject constructor(
                 item
             }
         }
-        _paymentList.value = MotUiState.Success(tempList)
+        _paymentListResult.value = MotUiState.Success(tempList)
         _selectedItemsCount.value = selectedItemsList.size
     }
 
     private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
 //        selectedItemsList.add(payment)
         val newPayment = payment.payment.copyWith(isSelected = true)
-        val newPaymentItemModel = PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
+        val newPaymentItemModel =
+            PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
         selectedItemsList.add(newPaymentItemModel)
-        val tempList = _paymentList.value.successOr(emptyList()).map { item ->
+        val tempList = _paymentListResult.value.successOr(emptyList()).map { item ->
             if (item is PaymentListItemModel.PaymentItemModel) {
                 if (item.payment.id == payment.payment.id) {
                     newPaymentItemModel
@@ -301,7 +356,7 @@ class PaymentListViewModel @Inject constructor(
                 item
             }
         }
-        _paymentList.value = MotUiState.Success(tempList)
+        _paymentListResult.value = MotUiState.Success(tempList)
         _selectedItemsCount.value = selectedItemsList.size
     }
 
@@ -309,7 +364,7 @@ class PaymentListViewModel @Inject constructor(
         _isSelectedState.value = false
         selectedItemsList.clear()
         _selectedItemsCount.value = selectedItemsList.size
-        _paymentList.value = MotUiState.Success(initialPaymentList)
+        _paymentListResult.value = MotUiState.Success(initialPaymentList)
     }
 
     fun onDateRangeClick() {
@@ -327,7 +382,8 @@ class PaymentListViewModel @Inject constructor(
     fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) = launch {
         val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
         val selectedDate: Date = selectedDateCalendar.time
-        val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
+        val newItems =
+            selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
         cancelSelection()
         val params = ModifyListOfPaymentsParams(newItems, ModifyListOfPaymentsAction.Edit)
         modifyListOfPaymentsUseCase.execute(params)
