@@ -8,6 +8,8 @@ data class SettingsViewState(
     val isDynamicThemeSwitchOn: Boolean= false,
     val isShowCents: Boolean = false,
     val isShowCurrencySymbol: Boolean = false,
+    val isShowCountryPicker: Boolean = false,
     val selectedLocale: Locale = Locale.getDefault(),
+    val countries: List<Locale> = emptyList(),
     val alertDialog: AlertDialogParams? = null,
 )

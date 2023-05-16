@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.screen.settings
 
 import android.net.Uri
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitchType
@@ -14,14 +15,17 @@ import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.containsAny
+import dev.nelson.mot.main.util.extention.doesSearchMatch
+import dev.nelson.mot.main.util.extention.filterDefaultCountries
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineLatest
-import kotlinx.coroutines.flow.zip
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -43,14 +47,9 @@ class SettingsViewModel @Inject constructor(
     private val _restartAppAction = MutableSharedFlow<Unit>()
 
     // states
-    private val defaultSettingsViewState = SettingsViewState()
     val settingsViewState
         get() = _viewState.asStateFlow()
-    private val _viewState = MutableStateFlow(defaultSettingsViewState)
-
-    val localesState
-        get() = _localesState.asStateFlow()
-    private val _localesState = MutableStateFlow<List<Locale>>(emptyList())
+    private val _viewState = MutableStateFlow(SettingsViewState())
 
     init {
         launch {
@@ -80,14 +79,6 @@ class SettingsViewModel @Inject constructor(
                 )
             }
         }
-
-        val locales = Locale.getAvailableLocales()
-        _localesState.value = locales.toList()
-            .filter { it.country.isNotEmpty() }
-            .filter { !it.displayCountry.containsAny("Europe", "Lain America", "world") }
-            .sortedBy { it.displayCountry }
-            .groupBy { it.displayCountry }
-            .map { it.value.first() }
     }
 
     /**
@@ -122,7 +113,6 @@ class SettingsViewModel @Inject constructor(
         setSwitchStatusUseCase.execute(params)
     }
 
-
     fun onExportDataBaseClick() = launch {
         runCatching { exportDataBaseUseCase.execute() }.onSuccess { isExported ->
             val message = if (isExported) {
@@ -143,16 +133,6 @@ class SettingsViewModel @Inject constructor(
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = getImportDataBaseDialog(uri)
         _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
-    }
-
-    fun onLocaleClick() {
-        val locales = Locale.getAvailableLocales()
-    }
-
-    fun onLocaleSelected(locale: Locale) {
-        launch {
-            setLocaleUseCase.execute(locale)
-        }
     }
 
     private fun getExportDataBaseDialog(message: Int): AlertDialogParams {

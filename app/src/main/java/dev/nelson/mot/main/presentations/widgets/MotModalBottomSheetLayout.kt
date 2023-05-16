@@ -29,7 +29,7 @@ fun MotModalBottomSheetLayout(
         sheetState = sheetState,
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetContentColor = contentColorFor(backgroundColor = MaterialTheme.colorScheme.surface),
-        content = content
+        content = content,
     )
 }
 

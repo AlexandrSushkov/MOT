@@ -7,28 +7,21 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,8 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -51,25 +43,21 @@ import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
-import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
-import kotlinx.coroutines.launch
-import java.util.Locale
-import androidx.compose.material3.MaterialTheme as MaterialTheme
 
 @Composable
 fun SettingsScreen(
     title: String,
     settingsViewModel: SettingsViewModel,
     navigationIcon: @Composable () -> Unit = {},
+    openCountryPickerScreen: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     val toastMessage by settingsViewModel.showToastState.collectAsState(StringUtils.EMPTY)
     val viewState by settingsViewModel.settingsViewState.collectAsState()
-    val countries by settingsViewModel.localesState.collectAsState()
-
-    val context = LocalContext.current
 
     LaunchedEffect(
         key1 = Unit,
@@ -100,8 +88,7 @@ fun SettingsScreen(
         title = title,
         navigationIcon = navigationIcon,
         viewState = viewState,
-        countries = countries,
-        onCountryClick = { settingsViewModel.onLocaleSelected(it) },
+        onLocaleClick = openCountryPickerScreen,
         onDarkThemeSwitchClick = { settingsViewModel.onDarkThemeCheckedChange(it) },
         onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
@@ -111,14 +98,12 @@ fun SettingsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SettingsScreenLayout(
     title: String,
     navigationIcon: @Composable () -> Unit = {},
     viewState: SettingsViewState,
-    countries: List<Locale>,
-    onCountryClick: (Locale) -> Unit,
+    onLocaleClick: () -> Unit,
     onExportDataBaseClick: () -> Unit,
     onImportDataBaseClick: () -> Unit,
     onDarkThemeSwitchClick: (Boolean) -> Unit,
@@ -128,154 +113,140 @@ private fun SettingsScreenLayout(
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
-    val scope = rememberCoroutineScope()
 
-    MotModalBottomSheetLayout(
-        sheetContent = {
-            CountiesListBottomSheet(
-                countries = countries,
-                onCountryClick = onCountryClick,
-                modalBottomSheetState
+    Scaffold(
+        topBar = {
+            MotTopAppBar(
+                appBarTitle = title,
+                navigationIcon = navigationIcon
             )
-        },
-        sheetState = modalBottomSheetState,
-    ) {
-        Scaffold(
-            topBar = {
-                MotTopAppBar(
-                    appBarTitle = title,
-                    navigationIcon = navigationIcon
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            item { HeadingListItem(text = "Appearance") }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Show Cents") },
+                    supportingContent = {
+                        PriceText(
+                            locale = viewState.selectedLocale,
+                            isShowCents = viewState.isShowCents,
+                            isShowCurrencySymbol = viewState.isShowCurrencySymbol,
+                            priceInCents = Constants.PRICE_EXAMPLE
+                        )
+                    },
+                    trailingContent = {
+                        MotSwitch(
+                            checked = viewState.isShowCents,
+                            onCheckedChange = onShowCentsClick
+                        )
+                    }
                 )
             }
-        ) { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize()
-            ) {
-                item { HeadingListItem(text = "Appearance") }
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Show Cents") },
-                        supportingContent = {
-                            PriceText(
-                                locale = viewState.selectedLocale,
-                                isShowCents = viewState.isShowCents,
-                                isShowCurrencySymbol = viewState.isShowCurrencySymbol,
-                                priceInCents = Constants.PRICE_EXAMPLE
-                            )
-                        },
-                        trailingContent = {
-                            MotSwitch(
-                                checked = viewState.isShowCents,
-                                onCheckedChange = onShowCentsClick
-                            )
-                        }
-                    )
-                }
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Show Currency Symbol") },
-                        supportingContent = {
-                            PriceText(
-                                locale = viewState.selectedLocale,
-                                isShowCents = viewState.isShowCents,
-                                isShowCurrencySymbol = viewState.isShowCurrencySymbol,
-                                priceInCents = Constants.PRICE_EXAMPLE
-                            )
-                        },
-                        trailingContent = {
-                            MotSwitch(
-                                checked = viewState.isShowCurrencySymbol,
-                                onCheckedChange = onShowCurrencySymbolClick
-                            )
-                        }
-                    )
-                }
-                item {
-                    ListItem(
-                        modifier = Modifier.clickable { scope.launch { modalBottomSheetState.show()} },
-                        headlineContent = { Text(text = "Locale") },
-                        supportingContent = { Text(text = viewState.selectedLocale.displayCountry) },
-                        trailingContent = {
-                            Text(
-                                text = viewState.selectedLocale.emojiFlag(),
-                                modifier = Modifier.padding(end = 8.dp),
-                                style = MaterialTheme.typography.headlineMedium
-                            )
-                        },
-                    )
-                }
-                item {
-                    HeadingListItem(text = "Theme")
-                }
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Force Dark Theme") },
-                        trailingContent = {
-                            MotSwitch(
-                                checked = viewState.isDarkThemeSwitchOn,
-                                onCheckedChange = onDarkThemeSwitchClick
-                            )
-                        }
-                    )
-                }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Show Currency Symbol") },
+                    supportingContent = {
+                        PriceText(
+                            locale = viewState.selectedLocale,
+                            isShowCents = viewState.isShowCents,
+                            isShowCurrencySymbol = viewState.isShowCurrencySymbol,
+                            priceInCents = Constants.PRICE_EXAMPLE
+                        )
+                    },
+                    trailingContent = {
+                        MotSwitch(
+                            checked = viewState.isShowCurrencySymbol,
+                            onCheckedChange = onShowCurrencySymbolClick
+                        )
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    modifier = Modifier.clickable { onLocaleClick.invoke() },
+                    headlineContent = { Text(text = "Locale") },
+                    supportingContent = { Text(text = viewState.selectedLocale.displayCountry) },
+                    trailingContent = {
+                        Text(
+                            text = viewState.selectedLocale.emojiFlag(),
+                            modifier = Modifier.padding(end = 8.dp),
+                            style = MaterialTheme.typography.headlineMedium
+                        )
+                    },
+                )
+            }
+            item {
+                HeadingListItem(text = "Theme")
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Force Dark Theme") },
+                    trailingContent = {
+                        MotSwitch(
+                            checked = viewState.isDarkThemeSwitchOn,
+                            onCheckedChange = onDarkThemeSwitchClick
+                        )
+                    }
+                )
+            }
 
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Dynamic Color Theme") },
-                        trailingContent = {
-                            MotSwitch(
-                                checked = viewState.isDynamicThemeSwitchOn,
-                                onCheckedChange = onDynamicColorThemeSwitchClick
-                            )
-                        }
-                    )
-                }
-                item {
-                    HeadingListItem(text = "Data base")
-                }
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Export Data Base") },
-                        supportingContent = { Text(text = "It will be exported to the Downloads folder.") },
-                        trailingContent = {
-                            MotTextButton(
-                                onClick = onExportDataBaseClick,
-                                text = "Export"
-                            )
-                        }
-                    )
-                }
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Import Data Base") },
-                        trailingContent = {
-                            MotTextButton(
-                                onClick = onImportDataBaseClick,
-                                text = "Import"
-                            )
-                        }
-                    )
-                }
-                item {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = "App version: ${BuildConfig.VERSION_NAME}",
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                text = "Build: ${BuildConfig.VERSION_CODE}",
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    )
-                }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Dynamic Color Theme") },
+                    trailingContent = {
+                        MotSwitch(
+                            checked = viewState.isDynamicThemeSwitchOn,
+                            onCheckedChange = onDynamicColorThemeSwitchClick
+                        )
+                    }
+                )
+            }
+            item {
+                HeadingListItem(text = "Data base")
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Export Data Base") },
+                    supportingContent = { Text(text = "It will be exported to the Downloads folder.") },
+                    trailingContent = {
+                        MotTextButton(
+                            onClick = onExportDataBaseClick,
+                            text = "Export"
+                        )
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Import Data Base") },
+                    trailingContent = {
+                        MotTextButton(
+                            onClick = onImportDataBaseClick,
+                            text = "Import"
+                        )
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = "App version: ${BuildConfig.VERSION_NAME}",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "Build: ${BuildConfig.VERSION_CODE}",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                )
             }
         }
     }
@@ -327,57 +298,6 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun CountiesListBottomSheet(
-    countries: List<Locale>,
-    onCountryClick: (Locale) -> Unit,
-    modalBottomSheetState: ModalBottomSheetState
-) {
-    val scope = rememberCoroutineScope()
-    val layColumnState = rememberLazyListState()
-    Column(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Choose a country",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center)
-            )
-        }
-        LazyColumn(
-            state = layColumnState,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            countries.forEach { country ->
-                item {
-                    ListItem(
-                        leadingContent = {
-                            Text(
-                                text = country.emojiFlag(),
-                                modifier = Modifier.padding(end = 16.dp)
-                            )
-                        },
-                        headlineContent = { Text(text = country.displayCountry) },
-                        modifier = Modifier
-                            .clickable {
-                                onCountryClick.invoke(country)
-                                scope.launch {
-                                    modalBottomSheetState.hide()
-                                    layColumnState.scrollToItem(0)
-                                }
-                            }
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Preview(showBackground = false)
 @Composable
 private fun SettingsScreenLayoutLightPreview() {
@@ -424,13 +344,12 @@ private fun SettingsScreenLayoutPreviewData() {
             }
         },
         viewState = viewState,
-        countries = emptyList(),
+        onLocaleClick = {},
         onExportDataBaseClick = {},
         onImportDataBaseClick = {},
         onDarkThemeSwitchClick = {},
         onDynamicColorThemeSwitchClick = {},
         onShowCentsClick = {},
         onShowCurrencySymbolClick = {},
-        onCountryClick = {}
     )
 }

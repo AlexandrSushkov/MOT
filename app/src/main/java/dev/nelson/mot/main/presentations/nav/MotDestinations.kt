@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 
 interface MotDestinations {
@@ -52,12 +51,11 @@ object Settings : MotDestinations {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-//class CategoriesList(content: @Composable () -> Unit) : MotDestinations {
-//    override val icon = Icons.Default.Tag
-//    override val route = "Categories"
-//    override val screen = content
-//}
-
+object CountryPicker : MotDestinations {
+    override val icon = Icons.Default.Settings
+    override val route = "CountryPicker"
+//    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
+}
 
 val drawerItemsList = listOf(Payments, Categories, Statistic)
 

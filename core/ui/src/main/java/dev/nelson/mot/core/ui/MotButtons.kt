@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Settings
@@ -109,6 +110,13 @@ fun MotNavBackIcon(onClick: () -> Unit) {
     }
 }
 
+@Composable
+fun MotCloseIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(Icons.Default.Close, contentDescription = "back icon")
+    }
+}
+
 @Preview(showBackground = true, group = "imageButton")
 @Composable
 private fun MotNavIconsPreview() {
@@ -116,6 +124,7 @@ private fun MotNavIconsPreview() {
         MotNavBackIcon {}
         MotNavDrawerIcon {}
         MotNavSettingsIconPreview()
+        MotCloseIcon {}
     }
 }
 
