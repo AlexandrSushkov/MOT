@@ -1,12 +1,12 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package dev.nelson.mot.main.presentations.screen.statistic
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.BottomNavigation
@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
@@ -36,6 +37,8 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.motTabRowScreens
 import dev.nelson.mot.core.ui.LineChartMot
+import dev.nelson.mot.core.ui.PriceText
+import java.util.Locale
 
 @Composable
 fun StatisticScreen(
@@ -44,10 +47,17 @@ fun StatisticScreen(
 ) {
     val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
     val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
+    val showCents by viewModel.showCents.collectAsState(false)
+    val showCurrencySymbol by viewModel.showCurrencySymbol.collectAsState(false)
+    val selectedLocale by viewModel.selectedLocale.collectAsState(Locale.getDefault())
+
     StatisticLayout(
         navHostController,
         currentMonth,
-        previousMonthList
+        previousMonthList,
+        showCents,
+        showCurrencySymbol,
+        selectedLocale
     )
 
 }
@@ -56,7 +66,10 @@ fun StatisticScreen(
 fun StatisticLayout(
     navHostController: NavHostController,
     currentMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
-    previousMonthList: Map<Category?, List<Payment>>
+    previousMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
+    showCents: Boolean,
+    showCurrencySymbol: Boolean,
+    selectedLocale: Locale
 ) {
     Scaffold(
         bottomBar = {
@@ -76,8 +89,8 @@ fun StatisticLayout(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = innerPadding)
-        ) {
+                .padding(paddingValues = innerPadding),
+            ) {
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 Row {
                     NavigationRail {
@@ -97,38 +110,88 @@ fun StatisticLayout(
             } else {
                 StatisticContent()
                 val paymentsForCurrentMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
+                val paymentsForPreviousMonth =
+                    mutableListOf<PaymentListItemModel.PaymentItemModel>()
                 currentMonthList.entries.forEach {
                     paymentsForCurrentMonth.addAll(it.value)
                 }
-                val sumForCurrentMonth = paymentsForCurrentMonth.sumOf { payment -> payment.payment.cost }
-                Text(text = "Current month total: $sumForCurrentMonth")
+                previousMonthList.entries.forEach {
+                    paymentsForPreviousMonth.addAll(it.value)
+                }
+                val sumForCurrentMonth = paymentsForCurrentMonth.sumOf { it.payment.cost }
+                val sumForPreviousMonth = paymentsForPreviousMonth.sumOf { it.payment.cost }
+                Row {
+                    Text(
+                        text = "Current month total: ",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    PriceText(
+                        locale = selectedLocale,
+                        isShowCents = showCents,
+                        priceInCents = sumForCurrentMonth,
+                        isShowCurrencySymbol = showCurrencySymbol
+                    )
+                }
                 Divider()
-                Text(text = "Current month :")
+                Text(
+                    text = "Current month:",
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 LazyColumn(content = {
                     currentMonthList.keys.forEach {
                         item {
                             Row {
-                                Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = currentMonthList[it].let { pl ->
-                                    pl?.sumOf { payment -> payment.payment.cost } ?: 0
-                                }.toString())
+                                Text(
+                                    text = it?.name?.let { name -> "$name:" } ?: "NO category:",
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                                PriceText(
+                                    locale = selectedLocale,
+                                    isShowCents = showCents,
+                                    priceInCents = currentMonthList[it].let { pl ->
+                                        pl?.sumOf { payment -> payment.payment.cost } ?: 0
+                                    },
+                                    isShowCurrencySymbol = showCurrencySymbol
+                                )
                             }
 
                         }
                     }
                 })
                 Divider()
-                Text(text = "Previous month total:")
+                Row {
+                    Text(
+                        text = "Previous month total: ",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    PriceText(
+                        locale = selectedLocale,
+                        isShowCents = showCents,
+                        priceInCents = sumForPreviousMonth,
+                        isShowCurrencySymbol = showCurrencySymbol
+                    )
+                }
                 Divider()
-                Text(text = "Previous month by categories:")
+                Text(
+                    text = "Previous month by categories:",
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 LazyColumn(content = {
                     previousMonthList.keys.forEach {
                         item {
                             Row {
-                                Text(text = it?.name?.let { name -> "$name:" } ?: "NO category:")
-                                Text(text = previousMonthList[it].let { pl ->
-                                    pl?.sumOf { payment -> payment.cost } ?: 0
-                                }.toString())
+                                Text(
+                                    text = it?.name?.let { name -> "$name:" } ?: "NO category:",
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                                PriceText(
+                                    locale = selectedLocale,
+                                    isShowCents = showCents,
+                                    priceInCents = previousMonthList[it].let { pl ->
+                                        pl?.sumOf { paymentModel -> paymentModel.payment.cost } ?: 0
+                                    },
+                                    isShowCurrencySymbol = showCurrencySymbol
+                                )
                             }
 
                         }
@@ -152,7 +215,10 @@ private fun StatisticLayoutLightPreview() {
     StatisticLayout(
         NavHostController(LocalContext.current),
         currentMonthList = emptyMap(),
-        previousMonthList = emptyMap()
+        previousMonthList = emptyMap(),
+        showCents = true,
+        showCurrencySymbol = true,
+        selectedLocale = Locale.getDefault()
     )
 }
 
@@ -163,7 +229,10 @@ private fun StatisticLayoutDarkPreview() {
         StatisticLayout(
             NavHostController(LocalContext.current),
             currentMonthList = emptyMap(),
-            previousMonthList = emptyMap()
+            previousMonthList = emptyMap(),
+            showCents = true,
+            showCurrencySymbol = true,
+            selectedLocale = Locale.getDefault()
         )
     }
 }

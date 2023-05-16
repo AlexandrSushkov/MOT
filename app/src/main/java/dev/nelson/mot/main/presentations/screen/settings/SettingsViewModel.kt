@@ -9,25 +9,32 @@ import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
+import dev.nelson.mot.main.domain.use_case.settings.SetLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.extention.containsAny
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineLatest
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
+    getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
-    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
+    private val setLocaleUseCase: SetLocaleUseCase,
 ) : BaseViewModel() {
 
     // actions
@@ -40,6 +47,10 @@ class SettingsViewModel @Inject constructor(
     val settingsViewState
         get() = _viewState.asStateFlow()
     private val _viewState = MutableStateFlow(defaultSettingsViewState)
+
+    val localesState
+        get() = _localesState.asStateFlow()
+    private val _localesState = MutableStateFlow<List<Locale>>(emptyList())
 
     init {
         launch {
@@ -54,24 +65,29 @@ class SettingsViewModel @Inject constructor(
             }
         }
 
+        // TODO: move to separate use case
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCents).collect {
-                _viewState.value = _viewState.value.copy(isShowCents = it)
+            combine(
+                getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
+                getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
+                getSelectedLocaleUseCase.execute(),
+                ::Triple
+            ).collect { (isShowCents, isShowCurrencySymbol, selectedLocale) ->
+                _viewState.value = _viewState.value.copy(
+                    isShowCents = isShowCents,
+                    isShowCurrencySymbol = isShowCurrencySymbol,
+                    selectedLocale = selectedLocale
+                )
             }
         }
 
-        launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol).collect {
-                _viewState.value = _viewState.value.copy(isShowCurrencySymbol = it)
-            }
-        }
-
-        launch {
-            getSelectedLocaleUseCase.execute().collect { locale ->
-                _viewState.value = _viewState.value.copy(selectedLocale = locale)
-            }
-        }
-
+        val locales = Locale.getAvailableLocales()
+        _localesState.value = locales.toList()
+            .filter { it.country.isNotEmpty() }
+            .filter { !it.displayCountry.containsAny("Europe", "Lain America", "world") }
+            .sortedBy { it.displayCountry }
+            .groupBy { it.displayCountry }
+            .map { it.value.first() }
     }
 
     /**
@@ -127,6 +143,16 @@ class SettingsViewModel @Inject constructor(
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = getImportDataBaseDialog(uri)
         _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
+    }
+
+    fun onLocaleClick() {
+        val locales = Locale.getAvailableLocales()
+    }
+
+    fun onLocaleSelected(locale: Locale) {
+        launch {
+            setLocaleUseCase.execute(locale)
+        }
     }
 
     private fun getExportDataBaseDialog(message: Int): AlertDialogParams {

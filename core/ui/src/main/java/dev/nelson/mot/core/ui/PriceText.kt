@@ -21,7 +21,7 @@ fun PriceText(
     val formattedCost = formatPrice(locale, priceInCents, isShowCents, isShowCurrencySymbol)
     Text(
         text = formattedCost,
-        style = MaterialTheme.typography.labelMedium,
+        style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.error
     )
 }

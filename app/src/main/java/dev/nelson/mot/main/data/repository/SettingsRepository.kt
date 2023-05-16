@@ -13,6 +13,7 @@ import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.BuildConfig
 import dev.nelson.mot.main.data.preferences.MotSwitchType
+import dev.nelson.mot.main.data.preferences.PreferencesKeys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -101,7 +102,14 @@ class SettingsRepository @Inject constructor(
         return dataStore.data.map { it[motSwitchType.key] ?: defaultValue }
     }
 
-    fun getSelectedLocale(): Flow<Locale> = flow { emit(Locale.Builder().setRegion("UA").build()) }
+    fun getSelectedLocale(): Flow<Locale> {
+        return dataStore.data.map { it[PreferencesKeys.SELECTED_COUNTRY_CODE] }
+            .map { countryCode -> countryCode?.let { Locale("en", it) } ?: Locale.getDefault() }
+    }
+
+    suspend fun setLocale(locale: Locale) {
+        dataStore.edit { it[PreferencesKeys.SELECTED_COUNTRY_CODE] = locale.country }
+    }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {
         var uniqueFileName = fileName
