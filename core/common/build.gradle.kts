@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.androidx.ktx)
+    api(libs.androidx.core.ktx)
     api(libs.coroutines.core)
     api(libs.gson)
     api(libs.timber)
