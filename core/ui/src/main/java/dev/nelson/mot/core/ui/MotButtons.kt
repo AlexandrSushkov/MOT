@@ -1,9 +1,10 @@
 package dev.nelson.mot.core.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -20,21 +22,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-@Composable
-fun MotButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit
-) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        content = content
-    )
-}
+import dev.utils.preview.MotPreview
 
 @Composable
 fun MotTextButton(
@@ -67,10 +56,50 @@ fun MotTextButton(
     }
 }
 
-@Preview(showBackground = true, group = "regularButton")
+@MotPreview
 @Composable
 private fun MotTextButtonPreview() {
-    MotTextButton(onClick = { /*TODO*/ }, text = "Button")
+    MotMaterialTheme {
+        ListItem(headlineContent = {
+            MotTextButton(onClick = { /*TODO*/ }, text = "Button")
+        })
+    }
+}
+
+@Composable
+fun MotButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
+) {
+    Button(
+        modifier = modifier,
+        onClick = onClick,
+        content = content
+    )
+}
+
+@MotPreview
+@Composable
+private fun MotButtonPreview() {
+    MotMaterialTheme {
+        ListItem(
+            headlineContent = {
+                MotButton(
+                    onClick = {},
+                    modifier = Modifier,
+                    content = {
+                        Icon(
+                            Icons.Default.Save,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "IconButton"
+                        )
+                        Text(text = "Button")
+                    }
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -86,21 +115,27 @@ fun MotOutlinedButton(
     )
 }
 
-@Preview(showBackground = true, group = "regularButton")
+@MotPreview
 @Composable
-fun MotButtonPreview() {
-    MotButton(
-        onClick = {},
-        modifier = Modifier,
-        content = {
-            Icon(
-                Icons.Default.Save,
-                modifier = Modifier.padding(end = 4.dp),
-                contentDescription = "IconButton"
-            )
-            Text(text = "Mot Button")
-        }
-    )
+private fun MotOutlinePreview() {
+    MotMaterialTheme {
+        ListItem(
+            headlineContent = {
+                MotOutlinedButton(
+                    onClick = {},
+                    modifier = Modifier,
+                    content = {
+                        Icon(
+                            Icons.Default.Save,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "IconButton"
+                        )
+                        Text(text = "Button")
+                    }
+                )
+            }
+        )
+    }
 }
 
 @Composable
@@ -113,25 +148,8 @@ fun MotNavBackIcon(onClick: () -> Unit) {
 @Composable
 fun MotCloseIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(Icons.Default.Close, contentDescription = "back icon")
+        Icon(Icons.Default.Close, contentDescription = "close icon")
     }
-}
-
-@Preview(showBackground = true, group = "imageButton")
-@Composable
-private fun MotNavIconsPreview() {
-    Row {
-        MotNavBackIcon {}
-        MotNavDrawerIcon {}
-        MotNavSettingsIconPreview()
-        MotCloseIcon {}
-    }
-}
-
-@Preview(showBackground = true, group = "imageButton")
-@Composable
-private fun MotNavBackIconPreview() {
-    MotNavBackIcon {}
 }
 
 @Composable
@@ -141,23 +159,11 @@ fun MotNavDrawerIcon(onClick: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true, group = "imageButton")
-@Composable
-private fun MotNavDrawerIconPreview() {
-    MotNavDrawerIcon {}
-}
-
 @Composable
 fun MotNavSettingsIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(Icons.Default.Settings, contentDescription = "settings icon")
     }
-}
-
-@Preview(showBackground = true, group = "imageButton")
-@Composable
-private fun MotNavSettingsIconPreview() {
-    MotNavSettingsIcon {}
 }
 
 @Composable
@@ -170,8 +176,19 @@ fun MotSaveIcon(onClick: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true, group = "imageButton")
+@MotPreview
 @Composable
-fun MotSaveIconButtonPreview() {
-    MotSaveIcon {}
+private fun MotIconsPreview() {
+    MotMaterialTheme {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp),
+            content = {
+                item { ListItem(headlineContent = { MotNavBackIcon {} }) }
+                item { ListItem(headlineContent = { MotNavDrawerIcon {} }) }
+                item { ListItem(headlineContent = { MotCloseIcon {} }) }
+                item { ListItem(headlineContent = { MotNavSettingsIcon {} }) }
+                item { ListItem(headlineContent = { MotSaveIcon {} }) }
+            }
+        )
+    }
 }

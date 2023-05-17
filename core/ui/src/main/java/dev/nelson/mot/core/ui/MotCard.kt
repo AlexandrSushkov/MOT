@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.utils.preview.MotPreview
 
 @Composable
 fun MotCard(
@@ -32,38 +33,17 @@ fun MotCard(
     )
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-private fun MotCardPreviewLight() {
-    MotMaterialTheme(darkTheme = false) {
-        MotCardPreviewContent()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MotCardPreviewDark() {
-    MotMaterialTheme(darkTheme = true) {
-        MotCardPreviewContent()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MotCardPreviewDynamic() {
-    MotMaterialTheme(dynamicColor = true) {
-        MotCardPreviewContent()
-    }
-}
-
-@Composable
-private fun MotCardPreviewContent() {
-    MotCard {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            content = { Text(
-                modifier = Modifier.padding(16.dp),
-                text = "Mot Card") }
-        )
+private fun MotCardPreview() {
+    MotMaterialTheme {
+        MotCard {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                content = { Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "Mot Card") }
+            )
+        }
     }
 }

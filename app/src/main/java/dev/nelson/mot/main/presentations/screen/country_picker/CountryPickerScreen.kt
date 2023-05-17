@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCloseIcon
 import dev.nelson.mot.core.ui.MotMaterialTheme
@@ -42,6 +41,7 @@ import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
 import dev.nelson.mot.main.util.extention.filterDefaultCountries
+import dev.utils.preview.MotPreviewScreen
 import java.util.Locale
 
 @Composable
@@ -188,10 +188,10 @@ private fun CountryPickerLayout(
     }
 }
 
-@Preview(showBackground = false)
+@MotPreviewScreen
 @Composable
-private fun CountryPickerLayout() {
-    MotMaterialTheme(darkTheme = false) {
+private fun CountryPickerLayoutPreview() {
+    MotMaterialTheme {
         CountryPickerLayout(
             countries = Locale.getAvailableLocales().filterDefaultCountries(),
             onCountryClick = {},

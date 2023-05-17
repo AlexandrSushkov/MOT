@@ -40,6 +40,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.utils.preview.MotPreview
 
 @Composable
 fun MotDismissibleListItem(
@@ -118,45 +119,27 @@ fun MotDismissibleListItem(
     )
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-private fun MotDismissibleListItemPreviewLight() {
-    MotMaterialTheme(darkTheme = false) {
-        MotDismissibleListItemPreviewData()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MotDismissibleListItemPreviewDark() {
-    MotMaterialTheme(darkTheme = true) {
-        MotDismissibleListItemPreviewData()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MotDismissibleListItemPreviewDynamic() {
-    MotMaterialTheme(dynamicColor = true) {
-        MotDismissibleListItemPreviewData()
-    }
-}
-
-@Composable
-private fun MotDismissibleListItemPreviewData() {
-    MotDismissibleListItem(
-        dismissState = DismissState(DismissValue.Default),
+private fun MotDismissibleListItemPreview() {
+    MotMaterialTheme {
+        MotDismissibleListItem(
+            dismissState = DismissState(DismissValue.Default),
 //        dismissState = DismissState(DismissValue.DismissedToStart),
-        directions = setOf(DismissDirection.EndToStart),
-        dismissContent = {
-            MotCard {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    content = { Text(
-                        modifier = Modifier.padding(16.dp),
-                        text = "MotDismissibleListItem") }
-                )
+            directions = setOf(DismissDirection.EndToStart),
+            dismissContent = {
+                MotCard {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        content = {
+                            Text(
+                                modifier = Modifier.padding(16.dp),
+                                text = "MotDismissibleListItem"
+                            )
+                        }
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 }

@@ -46,6 +46,7 @@ import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
+import dev.utils.preview.MotPreviewScreen
 
 @Composable
 fun SettingsScreen(
@@ -298,58 +299,38 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
     )
 }
 
-@Preview(showBackground = false)
+@MotPreviewScreen
 @Composable
-private fun SettingsScreenLayoutLightPreview() {
-    MotMaterialTheme(darkTheme = false) {
-        SettingsScreenLayoutPreviewData()
+private fun SettingsScreenLayoutPreview() {
+    MotMaterialTheme {
+        val alertDialogParams = AlertDialogParams(
+            message = R.string.database_export_failed_dialog_message,
+            onPositiveClickCallback = {},
+//            onNegativeClickCallback = {},
+            dismissClickCallback = {}
+        )
+        val viewState = SettingsViewState(
+            isDarkThemeSwitchOn = false,
+            isDynamicThemeSwitchOn = true,
+            isShowCents = true,
+            isShowCurrencySymbol = true,
+//            alertDialog = alertDialogParams,
+        )
+        SettingsScreenLayout(
+            title = "Settings",
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "")
+                }
+            },
+            viewState = viewState,
+            onLocaleClick = {},
+            onExportDataBaseClick = {},
+            onImportDataBaseClick = {},
+            onDarkThemeSwitchClick = {},
+            onDynamicColorThemeSwitchClick = {},
+            onShowCentsClick = {},
+            onShowCurrencySymbolClick = {},
+        )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingsScreenLayoutDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
-        SettingsScreenLayoutPreviewData()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingsScreenLayoutDynamicPreview() {
-    MotMaterialTheme(dynamicColor = true) {
-        SettingsScreenLayoutPreviewData()
-    }
-}
-
-@Composable
-private fun SettingsScreenLayoutPreviewData() {
-    val alertDialogParams = AlertDialogParams(
-        message = R.string.database_export_failed_dialog_message,
-        onPositiveClickCallback = {},
-//        onNegativeClickCallback = {},
-        dismissClickCallback = {}
-    )
-    val viewState = SettingsViewState(
-        isDarkThemeSwitchOn = false,
-        isDynamicThemeSwitchOn = true,
-        isShowCents = false
-//        alertDialog = alertDialogParams,
-    )
-    SettingsScreenLayout(
-        title = "Settings",
-        navigationIcon = {
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "")
-            }
-        },
-        viewState = viewState,
-        onLocaleClick = {},
-        onExportDataBaseClick = {},
-        onImportDataBaseClick = {},
-        onDarkThemeSwitchClick = {},
-        onDynamicColorThemeSwitchClick = {},
-        onShowCentsClick = {},
-        onShowCurrencySymbolClick = {},
-    )
 }

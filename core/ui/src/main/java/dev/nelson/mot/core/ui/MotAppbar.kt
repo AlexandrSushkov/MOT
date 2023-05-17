@@ -2,7 +2,6 @@
 
 package dev.nelson.mot.core.ui
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -18,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import dev.utils.preview.MotPreview
 
 @Composable
 fun MotTopAppBar(
@@ -38,31 +37,19 @@ fun MotTopAppBar(
     )
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
 private fun MotTopAppBarPreview() {
-    Column {
-        MotMaterialTheme(darkTheme = false) {
-            MotTopAppBarDarkPreviewData()
-        }
-        MotMaterialTheme(darkTheme = true) {
-            MotTopAppBarDarkPreviewData()
-        }
-        MotMaterialTheme(dynamicColor = true) {
-            MotTopAppBarDarkPreviewData()
-        }
+    MotMaterialTheme {
+        MotTopAppBar(
+            appBarTitle = "Toolbar",
+            navigationIcon = { MotNavDrawerIcon {} },
+            actions = { MotNavSettingsIcon {} }
+        )
     }
 }
 
-@Composable
-private fun MotTopAppBarDarkPreviewData() {
-    MotTopAppBar(
-        appBarTitle = "Toolbar",
-        navigationIcon = { MotNavDrawerIcon {} },
-        actions = { MotNavSettingsIcon {} }
-    )
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotSelectionTopAppBar(
     title: String,
@@ -70,11 +57,7 @@ fun MotSelectionTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = onNavigationIconClick) {
-                Icon(Icons.Default.Close, contentDescription = "close drawer icon")
-            }
-        },
+        navigationIcon = { MotCloseIcon { onNavigationIconClick } },
         title = {
             Text(
                 text = title,
@@ -82,41 +65,30 @@ fun MotSelectionTopAppBar(
             )
         },
         actions = actions,
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        )
     )
 }
 
-@Preview(showSystemUi = false, group = "toolbar")
+@MotPreview
 @Composable
 private fun MotSelectionTopAppBarPreview() {
-    Column {
-        MotMaterialTheme(darkTheme = false) {
-            MotSelectionTopAppBarPreviewData()
-        }
-        MotMaterialTheme(darkTheme = true) {
-            MotSelectionTopAppBarPreviewData()
-        }
-        MotMaterialTheme(dynamicColor = true) {
-            MotSelectionTopAppBarPreviewData()
-        }
+    MotMaterialTheme {
+        MotSelectionTopAppBar(
+            title = "1",
+            onNavigationIconClick = {},
+            actions = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.CalendarMonth, contentDescription = "")
+                }
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Category, contentDescription = "")
+                }
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Delete, contentDescription = "")
+                }
+            }
+        )
     }
-}
-
-@Composable
-private fun MotSelectionTopAppBarPreviewData() {
-    MotSelectionTopAppBar(
-        title = "1",
-        onNavigationIconClick = {},
-        actions = {
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.CalendarMonth, contentDescription = "")
-            }
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Category, contentDescription = "")
-            }
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Delete, contentDescription = "")
-            }
-        }
-    )
 }

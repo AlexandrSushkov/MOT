@@ -70,6 +70,7 @@ import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.successOr
+import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
@@ -414,41 +415,10 @@ fun PaymentList(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
+@MotPreviewScreen
 @Composable
 private fun PaymentListScreenLightPreview() {
-    PaymentListLayout(
-        navigationIcon = { MotNavDrawerIcon {} },
-        toolbarTitle = "Title",
-        paymentListResult = Success(PreviewData.paymentListItemsPreview),
-//        paymentListResult = Error(IllegalStateException("my error")),
-        onItemClick = {},
-        onItemLongClick = {},
-        onFabClick = {},
-        settingsIcon = { MotNavSettingsIcon {} },
-        snackbarVisibleState = false,
-        onUndoButtonClickEvent = {},
-        deletedItemsCount = 0,
-        onSwipeToDeleteItem = {},
-        isSelectedState = false,
-        selectedItemsCount = 0,
-        onCancelSelectionClick = {},
-        onDeleteSelectedItemsClick = {},
-        onChangeDateForSelectedItemsClick = {},
-        onChangeCategoryForSelectedItemsClick = {},
-        categories = emptyList(),
-        onCategoryClick = {},
-        modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-        showCents = true,
-        showCurrencySymbol = true,
-        locale = Locale.getDefault()
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentListScreenDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+    MotMaterialTheme {
         PaymentListLayout(
             navigationIcon = { MotNavDrawerIcon {} },
             toolbarTitle = "Title",

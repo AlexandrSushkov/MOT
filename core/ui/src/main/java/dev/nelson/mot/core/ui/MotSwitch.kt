@@ -1,10 +1,10 @@
 package dev.nelson.mot.core.ui
 
-import android.content.res.Configuration
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import dev.utils.preview.MotPreview
 
 @Composable
 fun MotSwitch(
@@ -17,59 +17,14 @@ fun MotSwitch(
     )
 }
 
-@Preview(
-    showBackground = true,
-    group = "MotSwitchLight",
-    uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL
-)
+@MotPreview
 @Composable
-fun MotSwitchPreviewLightOn() {
-    MotSwitchPreviewData(true)
-}
-
-@Preview(showBackground = true, group = "MotSwitchLight")
-@Composable
-fun MotSwitchPreviewLightOff() {
-    MotSwitchPreviewData(false)
-}
-
-@Preview(
-    showBackground = true,
-    group = "MotSwitchDark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-fun MotSwitchPreviewDarkOn() {
-    MotMaterialTheme(darkTheme = true) {
-        MotSwitchPreviewData(true)
-    }
-}
-
-@Preview(
-    showBackground = true,
-    group = "MotSwitchDark",
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-fun MotSwitchPreviewDarkOff() {
-    MotMaterialTheme(darkTheme = true) {
-        MotSwitchPreviewData(false)
-    }
-}
-
-@Preview(showBackground = true, group = "MotSwitchDynamic")
-@Composable
-fun MotSwitchPreviewDynamicOn() {
-    MotMaterialTheme(dynamicColor = true) {
-        MotSwitchPreviewData(true)
-    }
-}
-
-@Preview(showBackground = true, group = "MotSwitchDynamic")
-@Composable
-fun MotSwitchPreviewDynamicOff() {
-    MotMaterialTheme(dynamicColor = true) {
-        MotSwitchPreviewData(false)
+fun MotSwitchPreview() {
+    MotMaterialTheme {
+        Column {
+            MotSwitchPreviewData(true)
+            MotSwitchPreviewData(false)
+        }
     }
 }
 

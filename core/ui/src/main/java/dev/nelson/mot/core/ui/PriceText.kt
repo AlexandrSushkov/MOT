@@ -1,14 +1,11 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package dev.nelson.mot.core.ui
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import dev.utils.formatPrice
+import dev.utils.preview.MotPreview
 import java.util.Locale
 
 @Composable
@@ -26,41 +23,19 @@ fun PriceText(
     )
 }
 
-@Preview(showBackground = true, group = "MotTextFieldDynamic")
+@MotPreview
 @Composable
-fun TextPricePreviewDarkOff() {
-    MotMaterialTheme(darkTheme = true) {
-        PriceTextPreviewData()
+fun TextPricePreview() {
+    MotMaterialTheme {
+        ListItem(
+            headlineContent = {
+                PriceText(
+                    Locale.getDefault(),
+                    isShowCents = true,
+                    isShowCurrencySymbol = true,
+                    priceInCents = 999999
+                )
+            },
+        )
     }
-}
-
-@Preview(showBackground = true, group = "MotTextFieldDynamic")
-@Composable
-fun TextPricePreviewDynamicOn() {
-    MotMaterialTheme(dynamicColor = true) {
-        PriceTextPreviewData()
-    }
-}
-
-@Preview(showBackground = true, group = "MotTextFieldDynamic")
-@Composable
-fun TextPricePreviewDynamicOff() {
-    MotMaterialTheme(dynamicColor = true) {
-        PriceTextPreviewData()
-    }
-}
-
-@Composable
-private fun PriceTextPreviewData() {
-    ListItem(
-        headlineContent = {
-            PriceText(
-//                Locale.getDefault(),
-                Locale.Builder().setLanguage("ua").setRegion("UA").build(),
-                isShowCents = true,
-                isShowCurrencySymbol = true,
-                priceInCents = 999999
-            )
-        },
-    )
 }

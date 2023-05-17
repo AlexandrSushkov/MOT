@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
@@ -79,6 +80,7 @@ import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
+import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -400,108 +402,80 @@ private fun CardFooter() {
     ) {}
 }
 
-@Preview(
-    showBackground = true,
-    showSystemUi = true
-)
+@MotPreviewScreen
 @Composable
-private fun CategoryListLayoutLightPreview() {
+private fun CategoryListLayoutPreview() {
+    MotMaterialTheme {
+        CategoryListLayoutPreviewData(
+            categoriesListUiState = Success(PreviewData.categoriesListItemsPreview)
+        )
+    }
+}
+
+@MotPreviewScreen
+@Composable
+private fun CategoryListLayoutSnackbarPreview() {
+    MotMaterialTheme {
+        CategoryListLayoutPreviewData(
+            categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
+            snackbarVisibleState = true
+        )
+    }
+}
+
+@MotPreviewScreen
+@Composable
+private fun CategoryListLayoutEmptyPreview() {
+    MotMaterialTheme {
+        CategoryListLayoutPreviewData(categoriesListUiState = Success(emptyList()))
+    }
+}
+
+@MotPreviewScreen
+@Composable
+private fun CategoryListLayoutLoadingPreview() {
+    MotMaterialTheme {
+        CategoryListLayoutPreviewData(categoriesListUiState = Loading)
+    }
+}
+
+@MotPreviewScreen
+@Composable
+private fun CategoryListLayoutErrorPreview() {
+    MotMaterialTheme {
+        CategoryListLayoutPreviewData(categoriesListUiState = Error(IllegalStateException("error")))
+    }
+}
+
+@Composable
+private fun CategoryListLayoutPreviewData(
+    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
+    snackbarVisibleState: Boolean = false,
+) {
     CategoryListLayout(
         appBarTitle = "Categories",
-        categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
-        appBarNavigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
-            }
-        },
+        categoriesListUiState = categoriesListUiState,
+        appBarNavigationIcon = { MotNavDrawerIcon(onClick = {}) },
         onCategoryClick = {},
         onFavoriteClick = { _, _ -> },
         onAddCategoryClickEvent = {},
         onCategoryLongPress = {},
         onSwipeCategory = {},
-        snackbarVisibleState = false,
-        deleteItemsCountText = ""
-    ) {}
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CategoryListLayoutDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
-        CategoryListLayout(
-            appBarTitle = stringResource(R.string.categories),
-            categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
-            appBarNavigationIcon = {
-                IconButton(onClick = {}) {
-                    Icon(Icons.Default.Menu, contentDescription = "menu drawer icon")
-                }
-            },
-            onCategoryClick = {},
-            onFavoriteClick = { _, _ -> },
-            onAddCategoryClickEvent = {},
-            onCategoryLongPress = {},
-            onSwipeCategory = {},
-            snackbarVisibleState = false,
-            deleteItemsCountText = ""
-        ) {}
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CategoryListWithDataPreview() {
-    CategoryList(
-        categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
-        onCategoryClick = {},
-        onFavoriteClick = { _, _ -> },
-        onCategoryLongPress = {},
-        onSwipeCategory = {},
+        snackbarVisibleState = snackbarVisibleState,
+        deleteItemsCountText = "",
+        undoDeleteClickEvent = {}
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun CategoryListWithEmptyDataPreview() {
-    CategoryList(
-        categoriesListUiState = Success(emptyList()),
-        onCategoryClick = {},
-        onFavoriteClick = { _, _ -> },
-        onCategoryLongPress = {},
-        onSwipeCategory = {},
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CategoryListLoadingPreview() {
-    CategoryList(
-        categoriesListUiState = Loading,
-        onCategoryClick = {},
-        onFavoriteClick = { _, _ -> },
-        onCategoryLongPress = {},
-        onSwipeCategory = {},
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CategoryListErrorPreview() {
-    CategoryList(
-        categoriesListUiState = Error(IllegalStateException("mot error")),
-        onCategoryClick = {},
-        onFavoriteClick = { _, _ -> },
-        onCategoryLongPress = {},
-        onSwipeCategory = {},
-    )
-}
-
-@Preview(showBackground = false)
+@MotPreviewScreen
 @Composable
 private fun EditCategoryDialogPreview() {
-    EditCategoryDialog(
-        categoryToEditId = null,
-        categoryNameState = TextFieldValue(),
-        onCategoryNameChanged = {},
-        closeEditCategoryDialog = {}
-    ) {}
+    MotMaterialTheme {
+        EditCategoryDialog(
+            categoryToEditId = null,
+            categoryNameState = TextFieldValue(),
+            onCategoryNameChanged = {},
+            closeEditCategoryDialog = {}
+        ) {}
+    }
 }
