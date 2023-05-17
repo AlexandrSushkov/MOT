@@ -4,6 +4,7 @@ object Constants {
 
     const val FILE_PICKER_FORMAT: String = "*/*"
     const val DEFAULT_ANIMATION_DELAY = 200L
+    const val DEFAULT_ANIMATION_DURATION = 500
 
     const val DATA_STORE_FILE_NAME = "mot_preferences"
 
