@@ -30,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +39,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.nav.Categories
@@ -59,15 +62,18 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotNavSettingsIcon
+import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.nelson.mot.main.presentations.nav.CountryPicker
 import dev.nelson.mot.main.presentations.screen.country_picker.CountryPickerScreen
 import dev.nelson.mot.main.util.constant.Constants
+import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
 
     private val splashScreenViewModel: SplashScreenViewModel by viewModels()
+    private val motThemeViewModel: MotThemeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,19 +87,42 @@ class HomeActivity : ComponentActivity() {
         }
 
         setContent {
-            val forceDark by splashScreenViewModel.darkThemeEnabled.collectAsState(false)
-            val dynamicColor by splashScreenViewModel.dynamicColorEnabled.collectAsState(false)
+            val appThemeViewState by motThemeViewModel.appThemeViewState.collectAsState()
 
-            MotMaterialTheme(
-                forceDark = forceDark,
-                dynamicColor = dynamicColor
-            ) {
+            MotMaterialTheme(appThemeViewState) {
                 MotApp(
                     isOpenedFromWidget = isOpenedFromWidget,
                     finishAction = { finishAndRemoveTask() }
                 )
             }
         }
+        fetchRemoteConfig()
+    }
+
+    private fun fetchRemoteConfig() {
+        val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this) { task ->
+//                if (task.isSuccessful) {
+//                    Timber.d("config keys: ${remoteConfig.all.keys}")
+//                    Toast.makeText(
+//                        this,
+//                        "Fetch and activate succeeded",
+//                        Toast.LENGTH_SHORT,
+//                    ).show()
+//                } else {
+//                    Toast.makeText(
+//                        this,
+//                        "Fetch failed",
+//                        Toast.LENGTH_SHORT,
+//                    ).show()
+//                }
+                splashScreenViewModel.onRemoteConfigFetched()
+            }
     }
 }
 
@@ -292,7 +321,8 @@ private fun MotNavHost(
         composable(
             route = Settings.route,
             content = {
-                SettingsScreen(title = Settings.route,
+                SettingsScreen(
+                    title = Settings.route,
                     settingsViewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
@@ -310,16 +340,10 @@ private fun MotNavHost(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun MotAppLightPreview() {
-    MotApp(isOpenedFromWidget = false, finishAction = {})
-}
-
-@Preview(showBackground = true)
+@MotPreview
 @Composable
 private fun MotAppDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+    MotMaterialTheme {
         MotApp(isOpenedFromWidget = false, finishAction = {})
     }
 }
