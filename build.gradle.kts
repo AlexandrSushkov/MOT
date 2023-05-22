@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.hilt.android) apply false
     alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.android.library) apply false
 }
 
 val appId by extra("dev.nelson.mot")
@@ -34,6 +34,7 @@ val testRunner by extra("dev.nelson.mot.main.MotTestRunner")
 buildscript {
     dependencies {
         classpath(libs.androidx.navigation.safe.args.gradle.plugin)
+        classpath(libs.google.services)
     }
 }
 
