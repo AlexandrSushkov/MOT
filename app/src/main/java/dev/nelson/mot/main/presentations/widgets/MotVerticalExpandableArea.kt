@@ -3,7 +3,9 @@ package dev.nelson.mot.main.presentations.widgets
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -28,10 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.util.compose.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.constant.Constants
 
 @Composable
-fun MotExpandableArea(
+fun MotVerticalExpandableArea(
     payment: Payment,
 //    content: @Composable BoxScope.() -> Unit
 ) {
@@ -44,11 +48,11 @@ fun MotExpandableArea(
         label = "",
         targetValueByState = { if (it) Color.DarkGray else Color.LightGray }
     )
-//    val cardPaddingHorizontal by transition.animateDp({
-//        tween(durationMillis = EXPAND_ANIMATION_DURATION)
-//    }, targetValueByState = {
-//        if (it) 48.dp else 24.dp
-//    }, label = "")
+    val cardPaddingHorizontal by transition.animateDp({
+        tween(durationMillis = Constants.DEFAULT_ANIMATION_DURATION)
+    }, targetValueByState = {
+        if (it) 48.dp else 24.dp
+    }, label = "")
 //    val cardElevation by transition.animateDp({
 //        tween(durationMillis = EXPAND_ANIMATION_DURATION)
 //    }) {
@@ -63,36 +67,40 @@ fun MotExpandableArea(
 //        if (transitionState.currentState) 0.dp else 16.dp
 //    }
     val arrowRotationDegree by transition.animateFloat(
-//        transitionSpec = { tween(durationMillis = EXPAND_ANIMATION_DURATION) },
+        transitionSpec = { tween(durationMillis = Constants.DEFAULT_ANIMATION_DURATION) },
         label = "expandable arrow",
         targetValueByState = { if (it) 0f else 180f }
     )
 
+    val enterTransition = remember { MotTransitions.enterTopVerticalTransition }
+    val exitTransition = remember { MotTransitions.exitTopVerticalTransition }
+
     Column {
-        Box(
-            modifier = Modifier
-//                .background(cardBgColor)
-                .fillMaxWidth()
+        AnimatedVisibility(
+            visibleState = transitionState,
+            enter = enterTransition,
+            exit = exitTransition,
         ) {
-            IconButton(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                onClick = {
-                    payment.isExpanded = !transitionState.currentState
-                    transitionState.targetState = payment.isExpanded
-                },
-                content = {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = "Expandable Arrow",
-                        modifier = Modifier.rotate(arrowRotationDegree),
-                    )
-                }
+            Text(
+                text = payment.message,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
-        ExpandableContent(
-            text = payment.message,
-            visible = transitionState.currentState,
-            initialVisibility = transition.currentState
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.End)
+                .fillMaxWidth(),
+            onClick = {
+                payment.isExpanded = !transitionState.currentState
+                transitionState.targetState = payment.isExpanded
+            },
+            content = {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Expandable Arrow",
+                    modifier = Modifier.rotate(arrowRotationDegree),
+                )
+            }
         )
     }
 }
@@ -100,33 +108,30 @@ fun MotExpandableArea(
 @Composable
 fun ExpandableContent(
     text: String,
-    visible: Boolean = true,
-    initialVisibility: Boolean = false
+    transitionState: MutableTransitionState<Boolean>,
+    content: @Composable () -> Unit
 ) {
-//    val EXPANSTION_TRANSITION_DURATION = 0
     val enterTransition = remember {
         expandVertically(
             expandFrom = Alignment.Top,
-//            animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         ) + fadeIn(
             initialAlpha = 0.3f,
-//            animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         )
     }
     val exitTransition = remember {
         shrinkVertically(
             // Expand from the top.
             shrinkTowards = Alignment.Top,
-//            animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         ) + fadeOut(
             // Fade in with the initial alpha of 0.3f.
-//            animationSpec = tween(EXPANSTION_TRANSITION_DURATION)
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         )
     }
-    val state = remember { MutableTransitionState(initialState = initialVisibility) }
-        .apply { targetState = visible }
     AnimatedVisibility(
-        visibleState = state,
+        visibleState = transitionState,
         enter = enterTransition,
         exit = exitTransition,
     ) {
@@ -140,7 +145,7 @@ fun ExpandableContent(
 @Preview(showBackground = true)
 @Composable
 private fun MotExpandableAreaPreview() {
-    MotExpandableArea(
+    MotVerticalExpandableArea(
         payment = PreviewData.paymentItemPreview,
 //        content = { Text(text = "data")}
     )

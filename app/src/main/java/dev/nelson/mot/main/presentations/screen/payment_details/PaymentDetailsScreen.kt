@@ -59,6 +59,7 @@ import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.utils.preview.MotPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -114,29 +115,10 @@ fun PaymentDetailsScreen(
     )
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-fun PaymentDetailsLayoutLightPreview() {
-    PaymentDetailsLayout(
-        paymentNameState = MutableStateFlow(TextFieldValue()),
-        costState = MutableStateFlow(TextFieldValue()),
-        date = "1/1/2022",
-        categoryNameState = MutableStateFlow("category"),
-        messageState = MutableStateFlow(TextFieldValue()),
-        categories = emptyList(),
-        onNameChange = {},
-        onCostChange = {},
-        onMessageChange = {},
-        onSaveClick = {},
-        onCategoryClick = {},
-        onDateClick = {},
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PaymentDetailsLayoutDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+fun PaymentDetailsLayoutPreview() {
+    MotMaterialTheme {
         PaymentDetailsLayout(
             paymentNameState = MutableStateFlow(TextFieldValue()),
             costState = MutableStateFlow(TextFieldValue()),
@@ -316,21 +298,10 @@ fun PaymentDetailsLayout(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-fun CategoriesListBottomSheetLightPreview() {
-    CategoriesListBottomSheet(
-        PreviewData.categoriesSelectListItemsPreview,
-        onCategoryClick = {},
-        rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
-@Composable
-fun CategoriesListBottomSheetDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+fun CategoriesListBottomSheetPreview() {
+    MotMaterialTheme {
         CategoriesListBottomSheet(
             PreviewData.categoriesSelectListItemsPreview,
             onCategoryClick = {},

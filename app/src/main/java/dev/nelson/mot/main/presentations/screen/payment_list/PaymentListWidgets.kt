@@ -2,7 +2,12 @@
 
 package dev.nelson.mot.main.presentations.screen.payment_list
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,9 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
@@ -23,56 +25,47 @@ import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
-import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCard
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
-import dev.nelson.mot.main.presentations.widgets.MotExpandableArea
+import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.widgets.MotVerticalExpandableArea
+import dev.nelson.mot.main.util.compose.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
-import java.text.NumberFormat
+import dev.nelson.mot.main.util.constant.Constants
+import dev.utils.preview.MotPreview
 import java.util.Locale
 
 @Composable
 fun DateRangeWidget(startDate: String, endDate: String) {
     Column(modifier = Modifier.clickable { }) {
         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(CenterVertically)
-            ) {
-                Text(
-                    text = startDate,
-                    modifier = Modifier.align(Alignment.Start),
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-            Icon(Icons.Default.ArrowRightAlt, contentDescription = "arrow right")
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(CenterVertically)
-            ) {
-                Text(
-                    text = endDate,
-                    modifier = Modifier.align(Alignment.End),
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            DateRageDateText(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                date = startDate
+            )
+            Icon(
+                Icons.Default.ArrowRightAlt,
+                modifier = Modifier.weight(1f),
+                contentDescription = "arrow right"
+            ) 
+            DateRageDateText(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                date = endDate
+            )
         }
         Divider(
             Modifier
@@ -82,16 +75,22 @@ fun DateRangeWidget(startDate: String, endDate: String) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun DateRangeWidgetLightPreview() {
-    DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
+private fun DateRageDateText(
+    modifier: Modifier = Modifier,
+    date: String
+) {
+    Text(
+        modifier = modifier,
+        text = date,
+        style = MaterialTheme.typography.bodySmall
+    )
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-private fun DateRangeWidgetDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+private fun DateRangeWidgetPreview() {
+    MotMaterialTheme {
         DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
     }
 }
@@ -115,48 +114,35 @@ fun PaymentListDateItem(date: String) {
     }
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-private fun PaymentListDateItemLightPreview() {
-    PaymentListDateItem("01.11.2022")
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PaymentListDateItemDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+private fun PaymentListDateItemPreview() {
+    MotMaterialTheme {
         PaymentListDateItem("01.11.2022")
     }
 }
 
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-fun PaymentListItemLightPreview() {
-    PaymentListItem(
-        paymentItemModel = PreviewData.paymentItemModelPreview,
-        onClick = {},
-        onLongClick = {},
-        dismissDirection = DismissDirection.EndToStart,
-        isSelectedState = false,
-        locale = Locale.getDefault(),
-        showCents = true,
-        showCurrencySymbol = true
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PaymentListItemSelectedLightPreview() {
-    PaymentListItem(
-        paymentItemModel = PreviewData.paymentItemModelPreview,
-        onClick = {},
-        onLongClick = {},
-        dismissDirection = DismissDirection.EndToStart,
-        isSelectedState = true,
-        locale = Locale.getDefault(),
-        showCents = true,
-        showCurrencySymbol = true
-    )
+fun PaymentListItemSelectedPreview() {
+    val checkBoxTransitionState = remember { MutableTransitionState(true) }
+    MotMaterialTheme {
+        PaymentListItem(
+            paymentItemModel = PreviewData.paymentItemModelPreview,
+            onClick = {},
+            onLongClick = {},
+            dismissDirection = DismissDirection.EndToStart,
+            isSelectedStateOn = true,
+            locale = Locale.getDefault(),
+            showCents = true,
+            showCurrencySymbol = true,
+            checkBoxTransitionState = checkBoxTransitionState,
+            transition = updateTransition(
+                checkBoxTransitionState,
+                label = "paymentNamePaddingStart"
+            )
+        )
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -166,18 +152,30 @@ fun PaymentListItem(
     onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     dismissDirection: DismissDirection?,
-    isSelectedState: Boolean,
+    isSelectedStateOn: Boolean,
     locale: Locale,
     showCents: Boolean,
-    showCurrencySymbol: Boolean
+    showCurrencySymbol: Boolean,
+    checkBoxTransitionState: MutableTransitionState<Boolean>,
+    transition: Transition<Boolean>
 ) {
     val haptic = LocalHapticFeedback.current
+    checkBoxTransitionState.targetState = isSelectedStateOn
+
+    val checkBoxEnterTransition = remember { MotTransitions.enterStartHorizontalTransition }
+    val checkBoxExitTransition = remember { MotTransitions.exitStartHorizontalTransition }
+
+    val paymentNamePaddingStart by transition.animateDp(
+        transitionSpec = { tween(durationMillis = Constants.DEFAULT_ANIMATION_DURATION) },
+        targetValueByState = { if (it) 0.dp else 24.dp },
+        label = "paymentNamePaddingStart"
+    )
 
     MotCard(
         modifier = Modifier.combinedClickable(
             onClick = { onClick.invoke(paymentItemModel) },
             onLongClick = {
-                if (isSelectedState.not()) {
+                if (isSelectedStateOn.not()) {
                     onLongClick.invoke(paymentItemModel)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
@@ -186,8 +184,12 @@ fun PaymentListItem(
 //        elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
     ) {
         Row {
-            if (isSelectedState) {
-                Column(modifier = Modifier.align(CenterVertically)) {
+            Column(modifier = Modifier.align(Alignment.CenterVertically)) {
+                AnimatedVisibility(
+                    visibleState = checkBoxTransitionState,
+                    enter = checkBoxEnterTransition,
+                    exit = checkBoxExitTransition,
+                ) {
                     Checkbox(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         checked = paymentItemModel.payment.isSelected,
@@ -198,7 +200,8 @@ fun PaymentListItem(
             Column {
                 Row(
                     modifier = Modifier.padding(
-                        start = if (isSelectedState) 0.dp else 24.dp,
+//                        start = if (isSelectedStateOn) 0.dp else 24.dp,
+                        start = paymentNamePaddingStart,
                         end = 24.dp,
                         top = 16.dp,
                         bottom = 16.dp
@@ -209,16 +212,13 @@ fun PaymentListItem(
                             .weight(1.0f)
                             .fillMaxWidth()
                     ) {
-                        Text(
-                            text = paymentItemModel.payment.name,
-                        )
+                        Text(text = paymentItemModel.payment.name)
                         if (paymentItemModel.showCategory) {
                             paymentItemModel.payment.category?.name?.let { Text(it) }
                         }
-//                        paymentItemModel.payment.date?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
                     }
                     Column(
-                        modifier = Modifier.align(alignment = CenterVertically)
+                        modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     ) {
                         PriceText(
                             locale = locale,
@@ -229,47 +229,35 @@ fun PaymentListItem(
                     }
                 }
                 if (paymentItemModel.payment.message.isNotEmpty()) {
-                    MotExpandableArea(payment = paymentItemModel.payment)
+                    MotVerticalExpandableArea(payment = paymentItemModel.payment)
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun DismissiblePaymentListItemLightPreview() {
-    MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
-        PaymentListItem(
-            paymentItemModel = PreviewData.paymentItemModelPreview,
-            onClick = {},
-            onLongClick = {},
-            dismissDirection = DismissDirection.EndToStart,
-            isSelectedState = false,
-            locale = Locale.getDefault(),
-            showCents = true,
-            showCurrencySymbol = true
-        )
-    })
-}
-
 @OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
+@MotPreview
 @Composable
-private fun DismissiblePaymentListItemDarkPreview() {
-    MotMaterialTheme(darkTheme = true) {
+private fun DismissiblePaymentListItemPreview() {
+    val checkBoxTransitionState = remember { MutableTransitionState(false) }
+    MotMaterialTheme {
         MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
             PaymentListItem(
                 paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
                 onLongClick = {},
                 dismissDirection = DismissDirection.EndToStart,
-                isSelectedState = false,
+                isSelectedStateOn = false,
                 locale = Locale.getDefault(),
                 showCents = true,
-                showCurrencySymbol = true
+                showCurrencySymbol = true,
+                checkBoxTransitionState = checkBoxTransitionState,
+                transition = updateTransition(
+                    checkBoxTransitionState,
+                    label = "paymentNamePaddingStart"
+                )
             )
         })
     }
 }
-

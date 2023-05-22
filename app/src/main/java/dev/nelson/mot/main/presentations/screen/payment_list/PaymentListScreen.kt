@@ -5,6 +5,8 @@ package dev.nelson.mot.main.presentations.screen.payment_list
 import android.app.Activity
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,8 +51,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotCloseIcon
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.model.Category
@@ -92,7 +95,7 @@ fun PaymentListScreen(
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
-    val isSelectedState by viewModel.isSelectedState.collectAsState(false)
+    val isSelectedStateOn by viewModel.isSelectedState.collectAsState(false)
     val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
     val categories by viewModel.categoriesState.collectAsState(emptyList())
     val showCents by viewModel.showCents.collectAsState(false)
@@ -117,7 +120,7 @@ fun PaymentListScreen(
      * Back handler to cancel selection
      */
     BackHandler(
-        enabled = isSelectedState && modalBottomSheetState.isVisible.not(),
+        enabled = isSelectedStateOn && modalBottomSheetState.isVisible.not(),
         onBack = { viewModel.onCancelSelectionClickEvent() }
     )
 
@@ -165,7 +168,7 @@ fun PaymentListScreen(
         },
         deletedItemsCount = deletedItemsCount,
         onSwipeToDeleteItem = { paymentItemModel -> viewModel.onSwipeToDelete(paymentItemModel) },
-        isSelectedState = isSelectedState,
+        isSelectedStateOn = isSelectedStateOn,
         selectedItemsCount = selectedItemsCount,
         onCancelSelectionClick = {
             viewModel.onCancelSelectionClickEvent()
@@ -197,7 +200,7 @@ fun PaymentListLayout(
     onUndoButtonClickEvent: () -> Unit,
     deletedItemsCount: Int,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    isSelectedState: Boolean,
+    isSelectedStateOn: Boolean,
     selectedItemsCount: Int,
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
@@ -222,9 +225,11 @@ fun PaymentListLayout(
     ) {
         Scaffold(
             topBar = {
-                if (isSelectedState) {
+                if (isSelectedStateOn) {
                     MotSelectionTopAppBar(
-                        onNavigationIconClick = onCancelSelectionClick,
+                        navigationIcon = { MotCloseIcon {
+                            onCancelSelectionClick.invoke()
+                        }},
                         title = selectedItemsCount.toString(),
                         actions = {
                             val scope = rememberCoroutineScope()
@@ -301,7 +306,7 @@ fun PaymentListLayout(
                     onItemClick,
                     onItemLongClick,
                     onSwipeToDeleteItem,
-                    isSelectedState,
+                    isSelectedStateOn,
                     locale,
                     showCents,
                     showCurrencySymbol,
@@ -319,7 +324,7 @@ fun PaymentList(
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    isSelectedState: Boolean,
+    isSelectedStateOn: Boolean,
     locale: Locale,
     showCents: Boolean,
     showCurrencySymbol: Boolean,
@@ -351,6 +356,10 @@ fun PaymentList(
                     if (startDate != null && endDate != null) {
                         DateRangeWidget(startDate.date, endDate.date)
                     }
+
+                    val checkBoxTransitionState = remember { MutableTransitionState(false) }
+                    val transition = updateTransition(checkBoxTransitionState, label = "")
+
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                     ) {
@@ -369,10 +378,12 @@ fun PaymentList(
                                     )
                                     MotDismissibleListItem(
                                         dismissState = dismissState,
-                                        directions = if (isSelectedState.not()) setOf(
+                                        directions = if (isSelectedStateOn.not()) setOf(
                                             DismissDirection.EndToStart
                                         ) else emptySet(),
                                         dismissContent = {
+
+
                                             PaymentListItem(
                                                 paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
@@ -382,10 +393,12 @@ fun PaymentList(
                                                         payment
                                                     )
                                                 },
-                                                isSelectedState = isSelectedState,
+                                                isSelectedStateOn = isSelectedStateOn,
                                                 locale = locale,
                                                 showCents = showCents,
-                                                showCurrencySymbol = showCurrencySymbol
+                                                showCurrencySymbol = showCurrencySymbol,
+                                                checkBoxTransitionState=checkBoxTransitionState,
+                                                transition=transition,
                                             )
                                         }
                                     )
@@ -432,7 +445,7 @@ private fun PaymentListScreenLightPreview() {
             onUndoButtonClickEvent = {},
             deletedItemsCount = 0,
             onSwipeToDeleteItem = {},
-            isSelectedState = false,
+            isSelectedStateOn = false,
             selectedItemsCount = 0,
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
