@@ -45,19 +45,34 @@ object PreviewData {
     }
 
     val paymentListItemsPreview: List<PaymentListItemModel>
-        get() = paymentListPreview.map { PaymentListItemModel.PaymentItemModel(it, true, generateKey()) as PaymentListItemModel }
+        get() = paymentListPreview.map {
+            PaymentListItemModel.PaymentItemModel(
+                it,
+                true,
+                generateKey()
+            ) as PaymentListItemModel
+        }
             .toMutableList()
             .apply {
                 this.add(0, PaymentListItemModel.Header("start", generateKey()))
                 val indexOfTheLastElement = this.indexOf(this.last())
-                this.add(indexOfTheLastElement / 2, PaymentListItemModel.Header("end", generateKey()))
+                this.add(
+                    indexOfTheLastElement / 2,
+                    PaymentListItemModel.Header("end", generateKey())
+                )
             }
 
     val categoriesListItemsPreview: List<CategoryListItemModel> = getCategoryList()
 
     val categoriesSelectListItemsPreview: List<Category> = categoryNames
         .sortedBy { it.first() }
-        .mapIndexed { index, categoryName -> Category(categoryName, id = index) }
+        .mapIndexed { index, categoryName ->
+            Category(
+                categoryName,
+                id = index,
+                isFavorite = index < 2
+            )
+        }
 
     private fun getCategoryList(): List<CategoryListItemModel> {
         val map = categoryNames
@@ -76,12 +91,18 @@ object PreviewData {
                 //add categories items
                 value.forEach { (letter, categoryList) ->
                     add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
-                    addAll(categoryList.map { category -> CategoryListItemModel.CategoryItemModel(category, generateKey()) })
+                    addAll(categoryList.map { category ->
+                        CategoryListItemModel.CategoryItemModel(
+                            category,
+                            generateKey()
+                        )
+                    })
                 }
             }
     }
 
-    val categoryItemPreview = CategoryListItemModel.CategoryItemModel(categoryPreview, generateKey())
+    val categoryItemPreview =
+        CategoryListItemModel.CategoryItemModel(categoryPreview, generateKey())
 
     val letterPreview = CategoryListItemModel.Letter("A", generateKey())
 

@@ -1,7 +1,9 @@
 package dev.nelson.mot.main.presentations.screen.payment_details
 
 import android.app.DatePickerDialog
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,21 +13,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,25 +44,30 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.core.ui.MotButton
-import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.core.ui.MotTextField
-import dev.nelson.mot.main.util.constant.Constants
+import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.main.R
+import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.constant.Constants
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -90,7 +99,15 @@ fun PaymentDetailsScreen(
     val year: Int = cldr.get(Calendar.YEAR)
     val picker = DatePickerDialog(
         context,
-        { _, selectedYear, monthOfYear, dayOfMonth -> run { viewModel.onDateSet(selectedYear, monthOfYear, dayOfMonth) } },
+        { _, selectedYear, monthOfYear, dayOfMonth ->
+            run {
+                viewModel.onDateSet(
+                    selectedYear,
+                    monthOfYear,
+                    dayOfMonth
+                )
+            }
+        },
         year,
         month,
         day
@@ -136,7 +153,11 @@ fun PaymentDetailsLayoutPreview() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalComposeUiApi::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun PaymentDetailsLayout(
     paymentNameState: StateFlow<TextFieldValue>,
@@ -165,11 +186,26 @@ fun PaymentDetailsLayout(
     val messageFieldValueState by messageState.collectAsState(TextFieldValue())
 
     LaunchedEffect(key1 = Unit, block = {
-        delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This is crucial. Otherwise keyboard won't pop on
+        delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This delay is crucial. Otherwise keyboard won't pop on
         paymentNameFocusRequester.requestFocus()
     })
+
+    /**
+     * Back handler to hide modal bottom sheet
+     */
+    BackHandler(
+        enabled = modalBottomSheetState.isVisible,
+        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
+    )
+
     MotModalBottomSheetLayout(
-        sheetContent = { CategoriesListBottomSheet(categories, onCategoryClick, modalBottomSheetState) },
+        sheetContent = {
+            CategoriesListBottomSheet(
+                categories,
+                onCategoryClick,
+                modalBottomSheetState
+            )
+        },
         sheetState = modalBottomSheetState,
     ) {
         Surface(
@@ -207,7 +243,10 @@ fun PaymentDetailsLayout(
                             onCostChange.invoke(it)
                         },
                         placeholder = { Text(text = "0.0") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                     )
                 }
                 MotTextField(
@@ -226,10 +265,13 @@ fun PaymentDetailsLayout(
                         onMessageChange.invoke(it)
                     },
                     placeholder = { Text(text = "message") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
                     keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
 
-                )
+                    )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier
@@ -247,7 +289,11 @@ fun PaymentDetailsLayout(
                             onDateClick.invoke()
                         },
                     ) {
-                        Icon(Icons.Default.EditCalendar, modifier = Modifier.padding(end = 8.dp), contentDescription = "date icon")
+                        Icon(
+                            Icons.Default.EditCalendar,
+                            modifier = Modifier.padding(end = 8.dp),
+                            contentDescription = "date icon"
+                        )
 
                         Text(
                             text = date,
@@ -266,7 +312,11 @@ fun PaymentDetailsLayout(
                             }
                         },
                     ) {
-                        Icon(Icons.Default.Category, modifier = Modifier.padding(end = 8.dp), contentDescription = "category icon")
+                        Icon(
+                            Icons.Default.Category,
+                            modifier = Modifier.padding(end = 8.dp),
+                            contentDescription = "category icon"
+                        )
                         Text(
                             text = categoryName,
                             modifier = Modifier.align(Alignment.CenterVertically)
@@ -298,19 +348,6 @@ fun PaymentDetailsLayout(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@MotPreview
-@Composable
-fun CategoriesListBottomSheetPreview() {
-    MotMaterialTheme {
-        CategoriesListBottomSheet(
-            PreviewData.categoriesSelectListItemsPreview,
-            onCategoryClick = {},
-            rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoriesListBottomSheet(
     categories: List<Category>,
@@ -320,47 +357,117 @@ fun CategoriesListBottomSheet(
     val scope = rememberCoroutineScope()
     val layColumnState = rememberLazyListState()
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Choose a category",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center)
-            )
-        }
+        MotTopAppBar(appBarTitle = "Choose a category")
         LazyColumn(
             state = layColumnState,
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            categories.forEachIndexed() { index, category ->
+            categories.forEachIndexed { index, category ->
                 item {
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onCategoryClick.invoke(category)
-                            scope.launch {
-                                modalBottomSheetState.hide()
-                                layColumnState.scrollToItem(0)
+                    val outerPadding = if (category.isFavorite) 16.dp else 0.dp
+                    val textPadding = if (category.isFavorite) 16.dp else 32.dp
+
+                    val firstFavoriteItemIndex =
+                        categories.find { it.isFavorite }?.let { categories.indexOf(it) }
+                    val lastFavoriteItemIndex =
+                        categories.findLast { it.isFavorite }?.let { categories.indexOf(it) }
+                    val shape = getShape(firstFavoriteItemIndex, lastFavoriteItemIndex, index)
+
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = outerPadding)
+                            .fillMaxWidth()
+                    ) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(shape)
+                            .background(
+                                if (category.isFavorite) {
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.surface
+                                }
+                            )
+                            .clickable {
+                                onCategoryClick.invoke(category)
+                                scope.launch {
+                                    modalBottomSheetState.hide()
+                                    layColumnState.scrollToItem(0)
+                                }
+                            }) {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Row(modifier = Modifier.fillMaxWidth()) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            text = category.name,
+                                            modifier = Modifier
+                                                .padding(
+                                                    vertical = 12.dp,
+                                                    horizontal = textPadding
+                                                )
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(end = outerPadding)
+                                    ) {
+                                        if (category.isFavorite) {
+                                            Icon(
+                                                Icons.Filled.Star,
+                                                contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
+                                                tint = MaterialTheme.colorScheme.secondary,
+                                                modifier = Modifier.size(24.dp)
+                                            )
+                                        }
+                                    }
+                                }
                             }
-                        }) {
-                        Text(
-                            text = category.name,
-                            modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
-                        )
-                    }
-                    val nextCategoryIndex = index + 1
-                    if (categories.size > nextCategoryIndex) {
-                        val nextCategory = categories[index + 1]
-                        if (category.isFavorite && !nextCategory.isFavorite) {
-                            Divider(color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 }
             }
         }
+    }
+}
+
+private fun getShape(firstItemIndex: Int?, lastItemIndex: Int?, currentItemIndex: Int): Shape {
+    val cornerRadius = 24.dp
+    
+    val topRoundedCornerShape = RoundedCornerShape(
+        topStart = cornerRadius,
+        topEnd = cornerRadius,
+    )
+    val bottomRoundedCornerShape = RoundedCornerShape(
+        bottomStart = cornerRadius,
+        bottomEnd = cornerRadius
+    )
+    val roundedCornerShape = RoundedCornerShape(
+        topStart = cornerRadius,
+        topEnd = cornerRadius,
+        bottomStart = cornerRadius,
+        bottomEnd = cornerRadius
+    )
+    val rectangularShape = RectangleShape
+    if (firstItemIndex == null && lastItemIndex == null) return rectangularShape // no favorites in the list
+    if (firstItemIndex == lastItemIndex) return roundedCornerShape // only one favorite item in the list
+    return when (currentItemIndex) {
+        firstItemIndex -> topRoundedCornerShape // several favorites and current is 1st favorite
+        lastItemIndex -> bottomRoundedCornerShape // several favorites and current is last favorite
+        else -> rectangularShape // several favorites and current is in the middle of the list favorite
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@MotPreview
+@Composable
+private fun CategoriesListBottomSheetPreview() {
+    MotMaterialTheme {
+        CategoriesListBottomSheet(
+            PreviewData.categoriesSelectListItemsPreview,
+            onCategoryClick = {},
+            rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+        )
     }
 }

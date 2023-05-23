@@ -17,8 +17,6 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
-import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
-import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.constant.Constants
@@ -45,8 +43,6 @@ class PaymentListViewModel @Inject constructor(
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     private val getCategoryUseCase: GetCategoryUseCase,
-    private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
-    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
