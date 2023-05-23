@@ -4,20 +4,23 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.utils.formatPrice
 import dev.utils.preview.MotPreview
-import java.util.Locale
 
+/**
+ * @param price price in cents
+ * @param priceViewState view state for price
+ */
 @Composable
 fun PriceText(
-    locale: Locale,
-    isShowCents: Boolean,
-    priceInCents: Int,
-    isShowCurrencySymbol: Boolean
+    price: Int,
+    priceViewState: PriceViewState = PriceViewState()
 ) {
-    val formattedCost = formatPrice(locale, priceInCents, isShowCents, isShowCurrencySymbol)
+    val formattedPrice = formatPrice(price, priceViewState)
+
     Text(
-        text = formattedCost,
+        text = formattedPrice,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.error
     )
@@ -30,10 +33,8 @@ fun TextPricePreview() {
         ListItem(
             headlineContent = {
                 PriceText(
-                    Locale.getDefault(),
-                    isShowCents = true,
-                    isShowCurrencySymbol = true,
-                    priceInCents = 999999
+                    price = 999999,
+                    priceViewState = PriceViewState()
                 )
             },
         )

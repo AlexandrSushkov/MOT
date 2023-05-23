@@ -2,11 +2,11 @@ package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
@@ -16,6 +16,7 @@ import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -38,6 +39,7 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
+    getPriceViewState: GetPriceViewState,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
     private val getPaymentListByDateRange: GetPaymentListByDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
@@ -64,9 +66,9 @@ class PaymentListViewModel @Inject constructor(
         get() = _snackBarVisibilityState.asStateFlow()
     private val _snackBarVisibilityState = MutableStateFlow(false)
 
-    val isSelectedState
-        get() = _isSelectedState.asStateFlow()
-    private val _isSelectedState = MutableStateFlow(false)
+    val isSelectedModeOnState
+        get() = _isSelectedModeOnState.asStateFlow()
+    private val _isSelectedModeOnState = MutableStateFlow(false)
 
     val deletedItemsCountState: Flow<Int>
         get() = _deletedItemsCount.asStateFlow()
@@ -81,18 +83,9 @@ class PaymentListViewModel @Inject constructor(
     private val _paymentListResult =
         MutableStateFlow<MotUiState<List<PaymentListItemModel>>>(MotUiState.Loading)
 
-    val selectedLocale: Flow<Locale>
-        get() = _selectedLocale.asStateFlow()
-    private val _selectedLocale = MutableStateFlow<Locale>(Locale.getDefault())
-
-    val showCents: Flow<Boolean>
-        get() = _showCents.asStateFlow()
-    private val _showCents = MutableStateFlow(false)
-
-    val showCurrencySymbol: Flow<Boolean>
-        get() = _showCurrencySymbol.asStateFlow()
-    private val _showCurrencySymbol = MutableStateFlow(false)
-
+    val priceViewState: Flow<PriceViewState>
+        get() = _priceViewState.asStateFlow()
+    private val _priceViewState = MutableStateFlow(PriceViewState())
 
     val categoriesState: Flow<List<Category>>
         get() = _categories.asStateFlow()
@@ -155,20 +148,8 @@ class PaymentListViewModel @Inject constructor(
         }
 
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCents).collect {
-                _showCents.value = it
-            }
-        }
-
-        launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol).collect {
-                _showCurrencySymbol.value = it
-            }
-        }
-
-        launch {
-            getSelectedLocaleUseCase.execute().collect { locale ->
-                _selectedLocale.value = locale
+            getPriceViewState.execute().collect {
+                _priceViewState.value = it
             }
         }
     }
@@ -232,12 +213,12 @@ class PaymentListViewModel @Inject constructor(
     }
 
     fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {
-        if (_isSelectedState.value) {
+        if (_isSelectedModeOnState.value) {
             // select mode is on. select/deselect this item
             if (selectedItemsList.contains(payment)) {
                 deselectItem(payment)
                 if (selectedItemsList.isEmpty()) {
-                    _isSelectedState.value = false
+                    _isSelectedModeOnState.value = false
                 }
             } else {
                 selectItem(payment)
@@ -311,9 +292,9 @@ class PaymentListViewModel @Inject constructor(
     }
 
     fun onItemLongClick(payment: PaymentListItemModel.PaymentItemModel) {
-        if (_isSelectedState.value.not()) {
+        if (_isSelectedModeOnState.value.not()) {
             // turn on selection state
-            _isSelectedState.value = true
+            _isSelectedModeOnState.value = true
             // find and select item
             selectItem(payment)
         }
@@ -361,7 +342,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun cancelSelection() {
-        _isSelectedState.value = false
+        _isSelectedModeOnState.value = false
         selectedItemsList.clear()
         _selectedItemsCount.value = selectedItemsList.size
         _paymentListResult.value = MotUiState.Success(initialPaymentList)

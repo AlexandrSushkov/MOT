@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -29,11 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotSwitch
@@ -90,12 +87,13 @@ fun SettingsScreen(
         navigationIcon = navigationIcon,
         viewState = viewState,
         onLocaleClick = openCountryPickerScreen,
-        onDarkThemeSwitchClick = { settingsViewModel.onDarkThemeCheckedChange(it) },
+        onDarkThemeSwitchClick = { settingsViewModel.onForceDarkThemeCheckedChange(it) },
         onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
         onImportDataBaseClick = { filePickerLauncher.launch(Constants.FILE_PICKER_FORMAT) },
         onShowCentsClick = { settingsViewModel.onShowCentsCheckedChange(it) },
         onShowCurrencySymbolClick = { settingsViewModel.onShowCurrencySymbolChange(it) },
+        onHideDigitsClick = { settingsViewModel.onHideDigitsChange(it) },
     )
 }
 
@@ -111,6 +109,7 @@ private fun SettingsScreenLayout(
     onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
     onShowCentsClick: (Boolean) -> Unit,
     onShowCurrencySymbolClick: (Boolean) -> Unit,
+    onHideDigitsClick: (Boolean) -> Unit,
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
@@ -131,18 +130,21 @@ private fun SettingsScreenLayout(
             item { HeadingListItem(text = "Appearance") }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Show Cents") },
-                    supportingContent = {
+                    headlineContent = { Text(text = "Price Field Example") },
+                    trailingContent = {
                         PriceText(
-                            locale = viewState.selectedLocale,
-                            isShowCents = viewState.isShowCents,
-                            isShowCurrencySymbol = viewState.isShowCurrencySymbol,
-                            priceInCents = Constants.PRICE_EXAMPLE
+                            price = Constants.PRICE_EXAMPLE,
+                            priceViewState = viewState.priceViewState
                         )
-                    },
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Show Cents") },
                     trailingContent = {
                         MotSwitch(
-                            checked = viewState.isShowCents,
+                            checked = viewState.isShowCentsSwitchChecked,
                             onCheckedChange = onShowCentsClick
                         )
                     }
@@ -151,18 +153,21 @@ private fun SettingsScreenLayout(
             item {
                 ListItem(
                     headlineContent = { Text(text = "Show Currency Symbol") },
-                    supportingContent = {
-                        PriceText(
-                            locale = viewState.selectedLocale,
-                            isShowCents = viewState.isShowCents,
-                            isShowCurrencySymbol = viewState.isShowCurrencySymbol,
-                            priceInCents = Constants.PRICE_EXAMPLE
-                        )
-                    },
                     trailingContent = {
                         MotSwitch(
-                            checked = viewState.isShowCurrencySymbol,
+                            checked = viewState.isShowCurrencySymbolSwitchChecked,
                             onCheckedChange = onShowCurrencySymbolClick
+                        )
+                    }
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text(text = "Hide digits") },
+                    trailingContent = {
+                        MotSwitch(
+                            checked = viewState.isHideDigitsSwitchChecked,
+                            onCheckedChange = onHideDigitsClick
                         )
                     }
                 )
@@ -189,7 +194,7 @@ private fun SettingsScreenLayout(
                     headlineContent = { Text(text = "Force Dark Theme") },
                     trailingContent = {
                         MotSwitch(
-                            checked = viewState.isDarkThemeSwitchOn,
+                            checked = viewState.isForceDarkThemeSwitchChecked,
                             onCheckedChange = onDarkThemeSwitchClick
                         )
                     }
@@ -201,7 +206,7 @@ private fun SettingsScreenLayout(
                     headlineContent = { Text(text = "Dynamic Color Theme") },
                     trailingContent = {
                         MotSwitch(
-                            checked = viewState.isDynamicThemeSwitchOn,
+                            checked = viewState.isDynamicThemeSwitchChecked,
                             onCheckedChange = onDynamicColorThemeSwitchClick
                         )
                     }
@@ -310,10 +315,10 @@ private fun SettingsScreenLayoutPreview() {
             dismissClickCallback = {}
         )
         val viewState = SettingsViewState(
-            isDarkThemeSwitchOn = false,
-            isDynamicThemeSwitchOn = true,
-            isShowCents = true,
-            isShowCurrencySymbol = true,
+            isForceDarkThemeSwitchChecked = false,
+            isDynamicThemeSwitchChecked = true,
+            isShowCentsSwitchChecked = true,
+            isShowCurrencySymbolSwitchChecked = true,
 //            alertDialog = alertDialogParams,
         )
         SettingsScreenLayout(
@@ -331,6 +336,7 @@ private fun SettingsScreenLayoutPreview() {
             onDynamicColorThemeSwitchClick = {},
             onShowCentsClick = {},
             onShowCurrencySymbolClick = {},
+            onHideDigitsClick = {}
         )
     }
 }

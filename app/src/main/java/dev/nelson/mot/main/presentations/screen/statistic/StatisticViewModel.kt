@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
@@ -10,6 +11,7 @@ import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthT
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -27,8 +29,7 @@ class StatisticViewModel @Inject constructor(
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     getPaymentListByDateRange: GetPaymentListByDateRange,
-    private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
-    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
+    getPriceViewState: GetPriceViewState,
 ) : BaseViewModel() {
 
     /**
@@ -44,17 +45,9 @@ class StatisticViewModel @Inject constructor(
     private val _previousMonthListResult =
         MutableStateFlow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>(emptyMap())
 
-    val showCents: Flow<Boolean>
-        get() = _showCents.asStateFlow()
-    private val _showCents = MutableStateFlow(false)
-
-    val showCurrencySymbol: Flow<Boolean>
-        get() = _showCurrencySymbol.asStateFlow()
-    private val _showCurrencySymbol = MutableStateFlow(false)
-
-    val selectedLocale: Flow<Locale>
-        get() = _selectedLocale.asStateFlow()
-    private val _selectedLocale = MutableStateFlow<Locale>(Locale.getDefault())
+    val priceViewState: Flow<PriceViewState>
+        get() = _priceViewState.asStateFlow()
+    private val _priceViewState = MutableStateFlow(PriceViewState())
 
     init {
         launch {
@@ -87,20 +80,8 @@ class StatisticViewModel @Inject constructor(
         }
 
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCents).collect {
-                _showCents.value = it
-            }
-        }
-
-        launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol).collect {
-                _showCurrencySymbol.value = it
-            }
-        }
-
-        launch {
-            getSelectedLocaleUseCase.execute().collect {
-                _selectedLocale.value = it
+            getPriceViewState.execute().collect {
+                _priceViewState.value = it
             }
         }
     }

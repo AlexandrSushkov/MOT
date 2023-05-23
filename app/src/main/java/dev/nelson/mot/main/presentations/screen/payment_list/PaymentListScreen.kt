@@ -66,6 +66,7 @@ import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotNavSettingsIcon
 import dev.nelson.mot.core.ui.MotSelectionTopAppBar
 import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
@@ -76,7 +77,6 @@ import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.Locale
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -95,12 +95,10 @@ fun PaymentListScreen(
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
-    val isSelectedStateOn by viewModel.isSelectedState.collectAsState(false)
+    val isSelectedStateOn by viewModel.isSelectedModeOnState.collectAsState(false)
     val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
     val categories by viewModel.categoriesState.collectAsState(emptyList())
-    val showCents by viewModel.showCents.collectAsState(false)
-    val showCurrencySymbol by viewModel.showCurrencySymbol.collectAsState(false)
-    val selectedLocale by viewModel.selectedLocale.collectAsState(Locale.getDefault())
+    val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
 
     /**
      * Open payment details
@@ -180,9 +178,7 @@ fun PaymentListScreen(
         categories = categories,
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
         modalBottomSheetState = modalBottomSheetState,
-        locale = selectedLocale,
-        showCents = showCents,
-        showCurrencySymbol = showCurrencySymbol,
+        priceViewState = priceViewState,
     )
 }
 
@@ -209,9 +205,7 @@ fun PaymentListLayout(
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState,
-    showCents: Boolean,
-    showCurrencySymbol: Boolean,
-    locale: Locale
+    priceViewState: PriceViewState,
 ) {
     MotModalBottomSheetLayout(
         sheetContent = {
@@ -227,9 +221,11 @@ fun PaymentListLayout(
             topBar = {
                 if (isSelectedStateOn) {
                     MotSelectionTopAppBar(
-                        navigationIcon = { MotCloseIcon {
-                            onCancelSelectionClick.invoke()
-                        }},
+                        navigationIcon = {
+                            MotCloseIcon {
+                                onCancelSelectionClick.invoke()
+                            }
+                        },
                         title = selectedItemsCount.toString(),
                         actions = {
                             val scope = rememberCoroutineScope()
@@ -307,9 +303,7 @@ fun PaymentListLayout(
                     onItemLongClick,
                     onSwipeToDeleteItem,
                     isSelectedStateOn,
-                    locale,
-                    showCents,
-                    showCurrencySymbol,
+                    priceViewState
                 )
             }
         }
@@ -325,9 +319,7 @@ fun PaymentList(
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
     isSelectedStateOn: Boolean,
-    locale: Locale,
-    showCents: Boolean,
-    showCurrencySymbol: Boolean,
+    priceViewState: PriceViewState,
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -382,8 +374,6 @@ fun PaymentList(
                                             DismissDirection.EndToStart
                                         ) else emptySet(),
                                         dismissContent = {
-
-
                                             PaymentListItem(
                                                 paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
@@ -394,11 +384,9 @@ fun PaymentList(
                                                     )
                                                 },
                                                 isSelectedStateOn = isSelectedStateOn,
-                                                locale = locale,
-                                                showCents = showCents,
-                                                showCurrencySymbol = showCurrencySymbol,
-                                                checkBoxTransitionState=checkBoxTransitionState,
-                                                transition=transition,
+                                                priceViewState = priceViewState,
+                                                checkBoxTransitionState = checkBoxTransitionState,
+                                                transition = transition,
                                             )
                                         }
                                     )
@@ -454,9 +442,7 @@ private fun PaymentListScreenLightPreview() {
             categories = emptyList(),
             onCategoryClick = {},
             modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            showCents = true,
-            showCurrencySymbol = true,
-            locale = Locale.getDefault()
+            priceViewState = PriceViewState(),
         )
     }
 }

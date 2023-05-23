@@ -1,31 +1,30 @@
 package dev.nelson.mot.main.presentations.screen.settings
 
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ConfigUpdate
+import com.google.firebase.remoteconfig.ConfigUpdateListener
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
 import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
-import dev.nelson.mot.main.domain.use_case.settings.SetLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.main.util.extention.containsAny
-import dev.nelson.mot.main.util.extention.doesSearchMatch
-import dev.nelson.mot.main.util.extention.filterDefaultCountries
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -35,10 +34,10 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
     getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
+    getPriceViewState: GetPriceViewState,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
-    private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
-    private val setLocaleUseCase: SetLocaleUseCase,
+    private val setSwitchStatusUseCase: SetSwitchStatusUseCase
 ) : BaseViewModel() {
 
     // actions
@@ -53,64 +52,46 @@ class SettingsViewModel @Inject constructor(
 
     init {
         launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.DarkTheme).collect {
-                _viewState.value = _viewState.value.copy(isDarkThemeSwitchOn = it)
-            }
-        }
-
-        launch {
-            getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme).collect {
-                _viewState.value = _viewState.value.copy(isDynamicThemeSwitchOn = it)
-            }
-        }
-
-        // TODO: move to separate use case
-        launch {
             combine(
+                getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme),
+                getSwitchStatusUseCase.execute(MotSwitchType.ForceDarkTheme),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
+                getSwitchStatusUseCase.execute(MotSwitchType.HideDigits),
                 getSelectedLocaleUseCase.execute(),
-                ::Triple
-            ).collect { (isShowCents, isShowCurrencySymbol, selectedLocale) ->
-                _viewState.value = _viewState.value.copy(
-                    isShowCents = isShowCents,
-                    isShowCurrencySymbol = isShowCurrencySymbol,
-                    selectedLocale = selectedLocale
+                getPriceViewState.execute()
+            ) { array ->
+                _viewState.value.copy(
+                    isDynamicThemeSwitchChecked = array[0] as Boolean,
+                    isForceDarkThemeSwitchChecked = array[1] as Boolean,
+                    isShowCentsSwitchChecked = array[2] as Boolean,
+                    isShowCurrencySymbolSwitchChecked = array[3] as Boolean,
+                    isHideDigitsSwitchChecked = array[4] as Boolean,
+                    selectedLocale = array[5] as Locale,
+                    priceViewState = array[6] as PriceViewState
                 )
-            }
+            }.collect { _viewState.value = it }
         }
     }
 
-    /**
-     * Only one them can be set at the time
-     */
-    fun onDarkThemeCheckedChange(isChecked: Boolean) = launch {
-        if (isChecked) {
-            resetSwitch(MotSwitchType.DynamicColorTheme)
-        }
-        val params = SetSwitchStatusParams(MotSwitchType.DarkTheme, isChecked)
-        setSwitchStatusUseCase.execute(params)
+    fun onForceDarkThemeCheckedChange(isChecked: Boolean) = launch {
+        setSwitchStatus(MotSwitchType.ForceDarkTheme, isChecked)
     }
 
-    /**
-     * Only one them can be set at the time
-     */
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) = launch {
-        if (isChecked) {
-            resetSwitch(MotSwitchType.DarkTheme)
-        }
-        val params = SetSwitchStatusParams(MotSwitchType.DynamicColorTheme, isChecked)
-        setSwitchStatusUseCase.execute(params)
+        setSwitchStatus(MotSwitchType.DynamicColorTheme, isChecked)
     }
 
     fun onShowCentsCheckedChange(isChecked: Boolean) = launch {
-        val params = SetSwitchStatusParams(MotSwitchType.ShowCents, isChecked)
-        setSwitchStatusUseCase.execute(params)
+        setSwitchStatus(MotSwitchType.ShowCents, isChecked)
     }
 
     fun onShowCurrencySymbolChange(isChecked: Boolean) = launch {
-        val params = SetSwitchStatusParams(MotSwitchType.ShowCurrencySymbol, isChecked)
-        setSwitchStatusUseCase.execute(params)
+        setSwitchStatus(MotSwitchType.ShowCurrencySymbol, isChecked)
+    }
+
+    fun onHideDigitsChange(isChecked: Boolean) = launch {
+        setSwitchStatus(MotSwitchType.HideDigits, isChecked)
     }
 
     fun onExportDataBaseClick() = launch {
@@ -169,11 +150,8 @@ class SettingsViewModel @Inject constructor(
             }
     }
 
-    /**
-     * Force turn off switch.
-     */
-    private suspend fun resetSwitch(motSwitchType: MotSwitchType) {
-        val params = SetSwitchStatusParams(motSwitchType, false)
+    private suspend fun setSwitchStatus(switchType: MotSwitchType, isChecked: Boolean) {
+        val params = SetSwitchStatusParams(switchType, isChecked)
         setSwitchStatusUseCase.execute(params)
     }
 

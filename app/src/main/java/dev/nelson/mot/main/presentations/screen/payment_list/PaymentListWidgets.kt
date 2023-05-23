@@ -41,6 +41,7 @@ import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotVerticalExpandableArea
 import dev.nelson.mot.main.util.compose.MotTransitions
@@ -133,9 +134,7 @@ fun PaymentListItemSelectedPreview() {
             onLongClick = {},
             dismissDirection = DismissDirection.EndToStart,
             isSelectedStateOn = true,
-            locale = Locale.getDefault(),
-            showCents = true,
-            showCurrencySymbol = true,
+            priceViewState = PriceViewState(),
             checkBoxTransitionState = checkBoxTransitionState,
             transition = updateTransition(
                 checkBoxTransitionState,
@@ -153,9 +152,7 @@ fun PaymentListItem(
     onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     dismissDirection: DismissDirection?,
     isSelectedStateOn: Boolean,
-    locale: Locale,
-    showCents: Boolean,
-    showCurrencySymbol: Boolean,
+    priceViewState: PriceViewState,
     checkBoxTransitionState: MutableTransitionState<Boolean>,
     transition: Transition<Boolean>
 ) {
@@ -221,10 +218,8 @@ fun PaymentListItem(
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     ) {
                         PriceText(
-                            locale = locale,
-                            isShowCents = showCents,
-                            priceInCents = paymentItemModel.payment.cost,
-                            isShowCurrencySymbol = showCurrencySymbol
+                            price = paymentItemModel.payment.cost,
+                            priceViewState = priceViewState,
                         )
                     }
                 }
@@ -249,9 +244,7 @@ private fun DismissiblePaymentListItemPreview() {
                 onLongClick = {},
                 dismissDirection = DismissDirection.EndToStart,
                 isSelectedStateOn = false,
-                locale = Locale.getDefault(),
-                showCents = true,
-                showCurrencySymbol = true,
+                priceViewState = PriceViewState(),
                 checkBoxTransitionState = checkBoxTransitionState,
                 transition = updateTransition(
                     checkBoxTransitionState,

@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -34,6 +33,7 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.motTabRowScreens
 import dev.nelson.mot.core.ui.LineChartMot
 import dev.nelson.mot.core.ui.PriceText
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.utils.preview.MotPreview
 import java.util.Locale
 
@@ -44,17 +44,13 @@ fun StatisticScreen(
 ) {
     val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
     val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
-    val showCents by viewModel.showCents.collectAsState(false)
-    val showCurrencySymbol by viewModel.showCurrencySymbol.collectAsState(false)
-    val selectedLocale by viewModel.selectedLocale.collectAsState(Locale.getDefault())
+    val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
 
     StatisticLayout(
         navHostController,
         currentMonth,
         previousMonthList,
-        showCents,
-        showCurrencySymbol,
-        selectedLocale
+        priceViewState
     )
 
 }
@@ -64,9 +60,7 @@ fun StatisticLayout(
     navHostController: NavHostController,
     currentMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
     previousMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
-    showCents: Boolean,
-    showCurrencySymbol: Boolean,
-    selectedLocale: Locale
+    priceViewState: PriceViewState,
 ) {
     Scaffold(
         bottomBar = {
@@ -123,10 +117,8 @@ fun StatisticLayout(
                         style = MaterialTheme.typography.labelLarge,
                     )
                     PriceText(
-                        locale = selectedLocale,
-                        isShowCents = showCents,
-                        priceInCents = sumForCurrentMonth,
-                        isShowCurrencySymbol = showCurrencySymbol
+                        price = sumForCurrentMonth,
+                        priceViewState = priceViewState
                     )
                 }
                 Divider()
@@ -143,12 +135,10 @@ fun StatisticLayout(
                                     style = MaterialTheme.typography.labelLarge,
                                 )
                                 PriceText(
-                                    locale = selectedLocale,
-                                    isShowCents = showCents,
-                                    priceInCents = currentMonthList[it].let { pl ->
+                                    price = currentMonthList[it].let { pl ->
                                         pl?.sumOf { payment -> payment.payment.cost } ?: 0
                                     },
-                                    isShowCurrencySymbol = showCurrencySymbol
+                                    priceViewState = priceViewState
                                 )
                             }
 
@@ -162,10 +152,8 @@ fun StatisticLayout(
                         style = MaterialTheme.typography.labelLarge,
                     )
                     PriceText(
-                        locale = selectedLocale,
-                        isShowCents = showCents,
-                        priceInCents = sumForPreviousMonth,
-                        isShowCurrencySymbol = showCurrencySymbol
+                        price = sumForPreviousMonth,
+                        priceViewState = priceViewState
                     )
                 }
                 Divider()
@@ -182,12 +170,10 @@ fun StatisticLayout(
                                     style = MaterialTheme.typography.labelLarge,
                                 )
                                 PriceText(
-                                    locale = selectedLocale,
-                                    isShowCents = showCents,
-                                    priceInCents = previousMonthList[it].let { pl ->
+                                    price = previousMonthList[it].let { pl ->
                                         pl?.sumOf { paymentModel -> paymentModel.payment.cost } ?: 0
                                     },
-                                    isShowCurrencySymbol = showCurrencySymbol
+                                    priceViewState = priceViewState
                                 )
                             }
 
@@ -214,9 +200,7 @@ private fun StatisticLayoutPreview() {
             NavHostController(LocalContext.current),
             currentMonthList = emptyMap(),
             previousMonthList = emptyMap(),
-            showCents = true,
-            showCurrencySymbol = true,
-            selectedLocale = Locale.getDefault()
+            priceViewState = PriceViewState()
         )
     }
 }
