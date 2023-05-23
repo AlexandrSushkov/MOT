@@ -8,24 +8,34 @@ private const val HASHTAG = "#"
 private const val DIGIT_PATTERN = "\\d"
 
 /**
- * @param locale  the desired locale.
  * @param price price in cents.
- * @param isShowCents if true, it will show cents, otherwise not.
+ * @param priceViewState parameters to format price.
  */
 fun formatPrice(price: Int, priceViewState: PriceViewState): String {
     val formatter = NumberFormat.getCurrencyInstance(priceViewState.locale)
-    return if (priceViewState.isShowCents) {
-        formatter.format(price.toDouble() / 100)
-    } else {
-        formatter.maximumFractionDigits = 0
-        formatter.format(price / 100)
-    }.hideDigitsIfNeeded(priceViewState.isHideDigits)
+    return price.toPrice(formatter, priceViewState.isShowCents)
+        .hideDigitsIfNeeded(priceViewState.isHideDigits)
         .removeCurrencySymbolIfNeeded(
             priceViewState.isShowCurrencySymbol,
             formatter.currency?.symbol
         )
 }
 
+/**
+ * format price in cents to a string.
+ */
+private fun Int.toPrice(priceFormatter: NumberFormat, isShowCents: Boolean): String {
+    return if (isShowCents) {
+        priceFormatter.format(this.toDouble() / 100)
+    } else {
+        priceFormatter.maximumFractionDigits = 0
+        priceFormatter.format(this / 100)
+    }
+}
+
+/**
+ * replace all digits with hashtag in a string if [isHideDigits] is true.
+ */
 private fun String.hideDigitsIfNeeded(isHideDigits: Boolean): String {
     return if (isHideDigits) {
         this.replace(Regex(DIGIT_PATTERN), HASHTAG)
@@ -34,6 +44,9 @@ private fun String.hideDigitsIfNeeded(isHideDigits: Boolean): String {
     }
 }
 
+/**
+ * remove currency symbol in a strings if [isShowCurrencySymbol] is false.
+ */
 private fun String.removeCurrencySymbolIfNeeded(
     isShowCurrencySymbol: Boolean,
     currencySymbol: String?

@@ -57,5 +57,5 @@ object CountryPicker : MotDestinations {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-val drawerItemsList = listOf(Payments, Categories, Statistic)
+val initialDrawerItemsList = listOf(Payments, Categories, Settings)
 
