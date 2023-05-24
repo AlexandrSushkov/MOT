@@ -28,7 +28,9 @@ import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -98,10 +100,9 @@ private fun DateRangeWidgetPreview() {
 
 @Composable
 fun PaymentListDateItem(date: String) {
-    Box(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
-            .fillMaxWidth()
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        tonalElevation = 4.dp,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -178,7 +179,6 @@ fun PaymentListItem(
                 }
 
             }),
-//        elevation = animateDpAsState(targetValue = if (dismissDirection != null) 4.dp else 0.dp).value,
     ) {
         Row {
             Column(modifier = Modifier.align(Alignment.CenterVertically)) {

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
@@ -207,6 +209,8 @@ fun PaymentListLayout(
     modalBottomSheetState: ModalBottomSheetState,
     priceViewState: PriceViewState,
 ) {
+    val paymentsLitScrollingState = rememberLazyListState()
+
     MotModalBottomSheetLayout(
         sheetContent = {
             CategoriesListBottomSheet(
@@ -243,26 +247,28 @@ fun PaymentListLayout(
                             IconButton(onClick = onDeleteSelectedItemsClick) {
                                 Icon(Icons.Default.Delete, contentDescription = "")
                             }
-                        }
-                    )
-                    val view = LocalView.current
-                    if (!view.isInEditMode) {
-                        val window = (view.context as Activity).window
-                        window.statusBarColor = MaterialTheme.colorScheme.tertiaryContainer.toArgb()
-                    }
-
-                } else {
-                    MotTopAppBar(
-                        appBarTitle = toolbarTitle,
-                        navigationIcon = navigationIcon,
-                        actions = { settingsIcon.invoke() }
+                        },
                     ).also {
                         val view = LocalView.current
                         if (!view.isInEditMode) {
                             val window = (view.context as Activity).window
-                            window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
+                            window.statusBarColor = MaterialTheme.colorScheme.tertiaryContainer.toArgb()
                         }
                     }
+                } else {
+                    MotTopAppBar(
+                        appBarTitle = toolbarTitle,
+                        navigationIcon = navigationIcon,
+                        actions = { settingsIcon.invoke() },
+                        isScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
+                    )
+//                        .also {
+//                        val view = LocalView.current
+//                        if (!view.isInEditMode) {
+//                            val window = (view.context as Activity).window
+//                            window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
+//                        }
+//                    }
                 }
             },
             floatingActionButton = {
@@ -303,7 +309,8 @@ fun PaymentListLayout(
                     onItemLongClick,
                     onSwipeToDeleteItem,
                     isSelectedStateOn,
-                    priceViewState
+                    priceViewState,
+                    paymentsLitScrollingState
                 )
             }
         }
@@ -320,6 +327,7 @@ fun PaymentList(
     onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
+    state: LazyListState,
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -341,18 +349,19 @@ fun PaymentList(
             } else {
                 Column {
                     // date range widget
-                    val startDate =
-                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
-                    val endDate =
-                        paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
-                    if (startDate != null && endDate != null) {
-                        DateRangeWidget(startDate.date, endDate.date)
-                    }
+//                    val startDate =
+//                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+//                    val endDate =
+//                        paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
+//                    if (startDate != null && endDate != null) {
+//                        DateRangeWidget(startDate.date, endDate.date)
+//                    }
 
                     val checkBoxTransitionState = remember { MutableTransitionState(false) }
                     val transition = updateTransition(checkBoxTransitionState, label = "")
 
                     LazyColumn(
+                        state = state,
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         paymentList.forEach { paymentListItemModel ->

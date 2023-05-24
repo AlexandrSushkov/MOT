@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
@@ -144,12 +146,16 @@ fun CategoryListLayout(
     deleteItemsCountText: String,
     undoDeleteClickEvent: () -> Unit,
 ) {
+
+    val categoriesListScrollingState = rememberLazyListState()
+
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                actions = settingsNavigationIcon
+                actions = settingsNavigationIcon,
+                isScrolling = categoriesListScrollingState.firstVisibleItemIndex != 0
             )
         },
         snackbarHost = {
@@ -182,7 +188,8 @@ fun CategoryListLayout(
                 onSwipeCategory,
                 onCategoryClick,
                 onCategoryLongPress,
-                onFavoriteClick
+                onFavoriteClick,
+                categoriesListScrollingState,
             )
 
         }
@@ -197,6 +204,7 @@ fun CategoryList(
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
+    scrollState: LazyListState
 ) {
     when (categoriesListUiState) {
         is Success -> {
@@ -212,6 +220,7 @@ fun CategoryList(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
+                    state = scrollState,
                     content = {
                         categories.forEach { categoryListItem ->
                             when (categoryListItem) {
@@ -259,7 +268,7 @@ fun CategoryList(
                                                 )
                                             },
                                             colors = ListItemDefaults.colors(
-                                                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                                containerColor = MaterialTheme.colorScheme.inversePrimary
                                             ),
                                         )
                                     }

@@ -379,23 +379,25 @@ fun CategoriesListBottomSheet(
                             .padding(horizontal = outerPadding)
                             .fillMaxWidth()
                     ) {
-                        Box(modifier = Modifier
+                        Surface(modifier = Modifier
                             .fillMaxWidth()
                             .clip(shape)
-                            .background(
-                                if (category.isFavorite) {
-                                    MaterialTheme.colorScheme.secondaryContainer
-                                } else {
-                                    MaterialTheme.colorScheme.surface
-                                }
-                            )
+//                            .background(
+//                                if (category.isFavorite) {
+//                                    MaterialTheme.colorScheme.secondaryContainer
+//                                } else {
+//                                    MaterialTheme.colorScheme.surface
+//                                }
+//                            )
                             .clickable {
                                 onCategoryClick.invoke(category)
                                 scope.launch {
                                     modalBottomSheetState.hide()
                                     layColumnState.scrollToItem(0)
                                 }
-                            }) {
+                            },
+                            tonalElevation = if(category.isFavorite) 4.dp else 0.dp
+                        ) {
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     Column(modifier = Modifier.weight(1f)) {
@@ -434,7 +436,7 @@ fun CategoriesListBottomSheet(
 
 private fun getShape(firstItemIndex: Int?, lastItemIndex: Int?, currentItemIndex: Int): Shape {
     val cornerRadius = 24.dp
-    
+
     val topRoundedCornerShape = RoundedCornerShape(
         topStart = cornerRadius,
         topEnd = cornerRadius,

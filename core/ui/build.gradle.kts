@@ -53,4 +53,7 @@ dependencies {
     api(libs.compose.runtime)
     api(libs.compose.runtime.livedata) // Integration with observables
     api(libs.compose.compiler)
+
+    //accompanist
+    api(libs.accompanist.systemuicontroller)
 }

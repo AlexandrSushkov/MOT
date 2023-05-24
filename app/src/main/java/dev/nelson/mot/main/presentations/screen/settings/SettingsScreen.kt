@@ -7,11 +7,13 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -113,16 +115,19 @@ private fun SettingsScreenLayout(
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
+    val settingsScreenContentScrollingState = rememberLazyListState()
 
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = title,
-                navigationIcon = navigationIcon
+                navigationIcon = navigationIcon,
+                isScrolling = settingsScreenContentScrollingState.firstVisibleItemIndex != 0
             )
         }
     ) { innerPadding ->
         LazyColumn(
+            state = settingsScreenContentScrollingState,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -238,6 +243,7 @@ private fun SettingsScreenLayout(
                     }
                 )
             }
+            item { Spacer(Modifier.height(60.dp)) }
             item {
                 ListItem(
                     headlineContent = {
