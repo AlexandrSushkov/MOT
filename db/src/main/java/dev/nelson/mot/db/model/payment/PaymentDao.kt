@@ -15,15 +15,18 @@ interface PaymentDao {
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} WHERE ${PaymentTable.ID}=:id")
     fun getPaymentById(id: Int): Flow<PaymentWithCategory>
 
+    @Query("SELECT * FROM ${PaymentTable.TABLE_NAME}")
+    suspend fun getAllPayments(): List<PaymentEntity>
+
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}")
-    fun getAllPaymentsWithCategory(): List<PaymentWithCategory>
+    fun getAllPaymentsWithCategory(): Flow<List<PaymentWithCategory>>
 
     //suspend
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} ORDER BY ${PaymentTable.ID} DESC")
-    suspend fun getAllPaymentsWithCategoryOrderedByIdDescCor(): List<PaymentWithCategory>
+    fun getAllPaymentsWithCategoryOrderedByIdDescCor(): Flow<List<PaymentWithCategory>>
 
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} ORDER BY ${PaymentTable.DATE_IN_MILLISECONDS} DESC")
-    suspend fun getAllPaymentsWithCategoryOrderDateDescCor(): List<PaymentWithCategory>
+    fun getAllPaymentsWithCategoryOrderDateDescCor(): Flow<List<PaymentWithCategory>>
 
     @Insert
     suspend fun addPayment(paymentEntity: PaymentEntity)

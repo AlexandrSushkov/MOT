@@ -10,7 +10,6 @@ import javax.inject.Inject
 class ImportDataBaseUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : UseCaseSuspend<Uri, Boolean> {
-    @Throws(FileAlreadyExistException::class)
     override suspend fun execute(params: Uri): Boolean {
         val appDataBasesDir = settingsRepository.getDataBaseDir()
         val tempDataBaseDir = settingsRepository.getDataBaseTempDir().apply {

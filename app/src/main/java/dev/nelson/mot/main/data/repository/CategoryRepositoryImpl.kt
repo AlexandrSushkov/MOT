@@ -22,19 +22,27 @@ class CategoryRepositoryImpl @Inject constructor(
         return categoryDao.getCategory(id)
     }
 
+    override suspend fun getAllCategories(): List<CategoryEntity> {
+        return categoryDao.getAllCategories()
+    }
+
     override suspend fun addCategory(category: CategoryEntity) {
-        return categoryDao.add(category)
+        categoryDao.addCategory(category)
     }
 
     override suspend fun editCategory(category: CategoryEntity) {
-        return categoryDao.edit(category)
+        categoryDao.editCategory(category)
+    }
+
+    override suspend fun editCategories(categories: List<CategoryEntity>) {
+        categoryDao.editCategories(categories)
     }
 
     override suspend fun deleteCategory(category: CategoryEntity) {
-        return categoryDao.deleteCategory(category)
+        categoryDao.deleteCategory(category)
     }
 
     override suspend fun deleteCategories(categories: List<CategoryEntity>) {
-        return categoryDao.deleteCategories(categories)
+        categoryDao.deleteCategories(categories)
     }
 }

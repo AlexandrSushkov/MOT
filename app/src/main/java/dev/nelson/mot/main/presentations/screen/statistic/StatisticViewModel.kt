@@ -3,24 +3,19 @@ package dev.nelson.mot.main.presentations.screen.statistic
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
-import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
-import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
-import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +24,7 @@ class StatisticViewModel @Inject constructor(
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     getPaymentListByDateRange: GetPaymentListByDateRange,
-    getPriceViewState: GetPriceViewState,
+    getPriceViewStateUseCase: GetPriceViewStateUseCase,
 ) : BaseViewModel() {
 
     /**
@@ -80,7 +75,7 @@ class StatisticViewModel @Inject constructor(
         }
 
         launch {
-            getPriceViewState.execute().collect {
+            getPriceViewStateUseCase.execute().collect {
                 _priceViewState.value = it
             }
         }

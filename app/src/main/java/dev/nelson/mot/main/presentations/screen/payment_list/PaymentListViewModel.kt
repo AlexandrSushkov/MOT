@@ -8,7 +8,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
-import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
@@ -16,7 +16,7 @@ import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
-import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.constant.Constants
@@ -37,12 +37,12 @@ import javax.inject.Inject
 class PaymentListViewModel @Inject constructor(
     extras: SavedStateHandle,
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
-    getPriceViewState: GetPriceViewState,
+    getPriceViewStateUseCase: GetPriceViewStateUseCase,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
     private val getPaymentListByDateRange: GetPaymentListByDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
-    private val getCategoryUseCase: GetCategoryUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
@@ -121,7 +121,7 @@ class PaymentListViewModel @Inject constructor(
                 }
 
                 is ScreenType.PaymentsForCategory -> {
-                    getCategoryUseCase.execute(screenScreenType.categoryId)
+                    getCategoryByIdUseCase.execute(screenScreenType.categoryId)
                         .flatMapConcat {
                             _toolBarTitleState.value = it.name
                             getPaymentListByDateRange.execute(
@@ -144,7 +144,7 @@ class PaymentListViewModel @Inject constructor(
         }
 
         launch {
-            getPriceViewState.execute().collect {
+            getPriceViewStateUseCase.execute().collect {
                 _priceViewState.value = it
             }
         }
@@ -386,7 +386,7 @@ class PaymentListViewModel @Inject constructor(
     fun onCategorySelected(category: Category) = launch {
         // workaround. for some reason if copy payments with category list isn't update
         category.id?.let { categoryId ->
-            getCategoryUseCase.execute(categoryId).collect { cat ->
+            getCategoryByIdUseCase.execute(categoryId).collect { cat ->
                 val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
                 cancelSelection()
                 val params = ModifyListOfPaymentsParams(newItems, ModifyListOfPaymentsAction.Edit)

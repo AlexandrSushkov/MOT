@@ -85,6 +85,7 @@ private fun MotTopAppBarPreview() {
     MotMaterialTheme {
         MotTopAppBar(
             appBarTitle = "Toolbar",
+//            isScrolling = true,
             navigationIcon = { MotNavDrawerIcon {} },
             actions = { MotNavSettingsIcon {} }
         )

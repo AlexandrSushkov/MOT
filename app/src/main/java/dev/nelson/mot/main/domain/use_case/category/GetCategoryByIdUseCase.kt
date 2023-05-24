@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Used on [CategoryDetailsScreen] to load [Category] info.
  */
-class GetCategoryUseCase @Inject constructor(
+class GetCategoryByIdUseCase @Inject constructor(
     private val categoryRepository: CategoryRepositoryImpl
 ) : UseCaseFlow<Int, Category> {
 

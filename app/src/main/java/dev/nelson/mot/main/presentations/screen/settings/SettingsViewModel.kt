@@ -1,21 +1,17 @@
 package dev.nelson.mot.main.presentations.screen.settings
 
 import android.net.Uri
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ConfigUpdate
-import com.google.firebase.remoteconfig.ConfigUpdateListener
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.price.GetPriceViewState
+import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
+import dev.nelson.mot.main.domain.use_case.settings.RandomizeDataBaseDataUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusParams
 import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.AlertDialogParams
@@ -34,10 +30,11 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
     getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
-    getPriceViewState: GetPriceViewState,
+    getPriceViewStateUseCase: GetPriceViewStateUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
-    private val setSwitchStatusUseCase: SetSwitchStatusUseCase
+    private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
+    private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase
 ) : BaseViewModel() {
 
     // actions
@@ -59,7 +56,7 @@ class SettingsViewModel @Inject constructor(
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
                 getSwitchStatusUseCase.execute(MotSwitchType.HideDigits),
                 getSelectedLocaleUseCase.execute(),
-                getPriceViewState.execute()
+                getPriceViewStateUseCase.execute()
             ) { array ->
                 _viewState.value.copy(
                     isDynamicThemeSwitchChecked = array[0] as Boolean,
@@ -92,6 +89,11 @@ class SettingsViewModel @Inject constructor(
 
     fun onHideDigitsChange(isChecked: Boolean) = launch {
         setSwitchStatus(MotSwitchType.HideDigits, isChecked)
+    }
+
+    fun onRandomizeDataBaseDataClick() = launch {
+        randomizeDataBaseDataUseCase.execute()
+        showToast("data was randomized")
     }
 
     fun onExportDataBaseClick() = launch {

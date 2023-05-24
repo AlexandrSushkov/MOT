@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
-class GetPriceViewState @Inject constructor(
+class GetPriceViewStateUseCase @Inject constructor(
     private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
     private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
 ) : UseCaseFlow<Nothing?, PriceViewState> {

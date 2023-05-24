@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.domain.use_case.category.GetCategoryUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryDetailsViewModel @Inject constructor(
     extras: SavedStateHandle,
-    private val getCategoryUseCase: GetCategoryUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private val modifyCategoryUseCase: ModifyCategoryUseCase
 ) : BaseViewModel() {
 
@@ -42,7 +42,7 @@ class CategoryDetailsViewModel @Inject constructor(
     init {
         launch {
             categoryId?.let { categoryId ->
-                getCategoryUseCase.execute(categoryId)
+                getCategoryByIdUseCase.execute(categoryId)
                     .collect { category ->
                         initialCategory = category
                         _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))

@@ -96,6 +96,7 @@ fun SettingsScreen(
         onShowCentsClick = { settingsViewModel.onShowCentsCheckedChange(it) },
         onShowCurrencySymbolClick = { settingsViewModel.onShowCurrencySymbolChange(it) },
         onHideDigitsClick = { settingsViewModel.onHideDigitsChange(it) },
+        onRandomizeBaseDataClick = { settingsViewModel.onRandomizeDataBaseDataClick() },
     )
 }
 
@@ -107,6 +108,7 @@ private fun SettingsScreenLayout(
     onLocaleClick: () -> Unit,
     onExportDataBaseClick: () -> Unit,
     onImportDataBaseClick: () -> Unit,
+    onRandomizeBaseDataClick: () -> Unit,
     onDarkThemeSwitchClick: (Boolean) -> Unit,
     onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
     onShowCentsClick: (Boolean) -> Unit,
@@ -243,6 +245,19 @@ private fun SettingsScreenLayout(
                     }
                 )
             }
+            if (BuildConfig.DEBUG) {
+                item {
+                    ListItem(
+                        headlineContent = { Text(text = "Randomize Data Base data") },
+                        trailingContent = {
+                            MotTextButton(
+                                onClick = onRandomizeBaseDataClick,
+                                text = "Randomize"
+                            )
+                        }
+                    )
+                }
+            }
             item { Spacer(Modifier.height(60.dp)) }
             item {
                 ListItem(
@@ -342,7 +357,8 @@ private fun SettingsScreenLayoutPreview() {
             onDynamicColorThemeSwitchClick = {},
             onShowCentsClick = {},
             onShowCurrencySymbolClick = {},
-            onHideDigitsClick = {}
+            onHideDigitsClick = {},
+            onRandomizeBaseDataClick = {},
         )
     }
 }

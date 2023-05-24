@@ -15,6 +15,8 @@ interface PaymentRepository {
      */
     fun getPayment(paymentId: Int): Flow<PaymentWithCategory>
 
+    suspend fun getAllPayments(): List<PaymentEntity>
+
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
      */
