@@ -84,7 +84,6 @@ import java.util.Calendar
 @Composable
 fun PaymentListScreen(
     navigationIcon: @Composable () -> Unit,
-    settingsIcon: @Composable () -> Unit,
     openPaymentDetails: (Int?) -> Unit,
     viewModel: PaymentListViewModel
 ) {
@@ -160,7 +159,6 @@ fun PaymentListScreen(
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
         onFabClick = { viewModel.onFabClick() },
-        settingsIcon = settingsIcon,
         snackbarVisibleState = snackbarVisibilityState,
         onUndoButtonClickEvent = {
             viewModel.onUndoDeleteClick()
@@ -193,7 +191,6 @@ fun PaymentListLayout(
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onFabClick: () -> Unit,
-    settingsIcon: @Composable () -> Unit,
     snackbarVisibleState: Boolean,
     onUndoButtonClickEvent: () -> Unit,
     deletedItemsCount: Int,
@@ -259,7 +256,6 @@ fun PaymentListLayout(
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        actions = { settingsIcon.invoke() },
                         isScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
                     )
 //                        .also {
@@ -437,7 +433,6 @@ private fun PaymentListScreenLightPreview() {
             onItemClick = {},
             onItemLongClick = {},
             onFabClick = {},
-            settingsIcon = { MotNavSettingsIcon {} },
             snackbarVisibleState = false,
             onUndoButtonClickEvent = {},
             deletedItemsCount = 0,

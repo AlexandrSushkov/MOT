@@ -57,7 +57,7 @@ fun MotNavHost(
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
                             ?: navController.navigate(route = PaymentDetails.route)
                     },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
+                )
             },
         )
         composable(
@@ -69,7 +69,7 @@ fun MotNavHost(
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
                             ?: navController.navigate(route = PaymentDetails.route)
                     },
-                    settingsIcon = { MotNavSettingsIcon { navController.navigate(Settings.route) } })
+                )
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
@@ -94,12 +94,11 @@ fun MotNavHost(
             content = {
                 CategoryListScreen(
                     viewModel = hiltViewModel(),
-                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
-                    actionsIcons = { MotNavSettingsIcon { navController.navigate(Settings.route) } },
-                    openPaymentsByCategoryAction = { categoryId ->
-                        categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
-                            ?: navController.popBackStack()
-                    })
+                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } }
+                ) { categoryId ->
+                    categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
+                        ?: navController.popBackStack()
+                }
             },
         )
         composable(
@@ -136,7 +135,7 @@ fun MotNavHost(
                 SettingsScreen(
                     title = Settings.route,
                     settingsViewModel = hiltViewModel(),
-                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+                    navigationIcon = { MotNavDrawerIcon { navController.popBackStack() } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
                 )
             },

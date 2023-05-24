@@ -7,7 +7,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -35,9 +34,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -86,7 +85,6 @@ import kotlinx.coroutines.delay
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    actionsIcons: @Composable RowScope.() -> Unit = {},
     openPaymentsByCategoryAction: (Int?) -> Unit,
 ) {
 
@@ -117,7 +115,6 @@ fun CategoryListScreen(
     CategoryListLayout(
         appBarTitle = stringResource(titleStringsRes),
         appBarNavigationIcon = appBarNavigationIcon,
-        settingsNavigationIcon = actionsIcons,
         categoriesListUiState = categoriesListUiState,
         onCategoryClick = openPaymentsByCategoryAction,
         onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) },
@@ -135,7 +132,6 @@ fun CategoryListScreen(
 fun CategoryListLayout(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    settingsNavigationIcon: @Composable RowScope.() -> Unit = {},
     categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
     onCategoryClick: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
@@ -154,7 +150,6 @@ fun CategoryListLayout(
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                actions = settingsNavigationIcon,
                 isScrolling = categoriesListScrollingState.firstVisibleItemIndex != 0
             )
         },
@@ -260,16 +255,17 @@ fun CategoryList(
 
                                 is Letter -> {
                                     stickyHeader(key = categoryListItem.key) {
-                                        ListItem(
-                                            headlineContent = {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            tonalElevation = 4.dp,
+                                            content = {
                                                 Text(
+                                                    modifier = Modifier
+                                                        .padding(vertical = 4.dp, horizontal = 16.dp),
                                                     text = categoryListItem.letter,
-                                                    style = MaterialTheme.typography.titleSmall
+                                                    style = MaterialTheme.typography.titleLarge
                                                 )
-                                            },
-                                            colors = ListItemDefaults.colors(
-                                                containerColor = MaterialTheme.colorScheme.inversePrimary
-                                            ),
+                                            }
                                         )
                                     }
                                 }

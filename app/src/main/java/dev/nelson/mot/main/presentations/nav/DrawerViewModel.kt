@@ -56,14 +56,14 @@ class DrawerViewModel @Inject constructor() : BaseViewModel() {
             }
     }
 
-    private fun addDrawerItem(destination: MotDestinations) {
+    private fun addDrawerItem(destination: MotDestination) {
         val newItems = _drawerViewState.value.drawerItems.toMutableList()
         val index = newItems.indexOf(Categories)
         newItems.add(index + 1, destination)
         _drawerViewState.value = _drawerViewState.value.copy(drawerItems = newItems)
     }
 
-    private fun removeDrawerItem(destination: MotDestinations) {
+    private fun removeDrawerItem(destination: MotDestination) {
         val newItems = _drawerViewState.value.drawerItems.toMutableList()
         newItems.remove(destination)
         _drawerViewState.value = _drawerViewState.value.copy(drawerItems = newItems)

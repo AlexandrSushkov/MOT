@@ -3,6 +3,7 @@
 package dev.nelson.mot.core.ui
 
 import android.app.Activity
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import dev.utils.preview.MotPreview
@@ -36,46 +38,58 @@ fun MotTopAppBar(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-    if (isScrolling) {
-        val appBarColor = MaterialTheme.colorScheme.secondaryContainer
-        val toolbarColors = TopAppBarDefaults.topAppBarColors(containerColor = appBarColor)
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT ){
+        if (isScrolling) {
+            val appBarColor = MaterialTheme.colorScheme.secondaryContainer
+            val toolbarColors = TopAppBarDefaults.topAppBarColors(containerColor = appBarColor)
+            CenterAlignedTopAppBar(
+                navigationIcon = navigationIcon,
+                title = {
+                    Text(
+                        text = appBarTitle,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                colors = toolbarColors,
+                actions = actions
+            ).also {
+                val view = LocalView.current
+                if (!view.isInEditMode) {
+                    val window = (view.context as Activity).window
+                    window.statusBarColor = appBarColor.toArgb()
+                }
+            }
+        } else {
+            val appBarColor = MaterialTheme.colorScheme.surface
+            val toolbarColors = TopAppBarDefaults.topAppBarColors(containerColor = appBarColor)
+            CenterAlignedTopAppBar(
+                navigationIcon = navigationIcon,
+                title = {
+                    Text(
+                        text = appBarTitle,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                colors = toolbarColors,
+                actions = actions
+            ).also {
+                val view = LocalView.current
+                if (!view.isInEditMode) {
+                    val window = (view.context as Activity).window
+                    window.statusBarColor = appBarColor.toArgb()
+                }
+            }
+        }
+    }else{
         CenterAlignedTopAppBar(
-            navigationIcon = navigationIcon,
             title = {
                 Text(
                     text = appBarTitle,
                     style = MaterialTheme.typography.titleLarge
                 )
             },
-            colors = toolbarColors,
             actions = actions
-        ).also {
-            val view = LocalView.current
-            if (!view.isInEditMode) {
-                val window = (view.context as Activity).window
-                window.statusBarColor = appBarColor.toArgb()
-            }
-        }
-    } else {
-        val appBarColor = MaterialTheme.colorScheme.surface
-        val toolbarColors = TopAppBarDefaults.topAppBarColors(containerColor = appBarColor)
-        CenterAlignedTopAppBar(
-            navigationIcon = navigationIcon,
-            title = {
-                Text(
-                    text = appBarTitle,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            },
-            colors = toolbarColors,
-            actions = actions
-        ).also {
-            val view = LocalView.current
-            if (!view.isInEditMode) {
-                val window = (view.context as Activity).window
-                window.statusBarColor = appBarColor.toArgb()
-            }
-        }
+        )
     }
 }
 
@@ -87,7 +101,6 @@ private fun MotTopAppBarPreview() {
             appBarTitle = "Toolbar",
 //            isScrolling = true,
             navigationIcon = { MotNavDrawerIcon {} },
-            actions = { MotNavSettingsIcon {} }
         )
     }
 }

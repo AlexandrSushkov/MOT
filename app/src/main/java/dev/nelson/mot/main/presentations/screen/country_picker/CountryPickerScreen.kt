@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -77,6 +78,7 @@ private fun CountryPickerLayout(
     closeScreen: () -> Unit,
     onCountryClick: (Locale) -> Unit,
 ) {
+    val state = rememberLazyListState()
     val searchFieldTransitionState = remember { MutableTransitionState(false) }
     val searchFieldTransition = updateTransition(
         transitionState = searchFieldTransitionState,
@@ -114,7 +116,8 @@ private fun CountryPickerLayout(
                     MotNavBackIcon(
                         onClick = closeScreen
                     )
-                }
+                },
+                isScrolling = state.firstVisibleItemIndex != 0
             )
         }
     ) { innerPadding ->
@@ -165,6 +168,7 @@ private fun CountryPickerLayout(
                 )
             }
             LazyColumn(
+                state = state,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)

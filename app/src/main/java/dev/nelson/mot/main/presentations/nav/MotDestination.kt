@@ -9,49 +9,49 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.ui.graphics.vector.ImageVector
 
-interface MotDestinations {
+interface MotDestination {
     val icon: ImageVector
     val route: String
 //    val screen: @Composable () -> Unit
 }
 
-object Payments : MotDestinations {
+object Payments : MotDestination {
     override val icon = Icons.Default.List
     override val route = "Payments"
 //    override val screen: @Composable () -> Unit = { PaymentListScreen({}, {}) }
 }
 
-object PaymentDetails : MotDestinations {
+object PaymentDetails : MotDestination {
     override val icon = Icons.Default.Payments
     override val route = "PaymentDetails"
 //    override val screen: @Composable () -> Unit = { PaymentListScreen({}, {}) }
 }
 
-object Categories : MotDestinations {
+object Categories : MotDestination {
     override val icon = Icons.Default.Tag
     override val route = "Categories"
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-object CategoryDetails : MotDestinations {
+object CategoryDetails : MotDestination {
     override val icon = Icons.Default.Category
     override val route = "CategoryDetails"
 //    override val screen: @Composable () -> Unit = { PaymentListScreen({}, {}) }
 }
 
-object Statistic : MotDestinations {
+object Statistic : MotDestination {
     override val icon = Icons.Default.BarChart
     override val route = "Statistic"
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-object Settings : MotDestinations {
+object Settings : MotDestination {
     override val icon = Icons.Default.Settings
     override val route = "Settings"
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-object CountryPicker : MotDestinations {
+object CountryPicker : MotDestination {
     override val icon = Icons.Default.Settings
     override val route = "CountryPicker"
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
