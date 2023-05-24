@@ -13,7 +13,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
-import dev.nelson.mot.core.ui.MotNavSettingsIcon
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.country_picker.CountryPickerScreen
@@ -124,8 +123,7 @@ fun MotNavHost(
             route = Statistic.route,
             content = {
                 StatisticScreen(
-                    viewModel = hiltViewModel(),
-                    navHostController = navController
+                    viewModel = hiltViewModel()
                 )
             },
         )
