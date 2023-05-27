@@ -21,6 +21,7 @@
         <activity
             android:name=".presentations.screen.home.HomeActivity"
             android:exported="true"
+            android:screenOrientation="locked"
             android:label="@string/title_activity_main_compose"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

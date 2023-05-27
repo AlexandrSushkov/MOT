@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.util.constant.Constants
 
 object MotTransitions {
@@ -33,22 +34,36 @@ object MotTransitions {
         animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
     )
 
+    val fadeInTrans = fadeIn(
+        initialAlpha = 0.3f,
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+    )
+
+    val fadeOutTrans = fadeOut(
+        targetAlpha = 0f,
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+    )
+
     /**
      * Expand from the top.
      */
     val enterTopVerticalTransition = expandVertically(
         expandFrom = Alignment.Top,
-        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
-    ) + fadeIn(
-        initialAlpha = 0.3f,
-        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+        initialHeight = { 60 }
     )
+//    + fadeIn(
+////        initialAlpha = 0.3f,
+//        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+//    )
 
     val exitTopVerticalTransition = shrinkVertically(
         shrinkTowards = Alignment.Top,
-        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
-    ) + fadeOut(
-        // Fade in with the initial alpha of 0.3f.
-        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+        targetHeight = { 60 }
     )
+//    + fadeOut(
+//        // Fade in with the initial alpha of 0.3f.
+//        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
+//    )
 }

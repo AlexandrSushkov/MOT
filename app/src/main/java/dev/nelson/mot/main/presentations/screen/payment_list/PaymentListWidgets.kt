@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotDismissibleListItem
@@ -64,7 +65,7 @@ fun DateRangeWidget(startDate: String, endDate: String) {
                 Icons.Default.ArrowRightAlt,
                 modifier = Modifier.weight(1f),
                 contentDescription = "arrow right"
-            ) 
+            )
             DateRageDateText(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 date = endDate
@@ -209,22 +210,53 @@ fun PaymentListItem(
                             .weight(1.0f)
                             .fillMaxWidth()
                     ) {
-                        Text(text = paymentItemModel.payment.name)
+                        Row {
+                            Text(
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.titleMedium,
+                                text = paymentItemModel.payment.name,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Column(
+                                modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                            ) {
+                                PriceText(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    price = paymentItemModel.payment.cost,
+                                    priceViewState = priceViewState,
+                                )
+                            }
+                        }
                         if (paymentItemModel.showCategory) {
-                            paymentItemModel.payment.category?.name?.let { Text(it) }
+                            paymentItemModel.payment.category?.name?.let {
+                                Text(
+                                    it,
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                            }
+                        }
+                        if (paymentItemModel.payment.message.isNotEmpty()) {
+                            Column {
+//                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
+                                Text(
+                                    style = MaterialTheme.typography.bodySmall,
+                                    text = paymentItemModel.payment.message,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 2,
+                                )
+                            }
                         }
                     }
                     Column(
                         modifier = Modifier.align(alignment = Alignment.CenterVertically)
                     ) {
-                        PriceText(
-                            price = paymentItemModel.payment.cost,
-                            priceViewState = priceViewState,
-                        )
+//                        PriceText(
+//                            price = paymentItemModel.payment.cost,
+//                            priceViewState = priceViewState,
+//                        )
                     }
-                }
-                if (paymentItemModel.payment.message.isNotEmpty()) {
-                    MotVerticalExpandableArea(payment = paymentItemModel.payment)
+
                 }
             }
         }

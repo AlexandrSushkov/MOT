@@ -4,6 +4,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.utils.formatPrice
 import dev.utils.preview.MotPreview
@@ -14,14 +15,16 @@ import dev.utils.preview.MotPreview
  */
 @Composable
 fun PriceText(
+    modifier: Modifier = Modifier,
     price: Int,
     priceViewState: PriceViewState = PriceViewState()
 ) {
     val formattedPrice = formatPrice(price, priceViewState)
 
     Text(
+        modifier = modifier,
         text = formattedPrice,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.error
     )
 }

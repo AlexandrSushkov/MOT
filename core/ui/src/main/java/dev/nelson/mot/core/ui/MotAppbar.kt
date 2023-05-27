@@ -117,7 +117,7 @@ fun MotSelectionTopAppBar(
         title = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.titleLarge
             )
         },
         actions = actions,
