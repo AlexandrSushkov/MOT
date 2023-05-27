@@ -7,8 +7,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +22,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
@@ -33,14 +39,19 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -48,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
@@ -73,6 +85,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.text.DecimalFormatSymbols
 import java.util.Calendar
 
 @Composable
@@ -177,6 +191,7 @@ fun PaymentDetailsLayout(
     val focusManager = LocalFocusManager.current
     val coroutineScope = rememberCoroutineScope()
     val paymentNameFocusRequester = remember { FocusRequester() }
+    val costFocusRequester = remember { FocusRequester() }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
@@ -187,7 +202,7 @@ fun PaymentDetailsLayout(
 
     LaunchedEffect(key1 = Unit, block = {
         delay(Constants.DEFAULT_ANIMATION_DELAY) // <-- This delay is crucial. Otherwise keyboard won't pop on
-        paymentNameFocusRequester.requestFocus()
+        costFocusRequester.requestFocus()
     })
 
     /**
@@ -212,41 +227,86 @@ fun PaymentDetailsLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
             Column(
-                modifier = Modifier.verticalScroll(
-                    state = rememberScrollState(),
-                    enabled = true
-                )
-            ) {
-                Row {
-                    MotTextField(
-                        modifier = Modifier
-                            .focusRequester(paymentNameFocusRequester)
-                            .weight(2f),
-//                    value = if (LocalInspectionMode.current) "preview new payment" else name,
-                        value = paymentNameFieldValueState,
-                        singleLine = true,
-                        maxLines = 1,
-                        onValueChange = {
-//                            paymentNameFieldValueState = it
-                            onNameChange.invoke(it)
-                        },
-                        placeholder = { Text(text = "new payment") },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                modifier = Modifier
+                    .verticalScroll(
+                        state = rememberScrollState(),
+                        enabled = true,
                     )
-                    MotTextField(
-                        modifier = Modifier.weight(1f),
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp,
+                    )
+            ) {
+                Spacer(modifier = Modifier.height(32.dp))
+//                BasicTextField(
+//                    value = costFieldValueState,
+//                    onValueChange = { onCostChange.invoke(it) },
+//                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        modifier = Modifier.focusRequester(costFocusRequester),
                         value = costFieldValueState,
                         singleLine = true,
                         maxLines = 1,
                         onValueChange = {
-//                            costFieldValueState = it
+                            //                            costFieldValueState = it
                             onCostChange.invoke(it)
                         },
-                        placeholder = { Text(text = "0.0") },
+
+                        leadingIcon = {
+                            Text(
+                                text = "-",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.displayMedium
+                            )
+                        },
+                        placeholder = {
+                            Text(
+                                text = "0",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.displayMedium
+                            )
+                        },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
                         ),
+                        colors = TextFieldDefaults.colors(
+//                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+//                            disabledIndicatorColor = Color.Transparent,
+//                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedTextColor = MaterialTheme.colorScheme.error,
+                            unfocusedTextColor = MaterialTheme.colorScheme.error,
+                            cursorColor = Color.Transparent,
+                            errorCursorColor = Color.Transparent,
+                        ),
+                        textStyle = MaterialTheme.typography.displayMedium,
+                        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+
+                        )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    MotTextField(
+                        modifier = Modifier
+                            .focusRequester(paymentNameFocusRequester)
+                            .fillMaxWidth(),
+                        //                    value = if (LocalInspectionMode.current) "preview new payment" else name,
+                        value = paymentNameFieldValueState,
+                        singleLine = true,
+                        maxLines = 1,
+                        onValueChange = {
+                            //                            paymentNameFieldValueState = it
+                            onNameChange.invoke(it)
+                        },
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                        placeholder = { Text(text = "new payment") },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     )
                 }
                 MotTextField(
@@ -258,7 +318,8 @@ fun PaymentDetailsLayout(
                                 coroutineScope.launch { bringIntoViewRequester.bringIntoView() }
                             }
                         },
-
+                    minLines = 3,
+                    maxLines = 5,
                     value = messageFieldValueState,
                     onValueChange = {
 //                        messageFieldValueState = it
@@ -267,80 +328,84 @@ fun PaymentDetailsLayout(
                     placeholder = { Text(text = "message") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+//                        imeAction = ImeAction.Done
                     ),
+                    shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                     keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
-
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
                     )
-                Spacer(modifier = Modifier.height(10.dp))
+
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Row(
                     modifier = Modifier
-                        .padding(8.dp)
-//                    .clickable {
-//                        keyboardController?.hide()
-//                        focusManager.clearFocus()
-//                        onDateClick.invoke()
-//                    }
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min)
                 ) {
-                    MotOutlinedButton(
-                        onClick = {
-                            keyboardController?.hide()
-                            focusManager.clearFocus()
-                            onDateClick.invoke()
-                        },
+                    Column(
+                        modifier = Modifier
+                        //                    .clickable {
+                        //                        keyboardController?.hide()
+                        //                        focusManager.clearFocus()
+                        //                        onDateClick.invoke()
+                        //                    }
                     ) {
-                        Icon(
-                            Icons.Default.EditCalendar,
-                            modifier = Modifier.padding(end = 8.dp),
-                            contentDescription = "date icon"
-                        )
+                        MotOutlinedButton(
+                            onClick = {
+                                keyboardController?.hide()
+                                focusManager.clearFocus()
+                                onDateClick.invoke()
+                            },
+                        ) {
+                            Icon(
+                                Icons.Default.EditCalendar,
+                                modifier = Modifier.padding(end = 8.dp),
+                                contentDescription = "date icon"
+                            )
 
-                        Text(
-                            text = date,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
+                            Text(
+                                text = date,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        MotOutlinedButton(
+                            onClick = {
+                                //                            onCategoryClick.invoke()
+                                coroutineScope.launch {
+                                    keyboardController?.hide()
+                                    delay(Constants.DEFAULT_ANIMATION_DELAY)
+                                    focusManager.clearFocus()
+                                    modalBottomSheetState.show()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                Icons.Default.Category,
+                                modifier = Modifier.padding(end = 8.dp),
+                                contentDescription = "category icon"
+                            )
+                            Text(
+                                text = categoryName,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    MotOutlinedButton(
-                        onClick = {
-//                            onCategoryClick.invoke()
-                            coroutineScope.launch {
-                                keyboardController?.hide()
-                                delay(Constants.DEFAULT_ANIMATION_DELAY)
-                                focusManager.clearFocus()
-                                modalBottomSheetState.show()
-                            }
-                        },
-                    ) {
-                        Icon(
-                            Icons.Default.Category,
-                            modifier = Modifier.padding(end = 8.dp),
-                            contentDescription = "category icon"
-                        )
-                        Text(
-                            text = categoryName,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
+                    Box(modifier = Modifier.fillMaxHeight()) {
+                        MotButton(
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                            onClick = onSaveClick
+                        ) {
+                            //                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
+                            Text(text = "Save")
+                        }
                     }
-
-
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = date,
-//                    modifier = Modifier.align(Alignment.CenterVertically)
-//                )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                MotButton(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(8.dp),
-                    onClick = onSaveClick
-                ) {
-//                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
-                    Text(text = "Save")
-                }
-
             }
         }
     }
@@ -379,9 +444,10 @@ fun CategoriesListBottomSheet(
                             .padding(horizontal = outerPadding)
                             .fillMaxWidth()
                     ) {
-                        Surface(modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(shape)
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(shape)
 //                            .background(
 //                                if (category.isFavorite) {
 //                                    MaterialTheme.colorScheme.secondaryContainer
@@ -389,14 +455,14 @@ fun CategoriesListBottomSheet(
 //                                    MaterialTheme.colorScheme.surface
 //                                }
 //                            )
-                            .clickable {
-                                onCategoryClick.invoke(category)
-                                scope.launch {
-                                    modalBottomSheetState.hide()
-                                    layColumnState.scrollToItem(0)
-                                }
-                            },
-                            tonalElevation = if(category.isFavorite) 4.dp else 0.dp
+                                .clickable {
+                                    onCategoryClick.invoke(category)
+                                    scope.launch {
+                                        modalBottomSheetState.hide()
+                                        layColumnState.scrollToItem(0)
+                                    }
+                                },
+                            tonalElevation = if (category.isFavorite) 4.dp else 0.dp
                         ) {
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(modifier = Modifier.fillMaxWidth()) {

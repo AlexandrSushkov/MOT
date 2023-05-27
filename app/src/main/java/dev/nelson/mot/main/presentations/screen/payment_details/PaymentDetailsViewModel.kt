@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.screen.payment_details
 
-import android.icu.text.DecimalFormat
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
@@ -59,7 +58,8 @@ class PaymentDetailsViewModel @Inject constructor(
 
     val categoriesState: Flow<List<Category>>
         get() = _categories
-    private val _categories: Flow<List<Category>> = getCategoriesOrderedByName.execute(SortingOrder.Ascending)
+    private val _categories: Flow<List<Category>> =
+        getCategoriesOrderedByName.execute(SortingOrder.Ascending)
 
     // actions
     val finishAction
@@ -72,7 +72,8 @@ class PaymentDetailsViewModel @Inject constructor(
 
     // private data
     private val paymentId: Int? = handle.get<Int>("id")
-    private val mode: SavePaymentMode = paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
+    private val mode: SavePaymentMode =
+        paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
     private var selectedCategory: Category? = null
     private var initialPayment: Payment? = null
     private var dateInMills = 0L
@@ -115,7 +116,11 @@ class PaymentDetailsViewModel @Inject constructor(
 
     fun onCostChange(textFieldValue: TextFieldValue) {
 //        cost.value = cost.value?.copy(text = formatAmountOrMessage(textFieldValue.text))
-        _cost.value = textFieldValue
+        val formattedPrice = formatAmountOrMessage(textFieldValue.text)
+        _cost.value = textFieldValue.copy(
+            text = formattedPrice,
+            selection = TextRange(formattedPrice.length)
+        )
     }
 
     fun onCategorySelected(category: Category) {
@@ -129,9 +134,16 @@ class PaymentDetailsViewModel @Inject constructor(
                 .catch { exception -> handleThrowable(exception) }
                 .collect {
                     initialPayment = it
-                    _paymentName.value = TextFieldValue(it.name, selection = TextRange(it.name.length))
-                    _cost.value = TextFieldValue(it.cost.toString(), selection = TextRange(it.cost.toString().length))
-                    _message.value = TextFieldValue(it.message, selection = TextRange(it.message.length))
+                    _paymentName.value =
+                        TextFieldValue(it.name, selection = TextRange(it.name.length))
+                    val formattedPrice =
+                        formatAmountOrMessage((it.cost.toDouble() / 100).toString())
+                    _cost.value = TextFieldValue(
+                        formatAmountOrMessage(formattedPrice),
+                        selection = TextRange(formattedPrice.length)
+                    )
+                    _message.value =
+                        TextFieldValue(it.message, selection = TextRange(it.message.length))
                     selectedCategory = it.category
                     dateInMills = it.dateInMills ?: DateUtils.getCurrentDate().time
                     setDate(dateInMills)
@@ -144,9 +156,10 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private fun addNewPayment() = launch {
         val currentDateInMills = System.currentTimeMillis()
+        val priceToSave = formatPriceToSave(_cost.value.text)
         val payment = Payment(
             _paymentName.value.text,
-            (_cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0),
+            cost = priceToSave,
             dateInMills = currentDateInMills,
             category = selectedCategory,
             message = _message.value.text
@@ -158,9 +171,10 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     private fun editPayment() = launch {
+        val priceToSave = formatPriceToSave(_cost.value.text)
         val payment = Payment(
             name = _paymentName.value.text,
-            cost = _cost.value.text.leaveOnlyDigits().toIntOrNull() ?: 0,
+            cost = priceToSave,
             message = _message.value.text,
             id = initialPayment?.id,
             dateString = initialPayment?.dateString,
@@ -198,17 +212,71 @@ class PaymentDetailsViewModel @Inject constructor(
     private val String.isValidFormattableAmount
         get(): Boolean = isNotBlank()
 //        && isDigitsOnly()
-            && length <= 7
+                && length <= 7
 
     /**
      * If [input] only include digits, it returns a formatted amount.
      * Otherwise returns plain input as it is
      */
-    fun formatAmountOrMessage(
-        input: String
-    ): String = if (input.isValidFormattableAmount) {
-        DecimalFormat("## ###.##").format(input.toInt())
-    } else {
-        input
+    fun formatAmountOrMessage(input: String): String {
+        // remove forbidden  symbols
+        val textWithoutForbiddenSymbols = input.replace(Regex("[^\\d.,]"), "")
+        // replace ',' with '.'
+        val textWithDots = textWithoutForbiddenSymbols.replace(",", ".")
+        val rawPriceTxt = if (textWithDots.contains(".")) {
+            val firstDotIndex = textWithDots.indexOf(".")
+            var digitsBeforeDot = textWithDots.substring(0, firstDotIndex)
+            if (digitsBeforeDot.isEmpty()) digitsBeforeDot = "0"
+            if (digitsBeforeDot.length > 7) {
+                digitsBeforeDot = digitsBeforeDot.substring(0, 7)
+            }
+            val charactersAfterDot = textWithDots.substring(firstDotIndex)
+            val digitsAfterDot = charactersAfterDot.replace(Regex("\\D"), "")
+            val cents = when {
+                digitsAfterDot.isEmpty() -> ""
+                digitsAfterDot.length == 1 -> digitsAfterDot.first()
+                else -> digitsAfterDot.substring(0, 2) // 2 and more
+            }
+            "$digitsBeforeDot.$cents"
+        } else {
+            var textWithoutDots = textWithDots
+            if (textWithoutDots.length >= 2 && textWithoutDots.first() == '0' && textWithoutDots[1] == '0') {
+                textWithoutDots = "0"
+            }
+            if (textWithoutDots.length >= 2 && textWithoutDots.first() == '0' && textWithoutDots[1] != '0') {
+                textWithoutDots = textWithoutDots[1].toString()
+            }
+            if (textWithoutDots.length > 7) {
+                textWithoutDots.substring(0, 7)
+            } else {
+                textWithoutDots
+            }
+        }
+        return rawPriceTxt
     }
+
+    fun formatPriceToSave(priceText: String): Int {
+        if (priceText.isEmpty()) return 0
+        val textWithDots = priceText.replace(",", ".")
+        val rawPriceTxt = if (textWithDots.contains(".")) {
+            val firstDotIndex = textWithDots.indexOf(".")
+            var digitsBeforeDot = textWithDots.substring(0, firstDotIndex)
+            if (digitsBeforeDot.isEmpty()) digitsBeforeDot = "0"
+            if (digitsBeforeDot.length > 8) {
+                digitsBeforeDot = digitsBeforeDot.substring(0, 8)
+            }
+            val charactersAfterDot = textWithDots.substring(firstDotIndex)
+            val digitsAfterDot = charactersAfterDot.replace(Regex("\\D"), "")
+            val cents = when {
+                digitsAfterDot.isEmpty() -> "00"
+                digitsAfterDot.length == 1 -> "${digitsAfterDot.first()}0"
+                else -> digitsAfterDot.substring(0, 2) // 2 and more
+            }
+            "$digitsBeforeDot$cents"
+        } else {
+            "${textWithDots}00"
+        }
+        return rawPriceTxt.toInt()
+    }
+
 }
