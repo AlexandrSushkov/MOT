@@ -1,56 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dev.nelson.mot">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".utils.MyApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:name=".MotApplication"
+        android:enableOnBackInvokedCallback="true"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/SplashThemeNew">
+        <receiver
+            android:name=".NewAppWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_app_widget_info" />
+        </receiver>
+
         <activity
-            android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:name=".presentations.screen.home.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="locked"
+            android:label="@string/title_activity_main_compose"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.PaymentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme2" />
-        <activity
-            android:name=".activity.ChooseCategoryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme2" />
-        <activity
-            android:name=".activity.CategoryContentActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme2" />
-        <activity
-            android:name=".activity.ChooseCurrencyActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-
-        <provider
-            android:name=".db.SQLiteContentProvider"
-            android:authorities="dev.nelson.mot"
-            android:exported="false"
-            android:syncable="false" />
-
-        <service android:name=".service.DataOperationService" />
-
-
     </application>
 
 </manifest>

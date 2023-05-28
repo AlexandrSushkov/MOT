@@ -1,0 +1,14 @@
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    def config = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion config["compileSDK"]
+    buildToolsVersion config["buildToolsVersion"]
+
+    defaultConfig {
+        minSdkVersion             config["minSDK"]
+        targetSdkVersion          config["targetSDK"]
+    }
+}

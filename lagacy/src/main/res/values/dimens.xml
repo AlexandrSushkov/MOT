@@ -1,0 +1,38 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!--margins-->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="dialog_vertical_margin">24dp</dimen>
+
+    <!--paddings-->
+    <dimen name="activity_horizontal_padding">16dp</dimen>
+    <dimen name="activity_vertical_padding">16dp</dimen>
+    <dimen name="item_horizontal_padding">10dp</dimen>
+
+
+    <dimen name="navigation_view_header_height">222dp</dimen>
+    <dimen name="md_keylines">16dp</dimen>
+
+    <!--text sizes-->
+    <dimen name="text_size_large">16sp</dimen>
+    <dimen name="text_size_normal">12sp</dimen>
+    <dimen name="text_size_small">10sp</dimen>
+    <dimen name="fragment_categories_recycler_view_item_text_size">15sp</dimen>
+    <dimen name="payment_title_text_size">18sp</dimen>
+    <dimen name="payment_date_text_size">10sp</dimen>
+    <dimen name="currency_title_text_size">24sp</dimen>
+
+    <!--statistic list view item dimentions-->
+    <dimen name="item_margin_top">24dp</dimen>
+    <dimen name="item_margin_bottom">12dp</dimen>
+    <dimen name="item_vertical_margin">4dp</dimen>
+    <dimen name="card_view_margin">10dp</dimen>
+    <dimen name="item_text_margin_start">24dp</dimen>
+    <dimen name="cost_top_margin">2dp</dimen>
+    <dimen name="item_chart_height">200dp</dimen>
+
+
+
+
+</resources>

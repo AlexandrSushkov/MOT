@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "463833303560",
+    "project_id": "mot-dev",
+    "storage_bucket": "mot-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:463833303560:android:aeef5001a8367d3cc71fbd",
+        "android_client_info": {
+          "package_name": "dev.nelson.mot.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "463833303560-64uu2s1vkdk9gs5oa8uukn4rkr76crpo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVHQ6evrnVmuU_hbDKDBMQdyZGYIO4HdU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "463833303560-64uu2s1vkdk9gs5oa8uukn4rkr76crpo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
