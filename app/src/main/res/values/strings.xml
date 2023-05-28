@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Main</string>
+    <string name="app_name">MOT</string>
     <string name="test" translatable="false">TEEEst</string>
     <string name="add_new_payment" translatable="false">add new payment</string>
     <string name="recent_payments" translatable="false">Recent payments</string>

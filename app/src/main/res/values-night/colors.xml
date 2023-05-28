@@ -2,7 +2,6 @@
 <resources>
 
     <!--theme colors-->
-    <color name="color_splash_background">@color/color_dark_gray</color>
     <color name="color_toolbar">@color/color_dark_gray</color>
     <color name="color_appbar">@color/color_dark_gray</color>
     <color name="color_fab">@color/colorAccent</color>

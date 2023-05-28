@@ -16,8 +16,8 @@ plugins {
 val appId by extra("dev.nelson.mot")
 
 // App
-val versionName by extra("1.0.0") // X.Y.Z; X = Major, Y = minor, Z = Patch level
-val versionCode by extra(9)
+val versionName by extra("2.0.0") // X.Y.Z; X = Major, Y = minor, Z = Patch level
+val versionCode by extra(12)
 
 // SDK and tools
 val compileSdk by extra(33)
