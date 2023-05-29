@@ -166,7 +166,7 @@ fun PaymentListItem(
 
     val paymentNamePaddingStart by transition.animateDp(
         transitionSpec = { tween(durationMillis = Constants.DEFAULT_ANIMATION_DURATION) },
-        targetValueByState = { if (it) 0.dp else 24.dp },
+        targetValueByState = { if (it) 0.dp else 16.dp },
         label = "paymentNamePaddingStart"
     )
 
@@ -200,7 +200,7 @@ fun PaymentListItem(
                     modifier = Modifier.padding(
 //                        start = if (isSelectedStateOn) 0.dp else 24.dp,
                         start = paymentNamePaddingStart,
-                        end = 24.dp,
+                        end = 16.dp,
                         top = 16.dp,
                         bottom = 16.dp
                     )

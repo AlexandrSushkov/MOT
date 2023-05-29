@@ -28,9 +28,9 @@
     <string name="text_error">Error</string>
     <string name="text_deleted_item_format">%d item deleted</string>
     <string name="text_deleted_items_format" translatable="false">%d items deleted</string>
-    <string name="import_database_dialog_message" translatable="false">Are you sure you want to import this data base?</string>
-    <string name="database_exported_successfully_dialog_message" translatable="false">Data base was exported successfully.\nPlease, check Downloads folder.</string>
-    <string name="database_export_failed_dialog_message" translatable="false">Oops! data base export failed.</string>
+    <string name="import_database_dialog_message" translatable="false">Are you sure you want to import this database?</string>
+    <string name="database_exported_successfully_dialog_message" translatable="false">Database was exported successfully.\nPlease, check Downloads folder.</string>
+    <string name="database_export_failed_dialog_message" translatable="false">Oops! Database export failed.</string>
 
     <!--Accessibility text-->
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>

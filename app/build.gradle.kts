@@ -10,7 +10,7 @@ plugins {
 
 android {
     val appId: String by rootProject.extra
-    namespace = "$appId.main"
+    namespace = "dev.nelson.mot"
 
     compileSdk = rootProject.extra["compileSdk"] as Int
     buildToolsVersion = rootProject.extra["buildToolsVersion"] as String
@@ -20,7 +20,8 @@ android {
             useSupportLibrary = true
         }
 
-        applicationId = appId
+//        applicationId = appId
+        applicationId = "dev.nelson.mot"
         minSdk = rootProject.extra["minSdk"] as Int
         targetSdk = rootProject.extra["targetSdk"] as Int
         versionCode = rootProject.extra["versionCode"] as Int

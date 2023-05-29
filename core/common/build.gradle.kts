@@ -6,7 +6,7 @@ plugins {
 
 android {
     val appId: String by rootProject.extra
-    namespace = "$appId.common"
+    namespace = "$appId.core.common"
     compileSdk = rootProject.extra["compileSdk"] as Int
 
     defaultConfig {

@@ -2,8 +2,8 @@ package dev.nelson.mot.main.presentations.screen.settings
 
 import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.R
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
@@ -142,7 +142,7 @@ class SettingsViewModel @Inject constructor(
                 if (isImported) {
                     _restartAppAction.emit(Unit)
                 } else {
-                    showToast("Oops! data base import failed.")
+                    showToast("Oops! database import failed.")
                 }
             }.onFailure { throwable ->
                 throwable.message?.let {

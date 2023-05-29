@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -34,13 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.BuildConfig
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.PriceText
-import dev.nelson.mot.main.BuildConfig
-import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
@@ -118,6 +119,7 @@ private fun SettingsScreenLayout(
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
     val settingsScreenContentScrollingState = rememberLazyListState()
+    val isSystemInLightTheme = isSystemInDarkTheme().not()
 
     Scaffold(
         topBar = {
@@ -196,18 +198,19 @@ private fun SettingsScreenLayout(
             item {
                 HeadingListItem(text = "Theme")
             }
-            item {
-                ListItem(
-                    headlineContent = { Text(text = "Force Dark Theme") },
-                    trailingContent = {
-                        MotSwitch(
-                            checked = viewState.isForceDarkThemeSwitchChecked,
-                            onCheckedChange = onDarkThemeSwitchClick
-                        )
-                    }
-                )
+            if(isSystemInLightTheme){
+                item {
+                    ListItem(
+                        headlineContent = { Text(text = "Force Dark Theme") },
+                        trailingContent = {
+                            MotSwitch(
+                                checked = viewState.isForceDarkThemeSwitchChecked,
+                                onCheckedChange = onDarkThemeSwitchClick
+                            )
+                        }
+                    )
+                }
             }
-
             item {
                 ListItem(
                     headlineContent = { Text(text = "Dynamic Color Theme") },
@@ -220,11 +223,11 @@ private fun SettingsScreenLayout(
                 )
             }
             item {
-                HeadingListItem(text = "Data base")
+                HeadingListItem(text = "Database")
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Export Data Base") },
+                    headlineContent = { Text(text = "Export Database") },
                     supportingContent = { Text(text = "It will be exported to the Downloads folder.") },
                     trailingContent = {
                         MotTextButton(
@@ -236,7 +239,7 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Import Data Base") },
+                    headlineContent = { Text(text = "Import Database") },
                     trailingContent = {
                         MotTextButton(
                             onClick = onImportDataBaseClick,
@@ -248,7 +251,7 @@ private fun SettingsScreenLayout(
             if (BuildConfig.DEBUG) {
                 item {
                     ListItem(
-                        headlineContent = { Text(text = "Randomize Data Base data") },
+                        headlineContent = { Text(text = "Randomize Database data") },
                         trailingContent = {
                             MotTextButton(
                                 onClick = onRandomizeBaseDataClick,

@@ -3,6 +3,7 @@ package dev.nelson.mot.main
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import dagger.hilt.android.HiltAndroidApp
+import dev.nelson.mot.BuildConfig
 import timber.log.Timber
 
 @HiltAndroidApp

@@ -13,8 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import dagger.hilt.android.AndroidEntryPoint
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.R
 import dev.nelson.mot.main.presentations.app.MotApp
 import dev.nelson.mot.main.util.FirebaseUtils
 

@@ -7,7 +7,7 @@ import java.io.File
 import javax.inject.Inject
 
 /**
- * Copy application data base to the Downloads folder.
+ * Copy application database to the Downloads folder.
  */
 class ExportDataBaseUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository

@@ -35,7 +35,7 @@ fun MotModalBottomSheetLayout(
 
 @Preview(showBackground = true)
 @Composable
-fun assdf() {
+fun MotModalBottomSheetLayoutPreview() {
     MotModalBottomSheetLayout(sheetContent = {
         Column(modifier = Modifier.fillMaxSize(), content = { Text(text = "asd") })
     }, sheetState = ModalBottomSheetState(ModalBottomSheetValue.HalfExpanded)) {}
