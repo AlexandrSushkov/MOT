@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.domain.use_case.payment
 
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
@@ -7,7 +8,6 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
-import dev.nelson.mot.main.util.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -15,40 +15,34 @@ import kotlinx.datetime.TimeZone
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-/**
- * By default it returns list of [Payment] for current month sorted by the time, starting from the latest added [Payment].
- */
-class GetPaymentListByDateRange @Inject constructor(
+class GetPaymentListNoFixedDateRange @Inject constructor(
     private val paymentRepository: PaymentRepositoryImpl,
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
 
     /**
      * @param startTime time in epoc milliseconds.
-     * @param endTime time in epoc milliseconds.
      * @param category to find payments for. if null, ignore category, find any payment.
      */
     fun execute(
         startTime: Long = 0,
-        endTime: Long? = null,
         category: Category? = null,
-        order: SortingOrder = SortingOrder.Ascending
+        order: SortingOrder = SortingOrder.Ascending,
+        onlyPaymentsWithoutCategory: Boolean = false
     ): Flow<List<PaymentListItemModel>> {
-        val paymentsWithCategoryList = endTime?.let {
-            paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(
-                startTime,
-                it,
-                order
-            )
-        }
-            ?: paymentRepository.getPaymentsWithCategoryByDateRangeOrdered(
-                startTime,
-                order,
-                category?.id
-            )
-
-        return paymentsWithCategoryList
-            .map { it.toPaymentList() }
+        return paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
+            startTime,
+            category?.id,
+            order is SortingOrder.Ascending,
+        ).map { payments ->
+            payments.filter { payment ->
+                if (onlyPaymentsWithoutCategory) {
+                    payment.categoryEntity == null
+                } else {
+                    true
+                }
+            }
+        }.map { it.toPaymentList() }
             .map { it.formatDate() }
             .map { it.toPaymentListItemModelNew(category == null) }
     }
@@ -57,16 +51,13 @@ class GetPaymentListByDateRange @Inject constructor(
      * transform epoch mills into string date according to the system time zone
      */
     private fun List<Payment>.formatDate(
-        timeZone: TimeZone? = null,
-        dateTimeFormatter: DateTimeFormatter? = null
+        timeZone: TimeZone? = null, dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
             payment.dateInMills?.let { mills ->
                 payment.copyWith(
                     date = formatTimeUseCase.execute(
-                        mills,
-                        timeZone,
-                        dateTimeFormatter
+                        mills, timeZone, dateTimeFormatter
                     )
                 )
             } ?: payment

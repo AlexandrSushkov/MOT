@@ -2,12 +2,7 @@ package dev.nelson.mot.main.presentations.screen.country_picker
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
-import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
-import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
-import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
 import dev.nelson.mot.main.domain.use_case.settings.SetLocaleUseCase
-import dev.nelson.mot.main.domain.use_case.settings.SetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.doesSearchMatch
@@ -26,11 +21,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryPickerViewModel @Inject constructor(
-    getSwitchStatusUseCase: GetSwitchStatusUseCase,
-    getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
-    private val exportDataBaseUseCase: ExportDataBaseUseCase,
-    private val importDataBaseUseCase: ImportDataBaseUseCase,
-    private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
     private val setLocaleUseCase: SetLocaleUseCase,
 ) : BaseViewModel() {
 

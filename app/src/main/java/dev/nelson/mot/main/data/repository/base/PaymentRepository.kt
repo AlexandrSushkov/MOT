@@ -2,7 +2,7 @@ package dev.nelson.mot.main.data.repository.base
 
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
-import dev.nelson.mot.main.util.SortingOrder
+import dev.nelson.mot.db.utils.SortingOrder
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentRepository {
@@ -19,13 +19,23 @@ interface PaymentRepository {
 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
+     * @param isAsc true if ascending order is needed, false otherwise.
      */
-    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, order: SortingOrder, categoryId: Int?): Flow<List<PaymentWithCategory>>
+    fun getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
+        startTime: Long,
+        categoryId: Int?,
+        isAsc: Boolean = false
+    ): Flow<List<PaymentWithCategory>>
 
     /**
      * Get payments WITH end date used to get payments in a particular time period.
+     * @param isAsc true if ascending order is needed, false otherwise.
      */
-    fun getPaymentsWithCategoryByDateRangeOrdered(startTime: Long, endTime: Long, order: SortingOrder): Flow<List<PaymentWithCategory>>
+    fun getPaymentsWithCategoryByFixeedDateRange(
+        startTime: Long,
+        endTime: Long,
+        isAsc: Boolean = false
+    ): Flow<List<PaymentWithCategory>>
 
     suspend fun addPayment(paymentEntity: PaymentEntity)
 

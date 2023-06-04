@@ -8,7 +8,7 @@ import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class StatisticViewModel @Inject constructor(
     getCurrentTimeUseCase: GetCurrentTimeUseCase,
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
-    getPaymentListByDateRange: GetPaymentListByDateRange,
+    getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
 ) : BaseViewModel() {
 
@@ -48,7 +48,7 @@ class StatisticViewModel @Inject constructor(
         launch {
             val currentTime = getCurrentTimeUseCase.execute()
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-            getPaymentListByDateRange.execute(startOfMonthTime, currentTime).collect {
+            getPaymentListByFixedDateRange.execute(startOfMonthTime, currentTime).collect {
                 Timber.d(it.toString())
                 val paymentModelsList = it.filterIsInstance<PaymentListItemModel.PaymentItemModel>()
                 val sortedByCategoryPaymentMap =
@@ -63,7 +63,7 @@ class StatisticViewModel @Inject constructor(
             val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
             val startOfPreviousMonthTime =
                 getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
-            getPaymentListByDateRange.execute(startOfPreviousMonthTime, startOfMonthTime).collect {
+            getPaymentListByFixedDateRange.execute(startOfPreviousMonthTime, startOfMonthTime).collect {
                 Timber.d(it.toString())
                 val paymentModelsList = it.filterIsInstance<PaymentListItemModel.PaymentItemModel>()
                 val sortedByCategoryPaymentMap =

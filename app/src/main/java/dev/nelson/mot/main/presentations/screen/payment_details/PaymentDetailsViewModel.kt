@@ -16,9 +16,8 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
-import dev.nelson.mot.main.util.SortingOrder
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.util.constant.NetworkConstants
-import dev.nelson.mot.main.util.extention.leaveOnlyDigits
 import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -145,7 +144,7 @@ class PaymentDetailsViewModel @Inject constructor(
                     _message.value =
                         TextFieldValue(it.message, selection = TextRange(it.message.length))
                     selectedCategory = it.category
-                    dateInMills = it.dateInMills ?: DateUtils.getCurrentDate().time
+                    dateInMills = it.dateInMills ?: System.currentTimeMillis()
                     setDate(dateInMills)
                     it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
                 }
@@ -155,12 +154,11 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     private fun addNewPayment() = launch {
-        val currentDateInMills = System.currentTimeMillis()
         val priceToSave = formatPriceToSave(_cost.value.text)
         val payment = Payment(
             _paymentName.value.text,
             cost = priceToSave,
-            dateInMills = currentDateInMills,
+            dateInMills = dateInMills,
             category = selectedCategory,
             message = _message.value.text
         )

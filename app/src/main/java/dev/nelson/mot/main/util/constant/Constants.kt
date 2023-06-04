@@ -10,6 +10,7 @@ object Constants {
 
     //intent bundle/extras keys
     const val CATEGORY_ID_KEY = "category_id"
+    const val NO_CATEGORY_KEY = "no_category"
     const val IS_OPENED_FROM_WIDGET = "openedFromWidget"
     const val PRICE_EXAMPLE = 999999 // 9,999.99
 }

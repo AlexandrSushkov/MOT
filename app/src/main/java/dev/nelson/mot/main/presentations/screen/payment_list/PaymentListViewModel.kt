@@ -12,7 +12,7 @@ import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByDateRange
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
@@ -21,7 +21,8 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.MotUiState
-import dev.nelson.mot.main.util.SortingOrder
+import dev.nelson.mot.db.utils.SortingOrder
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -39,15 +40,21 @@ class PaymentListViewModel @Inject constructor(
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
-    private val getPaymentListByDateRange: GetPaymentListByDateRange,
+    private val getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
+    private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
-    private val screenScreenType =
-        categoryId?.let { ScreenType.PaymentsForCategory(it) } ?: ScreenType.RecentPayments
+    private val screenScreenType = categoryId?.let {
+        if (it == -1) {
+            ScreenType.PaymentsWithoutCategory
+        } else {
+            ScreenType.PaymentsForExistingCategory(it)
+        }
+    } ?: ScreenType.RecentPayments
 
     // states
     val toolBarTitleState
@@ -109,7 +116,7 @@ class PaymentListViewModel @Inject constructor(
                     val startOfPreviousMonth =
                         getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
                     // no end date. otherwise newly added payments won't be shown.
-                    getPaymentListByDateRange.execute(
+                    getPaymentListNoFixedDateRange.execute(
                         startOfPreviousMonth,
                         order = SortingOrder.Descending
                     )
@@ -120,15 +127,28 @@ class PaymentListViewModel @Inject constructor(
                         }
                 }
 
-                is ScreenType.PaymentsForCategory -> {
+                is ScreenType.PaymentsForExistingCategory -> {
                     getCategoryByIdUseCase.execute(screenScreenType.categoryId)
                         .flatMapConcat {
                             _toolBarTitleState.value = it.name
-                            getPaymentListByDateRange.execute(
+                            getPaymentListByFixedDateRange.execute(
                                 category = it,
                                 order = SortingOrder.Descending
                             )
                         }.collect {
+                            initialPaymentList.clear()
+                            initialPaymentList.addAll(it)
+                            _paymentListResult.value = MotUiState.Success(it)
+                        }
+                }
+
+                is ScreenType.PaymentsWithoutCategory -> {
+                    _toolBarTitleState.value = "No Category"
+                    getPaymentListNoFixedDateRange.execute(
+                        order = SortingOrder.Descending,
+                        onlyPaymentsWithoutCategory = true
+                    )
+                        .collect {
                             initialPaymentList.clear()
                             initialPaymentList.addAll(it)
                             _paymentListResult.value = MotUiState.Success(it)
@@ -401,6 +421,7 @@ class PaymentListViewModel @Inject constructor(
 
     private sealed class ScreenType {
         object RecentPayments : ScreenType()
-        class PaymentsForCategory(val categoryId: Int) : ScreenType()
+        class PaymentsForExistingCategory(val categoryId: Int) : ScreenType()
+        object PaymentsWithoutCategory : ScreenType()
     }
 }

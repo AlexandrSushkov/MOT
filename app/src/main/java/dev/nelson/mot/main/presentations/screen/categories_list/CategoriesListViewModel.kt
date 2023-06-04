@@ -14,7 +14,7 @@ import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotUiState
-import dev.nelson.mot.main.util.SortingOrder
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job

@@ -198,7 +198,6 @@ fun PaymentListItem(
             Column {
                 Row(
                     modifier = Modifier.padding(
-//                        start = if (isSelectedStateOn) 0.dp else 24.dp,
                         start = paymentNamePaddingStart,
                         end = 16.dp,
                         top = 16.dp,

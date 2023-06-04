@@ -94,10 +94,7 @@ fun MotNavHost(
                 CategoryListScreen(
                     viewModel = hiltViewModel(),
                     appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } }
-                ) { categoryId ->
-                    categoryId?.let { navController.navigate("${Payments.route}?category_id=$categoryId") }
-                        ?: navController.popBackStack()
-                }
+                ) { categoryId -> navController.navigate("${Payments.route}?category_id=$categoryId") }
             },
         )
         composable(

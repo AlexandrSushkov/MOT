@@ -11,8 +11,8 @@ class RandomizeDataBaseDataUseCase @Inject constructor(
     private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseSuspend<Nothing?, Unit> {
     override suspend fun execute(params: Nothing?) {
-        val cat = categoryRepository.getAllCategories()
-        val newCat = cat.mapIndexed { index, category ->
+        val categories = categoryRepository.getAllCategories()
+        val randomizedCategories = categories.mapIndexed { index, category ->
             if (index < testCategoriesNames.size) {
                 category.copy(name = testCategoriesNames[index])
             } else {
@@ -20,16 +20,17 @@ class RandomizeDataBaseDataUseCase @Inject constructor(
 
             }
         }
-        categoryRepository.editCategories(newCat)
+        categoryRepository.editCategories(randomizedCategories)
 
-        val pay = paymentRepository.getAllPayments()
-        val newPay = pay.map { payment ->
+        val payments = paymentRepository.getAllPayments()
+        val randomizedPayments = payments.map { payment ->
             payment.copy(
                 title = "payment ${payment.id}",
-                cost = Random.nextInt(1, 100000)
+                cost = Random.nextInt(1, 100000),
+                summary = "message ${payment.id}"
             )
         }
-        paymentRepository.updatePayments(newPay)
+        paymentRepository.updatePayments(randomizedPayments)
     }
 
     private val testCategoriesNames = listOf(

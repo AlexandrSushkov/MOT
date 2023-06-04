@@ -314,7 +314,7 @@ fun CategoryListItem(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { onCategoryClick.invoke(category.id) },
+                onClick = { onCategoryClick.invoke(category.id ?: -1) },
                 onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
             ),
     ) {

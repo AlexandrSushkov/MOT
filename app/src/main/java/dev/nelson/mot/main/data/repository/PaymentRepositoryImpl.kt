@@ -4,7 +4,6 @@ import dev.nelson.mot.main.data.repository.base.PaymentRepository
 import dev.nelson.mot.db.model.payment.PaymentDao
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
-import dev.nelson.mot.main.util.SortingOrder
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -26,57 +25,38 @@ class PaymentRepositoryImpl @Inject constructor(
         return paymentDao.getAllPayments()
     }
 
-
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
+     * @param isAsc true if ascending order is needed, false otherwise.
      */
-    override fun getPaymentsWithCategoryByDateRangeOrdered(
+    override fun getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
         startTime: Long,
-        order: SortingOrder,
-        categoryId: Int?
+        categoryId: Int?,
+        isAsc: Boolean
     ): Flow<List<PaymentWithCategory>> {
-        return when (order) {
-            SortingOrder.Ascending -> {
-                categoryId?.let {
-                    paymentDao.getPaymentsWithCategoryByDateRangeAndCategoryOrderedAscending(
-                        startTime,
-                        it
-                    )
-                } ?: paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(startTime)
-
-            }
-
-            SortingOrder.Descending -> {
-                categoryId?.let {
-                    paymentDao.getPaymentsWithCategoryByDateRangeAndCategoryOrderedDescending(
-                        startTime,
-                        it
-                    )
-                } ?: paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(startTime)
-
-            }
-        }
+        return categoryId?.let {
+            paymentDao.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
+                startTime,
+                it,
+                isAsc
+            )
+        } ?: paymentDao.getPaymentsWithCategoryNoCategoryNoFixedDateRange(startTime, isAsc)
     }
 
     /**
      * Get payments WITH end date used to get payments in a particular time period.
+     * @param isAsc true if ascending order is needed, false otherwise.
      */
-    override fun getPaymentsWithCategoryByDateRangeOrdered(
+    override fun getPaymentsWithCategoryByFixeedDateRange(
         startTime: Long,
         endTime: Long,
-        order: SortingOrder
+        isAsc: Boolean,
     ): Flow<List<PaymentWithCategory>> {
-        return when (order) {
-            SortingOrder.Ascending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedAscending(
-                startTime,
-                endTime
-            )
-
-            SortingOrder.Descending -> paymentDao.getPaymentsWithCategoryByDateRangeOrderedDescending(
-                startTime,
-                endTime
-            )
-        }
+        return paymentDao.getPaymentsWithCategoryByFixedDateRange(
+            startTime,
+            endTime,
+            isAsc
+        )
     }
 
     // ADD
