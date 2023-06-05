@@ -47,7 +47,7 @@ class PaymentRepositoryImpl @Inject constructor(
      * Get payments WITH end date used to get payments in a particular time period.
      * @param isAsc true if ascending order is needed, false otherwise.
      */
-    override fun getPaymentsWithCategoryByFixeedDateRange(
+    override fun getPaymentsWithCategoryByFixedDateRange(
         startTime: Long,
         endTime: Long,
         isAsc: Boolean,

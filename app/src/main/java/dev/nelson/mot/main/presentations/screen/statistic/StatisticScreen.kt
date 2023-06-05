@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -15,23 +16,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.LineChartMot
+import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.main.data.model.Category
 import dev.utils.preview.MotPreview
 
 @Composable
 fun StatisticScreen(
-    viewModel: StatisticViewModel
+    viewModel: StatisticViewModel,
+    appBarTitle: String,
+    appBarNavigationIcon: @Composable () -> Unit = {}
 ) {
-    val currentMonth by viewModel.currentMonthListResult.collectAsState(emptyMap())
+    val currentMonthList by viewModel.currentMonthListResult.collectAsState(emptyMap())
     val previousMonthList by viewModel.previousMonthListResult.collectAsState(emptyMap())
     val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
 
     StatisticLayout(
-        currentMonth,
+        appBarTitle,
+        appBarNavigationIcon,
+        currentMonthList,
         previousMonthList,
         priceViewState
     )
@@ -39,13 +45,15 @@ fun StatisticScreen(
 
 @Composable
 fun StatisticLayout(
+    appBarTitle: String,
+    appBarNavigationIcon: @Composable () -> Unit = {},
     currentMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
     previousMonthList: Map<Category?, List<PaymentListItemModel.PaymentItemModel>>,
     priceViewState: PriceViewState,
 ) {
     val paymentsForCurrentMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
-    val paymentsForPreviousMonth =
-        mutableListOf<PaymentListItemModel.PaymentItemModel>()
+    val paymentsForPreviousMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
+
     currentMonthList.entries.forEach {
         paymentsForCurrentMonth.addAll(it.value)
     }
@@ -54,9 +62,19 @@ fun StatisticLayout(
     }
     val sumForCurrentMonth = paymentsForCurrentMonth.sumOf { it.payment.cost }
     val sumForPreviousMonth = paymentsForPreviousMonth.sumOf { it.payment.cost }
+    val statisticListScrollingState = rememberLazyListState()
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            MotTopAppBar(
+                appBarTitle = appBarTitle,
+                navigationIcon = appBarNavigationIcon,
+                isScrolling = statisticListScrollingState.firstVisibleItemIndex != 0
+            )
+        }
+    ) { innerPadding ->
         LazyColumn(
+            state = statisticListScrollingState,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(paddingValues = innerPadding),
@@ -152,6 +170,8 @@ fun StatisticContent() {
 private fun StatisticLayoutPreview() {
     MotMaterialTheme {
         StatisticLayout(
+            appBarTitle = "Statistic",
+            appBarNavigationIcon = {},
             currentMonthList = emptyMap(),
             previousMonthList = emptyMap(),
             priceViewState = PriceViewState()

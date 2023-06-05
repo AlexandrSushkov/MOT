@@ -2,7 +2,6 @@ package dev.nelson.mot.main.data.repository.base
 
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
-import dev.nelson.mot.db.utils.SortingOrder
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentRepository {
@@ -31,7 +30,7 @@ interface PaymentRepository {
      * Get payments WITH end date used to get payments in a particular time period.
      * @param isAsc true if ascending order is needed, false otherwise.
      */
-    fun getPaymentsWithCategoryByFixeedDateRange(
+    fun getPaymentsWithCategoryByFixedDateRange(
         startTime: Long,
         endTime: Long,
         isAsc: Boolean = false

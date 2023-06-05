@@ -50,7 +50,8 @@ fun MotNavHost(
         composable(
             route = Payments.route,
             content = {
-                PaymentListScreen(viewModel = hiltViewModel(),
+                PaymentListScreen(
+                    viewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
@@ -62,7 +63,8 @@ fun MotNavHost(
         composable(
             route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
             content = {
-                PaymentListScreen(viewModel = hiltViewModel(),
+                PaymentListScreen(
+                    viewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
@@ -120,7 +122,11 @@ fun MotNavHost(
             route = Statistic.route,
             content = {
                 StatisticScreen(
-                    viewModel = hiltViewModel()
+                    viewModel = hiltViewModel(),
+                    appBarTitle = "Statistic",
+                    appBarNavigationIcon = {
+                        MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
+                    },
                 )
             },
         )

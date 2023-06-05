@@ -35,7 +35,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
         order: SortingOrder = SortingOrder.Ascending
     ): Flow<List<PaymentListItemModel>> {
         val paymentsWithCategoryList = endTime?.let {
-            paymentRepository.getPaymentsWithCategoryByFixeedDateRange(
+            paymentRepository.getPaymentsWithCategoryByFixedDateRange(
                 startTime,
                 it,
                 order is SortingOrder.Ascending,
