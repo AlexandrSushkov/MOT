@@ -54,14 +54,12 @@ fun StatisticLayout(
     val paymentsForCurrentMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
     val paymentsForPreviousMonth = mutableListOf<PaymentListItemModel.PaymentItemModel>()
 
-    currentMonthList.entries.forEach {
-        paymentsForCurrentMonth.addAll(it.value)
-    }
-    previousMonthList.entries.forEach {
-        paymentsForPreviousMonth.addAll(it.value)
-    }
+    currentMonthList.entries.forEach { paymentsForCurrentMonth.addAll(it.value) }
+    previousMonthList.entries.forEach { paymentsForPreviousMonth.addAll(it.value) }
+
     val sumForCurrentMonth = paymentsForCurrentMonth.sumOf { it.payment.cost }
     val sumForPreviousMonth = paymentsForPreviousMonth.sumOf { it.payment.cost }
+    
     val statisticListScrollingState = rememberLazyListState()
 
     Scaffold(
@@ -69,7 +67,7 @@ fun StatisticLayout(
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                isScrolling = statisticListScrollingState.firstVisibleItemIndex != 0
+                isContentScrolling = statisticListScrollingState.firstVisibleItemIndex != 0
             )
         }
     ) { innerPadding ->

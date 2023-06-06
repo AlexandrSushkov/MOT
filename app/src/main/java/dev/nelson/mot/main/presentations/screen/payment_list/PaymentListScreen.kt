@@ -255,7 +255,7 @@ fun PaymentListLayout(
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        isScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
+                        isContentScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
                     )
 //                        .also {
 //                        val view = LocalView.current

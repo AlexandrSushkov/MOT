@@ -126,7 +126,7 @@ private fun SettingsScreenLayout(
             MotTopAppBar(
                 appBarTitle = title,
                 navigationIcon = navigationIcon,
-                isScrolling = settingsScreenContentScrollingState.firstVisibleItemIndex != 0
+                isContentScrolling = settingsScreenContentScrollingState.firstVisibleItemIndex != 0
             )
         }
     ) { innerPadding ->

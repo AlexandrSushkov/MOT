@@ -150,7 +150,7 @@ fun CategoryListLayout(
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                isScrolling = categoriesListScrollingState.firstVisibleItemIndex != 0
+                isContentScrolling = categoriesListScrollingState.firstVisibleItemIndex != 0
             )
         },
         snackbarHost = {
