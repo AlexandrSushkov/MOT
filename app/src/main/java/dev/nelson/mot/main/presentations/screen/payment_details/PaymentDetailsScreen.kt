@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -230,10 +232,6 @@ fun PaymentDetailsLayout(
                     )
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-//                BasicTextField(
-//                    value = costFieldValueState,
-//                    onValueChange = { onCostChange.invoke(it) },
-//                )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.weight(1f))
                     OutlinedTextField(
@@ -241,22 +239,18 @@ fun PaymentDetailsLayout(
                         value = costFieldValueState,
                         singleLine = true,
                         maxLines = 1,
-                        onValueChange = {
-                            //                            costFieldValueState = it
-                            onCostChange.invoke(it)
-                        },
-
-                        leadingIcon = {
-                            Text(
-                                text = "-",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.displayMedium
-                            )
-                        },
+                        onValueChange = { onCostChange.invoke(it) },
+//                        leadingIcon = {
+//                            Text(
+//                                text = "-",
+//                                color = MaterialTheme.colorScheme.error,
+//                                style = MaterialTheme.typography.displayMedium
+//                            )
+//                        },
                         placeholder = {
                             Text(
                                 text = "0",
-                                color = MaterialTheme.colorScheme.error,
+//                                color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.displayMedium
                             )
                         },
@@ -270,15 +264,14 @@ fun PaymentDetailsLayout(
 //                            disabledIndicatorColor = Color.Transparent,
 //                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.error,
-                            unfocusedTextColor = MaterialTheme.colorScheme.error,
+//                            focusedTextColor = MaterialTheme.colorScheme.error,
+//                            unfocusedTextColor = MaterialTheme.colorScheme.error,
                             cursorColor = Color.Transparent,
                             errorCursorColor = Color.Transparent,
                         ),
                         textStyle = MaterialTheme.typography.displayMedium,
                         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-
-                        )
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -331,70 +324,163 @@ fun PaymentDetailsLayout(
 
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Spacer(modifier = Modifier.weight(1f))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier
-                        //                    .clickable {
-                        //                        keyboardController?.hide()
-                        //                        focusManager.clearFocus()
-                        //                        onDateClick.invoke()
-                        //                    }
+                    MotOutlinedButton(
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            onDateClick.invoke()
+                        },
                     ) {
-                        MotOutlinedButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                                onDateClick.invoke()
-                            },
-                        ) {
-                            Icon(
-                                Icons.Default.EditCalendar,
-                                modifier = Modifier.padding(end = 8.dp),
-                                contentDescription = "date icon"
-                            )
+                        Icon(
+                            Icons.Default.EditCalendar,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "date icon"
+                        )
 
-                            Text(
-                                text = date,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        MotOutlinedButton(
-                            onClick = {
-                                //                            onCategoryClick.invoke()
-                                coroutineScope.launch {
-                                    keyboardController?.hide()
-                                    delay(Constants.DEFAULT_ANIMATION_DELAY)
-                                    focusManager.clearFocus()
-                                    modalBottomSheetState.show()
-                                }
-                            },
-                        ) {
-                            Icon(
-                                Icons.Default.Category,
-                                modifier = Modifier.padding(end = 8.dp),
-                                contentDescription = "category icon"
-                            )
-                            Text(
-                                text = categoryName,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
+                        Text(
+                            text = date,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(modifier = Modifier.fillMaxHeight()) {
-                        MotButton(
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            onClick = onSaveClick
-                        ) {
-                            //                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
-                            Text(text = "Save")
-                        }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    MotOutlinedButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                keyboardController?.hide()
+                                delay(Constants.DEFAULT_ANIMATION_DELAY)
+                                focusManager.clearFocus()
+                                modalBottomSheetState.show()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            Icons.Default.Category,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "category icon"
+                        )
+                        Text(
+                            text = categoryName,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(IntrinsicSize.Min)
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                        //                    .clickable {
+//                        //                        keyboardController?.hide()
+//                        //                        focusManager.clearFocus()
+//                        //                        onDateClick.invoke()
+//                        //                    }
+//                    ) {
+//                        MotOutlinedButton(
+//                            onClick = {
+//                                keyboardController?.hide()
+//                                focusManager.clearFocus()
+//                                onDateClick.invoke()
+//                            },
+//                        ) {
+//                            Icon(
+//                                Icons.Default.EditCalendar,
+//                                modifier = Modifier.padding(end = 8.dp),
+//                                contentDescription = "date icon"
+//                            )
+//
+//                            Text(
+//                                text = date,
+//                                modifier = Modifier.align(Alignment.CenterVertically)
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                        MotOutlinedButton(
+//                            onClick = {
+//                                //                            onCategoryClick.invoke()
+//                                coroutineScope.launch {
+//                                    keyboardController?.hide()
+//                                    delay(Constants.DEFAULT_ANIMATION_DELAY)
+//                                    focusManager.clearFocus()
+//                                    modalBottomSheetState.show()
+//                                }
+//                            },
+//                        ) {
+//                            Icon(
+//                                Icons.Default.Category,
+//                                modifier = Modifier.padding(end = 8.dp),
+//                                contentDescription = "category icon"
+//                            )
+//                            Text(
+//                                text = categoryName,
+//                                modifier = Modifier.align(Alignment.CenterVertically)
+//                            )
+//                        }
+//                    }
+//                    Spacer(modifier = Modifier.weight(1f))
+//                    Box(modifier = Modifier.fillMaxHeight()) {
+//                        MotButton(
+//                            modifier = Modifier.align(Alignment.BottomEnd),
+//                            onClick = onSaveClick
+//                        ) {
+//                            //                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
+//                            Text(text = "Save")
+//                        }
+//                    }
+//                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+//                    MotOutlinedButton(
+//                        onClick = {
+//                            keyboardController?.hide()
+//                            focusManager.clearFocus()
+//                            onDateClick.invoke()
+//                        },
+//                    ) {
+////                        Icon(
+////                            Icons.Default.EditCalendar,
+////                            modifier = Modifier.padding(end = 8.dp),
+////                            contentDescription = "date icon"
+////                        )
+//
+//                        Text(
+//                            text = date,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+//                    MotOutlinedButton(
+//                        onClick = {
+//                            coroutineScope.launch {
+//                                keyboardController?.hide()
+//                                delay(Constants.DEFAULT_ANIMATION_DELAY)
+//                                focusManager.clearFocus()
+//                                modalBottomSheetState.show()
+//                            }
+//                        },
+//                    ) {
+////                        Icon(
+////                            Icons.Default.Category,
+////                            modifier = Modifier.padding(end = 8.dp),
+////                            contentDescription = "category icon"
+////                        )
+//                        Text(
+//                            text = categoryName,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+                    MotButton(
+                        onClick = onSaveClick
+                    ) {
+                        Text(text = "Save")
                     }
                 }
             }
@@ -402,6 +488,7 @@ fun PaymentDetailsLayout(
     }
 
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
