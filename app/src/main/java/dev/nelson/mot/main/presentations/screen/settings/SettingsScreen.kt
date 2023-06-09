@@ -301,7 +301,7 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
         icon = {
             Icon(
                 imageVector = Icons.Default.Info,
-                contentDescription = stringResource(R.string.info_icon),
+                contentDescription = stringResource(R.string.accessibility_info_icon),
                 modifier = Modifier
                     .width(32.dp)
                     .height(32.dp)

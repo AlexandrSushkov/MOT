@@ -1,26 +1,21 @@
 <resources>
     <string name="app_name">MOT</string>
-    <string name="test" translatable="false">TEEEst</string>
-    <string name="add_new_payment" translatable="false">add new payment</string>
-    <string name="recent_payments" translatable="false">Recent payments</string>
-    <string name="recent_payments_compose" translatable="false">Recent Payments Compose</string>
+
+    <string name="payment" translatable="false">Payment</string>
+    <string name="payments" translatable="false">Payments</string>
+    <string name="add_new_payment" translatable="false">Add New Payment</string>
+    <string name="recent_payments" translatable="false">Recent Payments</string>
     <string name="categories" translatable="false">Categories</string>
-    <string name="categories_compose" translatable="false">Categories Compose</string>
+    <string name="category" translatable="false">Category</string>
     <string name="statistic" translatable="false">Statistic</string>
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>
-    <string name="title_activity_payment_details" translatable="false">PaymentDetailsActivity</string>
-    <string name="title_activity_main_compose" translatable="false">MainActivityCompose</string>
     <string name="appwidget_text" translatable="false">EXAMPLE</string>
     <string name="add_widget" translatable="false">Add widget</string>
     <string name="app_widget_description" translatable="false">This is an app widget description</string>
-
-    <!--text-->
-    <string name="text_category" translatable="false">Category</string>
-    <string name="text_category_name" translatable="false">Category name</string>
-    <string name="text_categories" translatable="false">Categories</string>
-    <string name="text_payment" translatable="false">Payment</string>
-    <string name="text_payments" translatable="false">Payments</string>
+    <string name="category_name" translatable="false">Category name</string>
+    <string name="payment_name_hint" translatable="false">Payment Name</string>
+    <string name="message_hint" translatable="false">Message</string>
     <string name="text_add" translatable="false">Add</string>
     <string name="text_edit" translatable="false">Edit</string>
     <string name="text_undo">Undo</string>
@@ -35,7 +30,7 @@
     <!--Accessibility text-->
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
     <string name="accessibility_category_icon" translatable="false">category icon</string>
-    <string name="info_icon" translatable="false">info icon</string>
+    <string name="accessibility_info_icon" translatable="false">info icon</string>
     <string name="accessibility_add_icon" translatable="false">add icon</string>
     <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
 

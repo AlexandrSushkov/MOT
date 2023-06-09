@@ -373,7 +373,7 @@ fun EditCategoryDialog(
             MotTextField(
                 value = categoryNameState,
                 onValueChange = { onCategoryNameChanged.invoke(it) },
-                placeholder = { Text(stringResource(R.string.text_category_name)) },
+                placeholder = { Text(stringResource(R.string.category_name)) },
                 maxLines = 1,
                 singleLine = true,
                 modifier = Modifier

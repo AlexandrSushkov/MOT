@@ -12,7 +12,9 @@ private const val DIGIT_PATTERN = "\\d"
  * @param priceViewState parameters to format price.
  */
 fun formatPrice(price: Int, priceViewState: PriceViewState): String {
-    val formatter = NumberFormat.getCurrencyInstance(priceViewState.locale)
+    val formatter = NumberFormat.getCurrencyInstance(priceViewState.locale).apply {
+
+    }
     return price.toPrice(formatter, priceViewState.isShowCents)
         .hideDigitsIfNeeded(priceViewState.isHideDigits)
         .removeCurrencySymbolIfNeeded(

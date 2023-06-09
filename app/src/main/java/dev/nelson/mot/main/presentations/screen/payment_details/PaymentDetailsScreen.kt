@@ -7,10 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -280,16 +278,12 @@ fun PaymentDetailsLayout(
                         modifier = Modifier
                             .focusRequester(paymentNameFocusRequester)
                             .fillMaxWidth(),
-                        //                    value = if (LocalInspectionMode.current) "preview new payment" else name,
                         value = paymentNameFieldValueState,
                         singleLine = true,
                         maxLines = 1,
-                        onValueChange = {
-                            //                            paymentNameFieldValueState = it
-                            onNameChange.invoke(it)
-                        },
+                        onValueChange = { onNameChange.invoke(it) },
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        placeholder = { Text(text = "new payment") },
+                        placeholder = { Text(text = stringResource(id = R.string.payment_name_hint)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     )
                 }
@@ -305,15 +299,9 @@ fun PaymentDetailsLayout(
                     minLines = 3,
                     maxLines = 5,
                     value = messageFieldValueState,
-                    onValueChange = {
-//                        messageFieldValueState = it
-                        onMessageChange.invoke(it)
-                    },
-                    placeholder = { Text(text = "message") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-//                        imeAction = ImeAction.Done
-                    ),
+                    onValueChange = { onMessageChange.invoke(it) },
+                    placeholder = { Text(text = stringResource(id = R.string.message_hint)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                     keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
                     colors = TextFieldDefaults.colors(
@@ -325,7 +313,8 @@ fun PaymentDetailsLayout(
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     MotOutlinedButton(
                         onClick = {
