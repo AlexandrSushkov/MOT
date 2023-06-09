@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -36,37 +35,16 @@ class CountryPickerViewModel @Inject constructor(
         get() = _countryPickerViewState.asStateFlow()
     private val _countryPickerViewState = MutableStateFlow(CountryPickerViewState())
 
-    private val _onScrollChanged = MutableStateFlow(0)
     private val defaultCountries = Locale.getAvailableLocales().filterDefaultCountries()
 
     init {
         launch {
             _searchText.debounce(SEARCH_DELAY)
                 .map { searchText -> defaultCountries.filter { it.doesSearchMatch(searchText) } }
-                .collect { _countryPickerViewState.value = _countryPickerViewState.value.copy(countries = it) }
-        }
-
-        launch {
-            _onScrollChanged.combine(_countryPickerViewState) { currentScrollingPosition, viewState ->
-                currentScrollingPosition to viewState.firstVisibleItemIndex
-            }.collect { (currentScrollingPosition, savedPosition) ->
-                if (currentScrollingPosition == 0 && savedPosition != 0) {
-                    // scrolled to the top. first item is visible. change the color of the toolbar
-                    _countryPickerViewState.value = _countryPickerViewState.value.copy(
-                        firstVisibleItemIndex = currentScrollingPosition,
-                        isContentScrolling = false
-                    )
-                    return@collect
+                .collect {
+                    _countryPickerViewState.value =
+                        _countryPickerViewState.value.copy(countries = it)
                 }
-                if (currentScrollingPosition != 0 && savedPosition == 0) {
-                    // scroll is started. first item is NOT visible. change the color of the toolbar
-                    _countryPickerViewState.value = _countryPickerViewState.value.copy(
-                        firstVisibleItemIndex = currentScrollingPosition,
-                        isContentScrolling = true
-                    )
-                }
-
-            }
         }
     }
 
@@ -75,7 +53,7 @@ class CountryPickerViewModel @Inject constructor(
     }
 
     fun onCountryListScrolledChanged(firstVisibleItemPosition: Int) {
-        _onScrollChanged.value = firstVisibleItemPosition
+        onContentScrollPositionChanged(firstVisibleItemPosition)
     }
 
     fun onLocaleSelected(locale: Locale) {

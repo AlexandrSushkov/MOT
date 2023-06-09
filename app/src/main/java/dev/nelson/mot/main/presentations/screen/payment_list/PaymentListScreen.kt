@@ -45,6 +45,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -92,6 +93,7 @@ fun PaymentListScreen(
 
     // listen states
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
+    val isContentScrolling by viewModel.isScreenContentScrolling.collectAsState()
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
@@ -154,6 +156,7 @@ fun PaymentListScreen(
     PaymentListLayout(
         navigationIcon = navigationIcon,
         toolbarTitle = toolbarTitle,
+        isContentScrolling = isContentScrolling,
         paymentListResult = paymentListResult,
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
@@ -178,6 +181,7 @@ fun PaymentListScreen(
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
         modalBottomSheetState = modalBottomSheetState,
         priceViewState = priceViewState,
+        onFirstVisibleItemChanged = { viewModel.onPaymentListScrolledChanged(it) }
     )
 }
 
@@ -186,6 +190,7 @@ fun PaymentListScreen(
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
     toolbarTitle: String,
+    isContentScrolling: Boolean,
     paymentListResult: MotUiState<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
@@ -204,8 +209,14 @@ fun PaymentListLayout(
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState,
     priceViewState: PriceViewState,
+    onFirstVisibleItemChanged: (Int) -> Unit
 ) {
     val paymentsLitScrollingState = rememberLazyListState()
+
+    LaunchedEffect(paymentsLitScrollingState) {
+        snapshotFlow { paymentsLitScrollingState.firstVisibleItemIndex }
+            .collect { onFirstVisibleItemChanged(it) }
+    }
 
     MotModalBottomSheetLayout(
         sheetContent = {
@@ -248,14 +259,15 @@ fun PaymentListLayout(
                         val view = LocalView.current
                         if (!view.isInEditMode) {
                             val window = (view.context as Activity).window
-                            window.statusBarColor = MaterialTheme.colorScheme.tertiaryContainer.toArgb()
+                            window.statusBarColor =
+                                MaterialTheme.colorScheme.tertiaryContainer.toArgb()
                         }
                     }
                 } else {
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        isContentScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
+                        isContentScrolling = isContentScrolling
                     )
 //                        .also {
 //                        val view = LocalView.current
@@ -427,6 +439,7 @@ private fun PaymentListScreenLightPreview() {
         PaymentListLayout(
             navigationIcon = { MotNavDrawerIcon {} },
             toolbarTitle = "Title",
+            isContentScrolling = false,
             paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
             onItemClick = {},
@@ -446,6 +459,7 @@ private fun PaymentListScreenLightPreview() {
             onCategoryClick = {},
             modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
             priceViewState = PriceViewState(),
+            onFirstVisibleItemChanged = {}
         )
     }
 }

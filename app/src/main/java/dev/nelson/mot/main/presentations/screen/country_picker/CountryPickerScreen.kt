@@ -52,9 +52,9 @@ fun CountryPickerScreen(
     viewModel: CountryPickerViewModel,
     closeScreen: () -> Unit
 ) {
-//    val countries by viewModel.countriesPickerState.collectAsState(emptyList())
     val viewState by viewModel.countryPickerViewState.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
+    val isContentScrolling by viewModel.isScreenContentScrolling.collectAsState()
 
     LaunchedEffect(
         key1 = Unit,
@@ -67,6 +67,7 @@ fun CountryPickerScreen(
 
     CountryPickerLayout(
         viewState = viewState,
+        isContentScrolling = isContentScrolling,
         searchText = searchText,
         onSearchTextChange = { viewModel.onSearchTextChange(it) },
         onFirstVisibleItemChanged = { viewModel.onCountryListScrolledChanged(it) },
@@ -78,15 +79,14 @@ fun CountryPickerScreen(
 @Composable
 private fun CountryPickerLayout(
     viewState: CountryPickerViewState,
+    isContentScrolling: Boolean,
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     onFirstVisibleItemChanged: (Int) -> Unit,
     closeScreenAction: () -> Unit,
     onCountryClick: (Locale) -> Unit,
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
     val countriesListScrollState = rememberLazyListState()
-    val isScrollingState = MutableStateFlow(false)
     val searchFieldTransitionState = remember { MutableTransitionState(false) }
     val searchFieldTransition = updateTransition(
         transitionState = searchFieldTransitionState,
@@ -130,7 +130,7 @@ private fun CountryPickerLayout(
                         onClick = closeScreenAction
                     )
                 },
-                isContentScrolling = viewState.isContentScrolling
+                isContentScrolling = isContentScrolling
             )
         }
     ) { innerPadding ->
@@ -211,6 +211,7 @@ private fun CountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(),
+            isContentScrolling = false,
             onCountryClick = {},
             onFirstVisibleItemChanged = {},
             searchText = "",
