@@ -2,12 +2,13 @@ package dev.nelson.mot.main.util.compose
 
 import android.content.Context
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.google.gson.Gson
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import java.io.InputStream
 import java.util.UUID
 
@@ -34,6 +35,48 @@ object PreviewData {
 
     val paymentListPreview: List<Payment>
         get() = (1..30).map { Payment("payment $it", it * 10, id = it, category = categoryPreview) }
+
+
+    val statisticByYearModelPreviewData
+        get(): StatisticByYearModel {
+            val year = (2018..2023).random() // Example year
+            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+
+            return StatisticByYearModel(
+                key= generateKey(),
+                year,
+                sumOfCategories,
+                categoriesModelList
+            )
+        }
+
+    private val generateCategoriesModelList
+        get(): List<StatisticByCategoryModel> {
+            val numCategories =
+                (5..10).random() // Generate a random number of categories between 5 and 10
+            val categoriesModelList = mutableListOf<StatisticByCategoryModel>()
+
+            for (i in 1..numCategories) {
+                val value = (10000..50000).random() // Generate a random value for the category
+
+                val categoryModel = StatisticByCategoryModel(
+                    categoryPreview,
+                    value,
+                    paymentListPreview
+                )
+                categoriesModelList.add(categoryModel)
+            }
+
+            return categoriesModelList
+        }
+
+    val statisticByYearListPreviewData
+        get():List<StatisticByYearModel> {
+            return (1..5).map { statisticByYearModelPreviewData }
+        }
 
     fun jsonString(context: Context, assetFile: String): String {
         val inputStream: InputStream = context.assets.open(assetFile)
