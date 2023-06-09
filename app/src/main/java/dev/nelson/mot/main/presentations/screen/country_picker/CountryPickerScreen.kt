@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import dev.nelson.mot.core.ui.MotCloseIcon
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavBackIcon
@@ -54,7 +53,7 @@ fun CountryPickerScreen(
     closeScreen: () -> Unit
 ) {
 //    val countries by viewModel.countriesPickerState.collectAsState(emptyList())
-    val viewState by viewModel.viewState.collectAsState()
+    val viewState by viewModel.countryPickerViewState.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
 
     LaunchedEffect(
