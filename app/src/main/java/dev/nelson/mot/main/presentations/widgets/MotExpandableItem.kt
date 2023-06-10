@@ -12,6 +12,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,35 +67,31 @@ fun MotExpandableItem(
         )
     }
 
-    Surface {
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                titleContent()
-                IconButton(
-                    onClick = onExpandButtonClick,
-                    content = {
-                        Icon(
-                            imageVector = expandButtonIcon,
-                            contentDescription = "Expandable Arrow",
-                            modifier = Modifier.rotate(arrowRotationDegree),
-                        )
-                    }
-                )
-            }
-            AnimatedVisibility(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Red),
-                visibleState = expandedState,
-                enter = enterTransition,
-                exit = exitTransition,
-                content = { expandedContent() }
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            titleContent()
+            IconButton(
+                onClick = onExpandButtonClick,
+                content = {
+                    Icon(
+                        imageVector = expandButtonIcon,
+                        contentDescription = "Expandable Arrow",
+                        modifier = Modifier.rotate(arrowRotationDegree),
+                    )
+                }
             )
         }
+        AnimatedVisibility(
+            modifier = Modifier.fillMaxWidth(),
+            visibleState = expandedState,
+            enter = enterTransition,
+            exit = exitTransition,
+            content = { expandedContent() }
+        )
     }
 }
 
@@ -105,20 +102,22 @@ private fun MotExpandableItemPreview() {
         val payment = PreviewData.paymentItemPreview
         val expandedState = remember { MutableTransitionState(payment.isExpanded) }
 
-        MotExpandableItem(
-            expandedState = expandedState,
-            titleContent = { Text(text = payment.name) },
-            expandedContent = {
-                Text(
-                    text = payment.message,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            },
-            expandButtonIcon = Icons.Default.KeyboardArrowUp,
-            onExpandButtonClick = {
-                payment.isExpanded = !expandedState.currentState
-                expandedState.targetState = payment.isExpanded
-            }
-        )
+        Surface {
+            MotExpandableItem(
+                expandedState = expandedState,
+                titleContent = { Text(text = payment.name) },
+                expandedContent = {
+                    Text(
+                        text = payment.message,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                },
+                expandButtonIcon = Icons.Default.KeyboardArrowUp,
+                onExpandButtonClick = {
+                    payment.isExpanded = !expandedState.currentState
+                    expandedState.targetState = payment.isExpanded
+                }
+            )
+        }
     }
 }

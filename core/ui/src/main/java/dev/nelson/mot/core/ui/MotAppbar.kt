@@ -27,10 +27,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import dev.utils.preview.MotPreview
 
-/**
- * @param isContentScrolling it means the content on the screen is scrolling.
- * Depending on this value color of the status bar and toolbar will be changed.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotTopAppBar(
@@ -39,9 +35,14 @@ fun MotTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     screenContentScrollingState: LazyListState = rememberLazyListState()
 ) {
+
+    /**
+     * Depending on this value color of the status bar and toolbar will be changed.
+     */
     val isScreenContentScrolling = remember {
         derivedStateOf { screenContentScrollingState.firstVisibleItemIndex != 0 }
     }
+
     if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
         if (isScreenContentScrolling.value) {
             val appBarColor = MaterialTheme.colorScheme.secondaryContainer
@@ -103,7 +104,6 @@ private fun MotTopAppBarPreview() {
     MotMaterialTheme {
         MotTopAppBar(
             appBarTitle = "Toolbar",
-//            isScrolling = true,
             navigationIcon = { MotNavDrawerIcon {} },
         )
     }

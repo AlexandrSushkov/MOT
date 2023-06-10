@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,37 +53,6 @@ class StatisticViewModel @Inject constructor(
 
 
     init {
-//        launch {
-//            val currentTime = getCurrentTimeUseCase.execute()
-//            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-//            getPaymentListByFixedDateRange.execute(startOfMonthTime, currentTime).collect {
-//                Timber.d(it.toString())
-//                val paymentModelsList = it.filterIsInstance<PaymentListItemModel.PaymentItemModel>()
-//                val sortedByCategoryPaymentMap =
-//                    paymentModelsList.groupBy { paymentModel -> paymentModel.payment.category }
-//                sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in this month for ${category?.name ?: "No Category"}: ${payments.sumOf { payment -> payment.payment.cost }}") }
-//                Timber.d("spend in this month total: ${paymentModelsList.sumOf { paymentModel -> paymentModel.payment.cost }}")
-//                _currentMonthListResult.value = sortedByCategoryPaymentMap
-//            }
-//        }
-//
-//        launch {
-//            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-//            val startOfPreviousMonthTime =
-//                getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
-//            getPaymentListByFixedDateRange.execute(startOfPreviousMonthTime, startOfMonthTime)
-//                .collect {
-//                    Timber.d(it.toString())
-//                    val paymentModelsList =
-//                        it.filterIsInstance<PaymentListItemModel.PaymentItemModel>()
-//                    val sortedByCategoryPaymentMap =
-//                        paymentModelsList.groupBy { paymentModel -> paymentModel.payment.category }
-//                    sortedByCategoryPaymentMap.forEach { (category, payments) -> Timber.d("spend in previous month for ${category?.name ?: "No category"}: ${payments.sumOf { payment -> payment.payment.cost }}") }
-//                    Timber.d("spend in previous month total: ${paymentModelsList.sumOf { paymentModel -> paymentModel.payment.cost }}")
-//                    _previousMonthListResult.value = sortedByCategoryPaymentMap
-//                }
-//        }
-
         launch {
             getPriceViewStateUseCase.execute().collect {
                 _priceViewState.value = it
@@ -97,20 +65,34 @@ class StatisticViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * get item form old list
+     * copy item with new data
+     * copy new list
+     * replace old item with new item
+     * update list state with new list
+     */
+    fun onExpandClicked(statisticByYearModel: StatisticByYearModel) {
+        val oldList = _statByYearListViewState.value
+        val oldItemIndex = oldList.indexOf(statisticByYearModel)
+        val oldItem = oldList[oldItemIndex]
+        val newItem = oldItem.copy(isExpanded = !statisticByYearModel.isExpanded)
+        val newList = mutableListOf<StatisticByYearModel>().apply {
+            this.addAll(oldList)
+            this[oldItemIndex] = newItem
+        }.toList()
+        _statByYearListViewState.value = newList
+    }
 }
 
 data class StatisticByYearModel(
     val key: String,
     val year: Int,
     val sumOfCategories: Int,
+    val isExpanded: Boolean = false,
     val categoriesModelList: List<StatisticByCategoryModel>
-) : ExpandableItem {
-    override val isExpanded: Boolean = false
-}
-
-interface ExpandableItem {
-    val isExpanded: Boolean
-}
+)
 
 data class StatisticByCategoryModel(
     val category: Category?,

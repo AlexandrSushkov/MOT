@@ -40,7 +40,7 @@ class GetStatisticByYears @Inject constructor(
                         sumOfPayments = sumOfPaymentsInCategory,
                         payments = categoryPaymentsEntity.value.toPaymentList()
                     )
-                }
+                }.sortedByDescending { it.sumOfPayments } // sort categories by sum of payments, descending order
                 val sumOfCategories = statByCategoryList.sumOf { it.sumOfPayments }
                 StatisticByYearModel(
                     key = UUIDUtils.randomKey,

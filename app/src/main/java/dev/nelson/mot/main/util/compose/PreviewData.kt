@@ -34,7 +34,9 @@ object PreviewData {
         get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, true, generateKey())
 
     val paymentListPreview: List<Payment>
-        get() = (1..30).map { Payment("payment $it", it * 10, id = it, category = categoryPreview) }
+        get() = (1..30).map {
+            Payment("payment $it", it * 10, id = it, category = categoryPreview)
+        }
 
 
     val statisticByYearModelPreviewData
@@ -46,9 +48,10 @@ object PreviewData {
             val categoriesModelList = generateCategoriesModelList
 
             return StatisticByYearModel(
-                key= generateKey(),
+                key = generateKey(),
                 year,
                 sumOfCategories,
+                isExpanded = false,
                 categoriesModelList
             )
         }
