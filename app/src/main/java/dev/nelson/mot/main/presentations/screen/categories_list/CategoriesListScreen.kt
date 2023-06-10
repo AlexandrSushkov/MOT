@@ -42,6 +42,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -142,7 +143,6 @@ fun CategoryListLayout(
     deleteItemsCountText: String,
     undoDeleteClickEvent: () -> Unit,
 ) {
-
     val categoriesListScrollingState = rememberLazyListState()
 
     Scaffold(
@@ -150,7 +150,7 @@ fun CategoryListLayout(
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                isContentScrolling = categoriesListScrollingState.firstVisibleItemIndex != 0
+                screenContentScrollingState = categoriesListScrollingState
             )
         },
         snackbarHost = {
@@ -261,7 +261,10 @@ fun CategoryList(
                                             content = {
                                                 Text(
                                                     modifier = Modifier
-                                                        .padding(vertical = 4.dp, horizontal = 16.dp),
+                                                        .padding(
+                                                            vertical = 4.dp,
+                                                            horizontal = 16.dp
+                                                        ),
                                                     text = categoryListItem.letter,
                                                     style = MaterialTheme.typography.titleLarge
                                                 )

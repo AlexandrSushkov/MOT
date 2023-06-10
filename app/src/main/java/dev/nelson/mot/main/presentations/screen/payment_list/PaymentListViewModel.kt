@@ -415,10 +415,6 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    fun onPaymentListScrolledChanged(firstVisibleItemPosition: Int) {
-        onContentScrollPositionChanged(firstVisibleItemPosition)
-    }
-
     companion object {
         const val SNAKE_BAR_UNDO_DELAY_MILLS = 4000L
     }

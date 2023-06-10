@@ -5,6 +5,8 @@ package dev.nelson.mot.core.ui
 import android.app.Activity
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Category
@@ -18,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
@@ -31,12 +35,15 @@ import dev.utils.preview.MotPreview
 @Composable
 fun MotTopAppBar(
     appBarTitle: String,
-    isContentScrolling: Boolean = false,
     navigationIcon: @Composable () -> Unit = {},
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
+    screenContentScrollingState: LazyListState = rememberLazyListState()
 ) {
-    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT ){
-        if (isContentScrolling) {
+    val isScreenContentScrolling = remember {
+        derivedStateOf { screenContentScrollingState.firstVisibleItemIndex != 0 }
+    }
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (isScreenContentScrolling.value) {
             val appBarColor = MaterialTheme.colorScheme.secondaryContainer
             val toolbarColors = TopAppBarDefaults.topAppBarColors(containerColor = appBarColor)
             CenterAlignedTopAppBar(
@@ -77,7 +84,7 @@ fun MotTopAppBar(
                 }
             }
         }
-    }else{
+    } else {
         CenterAlignedTopAppBar(
             title = {
                 Text(

@@ -24,7 +24,6 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.LineChartMot
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.presentations.widgets.ExpandableContent
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -65,15 +64,12 @@ fun StatisticLayout(
 
     val statisticListScrollingState = rememberLazyListState()
 
-    val isContentScrolling =
-        remember { derivedStateOf { statisticListScrollingState.firstVisibleItemIndex != 0 } }
-
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                isContentScrolling = isContentScrolling.value
+                screenContentScrollingState = statisticListScrollingState
             )
         }
     ) { innerPadding ->
@@ -96,7 +92,7 @@ fun StatisticLayout(
 fun StatByYearItem(
     model: StatisticByYearModel
 ) {
-    val isExp  = model as? ExpandableItem
+    val isExp = model as? ExpandableItem
     Card(
         modifier = Modifier
             .fillMaxWidth()

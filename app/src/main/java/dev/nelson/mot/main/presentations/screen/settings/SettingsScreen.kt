@@ -30,7 +30,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -118,15 +120,16 @@ private fun SettingsScreenLayout(
 ) {
 
     viewState.alertDialog?.let { MotAlertDialog(it) }
-    val settingsScreenContentScrollingState = rememberLazyListState()
     val isSystemInLightTheme = isSystemInDarkTheme().not()
+
+    val settingsScreenContentScrollingState = rememberLazyListState()
 
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = title,
                 navigationIcon = navigationIcon,
-                isContentScrolling = settingsScreenContentScrollingState.firstVisibleItemIndex != 0
+                screenContentScrollingState = settingsScreenContentScrollingState,
             )
         }
     ) { innerPadding ->

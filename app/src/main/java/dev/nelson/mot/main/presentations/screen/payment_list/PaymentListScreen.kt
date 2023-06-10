@@ -42,6 +42,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -93,7 +94,6 @@ fun PaymentListScreen(
 
     // listen states
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
-    val isContentScrolling by viewModel.isScreenContentScrolling.collectAsState()
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
     val deletedItemsCount by viewModel.deletedItemsCountState.collectAsState(0)
@@ -156,7 +156,6 @@ fun PaymentListScreen(
     PaymentListLayout(
         navigationIcon = navigationIcon,
         toolbarTitle = toolbarTitle,
-        isContentScrolling = isContentScrolling,
         paymentListResult = paymentListResult,
         onItemClick = { paymentItemModel -> viewModel.onItemClick(paymentItemModel) },
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
@@ -175,13 +174,11 @@ fun PaymentListScreen(
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
-        onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
         onChangeDateForSelectedItemsClick = { picker.show() },
         categories = categories,
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
         modalBottomSheetState = modalBottomSheetState,
-        priceViewState = priceViewState,
-        onFirstVisibleItemChanged = { viewModel.onPaymentListScrolledChanged(it) }
+        priceViewState = priceViewState
     )
 }
 
@@ -190,7 +187,6 @@ fun PaymentListScreen(
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
     toolbarTitle: String,
-    isContentScrolling: Boolean,
     paymentListResult: MotUiState<List<PaymentListItemModel>>,
     onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
@@ -204,19 +200,12 @@ fun PaymentListLayout(
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
-    onChangeCategoryForSelectedItemsClick: () -> Unit,
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState,
     priceViewState: PriceViewState,
-    onFirstVisibleItemChanged: (Int) -> Unit
 ) {
     val paymentsLitScrollingState = rememberLazyListState()
-
-    LaunchedEffect(paymentsLitScrollingState) {
-        snapshotFlow { paymentsLitScrollingState.firstVisibleItemIndex }
-            .collect { onFirstVisibleItemChanged(it) }
-    }
 
     MotModalBottomSheetLayout(
         sheetContent = {
@@ -267,7 +256,7 @@ fun PaymentListLayout(
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        isContentScrolling = isContentScrolling
+                        screenContentScrollingState = paymentsLitScrollingState
                     )
 //                        .also {
 //                        val view = LocalView.current
@@ -439,7 +428,6 @@ private fun PaymentListScreenLightPreview() {
         PaymentListLayout(
             navigationIcon = { MotNavDrawerIcon {} },
             toolbarTitle = "Title",
-            isContentScrolling = false,
             paymentListResult = Success(PreviewData.paymentListItemsPreview),
 //        paymentListResult = Error(IllegalStateException("my error")),
             onItemClick = {},
@@ -454,12 +442,10 @@ private fun PaymentListScreenLightPreview() {
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
-            onChangeCategoryForSelectedItemsClick = {},
             categories = emptyList(),
             onCategoryClick = {},
             modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            priceViewState = PriceViewState(),
-            onFirstVisibleItemChanged = {}
+            priceViewState = PriceViewState()
         )
     }
 }

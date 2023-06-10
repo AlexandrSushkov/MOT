@@ -52,10 +52,6 @@ class CountryPickerViewModel @Inject constructor(
         _searchText.value = text
     }
 
-    fun onCountryListScrolledChanged(firstVisibleItemPosition: Int) {
-        onContentScrollPositionChanged(firstVisibleItemPosition)
-    }
-
     fun onLocaleSelected(locale: Locale) {
         launch {
             setLocaleUseCase.execute(locale)
