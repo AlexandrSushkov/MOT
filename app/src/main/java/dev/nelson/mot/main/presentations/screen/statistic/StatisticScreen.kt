@@ -66,17 +66,20 @@ fun StatisticScreen(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {}
 ) {
-    val statByYearList by viewModel.statByYearListViewState.collectAsState(emptyList())
     val statCurrentMothList by viewModel.statCurrentMothViewState.collectAsState(emptyList())
+    val statByMonthList by viewModel.statByMonthListViewState.collectAsState(emptyList())
+    val statByYearList by viewModel.statByYearListViewState.collectAsState(emptyList())
     val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
 
     StatisticLayout(
         appBarTitle = appBarTitle,
         appBarNavigationIcon = appBarNavigationIcon,
-        statByYearList = statByYearList,
         statCurrentMothList = statCurrentMothList,
+        statByMonthList = statByMonthList,
+        statByYearList = statByYearList,
         priceViewState = priceViewState,
-        onExpandClick = { viewModel.onExpandClicked(it) }
+        onExpandYearItemClick = { viewModel.onExpandYearClicked(it) },
+        onExpandMonthItemClick = { viewModel.onExpandMonthClicked(it) }
     )
 }
 
@@ -85,10 +88,12 @@ fun StatisticScreen(
 fun StatisticLayout(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    statByYearList: List<StatisticByYearModel>,
     statCurrentMothList: List<StatisticByCategoryModel>,
+    statByMonthList: List<StatisticByMonthModel>,
+    statByYearList: List<StatisticByYearModel>,
     priceViewState: PriceViewState,
-    onExpandClick: (StatisticByYearModel) -> Unit = {}
+    onExpandYearItemClick: (StatisticByYearModel) -> Unit = {},
+    onExpandMonthItemClick: (StatisticByMonthModel) -> Unit = {}
 ) {
     val statisticListScrollingState = rememberLazyListState()
     val tabs = MotStatisticTab.getTabs()
@@ -185,11 +190,17 @@ fun StatisticLayout(
                         scrollBehavior = scrollBehavior,
                         model = statCurrentMothList,
                     )
-                    is MotStatisticTab.ByMonth -> ByMonthTab(scrollBehavior = scrollBehavior)
+
+                    is MotStatisticTab.ByMonth -> ByMonthTab(
+                        scrollBehavior = scrollBehavior,
+                        statByMonthList = statByMonthList,
+                        onExpandClick = onExpandMonthItemClick
+                    )
+
                     is MotStatisticTab.ByYear -> YearsTabLayout(
                         scrollBehavior = scrollBehavior,
                         statByYearList = statByYearList,
-                        onExpandClick = onExpandClick
+                        onExpandClick = onExpandYearItemClick
                     )
 
                     is MotStatisticTab.ByCategory -> ByCategoryTab(scrollBehavior = scrollBehavior)
@@ -338,8 +349,9 @@ private fun StatisticLayoutPreview() {
         StatisticLayout(
             appBarTitle = "Statistic",
             appBarNavigationIcon = {},
+            statCurrentMothList = PreviewData.statisticByYearModelPreviewData.categoriesModelList,
+            statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByYearList = PreviewData.statisticByYearListPreviewData,
-            statCurrentMothList = emptyList(), // todo generate preview data
             priceViewState = PriceViewState()
         )
     }

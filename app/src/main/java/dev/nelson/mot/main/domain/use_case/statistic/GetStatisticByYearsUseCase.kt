@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import javax.inject.Inject
 
-class GetStatisticByYears @Inject constructor(
+class GetStatisticByYearsUseCase @Inject constructor(
     private val paymentRepository: PaymentRepositoryImpl,
 ) : UseCaseFlow<Nothing?, List<StatisticByYearModel>> {
 

@@ -8,6 +8,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import dev.nelson.mot.main.util.UUIDUtils
 import java.io.InputStream
@@ -37,6 +38,25 @@ object PreviewData {
     val paymentListPreview: List<Payment>
         get() = (1..30).map {
             Payment("payment $it", it * 10, id = it, category = categoryPreview)
+        }
+
+    val statisticByMonthModelPreviewData
+        get(): StatisticByMonthModel {
+            val month = (1..12).random() // Example year
+            val year = (2018..2023).random() // Example year
+            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+
+            return StatisticByMonthModel(
+                key = generateKey(),
+                month = month,
+                year = year,
+                sumOfCategories = sumOfCategories,
+                isExpanded = false,
+                categoriesModelList = categoriesModelList
+            )
         }
 
 
@@ -81,6 +101,11 @@ object PreviewData {
     val statisticByYearListPreviewData
         get():List<StatisticByYearModel> {
             return (1..5).map { statisticByYearModelPreviewData }
+        }
+
+    val statisticByMonthListPreviewData
+        get():List<StatisticByMonthModel> {
+            return (6..20).map { statisticByMonthModelPreviewData }
         }
 
     fun jsonString(context: Context, assetFile: String): String {

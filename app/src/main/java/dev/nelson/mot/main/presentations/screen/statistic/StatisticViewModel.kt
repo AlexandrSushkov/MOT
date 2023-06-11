@@ -12,7 +12,8 @@ import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonth
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
-import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByYears
+import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByMonthUseCase
+import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByYearsUseCase
 import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticForCurrentMonthUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
@@ -28,9 +29,10 @@ class StatisticViewModel @Inject constructor(
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
-    getStatisticByYears: GetStatisticByYears,
+    getStatisticByYearsUseCase: GetStatisticByYearsUseCase,
     private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
     private val getStatisticForCurrentMonthUseCase: GetStatisticForCurrentMonthUseCase,
+    private val getStatisticByMonthUseCase: GetStatisticByMonthUseCase,
 
     ) : BaseViewModel() {
 
@@ -56,6 +58,10 @@ class StatisticViewModel @Inject constructor(
     private val _statCurrentMothViewState =
         MutableStateFlow(emptyList<StatisticByCategoryModel>())
 
+    val statByMonthListViewState
+        get() = _statByMonthListViewState.asStateFlow()
+    private val _statByMonthListViewState = MutableStateFlow(emptyList<StatisticByMonthModel>())
+
     val statByYearListViewState
         get() = _statByYearListViewState.asStateFlow()
     private val _statByYearListViewState = MutableStateFlow(emptyList<StatisticByYearModel>())
@@ -69,16 +75,22 @@ class StatisticViewModel @Inject constructor(
         }
 
         launch {
-            getStatisticByYears.execute().collect {
+            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
+            // no end date. otherwise newly added payments won't be shown.
+            getStatisticForCurrentMonthUseCase.execute(startOfMonthTime).collect {
+                _statCurrentMothViewState.value = it
+            }
+        }
+
+        launch {
+            getStatisticByYearsUseCase.execute().collect {
                 _statByYearListViewState.value = it
             }
         }
 
         launch {
-            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-            // no end date. otherwise newly added payments won't be shown.
-            getStatisticForCurrentMonthUseCase.execute(startOfMonthTime).collect {
-                _statCurrentMothViewState.value = it
+            getStatisticByMonthUseCase.execute().collect {
+                _statByMonthListViewState.value = it
             }
         }
     }
@@ -90,7 +102,7 @@ class StatisticViewModel @Inject constructor(
      * replace old item with new item
      * update list state with new list
      */
-    fun onExpandClicked(statisticByYearModel: StatisticByYearModel) {
+    fun onExpandYearClicked(statisticByYearModel: StatisticByYearModel) {
         val oldList = _statByYearListViewState.value
         val oldItemIndex = oldList.indexOf(statisticByYearModel)
         val oldItem = oldList[oldItemIndex]
@@ -101,10 +113,31 @@ class StatisticViewModel @Inject constructor(
         }.toList()
         _statByYearListViewState.value = newList
     }
+
+    fun onExpandMonthClicked(statisticByMonthModel: StatisticByMonthModel) {
+        val oldList = _statByMonthListViewState.value
+        val oldItemIndex = oldList.indexOf(statisticByMonthModel)
+        val oldItem = oldList[oldItemIndex]
+        val newItem = oldItem.copy(isExpanded = !statisticByMonthModel.isExpanded)
+        val newList = mutableListOf<StatisticByMonthModel>().apply {
+            this.addAll(oldList)
+            this[oldItemIndex] = newItem
+        }.toList()
+        _statByMonthListViewState.value = newList
+    }
 }
 
 data class StatisticByYearModel(
     val key: String,
+    val year: Int,
+    val sumOfCategories: Int,
+    val isExpanded: Boolean = false,
+    val categoriesModelList: List<StatisticByCategoryModel>
+)
+
+data class StatisticByMonthModel(
+    val key: String,
+    val month: Int,
     val year: Int,
     val sumOfCategories: Int,
     val isExpanded: Boolean = false,
