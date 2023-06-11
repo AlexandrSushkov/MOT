@@ -1,37 +1,89 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.core.ui.LineChartMot
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByCategoryTab
+import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByMonthTab
+import dev.nelson.mot.main.presentations.screen.statistic.tabs.CurrentMonthTab
+import dev.nelson.mot.main.presentations.screen.statistic.tabs.YearsTabLayout
 import dev.nelson.mot.main.presentations.widgets.MotExpandableItem
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
+import kotlinx.coroutines.launch
 
 @Composable
 fun StatisticScreen(
@@ -51,6 +103,7 @@ fun StatisticScreen(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticLayout(
     appBarTitle: String,
@@ -60,112 +113,235 @@ fun StatisticLayout(
     onExpandClick: (StatisticByYearModel) -> Unit = {}
 ) {
     val statisticListScrollingState = rememberLazyListState()
+    val tabs = MotStatisticTab.getTabs()
+    val pagerState = rememberPagerState(0)
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
-            MotTopAppBar(
-                appBarTitle = appBarTitle,
+            TopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = { Text(text = appBarTitle) },
                 navigationIcon = appBarNavigationIcon,
-                screenContentScrollingState = statisticListScrollingState
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                ),
             )
-        }
+        },
     ) { innerPadding ->
-        LazyColumn(
-            state = statisticListScrollingState,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(paddingValues = innerPadding),
         ) {
-            statByYearList.forEach {
-                item {
-                    val expandedState = remember { MutableTransitionState(it.isExpanded) }
-                    expandedState.targetState = it.isExpanded
-                    StatByYearItem(
-                        model = it,
-                        expandedState = expandedState,
+            val textWidth = remember { mutableStateOf(0) }
+
+            val density = LocalDensity.current
+            val tabWidths = remember {
+                val tabWidthStateList = mutableStateListOf<Dp>()
+                repeat(tabs.size) {
+                    tabWidthStateList.add(0.dp)
+                }
+                tabWidthStateList
+            }
+
+            ScrollableTabRow(
+                modifier = Modifier.fillMaxWidth(),
+                selectedTabIndex = pagerState.currentPage,
+                edgePadding = 0.dp,
+                indicator = { tabPositions ->
+                    Box(
+                        modifier = Modifier
+                            .customTabIndicatorOffset(
+                                currentTabPosition = tabPositions[pagerState.currentPage],
+                                tabWidth = tabWidths[pagerState.currentPage]
+                            )
+                            .height(4.dp)
+                            .width(with(LocalDensity.current) { textWidth.value.toDp() })
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                textWidth.value = coordinates.size.width
+                            },
+                    )
+                },
+//                divider = {
+                // default divider in not cover the whole width if there is less tabs than screen width
+//                },
+                tabs = {
+                    tabs.forEachIndexed { index, statisticTab ->
+                        Tab(
+                            text = {
+                                Text(
+                                    text = statisticTab.title,
+                                    onTextLayout = { textLayoutResult ->
+                                        tabWidths[index] =
+                                            with(density) {
+                                                textLayoutResult.size.width
+                                                    .toDp()
+                                            }
+                                    }
+                                )
+                            },
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                        )
+                    }
+                }
+            )
+            HorizontalPager(
+                modifier = Modifier.fillMaxSize(),
+                pageCount = tabs.size,
+                state = pagerState,
+            ) { tabId ->
+                when (tabs[tabId]) {
+                    is MotStatisticTab.CurrentMonth -> CurrentMonthTab(scrollBehavior = scrollBehavior)
+                    is MotStatisticTab.ByMonth -> ByMonthTab(scrollBehavior = scrollBehavior)
+                    is MotStatisticTab.ByYear -> YearsTabLayout(
+                        scrollBehavior = scrollBehavior,
+                        statByYearList = statByYearList,
                         onExpandClick = onExpandClick
                     )
+
+                    is MotStatisticTab.ByCategory -> ByCategoryTab(scrollBehavior = scrollBehavior)
                 }
             }
         }
     }
 }
 
-@Composable
-fun StatByYearItem(
-    model: StatisticByYearModel,
-    expandedState: MutableTransitionState<Boolean>,
-    onExpandClick: (StatisticByYearModel) -> Unit = {}
-) {
+sealed class MotStatisticTab(val title: String) {
+    object CurrentMonth : MotStatisticTab("Current Month")
+    object ByMonth : MotStatisticTab("By Month")
+    object ByYear : MotStatisticTab("By Year")
+    object ByCategory : MotStatisticTab("By Category")
 
-    Card(
+    companion object {
+        fun getTabs() = listOf(CurrentMonth, ByMonth, ByYear, ByCategory)
+    }
+}
+
+fun Modifier.customTabIndicatorOffset(
+    currentTabPosition: TabPosition,
+    tabWidth: Dp
+): Modifier = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "customTabIndicatorOffset"
+        value = currentTabPosition
+    }
+) {
+    val currentTabWidth by animateDpAsState(
+        targetValue = tabWidth,
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "currentTabWidth"
+    )
+    val indicatorOffset by animateDpAsState(
+        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing),
+        label = "indicatorOffset"
+    )
+    fillMaxWidth()
+        .wrapContentSize(Alignment.BottomStart)
+        .offset(x = indicatorOffset)
+        .width(currentTabWidth)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Tab3(scrollBehavior: TopAppBarScrollBehavior) {
+    // List items
+    val listItems = listOf(
+        "test 1 tab 1",
+        "test 2 tab 1",
+        "test 3 tab 1",
+        "test 4 tab 1",
+        "test 5 tab 1",
+        "test 6 tab 1",
+        "test 7 tab 1",
+        "test 8 tab 1",
+        "test 9 tab 1",
+        "test 10 tab 1",
+        "test 11 tab 1",
+        "test 12 tab 1",
+    )
+
+    val listState = rememberLazyListState()
+
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp)
-        ) {
-            MotExpandableItem(
-                titleContent = {
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "${model.year}")
-                        Text(text = model.sumOfCategories.toString())
-                    }
-                },
-                expandedContent = {
-                    Column {
-                        Divider()
-                        model.categoriesModelList.forEach {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(text = it.category?.name ?: "No category")
-                                Text(text = it.sumOfPayments.toString())
-                            }
-                        }
-                    }
-                },
-                expandButtonIcon = Icons.Default.KeyboardArrowUp,
-                onExpandButtonClick = { onExpandClick(model) },
-                expandedState = expandedState
-            )
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        state = listState,
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        content = {
+            listItems.forEach {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .height(80.dp)
+                            .fillMaxWidth(),
 
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Text(text = "${model.year}")
-//                Text(text = model.sumOfCategories.toString())
-//            }
-//            model.categoriesModelList.forEach {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    Text(text = it.category?.name ?: "No category")
-//                    Text(text = it.sumOfPayments.toString())
-//                }
-//            }
+                        content = { Text(text = it) }
+                    )
+                }
+            }
         }
-    }
+    )
 }
 
-@MotPreview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatByYearItem() {
-    MaterialTheme {
-        StatByYearItem(
-            PreviewData.statisticByYearModelPreviewData,
-            expandedState = MutableTransitionState(false)
-        )
-    }
+fun Tab2(scrollBehavior: TopAppBarScrollBehavior) {
+    // List items
+    val listItems = listOf(
+        "test 1 tab 2",
+        "test 2 tab 2",
+        "test 3 tab 2",
+        "test 4 tab 2",
+        "test 5 tab 2",
+        "test 6 tab 2",
+        "test 7 tab 2",
+        "test 8 tab 2",
+        "test 9 tab 2",
+        "test 10 tab 2",
+        "test 11 tab 2",
+        "test 12 tab 2",
+    )
+
+    val listState = rememberLazyListState()
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        state = listState,
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        content = {
+            listItems.forEach {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .height(80.dp)
+                            .fillMaxWidth(),
+
+                        content = { Text(text = it) }
+                    )
+                }
+            }
+        }
+    )
 }
+
 
 @Composable
 fun StatisticContent() {

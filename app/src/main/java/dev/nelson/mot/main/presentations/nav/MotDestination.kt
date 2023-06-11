@@ -3,6 +3,7 @@ package dev.nelson.mot.main.presentations.nav
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Settings
@@ -13,6 +14,12 @@ interface MotDestination {
     val icon: ImageVector
     val route: String
 //    val screen: @Composable () -> Unit
+}
+
+object Dashboard : MotDestination {
+    override val icon = Icons.Default.Dashboard
+    override val route = "Dashboard"
+//    override val screen: @Composable () -> Unit = { PaymentListScreen({}, {}) }
 }
 
 object Payments : MotDestination {
@@ -57,5 +64,5 @@ object CountryPicker : MotDestination {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-val initialDrawerItemsList = listOf(Payments, Categories, Settings)
+val initialDrawerItemsList = listOf(Dashboard, Payments, Categories, Settings)
 

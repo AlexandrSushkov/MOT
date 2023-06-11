@@ -16,6 +16,7 @@ import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.country_picker.CountryPickerScreen
+import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
@@ -47,6 +48,15 @@ fun MotNavHost(
         navController = navController,
         startDestination = startDestination.route
     ) {
+        composable(
+            route = Dashboard.route,
+            content = {
+                DashboardScreen(
+                    appBarTitle = "dashboard",
+                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                )
+            },
+        )
         composable(
             route = Payments.route,
             content = {
@@ -125,7 +135,7 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic",
                     appBarNavigationIcon = {
-                        MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
+                        MotNavBackIcon { navController.popBackStack() }
                     },
                 )
             },

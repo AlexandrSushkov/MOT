@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -373,7 +374,7 @@ fun EditCategoryDialog(
     AlertDialog(
         onDismissRequest = closeEditCategoryDialog,
         text = {
-            MotTextField(
+            OutlinedTextField(
                 value = categoryNameState,
                 onValueChange = { onCategoryNameChanged.invoke(it) },
                 placeholder = { Text(stringResource(R.string.category_name)) },

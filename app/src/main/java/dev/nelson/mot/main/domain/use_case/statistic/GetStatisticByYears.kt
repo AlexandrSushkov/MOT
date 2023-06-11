@@ -50,6 +50,5 @@ class GetStatisticByYears @Inject constructor(
                 )
             }
         }
-
     }
 }
