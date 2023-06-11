@@ -5,13 +5,15 @@ import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByYears
+import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticForCurrentMonthUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +28,11 @@ class StatisticViewModel @Inject constructor(
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
-    getStatisticByYears: GetStatisticByYears
-) : BaseViewModel() {
+    getStatisticByYears: GetStatisticByYears,
+    private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
+    private val getStatisticForCurrentMonthUseCase: GetStatisticForCurrentMonthUseCase,
+
+    ) : BaseViewModel() {
 
     /**
      * list of categories with total spendings
@@ -46,6 +51,10 @@ class StatisticViewModel @Inject constructor(
         get() = _priceViewState.asStateFlow()
     private val _priceViewState = MutableStateFlow(PriceViewState())
 
+    val statCurrentMothViewState
+        get() = _statCurrentMothViewState.asStateFlow()
+    private val _statCurrentMothViewState =
+        MutableStateFlow(emptyList<StatisticByCategoryModel>())
 
     val statByYearListViewState
         get() = _statByYearListViewState.asStateFlow()
@@ -62,6 +71,14 @@ class StatisticViewModel @Inject constructor(
         launch {
             getStatisticByYears.execute().collect {
                 _statByYearListViewState.value = it
+            }
+        }
+
+        launch {
+            val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
+            // no end date. otherwise newly added payments won't be shown.
+            getStatisticForCurrentMonthUseCase.execute(startOfMonthTime).collect {
+                _statCurrentMothViewState.value = it
             }
         }
     }
@@ -95,6 +112,7 @@ data class StatisticByYearModel(
 )
 
 data class StatisticByCategoryModel(
+    val key: String,
     val category: Category?,
     val sumOfPayments: Int,
     val payments: List<Payment>?

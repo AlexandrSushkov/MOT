@@ -36,6 +36,7 @@ class GetStatisticByYears @Inject constructor(
                     val sumOfPaymentsInCategory =
                         categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
                     StatisticByCategoryModel(
+                        key = UUIDUtils.randomKey,
                         category = categoryPaymentsEntity.key?.toCategory(),
                         sumOfPayments = sumOfPaymentsInCategory,
                         payments = categoryPaymentsEntity.value.toPaymentList()

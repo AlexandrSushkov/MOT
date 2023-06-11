@@ -1,22 +1,14 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,27 +17,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -61,11 +43,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -74,13 +51,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.LineChartMot
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByCategoryTab
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByMonthTab
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.CurrentMonthTab
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.YearsTabLayout
-import dev.nelson.mot.main.presentations.widgets.MotExpandableItem
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
@@ -92,12 +67,14 @@ fun StatisticScreen(
     appBarNavigationIcon: @Composable () -> Unit = {}
 ) {
     val statByYearList by viewModel.statByYearListViewState.collectAsState(emptyList())
+    val statCurrentMothList by viewModel.statCurrentMothViewState.collectAsState(emptyList())
     val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
 
     StatisticLayout(
         appBarTitle = appBarTitle,
         appBarNavigationIcon = appBarNavigationIcon,
         statByYearList = statByYearList,
+        statCurrentMothList = statCurrentMothList,
         priceViewState = priceViewState,
         onExpandClick = { viewModel.onExpandClicked(it) }
     )
@@ -109,6 +86,7 @@ fun StatisticLayout(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {},
     statByYearList: List<StatisticByYearModel>,
+    statCurrentMothList: List<StatisticByCategoryModel>,
     priceViewState: PriceViewState,
     onExpandClick: (StatisticByYearModel) -> Unit = {}
 ) {
@@ -203,7 +181,10 @@ fun StatisticLayout(
                 state = pagerState,
             ) { tabId ->
                 when (tabs[tabId]) {
-                    is MotStatisticTab.CurrentMonth -> CurrentMonthTab(scrollBehavior = scrollBehavior)
+                    is MotStatisticTab.CurrentMonth -> CurrentMonthTab(
+                        scrollBehavior = scrollBehavior,
+                        model = statCurrentMothList,
+                    )
                     is MotStatisticTab.ByMonth -> ByMonthTab(scrollBehavior = scrollBehavior)
                     is MotStatisticTab.ByYear -> YearsTabLayout(
                         scrollBehavior = scrollBehavior,
@@ -358,6 +339,7 @@ private fun StatisticLayoutPreview() {
             appBarTitle = "Statistic",
             appBarNavigationIcon = {},
             statByYearList = PreviewData.statisticByYearListPreviewData,
+            statCurrentMothList = emptyList(), // todo generate preview data
             priceViewState = PriceViewState()
         )
     }

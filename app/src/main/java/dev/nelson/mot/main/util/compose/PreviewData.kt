@@ -9,6 +9,7 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
+import dev.nelson.mot.main.util.UUIDUtils
 import java.io.InputStream
 import java.util.UUID
 
@@ -66,9 +67,10 @@ object PreviewData {
                 val value = (10000..50000).random() // Generate a random value for the category
 
                 val categoryModel = StatisticByCategoryModel(
-                    categoryPreview,
-                    value,
-                    paymentListPreview
+                    key = UUIDUtils.randomKey,
+                    category = categoryPreview,
+                    sumOfPayments = value,
+                    payments = paymentListPreview
                 )
                 categoriesModelList.add(categoryModel)
             }

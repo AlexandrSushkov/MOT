@@ -22,7 +22,7 @@ interface PaymentRepository {
      */
     fun getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
         startTime: Long,
-        categoryId: Int?,
+        categoryId: Int? = null,
         isAsc: Boolean = false
     ): Flow<List<PaymentWithCategory>>
 
