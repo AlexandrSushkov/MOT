@@ -54,13 +54,13 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         timeZone: TimeZone? = null, dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
-            payment.dateInMills?.let { mills ->
+            payment.dateInMills.let { mills ->
                 payment.copyWith(
                     date = formatTimeUseCase.execute(
                         mills, timeZone, dateTimeFormatter
                     )
                 )
-            } ?: payment
+            }
         }
     }
 
@@ -91,5 +91,4 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
     private fun Payment.toPaymentListItem(showCategory: Boolean): PaymentListItemModel {
         return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.randomKey)
     }
-
 }

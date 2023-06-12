@@ -241,7 +241,7 @@ class PaymentListViewModel @Inject constructor(
         } else {
             // select mode is off. open payment details
             launch {
-                payment.payment.id?.toInt()?.let {
+                payment.payment.id?.let {
                     _openPaymentDetailsAction.emit(
                         OpenPaymentDetailsAction.ExistingPayment(it)
                     )
