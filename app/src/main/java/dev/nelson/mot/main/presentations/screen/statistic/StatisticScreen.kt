@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
+import android.app.Activity
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -22,6 +23,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,9 +45,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -104,13 +108,22 @@ fun StatisticLayout(
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            val appBarColor = MaterialTheme.colorScheme.secondaryContainer
+
+            CenterAlignedTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = { Text(text = appBarTitle) },
                 navigationIcon = appBarNavigationIcon,
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                ),
+                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                ).also {
+                    val view = LocalView.current
+                    if (!view.isInEditMode) {
+                        val window = (view.context as Activity).window
+                        window.statusBarColor = appBarColor.toArgb()
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -133,6 +146,7 @@ fun StatisticLayout(
             ScrollableTabRow(
                 modifier = Modifier.fillMaxWidth(),
                 selectedTabIndex = pagerState.currentPage,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 edgePadding = 0.dp,
                 indicator = { tabPositions ->
                     Box(

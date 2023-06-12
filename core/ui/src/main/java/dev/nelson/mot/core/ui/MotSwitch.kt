@@ -2,8 +2,6 @@ package dev.nelson.mot.core.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -11,12 +9,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.vector.ImageVector
 import dev.utils.preview.MotPreview
 
 @Composable
 fun MotSwitch(
     checked: Boolean,
-    onCheckedChange: ((Boolean) -> Unit)?
+    onCheckedChange: ((Boolean) -> Unit)?,
+    uncheckedStateIcon: ImageVector? = null,
+    checkedStateIcon: ImageVector = Icons.Default.Done
 ) {
     Switch(
         checked = checked,
@@ -24,16 +25,18 @@ fun MotSwitch(
         thumbContent = {
             if (checked) {
                 Icon(
-                    Icons.Default.Done,
+                    checkedStateIcon,
                     modifier = Modifier.scale(0.75f),
-                    contentDescription = "back icon"
+                    contentDescription = "switch checked icon"
                 )
             } else {
-                Icon(
-                    Icons.Default.Close,
-                    modifier = Modifier.scale(0.75f),
-                    contentDescription = "back icon"
-                )
+                uncheckedStateIcon?.let {
+                    Icon(
+                        it,
+                        modifier = Modifier.scale(0.75f),
+                        contentDescription = "switch unchecked icon"
+                    )
+                }
             }
         }
     )

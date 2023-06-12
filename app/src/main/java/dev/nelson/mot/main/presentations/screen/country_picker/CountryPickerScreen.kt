@@ -29,11 +29,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCloseIcon
@@ -44,13 +42,12 @@ import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
 import dev.utils.preview.MotPreviewScreen
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 @Composable
 fun CountryPickerScreen(
     viewModel: CountryPickerViewModel,
-    closeScreen: () -> Unit
+    closeScreenAction: () -> Unit
 ) {
     val viewState by viewModel.countryPickerViewState.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
@@ -59,7 +56,7 @@ fun CountryPickerScreen(
         key1 = Unit,
         block = {
             viewModel.closeScreenAction.collect {
-                closeScreen.invoke()
+                closeScreenAction.invoke()
             }
         }
     )
@@ -68,7 +65,7 @@ fun CountryPickerScreen(
         viewState = viewState,
         searchText = searchText,
         onSearchTextChange = { viewModel.onSearchTextChange(it) },
-        closeScreenAction = closeScreen,
+        closeScreenAction = closeScreenAction,
         onCountryClick = { viewModel.onLocaleSelected(it) }
     )
 }

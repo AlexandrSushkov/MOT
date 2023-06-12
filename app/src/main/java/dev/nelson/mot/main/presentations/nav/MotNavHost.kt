@@ -20,6 +20,7 @@ import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
+import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
@@ -148,6 +149,7 @@ fun MotNavHost(
                     settingsViewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
+                    openAppThemePickerScreen = { navController.navigate(AppThemePicker.route) },
                 )
             },
         )
@@ -155,8 +157,19 @@ fun MotNavHost(
             route = CountryPicker.route,
             content = {
                 CountryPickerScreen(
-                    viewModel = hiltViewModel()
-                ) { navController.popBackStack() }
+                    viewModel = hiltViewModel(),
+                    closeScreenAction = { navController.popBackStack() }
+                )
+            },
+        )
+        composable(
+            route = AppThemePicker.route,
+            content = {
+                SelectAppThemeScreen(
+                    title = "Select App Theme",
+                    selectAppThemeViewModel = hiltViewModel(),
+                    closeScreenAction = { navController.popBackStack() },
+                )
             },
         )
     }
