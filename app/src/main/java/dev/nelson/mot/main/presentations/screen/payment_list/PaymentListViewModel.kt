@@ -113,8 +113,7 @@ class PaymentListViewModel @Inject constructor(
                     _toolBarTitleState.value = "Recent Payments"
 
                     val startOfMonthTime = getStartOfCurrentMonthTimeUseCase.execute()
-                    val startOfPreviousMonth =
-                        getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
+                    val startOfPreviousMonth = getStartOfPreviousMonthTimeUseCase.execute(startOfMonthTime)
                     // no end date. otherwise newly added payments won't be shown.
                     getPaymentListNoFixedDateRange.execute(
                         startOfPreviousMonth,

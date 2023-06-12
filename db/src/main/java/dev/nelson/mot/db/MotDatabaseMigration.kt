@@ -17,8 +17,21 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 
         fun migrateCategoriesTable(database: SupportSQLiteDatabase) {
             with(database) {
-                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${CategoryTable.NAME} TEXT NOT NULL, ${CategoryTable.FAVORITE} INTEGER NOT NULL DEFAULT 0)")
-                execSQL("INSERT INTO $tempTableName (${CategoryTable.ID}, ${CategoryTable.NAME}) SELECT ${CategoryTableV1.ID}, ${CategoryTableV1.NAME} FROM ${CategoryTableV1.TABLE_NAME}")
+                execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS $tempTableName (
+                        ${CategoryTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        ${CategoryTable.NAME} TEXT NOT NULL, 
+                        ${CategoryTable.FAVORITE} INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent()
+                )
+                execSQL(
+                    """
+                    INSERT INTO $tempTableName (${CategoryTable.ID}, ${CategoryTable.NAME}) 
+                    SELECT ${CategoryTableV1.ID}, ${CategoryTableV1.NAME} FROM ${CategoryTableV1.TABLE_NAME}
+                """.trimIndent()
+                )
                 execSQL("DROP TABLE ${CategoryTableV1.TABLE_NAME}")
                 execSQL("ALTER TABLE $tempTableName RENAME TO ${CategoryTable.TABLE_NAME}")
             }
@@ -27,18 +40,53 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
         fun migratePaymentTable(database: SupportSQLiteDatabase) {
             with(database) {
                 //migrate payments table
-                execSQL("CREATE TABLE IF NOT EXISTS $tempTableName (${PaymentTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTable.TITLE} TEXT NOT NULL, ${PaymentTable.CATEGORY_ID_KEY} INTEGER REFERENCES categories(${CategoryTable.ID}) ON DELETE SET NULL, ${PaymentTable.COST} INTEGER NOT NULL, ${PaymentTable.DATE} TEXT, ${PaymentTable.DATE_IN_MILLISECONDS} INTEGER, ${PaymentTable.SUMMARY} TEXT)")
-                execSQL("INSERT INTO $tempTableName (${PaymentTable.ID}, ${PaymentTable.TITLE}, ${PaymentTable.CATEGORY_ID_KEY}, ${PaymentTable.COST}, ${PaymentTable.SUMMARY}) SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.TITLE}, ${PaymentTableV1.CATEGORY_ID}, ${PaymentTableV1.COST}, ${PaymentTableV1.SUMMARY} FROM ${PaymentTableV1.TABLE_NAME}")
+                execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS $tempTableName (
+                        ${PaymentTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        ${PaymentTable.TITLE} TEXT NOT NULL, 
+                        ${PaymentTable.CATEGORY_ID_KEY} INTEGER REFERENCES ${CategoryTable.TABLE_NAME}(${CategoryTable.ID}) ON DELETE SET NULL, 
+                        ${PaymentTable.COST} INTEGER NOT NULL, 
+                        ${PaymentTable.DATE} TEXT, 
+                        ${PaymentTable.DATE_IN_MILLISECONDS} INTEGER, 
+                        ${PaymentTable.SUMMARY} TEXT
+                    )
+                """.trimIndent()
+                )
+
+                execSQL(
+                    """
+                    INSERT INTO $tempTableName (
+                        ${PaymentTable.ID}, 
+                        ${PaymentTable.TITLE}, 
+                        ${PaymentTable.CATEGORY_ID_KEY}, 
+                        ${PaymentTable.COST}, 
+                        ${PaymentTable.DATE}, 
+                        ${PaymentTable.DATE_IN_MILLISECONDS}, 
+                        ${PaymentTable.SUMMARY}
+                    ) 
+                    SELECT 
+                        ${PaymentTableV1.ID}, 
+                        ${PaymentTableV1.TITLE}, 
+                        ${PaymentTableV1.CATEGORY_ID}, 
+                        ${PaymentTableV1.COST}, 
+                        ${PaymentTableV1.DATE}, 
+                        ${PaymentTableV1.SUMMARY} 
+                    FROM ${PaymentTableV1.TABLE_NAME}
+                """.trimIndent()
+                )
 
                 //migrate date
-                val cursor = query("SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.DATE} FROM ${PaymentTableV1.TABLE_NAME}")
+                val cursor =
+                    query("SELECT ${PaymentTableV1.ID}, ${PaymentTableV1.DATE} FROM ${PaymentTableV1.TABLE_NAME}")
                 if (cursor.count > 0) {
                     cursor.moveToFirst()
                     do {
                         val id = cursor.getLong(cursor.getColumnIndex(PaymentTableV1.ID))
                         val date = cursor.getString(cursor.getColumnIndex(PaymentTableV1.DATE))
 
-                        val dateFormat = SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
+                        val dateFormat =
+                            SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
                         val parsedDate: Date = dateFormat.parse(date)
                         val dateInMilliseconds = parsedDate.time
 
@@ -63,15 +111,29 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             }
         }
 
-        fun addPaymentTagTable(database: SupportSQLiteDatabase){
+        fun addPaymentTagTable(database: SupportSQLiteDatabase) {
             with(database) {
-                execSQL("CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTagTable.TITLE} TEXT NOT NULL)")
+                execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (
+                        ${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        ${PaymentTagTable.TITLE} TEXT NOT NULL
+                    )
+                """.trimIndent()
+                )
             }
         }
 
-        fun addPaymentTagToPaymentTable(database: SupportSQLiteDatabase){
+        fun addPaymentTagToPaymentTable(database: SupportSQLiteDatabase) {
             with(database) {
-                execSQL("CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, ${PaymentTagTable.TITLE} TEXT NOT NULL)")
+                execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS ${PaymentTagTable.TABLE_NAME} (
+                        ${PaymentTagTable.ID} INTEGER PRIMARY KEY AUTOINCREMENT, 
+                        ${PaymentTagTable.TITLE} TEXT NOT NULL
+                    )
+                """.trimIndent()
+                )
             }
         }
 

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PaymentDao {
 
+    // suspend
     @Insert
     suspend fun addPayment(paymentEntity: PaymentEntity)
 
@@ -27,18 +28,10 @@ interface PaymentDao {
     @Delete
     suspend fun deletePayments(paymentEntityList: List<PaymentEntity>)
 
-    @Query(
-        """
-        SELECT * FROM ${PaymentTable.TABLE_NAME} 
-        LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} 
-        WHERE ${PaymentTable.ID}=:id
-    """
-    )
-    fun getPaymentById(id: Int): Flow<PaymentWithCategory>
-
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME}")
     suspend fun getAllPayments(): List<PaymentEntity>
 
+    // Flow
     @Query(
         """
         SELECT * FROM ${PaymentTable.TABLE_NAME} 
@@ -47,7 +40,15 @@ interface PaymentDao {
     )
     fun getAllPaymentsWithCategory(): Flow<List<PaymentWithCategory>>
 
-    //suspend
+    @Query(
+        """
+        SELECT * FROM ${PaymentTable.TABLE_NAME} 
+        LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID} 
+        WHERE ${PaymentTable.ID} = :id
+    """
+    )
+    fun getPaymentById(id: Int): Flow<PaymentWithCategory>
+
     @Query(
         """
         SELECT * FROM ${PaymentTable.TABLE_NAME} 
@@ -101,7 +102,7 @@ interface PaymentDao {
         """
         SELECT * FROM ${PaymentTable.TABLE_NAME} 
         LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}
-        AND ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime 
+        WHERE ${PaymentTable.DATE_IN_MILLISECONDS} > :startTime 
         ORDER BY 
         CASE WHEN :isAsc = 1 THEN ${PaymentTable.DATE_IN_MILLISECONDS} END ASC,
         CASE WHEN :isAsc = 0 THEN ${PaymentTable.DATE_IN_MILLISECONDS} END DESC
