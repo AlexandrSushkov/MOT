@@ -16,6 +16,7 @@ import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByMonthUseCase
 import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByYearsUseCase
 import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticForCurrentMonthUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.StringUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,6 +63,10 @@ class StatisticViewModel @Inject constructor(
         get() = _statByMonthListViewState.asStateFlow()
     private val _statByMonthListViewState = MutableStateFlow(emptyList<StatisticByMonthModel>())
 
+    val selectedMonthModel
+        get() = _selectedMonthModel.asStateFlow()
+    private val _selectedMonthModel = MutableStateFlow(StatisticByMonthModel())
+
     val statByYearListViewState
         get() = _statByYearListViewState.asStateFlow()
     private val _statByYearListViewState = MutableStateFlow(emptyList<StatisticByYearModel>())
@@ -91,6 +96,7 @@ class StatisticViewModel @Inject constructor(
         launch {
             getStatisticByMonthUseCase.execute().collect {
                 _statByMonthListViewState.value = it
+                _selectedMonthModel.value = it.first()
             }
         }
     }
@@ -136,12 +142,12 @@ data class StatisticByYearModel(
 )
 
 data class StatisticByMonthModel(
-    val key: String,
-    val month: Int,
-    val year: Int,
-    val sumOfCategories: Int,
+    val key: String = StringUtils.EMPTY,
+    val month: Int = 0,
+    val year: Int = 0,
+    val sumOfCategories: Int = 0,
     val isExpanded: Boolean = false,
-    val categoriesModelList: List<StatisticByCategoryModel>
+    val categoriesModelList: List<StatisticByCategoryModel> = emptyList()
 )
 
 data class StatisticByCategoryModel(

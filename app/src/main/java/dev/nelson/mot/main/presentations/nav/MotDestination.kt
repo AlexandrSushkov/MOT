@@ -52,6 +52,13 @@ object Statistic : MotDestination {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
+object Statistic2 : MotDestination {
+    override val route = "Statistic2"
+    override val icon = Icons.Default.BarChart
+//    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
+}
+
+
 object Settings : MotDestination {
     override val route = "Settings"
     override val icon = Icons.Default.Settings
@@ -70,5 +77,5 @@ object AppThemePicker : MotDestination {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-val initialDrawerItemsList = listOf(Dashboard, Payments, Categories, Settings)
+val initialDrawerItemsList = listOf(Dashboard, Payments, Categories, Settings, Statistic2)
 

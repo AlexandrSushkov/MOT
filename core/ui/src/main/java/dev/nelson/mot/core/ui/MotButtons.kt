@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Settings
@@ -176,6 +177,21 @@ fun MotSaveIcon(onClick: () -> Unit) {
     }
 }
 
+@Composable
+fun MotFilterIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    IconButton(
+        onClick = onClick
+    ) {
+        Icon(
+            Icons.Default.FilterList,
+            contentDescription = "save icon"
+        )
+    }
+}
+
 @MotPreview
 @Composable
 private fun MotIconsPreview() {
@@ -188,6 +204,7 @@ private fun MotIconsPreview() {
                 item { ListItem(headlineContent = { MotCloseIcon {} }) }
                 item { ListItem(headlineContent = { MotNavSettingsIcon {} }) }
                 item { ListItem(headlineContent = { MotSaveIcon {} }) }
+                item { ListItem(headlineContent = { MotFilterIconButton {} }) }
             }
         )
     }

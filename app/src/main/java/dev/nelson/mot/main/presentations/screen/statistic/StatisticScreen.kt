@@ -89,7 +89,7 @@ fun StatisticScreen(
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticLayout(
+private fun StatisticLayout(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {},
     statCurrentMothList: List<StatisticByCategoryModel>,
@@ -99,7 +99,6 @@ fun StatisticLayout(
     onExpandYearItemClick: (StatisticByYearModel) -> Unit = {},
     onExpandMonthItemClick: (StatisticByMonthModel) -> Unit = {}
 ) {
-    val statisticListScrollingState = rememberLazyListState()
     val tabs = MotStatisticTab.getTabs()
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()

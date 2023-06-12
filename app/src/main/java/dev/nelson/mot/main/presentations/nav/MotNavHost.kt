@@ -21,6 +21,7 @@ import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsSc
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
+import dev.nelson.mot.main.presentations.screen.statistic.Statistic2Screen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
@@ -138,6 +139,16 @@ fun MotNavHost(
                     appBarNavigationIcon = {
                         MotNavBackIcon { navController.popBackStack() }
                     },
+                )
+            },
+        )
+        composable(
+            route = Statistic2.route,
+            content = {
+                Statistic2Screen(
+                    viewModel = hiltViewModel(),
+                    appBarTitle = "Statistic2",
+                    onNavigationButtonClick = { navController.popBackStack() }
                 )
             },
         )
