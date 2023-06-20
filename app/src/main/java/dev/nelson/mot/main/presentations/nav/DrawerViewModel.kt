@@ -7,6 +7,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.FirebaseUtils
+import dev.nelson.mot.main.util.firebase.FirebaseFeatureFlagKeys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,12 +23,43 @@ class DrawerViewModel @Inject constructor() : BaseViewModel() {
 
     init {
         val remoteConfig: FirebaseRemoteConfig = FirebaseUtils.remoteConfig
-        updateStatisticFF(remoteConfig)
+        setInitialFFForDrawerItems(remoteConfig)
+        setOnRemoteConfigChangeListener(remoteConfig)
+    }
+
+    fun onDestinationChanged(newRoute: String) {
+        _drawerViewState.value
+            .motDrawerItems
+            .filter { drawerItem -> drawerItem.destination.route == newRoute }
+            .map { _drawerViewState.value.copy(selectedItem = it.destination.route) }
+            .map { newDrawerState -> _drawerViewState.value = newDrawerState }
+    }
+
+    /**
+     * Set initial visibility for the drawer items.
+     */
+    private fun setInitialFFForDrawerItems(remoteConfig: FirebaseRemoteConfig) {
+        if (remoteConfig.all.contains(FirebaseFeatureFlagKeys.FEATURE_DASHBOARD_ENABLED)) {
+            updateDashboardFeatureAvailability(remoteConfig)
+        }
+        if (remoteConfig.all.contains(FirebaseFeatureFlagKeys.FEATURE_STATISTIC_ENABLED)) {
+            updateStatisticFeatureAvailability(remoteConfig)
+        }
+    }
+
+    /**
+     * Listen feature flags update in real time. Change Drawer items visibility depending on a flag.
+     */
+    private fun setOnRemoteConfigChangeListener(remoteConfig: FirebaseRemoteConfig) {
         remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
             override fun onUpdate(configUpdate: ConfigUpdate) {
-                if (configUpdate.updatedKeys.contains("feature_statistic_enabled")) {
+                if (configUpdate.updatedKeys.contains(FirebaseFeatureFlagKeys.FEATURE_STATISTIC_ENABLED)) {
                     remoteConfig.activate()
-                        .addOnCompleteListener { updateStatisticFF(remoteConfig) }
+                        .addOnCompleteListener { updateStatisticFeatureAvailability(remoteConfig) }
+                }
+                if (configUpdate.updatedKeys.contains(FirebaseFeatureFlagKeys.FEATURE_DASHBOARD_ENABLED)) {
+                    remoteConfig.activate()
+                        .addOnCompleteListener { updateDashboardFeatureAvailability(remoteConfig) }
                 }
             }
 
@@ -37,35 +69,47 @@ class DrawerViewModel @Inject constructor() : BaseViewModel() {
         })
     }
 
-    fun onDestinationChanged(newRoute: String) {
-        _drawerViewState.value
-            .drawerItems
-            .filter { drawerItem -> drawerItem.route == newRoute }
-            .map { _drawerViewState.value.copy(selectedItem = it.route) }
-            .map { newDrawerState -> _drawerViewState.value = newDrawerState }
-    }
-
-    private fun updateStatisticFF(remoteConfig: FirebaseRemoteConfig) {
-        remoteConfig.all.getValue("feature_statistic_enabled").asBoolean()
+    private fun updateDashboardFeatureAvailability(remoteConfig: FirebaseRemoteConfig) {
+        remoteConfig.all.getValue(FirebaseFeatureFlagKeys.FEATURE_DASHBOARD_ENABLED).asBoolean()
             .let { isEnabled ->
-                if (isEnabled) {
-                    addDrawerItem(Statistic)
-                } else {
-                    removeDrawerItem(Statistic)
+                val item =
+                    _drawerViewState.value.motDrawerItems.find { it.destination is Dashboard }
+                val updatedDrawerItem = item?.copy(isAvailable = isEnabled)
+                updatedDrawerItem?.let {
+                    replaceDrawerItem(
+                        item,
+                        updatedDrawerItem,
+                        selectNewItem = true
+                    )
                 }
             }
     }
 
-    private fun addDrawerItem(destination: MotDestination) {
-        val newItems = _drawerViewState.value.drawerItems.toMutableList()
-        val index = newItems.indexOf(Categories)
-        newItems.add(index + 1, destination)
-        _drawerViewState.value = _drawerViewState.value.copy(drawerItems = newItems)
+    private fun updateStatisticFeatureAvailability(remoteConfig: FirebaseRemoteConfig) {
+        remoteConfig.all.getValue(FirebaseFeatureFlagKeys.FEATURE_STATISTIC_ENABLED).asBoolean()
+            .let { isEnabled ->
+                val item =
+                    _drawerViewState.value.motDrawerItems.find { it.destination is Statistic2 }
+                val updatedDrawerItem = item?.copy(isAvailable = isEnabled)
+                updatedDrawerItem?.let { replaceDrawerItem(item, updatedDrawerItem) }
+            }
     }
 
-    private fun removeDrawerItem(destination: MotDestination) {
-        val newItems = _drawerViewState.value.drawerItems.toMutableList()
-        newItems.remove(destination)
-        _drawerViewState.value = _drawerViewState.value.copy(drawerItems = newItems)
+    private fun replaceDrawerItem(
+        oldItem: MotDrawerItem,
+        newItem: MotDrawerItem,
+        selectNewItem: Boolean = false
+    ) {
+        val index = _drawerViewState.value.motDrawerItems.indexOf(oldItem)
+        val newDrawerItems = _drawerViewState.value.motDrawerItems.toMutableList()
+        newDrawerItems[index] = newItem
+        _drawerViewState.value = if (selectNewItem) {
+            _drawerViewState.value.copy(
+                motDrawerItems = newDrawerItems,
+                selectedItem = newItem.destination.route
+            )
+        } else {
+            _drawerViewState.value.copy(motDrawerItems = newDrawerItems)
+        }
     }
 }

@@ -11,6 +11,9 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.ui.graphics.vector.ImageVector
 
 interface MotDestination {
+    /**
+     * The string representation of a route. Like path segment in a url
+     */
     val route: String
     val icon: ImageVector
 //    val screen: @Composable () -> Unit
@@ -58,7 +61,6 @@ object Statistic2 : MotDestination {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-
 object Settings : MotDestination {
     override val route = "Settings"
     override val icon = Icons.Default.Settings
@@ -77,5 +79,23 @@ object AppThemePicker : MotDestination {
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-val initialDrawerItemsList = listOf(Dashboard, Payments, Categories, Settings, Statistic2)
+/**
+ * @param destination The destination to navigate to.
+ * @param isAvailable Some of the destinations are under feature flag.
+ * This flag is used to check if the destination is available or not.
+ * For this destinations the default value is false.
+ */
+data class MotDrawerItem(
+    val destination: MotDestination,
+    val isAvailable: Boolean = false
+)
+
+val initialMotDrawerItemsLists = listOf(
+    MotDrawerItem(Dashboard),
+    MotDrawerItem(Payments, true),
+    MotDrawerItem(Categories, true),
+    MotDrawerItem(Statistic),
+    MotDrawerItem(Statistic2),
+    MotDrawerItem(Settings, true),
+)
 

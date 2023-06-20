@@ -12,9 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.utils.preview.MotPreview
 
@@ -28,16 +26,18 @@ fun NavigationDrawerContent(
         drawerShape = RectangleShape
     ) {
         Spacer(Modifier.height(12.dp))
-        drawerViewState.drawerItems.forEach { drawerItem ->
-            NavigationDrawerItem(
-                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
-                icon = {
-                    Icon(
-                        drawerItem.icon, contentDescription = "${drawerItem.route} drawer item icon"
-                    )
-                },
-                label = { Text(text = drawerItem.route) },
-                onClick = { onItemClick.invoke(drawerItem) },
+        drawerViewState.motDrawerItems.forEach { motDrawerItem ->
+            if (motDrawerItem.isAvailable){
+                val destination = motDrawerItem.destination
+                NavigationDrawerItem(
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                    icon = {
+                        Icon(
+                            destination.icon, contentDescription = "${destination.route} drawer item icon"
+                        )
+                    },
+                    label = { Text(text = destination.route) },
+                    onClick = { onItemClick.invoke(destination) },
 //                    if (navController.currentDestination?.route != drawerItem.route) {
 //                        val isRouteInTheBackStack = navController.backQueue
 //                            .any { it.destination.route == drawerItem.route }
@@ -49,7 +49,7 @@ fun NavigationDrawerContent(
 //                    }
 //                    closeNavDrawer.invoke()
 //                },
-                selected = drawerViewState.selectedItem == drawerItem.route,
+                    selected = drawerViewState.selectedItem == destination.route,
 //                badge = {
 //                    Box(
 //                        modifier = Modifier
@@ -65,7 +65,8 @@ fun NavigationDrawerContent(
 //                        )
 //                    }
 //                }
-            )
+                )
+            }
         }
     }
 }

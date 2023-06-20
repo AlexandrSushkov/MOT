@@ -177,7 +177,7 @@ fun MotNavHost(
             route = AppThemePicker.route,
             content = {
                 SelectAppThemeScreen(
-                    title = "Select App Theme",
+                    title = "App Theme",
                     selectAppThemeViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() },
                 )
