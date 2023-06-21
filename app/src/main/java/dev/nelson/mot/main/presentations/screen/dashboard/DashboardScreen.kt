@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.dashboard
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,31 +15,53 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
+import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.utils.preview.MotPreview
+import kotlinx.coroutines.launch
 
 @Composable
 fun DashboardScreen(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {}
 ) {
-    DashboardScreenLayout()
+    DashboardScreenLayout(
+        appBarTitle = appBarTitle,
+        appBarNavigationIcon = appBarNavigationIcon
+    )
 }
 
 @Composable
-fun DashboardScreenLayout() {
-    Scaffold { innerPadding ->
-        Column(
+fun DashboardScreenLayout(
+    appBarTitle: String,
+    appBarNavigationIcon: @Composable () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            MotTopAppBar(
+                appBarTitle = appBarTitle,
+                navigationIcon = appBarNavigationIcon
+            )
+        }
+    ) { innerPadding ->
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(paddingValues = innerPadding),
         ) {
-            TabLayout()
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .align(Alignment.Center),
+                text = appBarTitle,
+                fontWeight = FontWeight.Bold
+            )
         }
-
     }
 }
 
@@ -46,50 +69,11 @@ fun DashboardScreenLayout() {
 @Composable
 private fun DashboardScreenLayoutPreview() {
     MotMaterialTheme {
-        DashboardScreenLayout()
-    }
-}
-
-@Composable
-fun TabLayout() {
-    val tabs = listOf("Tab 1", "Tab 2", "Tab 3")
-    val selectedTab = remember { mutableStateOf(0) }
-    TabRow(
-        selectedTabIndex = selectedTab.value,
-        modifier = Modifier.fillMaxWidth(),
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab.value]),
-                color = MaterialTheme.colorScheme.secondary
-            )
-        }
-    ) {
-        tabs.forEachIndexed { index, title ->
-            Tab(
-                selected = selectedTab.value == index,
-                onClick = { selectedTab.value = index },
-                text = {
-                    Text(
-                        text = title,
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            )
-        }
-    }
-
-    // Content for each tab
-    when (selectedTab.value) {
-        0 -> TabContent("Content for Tab 1")
-        1 -> TabContent("Content for Tab 2")
-        2 -> TabContent("Content for Tab 3")
-    }
-}
-
-@Composable
-fun TabContent(s: String) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = s)
+        DashboardScreenLayout(
+            appBarTitle = "Dashboard",
+            appBarNavigationIcon = {
+                MotNavDrawerIcon { }
+            }
+        )
     }
 }

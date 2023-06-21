@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByCategoryTabLayout
 import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByTimeTabLayout
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -56,13 +57,16 @@ fun Statistic2Screen(
     val selectedMonthModel by viewModel.selectedMonthModel.collectAsState()
     val statByYearList by viewModel.statByYearListViewState.collectAsState(emptyList())
     val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
+    val statByCategory by viewModel.statByCategoryListViewState.collectAsState(emptyList())
 
     Statistic2Layout(
         appBarTitle = appBarTitle,
         onNavigationButtonClick = onNavigationButtonClick,
 //        statCurrentMothList = statCurrentMothList,
         statByMonthList = statByMonthList,
+        statByCategoryList = statByCategory,
         selectedMonthModel = selectedMonthModel,
+        onMonthModelSelected = { viewModel.onMonthModelSelected(it) },
 //        statByYearList = statByYearList,
 //        priceViewState = priceViewState,
 //        onExpandYearItemClick = { viewModel.onExpandYearClicked(it) },
@@ -77,6 +81,8 @@ private fun Statistic2Layout(
     onNavigationButtonClick: () -> Unit,
     selectedMonthModel: StatisticByMonthModel,
     statByMonthList: List<StatisticByMonthModel>,
+    statByCategoryList: List<StatisticByCategoryPerMonthModel>,
+    onMonthModelSelected: (StatisticByMonthModel) -> Unit,
 ) {
 
     val tabs = MotStatistic2Tab.tabs
@@ -182,10 +188,12 @@ private fun Statistic2Layout(
                         scrollBehavior = scrollBehavior,
                         selectedMonthModel = selectedMonthModel,
                         model = statByMonthList,
+                        onMonthModelSelected = onMonthModelSelected,
                     )
 
                     is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
                         scrollBehavior = scrollBehavior,
+                        modelList = statByCategoryList,
                     )
                 }
             }
@@ -211,7 +219,9 @@ private fun Static2LayoutPreview() {
             appBarTitle = "Statistic2Layout",
             selectedMonthModel = PreviewData.statisticByMonthModelPreviewData,
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
-            onNavigationButtonClick = {}
+            statByCategoryList = emptyList(),
+            onNavigationButtonClick = {},
+            onMonthModelSelected = {}
         )
     }
 }

@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -49,10 +50,6 @@ class SettingsViewModel @Inject constructor(
     val settingsViewState
         get() = _viewState.asStateFlow()
     private val _viewState = MutableStateFlow(SettingsViewState())
-
-    val appThemeModels
-        get() = _appThemeModels.asStateFlow()
-    private val _appThemeModels = MutableStateFlow(MotAppTheme.getThemes())
 
     init {
         launch {
@@ -100,25 +97,26 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onExportDataBaseClick() = launch {
-        runCatching { exportDataBaseUseCase.execute() }.onSuccess { isExported ->
-            val message = if (isExported) {
-                R.string.database_exported_successfully_dialog_message
-            } else {
-                R.string.database_export_failed_dialog_message
+        runCatching { exportDataBaseUseCase.execute() }
+            .onSuccess { isExported ->
+                val message = if (isExported) {
+                    R.string.database_exported_successfully_dialog_message
+                } else {
+                    R.string.database_export_failed_dialog_message
+                }
+                val alertDialogParams = getExportDataBaseDialog(message)
+                _viewState.update { it.copy(alertDialog = alertDialogParams) }
+            }.onFailure { throwable ->
+                throwable.message?.let {
+                    showToast(it)
+                    Timber.e(it)
+                }
             }
-            val alertDialogParams = getExportDataBaseDialog(message)
-            _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
-        }.onFailure { throwable ->
-            throwable.message?.let {
-                showToast(it)
-                Timber.e(it)
-            }
-        }
     }
 
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = getImportDataBaseDialog(uri)
-        _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
+        _viewState.update { it.copy(alertDialog = alertDialogParams) }
     }
 
     private fun getExportDataBaseDialog(message: Int): AlertDialogParams {
@@ -161,8 +159,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun hideAlertDialog() = launch {
-        _viewState.value = _viewState.value.copy(
-            alertDialog = null
-        )
+        _viewState.update { it.copy(alertDialog = null) }
     }
 }

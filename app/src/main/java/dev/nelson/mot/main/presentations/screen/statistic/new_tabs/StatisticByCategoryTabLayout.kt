@@ -16,6 +16,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -27,12 +30,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotOutlinedButton
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticByCategoryTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
+    modelList: List<StatisticByCategoryPerMonthModel>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -55,18 +61,68 @@ fun StatisticByCategoryTabLayout(
                     )
                 }
             }
+//            item {
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.Center
+//                ) {
+//                    MotOutlinedButton(
+//                        onClick = { }) {
+//                        Text(text = "month")
+//                    }
+//                    Spacer(modifier = Modifier.padding(8.dp))
+//                    MotOutlinedButton(onClick = { /*TODO*/ }) {
+//                        Text(text = "year")
+//                    }
+//                }
+//            }
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                val item = modelList.first()
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
-                    MotOutlinedButton(
-                        onClick = { }) {
-                        Text(text = "month")
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    MotOutlinedButton(onClick = { /*TODO*/ }) {
-                        Text(text = "year")
+                    Column(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = item.category?.name ?: "No category",
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            },
+                            trailingContent = {
+//                                Text(
+//                                    text = "${item.}",
+//                                    style = MaterialTheme.typography.titleLarge,
+//
+//                                    )
+
+                            },
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            ),
+                        )
+                        Divider()
+                        Column {
+                            item.paymentToMonth.forEach {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "${it.key.month}/${it.key.year}",
+                                        style = MaterialTheme.typography.titleMedium,
+                                    )
+                                    Text(
+                                        text = it.value.sumOfPaymentsForThisMonth.toString(),
+                                        style = MaterialTheme.typography.titleMedium,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -80,6 +136,9 @@ fun StatisticByCategoryTabLayout(
 private fun StatisticByCategoryTabLayoutPreview() {
     val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     MotMaterialTheme {
-        StatisticByCategoryTabLayout(scrollBehavior = behavior)
+        StatisticByCategoryTabLayout(
+            scrollBehavior = behavior,
+            modelList = PreviewData.generateStatisticByCategoryPerMonthModelListPreviewProvider,
+        )
     }
 }

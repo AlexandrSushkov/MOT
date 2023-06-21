@@ -7,6 +7,9 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.domain.use_case.statistic.Month
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
@@ -42,8 +45,8 @@ object PreviewData {
 
     val statisticByMonthModelPreviewData
         get(): StatisticByMonthModel {
-            val month = (1..12).random() // Example year
-            val year = (2018..2023).random() // Example year
+            val month = generateMonth
+            val year = generateYear
             val sumOfCategories = (1000000..5000000).random() // Example sum of categories
 
             // Generate a list of 5-10 items for categoriesModelList
@@ -62,8 +65,8 @@ object PreviewData {
 
     val statisticByYearModelPreviewData
         get(): StatisticByYearModel {
-            val year = (2018..2023).random() // Example year
-            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+            val year = generateYear
+            val sumOfCategories = generateSumForCategory
 
             // Generate a list of 5-10 items for categoriesModelList
             val categoriesModelList = generateCategoriesModelList
@@ -76,6 +79,58 @@ object PreviewData {
                 categoriesModelList
             )
         }
+
+//    val generateStatisticByCategoryPerMonthModelListPreviewProvider
+//        get() = object : PreviewParameterProvider<List<StatisticByCategoryPerMonthModel>> {
+//            override val values: Sequence<List<StatisticByCategoryPerMonthModel>>
+//                get() = sequenceOf(
+//                    listOf(
+//                        statisticByCategoryPerMonthModel,
+//                        statisticByCategoryPerMonthModel,
+//                        statisticByCategoryPerMonthModel
+//                    )
+//                )
+//        }
+
+    val generateStatisticByCategoryPerMonthModelListPreviewProvider
+        get(): List<StatisticByCategoryPerMonthModel> {
+            return listOf(
+                statisticByCategoryPerMonthModel,
+                statisticByCategoryPerMonthModel,
+                statisticByCategoryPerMonthModel
+            )
+        }
+
+    val statisticByCategoryPerMonthModel
+        get(): StatisticByCategoryPerMonthModel {
+            val month = Month(generateMonth, generateYear)
+            return StatisticByCategoryPerMonthModel(
+                generateKey,
+                categoryPreview,
+                mapOf(month to generateStatisticForMonthForCategoryModel)
+            )
+        }
+
+    val generateStatisticForMonthForCategoryModel
+        get(): StatisticForMonthForCategoryModel {
+            return StatisticForMonthForCategoryModel(
+                generateSumForCategory,
+                paymentListPreview
+            )
+        }
+
+    private val generateYear
+        get() = (2018..2023).random()
+
+    private val generateMonth
+        get() = (1..12).random()
+
+    private val generateKey
+        get() = UUIDUtils.randomKey
+
+    private val generateSumForCategory
+        get() = (1000000..5000000).random()
+
 
     private val generateCategoriesModelList
         get(): List<StatisticByCategoryModel> {
