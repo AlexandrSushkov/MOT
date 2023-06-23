@@ -45,6 +45,7 @@ fun MotTopAppBar(
         rememberTopAppBarState()
     ),
 ) {
+    val systemUiController = rememberSystemUiController()
 
     /**
      * Depending on this value color of the status bar will be changed.
@@ -62,7 +63,6 @@ fun MotTopAppBar(
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
         label = "system_bar_animate_color"
     )
-    val systemUiController = rememberSystemUiController()
 
     DisposableEffect(systemUiController, systemBarColor) {
         systemUiController.setStatusBarColor(color = systemBarColor)

@@ -155,6 +155,7 @@ fun CategoryListLayout(
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
+                scrollBehavior = appBerScrollBehavior
             )
         },
         snackbarHost = {

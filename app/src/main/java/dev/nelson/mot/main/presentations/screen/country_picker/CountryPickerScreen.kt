@@ -123,6 +123,7 @@ private fun CountryPickerLayout(
                         onClick = closeScreenAction
                     )
                 },
+                scrollBehavior = appBarScrollBehavior
             )
         }
     ) { innerPadding ->

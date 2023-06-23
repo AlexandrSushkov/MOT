@@ -128,23 +128,8 @@ private fun SettingsScreenLayout(
 ) {
     viewState.alertDialog?.let { MotAlertDialog(it) }
 
-    val settingsScreenContentScrollingState = rememberLazyListState()
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-//    val colorTransitionFraction = appBarScrollBehavior.state.overlappedFraction ?: 0f
-//    val fraction = if (colorTransitionFraction > 0.01f) 1f else 0f
-//    val appBarColor =
-//        if (fraction == 1f) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
-//    val systemBarColor by animateColorAsState(
-//        targetValue = appBarColor,
-//        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-//        label = "system_bar_animate_color"
-//    )
-//    val systemUiController = rememberSystemUiController()
-//
-//    DisposableEffect(systemUiController, systemBarColor) {
-//        systemUiController.setStatusBarColor(color = systemBarColor)
-//        onDispose {}
-//    }
+    val settingsScreenContentScrollingState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -162,7 +147,7 @@ private fun SettingsScreenLayout(
                 .fillMaxSize()
                 .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
-            item { HeadingListItem(text = "Appearance") }
+            item { HeadingListøItem(text = "Appearance") }
             item {
                 ListItem(
                     headlineContent = { Text(text = "Price Field Example") },

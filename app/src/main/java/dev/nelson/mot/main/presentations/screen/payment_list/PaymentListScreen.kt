@@ -39,6 +39,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
@@ -76,6 +80,7 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.compose.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
@@ -182,7 +187,7 @@ fun PaymentListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
@@ -205,6 +210,7 @@ fun PaymentListLayout(
     modalBottomSheetState: ModalBottomSheetState,
     priceViewState: PriceViewState,
 ) {
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
 
     MotModalBottomSheetLayout(
@@ -256,14 +262,8 @@ fun PaymentListLayout(
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
+                        scrollBehavior = appBarScrollBehavior
                     )
-//                        .also {
-//                        val view = LocalView.current
-//                        if (!view.isInEditMode) {
-//                            val window = (view.context as Activity).window
-//                            window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
-//                        }
-//                    }
                 }
             },
             floatingActionButton = {
@@ -305,7 +305,8 @@ fun PaymentListLayout(
                     onSwipeToDeleteItem,
                     isSelectedStateOn,
                     priceViewState,
-                    paymentsLitScrollingState
+                    paymentsLitScrollingState,
+                    scrollBehavior = appBarScrollBehavior
                 )
             }
         }
@@ -323,6 +324,7 @@ fun PaymentList(
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     state: LazyListState,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -342,7 +344,10 @@ fun PaymentList(
                     )
                 }
             } else {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .ifNotNull(scrollBehavior) { Modifier.nestedScroll(it.nestedScrollConnection) }
+                ) {
                     // date range widget
 //                    val startDate =
 //                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header

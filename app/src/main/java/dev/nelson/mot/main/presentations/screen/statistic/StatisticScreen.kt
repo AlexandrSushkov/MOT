@@ -61,7 +61,6 @@ fun Statistic2Screen(
     viewModel: StatisticViewModel,
     appBarTitle: String,
     navigationIcon: @Composable () -> Unit = {},
-//    onNavigationButtonClick: () -> Unit = {}
 ) {
     val statCurrentMothList by viewModel.statCurrentMothViewState.collectAsState(emptyList())
     val statByMonthList by viewModel.statByMonthListViewState.collectAsState(emptyList())
@@ -129,17 +128,15 @@ private fun Statistic2Layout(
     )
 ) {
 
-    val tabs = MotStatistic2Tab.tabs
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()
-//    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
     val systemUiController = rememberSystemUiController()
-    val systemBarColor = MaterialTheme.colorScheme.secondaryContainer
+    val statusBarColor = MaterialTheme.colorScheme.secondaryContainer
+    val statisticTabs = MotStatistic2Tab.tabs
 
-    DisposableEffect(systemUiController, systemBarColor) {
-        systemUiController.setStatusBarColor(color = systemBarColor)
+    DisposableEffect(systemUiController, statusBarColor) {
+        systemUiController.setStatusBarColor(color = statusBarColor)
         onDispose {}
     }
 
@@ -171,34 +168,14 @@ private fun Statistic2Layout(
     ) {
         Scaffold(
             topBar = {
-                val appBarColor = MaterialTheme.colorScheme.secondaryContainer
-
                 CenterAlignedTopAppBar(
                     scrollBehavior = scrollBehavior,
                     title = { Text(text = appBarTitle) },
-//                    navigationIcon = { MotNavBackIcon(onClick = onNavigationButtonClick) },
                     navigationIcon = navigationIcon,
-//                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-//                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-//                        scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
-//                    ).also {
-//                        val view = LocalView.current
-//                        if (!view.isInEditMode) {
-//                            val window = (view.context as Activity).window
-//                            window.statusBarColor = appBarColor.toArgb()
-//                        }
-//                    },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
                         scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
                     )
-//                        .also {
-//                        val view = LocalView.current
-//                        if (!view.isInEditMode) {
-//                            val window = (view.context as Activity).window
-//                            window.statusBarColor = appBarColor.toArgb()
-//                        }
-//                    },
                 )
             },
             floatingActionButton = {
@@ -218,7 +195,7 @@ private fun Statistic2Layout(
                 val density = LocalDensity.current
                 val tabWidths = remember {
                     val tabWidthStateList = mutableStateListOf<Dp>()
-                    repeat(tabs.size) {
+                    repeat(statisticTabs.size) {
                         tabWidthStateList.add(0.dp)
                     }
                     tabWidthStateList
@@ -247,7 +224,7 @@ private fun Statistic2Layout(
                         )
                     },
                     tabs = {
-                        tabs.forEachIndexed { index, statisticTab ->
+                        statisticTabs.forEachIndexed { index, statisticTab ->
                             Tab(
                                 text = {
                                     Text(
@@ -273,10 +250,10 @@ private fun Statistic2Layout(
                 )
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
-                    pageCount = tabs.size,
+                    pageCount = statisticTabs.size,
                     state = pagerState,
                 ) { tabId ->
-                    when (tabs[tabId]) {
+                    when (statisticTabs[tabId]) {
                         is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
                             scrollBehavior = scrollBehavior,
                             selectedTimeViewState = selectedTimeViewState,
