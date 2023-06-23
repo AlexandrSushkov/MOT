@@ -6,6 +6,9 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,30 +18,34 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.BuildConfig
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
@@ -103,6 +110,7 @@ fun SettingsScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
     title: String,
@@ -121,13 +129,29 @@ private fun SettingsScreenLayout(
     viewState.alertDialog?.let { MotAlertDialog(it) }
 
     val settingsScreenContentScrollingState = rememberLazyListState()
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+//    val colorTransitionFraction = appBarScrollBehavior.state.overlappedFraction ?: 0f
+//    val fraction = if (colorTransitionFraction > 0.01f) 1f else 0f
+//    val appBarColor =
+//        if (fraction == 1f) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+//    val systemBarColor by animateColorAsState(
+//        targetValue = appBarColor,
+//        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+//        label = "system_bar_animate_color"
+//    )
+//    val systemUiController = rememberSystemUiController()
+//
+//    DisposableEffect(systemUiController, systemBarColor) {
+//        systemUiController.setStatusBarColor(color = systemBarColor)
+//        onDispose {}
+//    }
 
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = title,
                 navigationIcon = navigationIcon,
-                screenContentScrollingState = settingsScreenContentScrollingState,
+                scrollBehavior = appBarScrollBehavior,
             )
         }
     ) { innerPadding ->
@@ -136,6 +160,7 @@ private fun SettingsScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
             item { HeadingListItem(text = "Appearance") }
             item {
@@ -348,8 +373,8 @@ private fun SettingsScreenLayoutPreview() {
         SettingsScreenLayout(
             title = "Settings",
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "")
+                MotNavDrawerIcon {
+
                 }
             },
             viewState = viewState,

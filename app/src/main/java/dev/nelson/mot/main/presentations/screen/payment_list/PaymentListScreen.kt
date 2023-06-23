@@ -256,7 +256,6 @@ fun PaymentListLayout(
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        screenContentScrollingState = paymentsLitScrollingState
                     )
 //                        .also {
 //                        val view = LocalView.current

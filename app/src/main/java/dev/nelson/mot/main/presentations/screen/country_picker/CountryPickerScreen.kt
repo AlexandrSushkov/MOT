@@ -18,12 +18,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCloseIcon
@@ -70,6 +74,7 @@ fun CountryPickerScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CountryPickerLayout(
     viewState: CountryPickerViewState,
@@ -78,6 +83,7 @@ private fun CountryPickerLayout(
     closeScreenAction: () -> Unit,
     onCountryClick: (Locale) -> Unit,
 ) {
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val countriesListScrollState = rememberLazyListState()
     val searchFieldTransitionState = remember { MutableTransitionState(false) }
     val searchFieldTransition = updateTransition(
@@ -117,7 +123,6 @@ private fun CountryPickerLayout(
                         onClick = closeScreenAction
                     )
                 },
-                screenContentScrollingState = countriesListScrollState
             )
         }
     ) { innerPadding ->
@@ -125,6 +130,7 @@ private fun CountryPickerLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
             Box(
                 modifier = Modifier.padding(

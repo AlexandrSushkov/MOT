@@ -40,10 +40,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +54,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -64,7 +67,6 @@ import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotTextButton
-import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
@@ -78,6 +80,7 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.compose.ifNotNull
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
@@ -145,13 +148,13 @@ fun CategoryListLayout(
     undoDeleteClickEvent: () -> Unit,
 ) {
     val categoriesListScrollingState = rememberLazyListState()
+    val appBerScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
-                screenContentScrollingState = categoriesListScrollingState
             )
         },
         snackbarHost = {
@@ -181,11 +184,12 @@ fun CategoryListLayout(
         ) {
             CategoryList(
                 categoriesListUiState,
-                onSwipeCategory,
-                onCategoryClick,
-                onCategoryLongPress,
-                onFavoriteClick,
-                categoriesListScrollingState,
+                onSwipeCategory = onSwipeCategory,
+                onCategoryClick = onCategoryClick,
+                onCategoryLongPress = onCategoryLongPress,
+                onFavoriteClick = onFavoriteClick,
+                scrollState = categoriesListScrollingState,
+                scrollBehavior = appBerScrollBehavior
             )
 
         }
@@ -196,11 +200,12 @@ fun CategoryListLayout(
 @Composable
 fun CategoryList(
     categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     onSwipeCategory: (CategoryItemModel) -> Unit,
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
-    scrollState: LazyListState
+    scrollState: LazyListState,
 ) {
     when (categoriesListUiState) {
         is Success -> {
@@ -215,7 +220,9 @@ fun CategoryList(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .ifNotNull(scrollBehavior) { Modifier.nestedScroll(it.nestedScrollConnection) },
                     state = scrollState,
                     content = {
                         categories.forEach { categoryListItem ->
