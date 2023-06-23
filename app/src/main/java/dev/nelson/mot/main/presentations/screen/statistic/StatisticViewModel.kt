@@ -1,5 +1,10 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.github.tehras.charts.line.LineChartData
+import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
+import com.github.tehras.charts.piechart.PieChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
@@ -25,6 +30,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class StatisticViewModel @Inject constructor(
@@ -69,7 +75,16 @@ class StatisticViewModel @Inject constructor(
 
     val statByCategoryListViewState
         get() = _statByCategoryListViewState.asStateFlow()
-    private val _statByCategoryListViewState = MutableStateFlow(emptyList<StatisticByCategoryPerMonthModel>())
+    private val _statByCategoryListViewState =
+        MutableStateFlow(emptyList<StatisticByCategoryPerMonthModel>())
+
+    val selectedCategoryViewState
+        get() = _selectedCategoryViewState.asStateFlow()
+    private val _selectedCategoryViewState = MutableStateFlow(SelectedCategoryViewState())
+
+    val selectedTimeViewState
+        get() = _selectedTimeViewState.asStateFlow()
+    private val _selectedTimeViewState = MutableStateFlow(SelectedTimeViewState())
 
     val selectedMonthModel
         get() = _selectedMonthModel.asStateFlow()
@@ -104,14 +119,16 @@ class StatisticViewModel @Inject constructor(
         launch {
             getStatisticByMonthUseCase.execute().collect {
                 _statByMonthListViewState.value = it
-                _selectedMonthModel.value = it.first()
+                onMonthModelSelected(it.first())
             }
         }
 
         launch {
-            getStatisticByCategoryUseCase.execute().collect {
-                _statByCategoryListViewState.value = it
-            }
+            getStatisticByCategoryUseCase.execute()
+                .collect { statisticByCategoryPerMonthModelList ->
+                    _statByCategoryListViewState.value = statisticByCategoryPerMonthModelList
+                    onCategoryModelSelected(statisticByCategoryPerMonthModelList.first())
+                }
         }
     }
 
@@ -149,9 +166,61 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun onMonthModelSelected(model: StatisticByMonthModel) {
-        _selectedMonthModel.value = model
+        _selectedTimeViewState.update {
+            val pieSlices = model.categoriesModelList.map {
+                PieChartData.Slice(
+                    it.sumOfPayments.toFloat(),
+                    generateRandomColor()
+                )
+            }
+            SelectedTimeViewState(
+                selectedTimeModel = model,
+                selectedTimePieChartData = PieChartData(pieSlices)
+            )
+        }
+    }
+
+    fun onCategoryModelSelected(model: StatisticByCategoryPerMonthModel) {
+        _selectedCategoryViewState.update {
+            val points = model
+                .paymentToMonth
+                .map { paymentsByMothModel ->
+                    LineChartData.Point(
+                        paymentsByMothModel.value.sumOfPaymentsForThisMonth.toFloat(),
+                        ""// label - x axis text
+                    )
+                }
+            SelectedCategoryViewState(
+                model,
+                LineChartData(points, lineDrawer = SolidLineDrawer(2.dp, Color.Blue))
+            )
+        }
+    }
+
+    private fun generateRandomColor(): Color {
+        val random = Random.Default
+        val red = random.nextInt(256)
+        val green = random.nextInt(256)
+        val blue = random.nextInt(256)
+        return Color(red, green, blue)
     }
 }
+
+data class SelectedTimeViewState(
+    val selectedTimeModel: StatisticByMonthModel = StatisticByMonthModel(),
+    val selectedTimePieChartData: PieChartData = PieChartData(emptyList())
+)
+
+data class SelectedCategoryViewState(
+    val selectedTimeModel: StatisticByCategoryPerMonthModel = StatisticByCategoryPerMonthModel(
+        key = StringUtils.EMPTY,
+        paymentToMonth = emptyMap()
+    ),
+    val selectedTimeLineChartData: LineChartData = LineChartData(
+        emptyList(),
+        lineDrawer = SolidLineDrawer()
+    )
+)
 
 data class StatisticByYearModel(
     val key: String,

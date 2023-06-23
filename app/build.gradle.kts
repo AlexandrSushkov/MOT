@@ -145,4 +145,5 @@ dependencies {
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.config.ktx)
 
+    implementation  (libs.charts)
 }

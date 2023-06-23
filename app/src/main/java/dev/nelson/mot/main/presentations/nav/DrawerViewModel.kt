@@ -89,7 +89,7 @@ class DrawerViewModel @Inject constructor() : BaseViewModel() {
         remoteConfig.all.getValue(FirebaseFeatureFlagKeys.FEATURE_STATISTIC_ENABLED).asBoolean()
             .let { isEnabled ->
                 val item =
-                    _drawerViewState.value.motDrawerItems.find { it.destination is Statistic2 }
+                    _drawerViewState.value.motDrawerItems.find { it.destination is Statistic }
                 val updatedDrawerItem = item?.copy(isAvailable = isEnabled)
                 updatedDrawerItem?.let { replaceDrawerItem(item, updatedDrawerItem) }
             }

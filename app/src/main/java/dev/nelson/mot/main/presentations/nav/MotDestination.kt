@@ -49,14 +49,14 @@ object CategoryDetails : MotDestination {
 //    override val screen: @Composable () -> Unit = { PaymentListScreen({}, {}) }
 }
 
-object Statistic : MotDestination {
-    override val route = "Statistic"
+object StatisticExperimental : MotDestination {
+    override val route = "Statistic Experimental"
     override val icon = Icons.Default.BarChart
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
 
-object Statistic2 : MotDestination {
-    override val route = "Statistic2"
+object Statistic : MotDestination {
+    override val route = "Statistic"
     override val icon = Icons.Default.BarChart
 //    override val screen: @Composable () -> Unit = { CategoryListScreen({}, {}, {}) }
 }
@@ -94,8 +94,8 @@ val initialMotDrawerItemsLists = listOf(
     MotDrawerItem(Dashboard),
     MotDrawerItem(Payments, true),
     MotDrawerItem(Categories, true),
+    MotDrawerItem(StatisticExperimental),
     MotDrawerItem(Statistic),
-    MotDrawerItem(Statistic2),
     MotDrawerItem(Settings, true),
 )
 

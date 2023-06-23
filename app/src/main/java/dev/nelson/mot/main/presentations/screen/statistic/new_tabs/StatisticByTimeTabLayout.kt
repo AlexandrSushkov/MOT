@@ -7,22 +7,21 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FabPosition
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.PieChart
-import androidx.compose.material.icons.filled.StackedBarChart
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -42,13 +41,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.github.tehras.charts.piechart.PieChart
+import com.github.tehras.charts.piechart.PieChartData
+import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotOutlinedButton
-import dev.nelson.mot.core.ui.MotSwitch
+import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
+import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -58,172 +59,91 @@ import kotlinx.coroutines.launch
 @Composable
 fun StatisticByTimeTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
-    selectedMonthModel: StatisticByMonthModel,
+    selectedTimeViewState: SelectedTimeViewState,
     model: List<StatisticByMonthModel>,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
 ) {
     val switchState = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val layColumnState = rememberLazyListState()
+    val selectedMonthModel = selectedTimeViewState.selectedTimeModel
 
-    /**
-     * Back handler to hide modal bottom sheet
-     */
-    BackHandler(
-        enabled = modalBottomSheetState.isVisible,
-        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
-    )
-
-    MotModalBottomSheetLayout(
-        sheetContent = {
-            LazyColumn(
-                state = layColumnState,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                items(model) {
-                    ListItem(
-                        modifier = Modifier.clickable {
-                            onMonthModelSelected(it)
-                            coroutineScope.launch { modalBottomSheetState.hide() }
-                        },
-                        headlineContent = { Text(text = "${it.month}/ ${it.year}") },
-                        trailingContent = {
-                            if (it == selectedMonthModel) {
-                                Icon(
-                                    imageVector = Icons.Default.Done,
-                                    contentDescription = ""
-                                )
-                            }
-                        }
-                    )
-                }
-            }
-        },
-        sheetState = modalBottomSheetState
-    ) {
-        Column {
-//            MotSwitch(
-//                checked = false,
-//                onCheckedChange = { switchState.value = it },
-//                checkedStateIcon = Icons.Default.PieChart,
-//                uncheckedStateIcon = Icons.Default.StackedBarChart,
-//            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        content = {
+            item {
+                Box(
                     modifier = Modifier
-//                        .align(Alignment.End)
-                        .padding(8.dp),
-
-                    onClick = {
-                        coroutineScope.launch {
-                            modalBottomSheetState.show()
-                        }
-                    }
+                        .fillMaxWidth()
+                        .aspectRatio(1.5f, true)
+                        .padding(16.dp)
                 ) {
-                    Icon(
-                        Icons.Default.FilterList,
-                        contentDescription = "save icon"
+                    PieChart(
+                        pieChartData = selectedTimeViewState.selectedTimePieChartData,
+                        modifier = Modifier.fillMaxWidth(),
+                        sliceDrawer = SimpleSliceDrawer()
+
                     )
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Icon(
+            item {
+                Card(
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(164.dp)
-                        .padding(16.dp),
-                    imageVector = Icons.Default.PieChart,
-                    contentDescription = ""
-                )
-            }
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.Center
-//            ) {
-//                MotOutlinedButton(
-//                    onClick = { }) {
-//                    Text(text = "month")
-//                }
-//                Spacer(modifier = Modifier.padding(8.dp))
-//                MotOutlinedButton(onClick = { /*TODO*/ }) {
-//                    Text(text = "year")
-//                }
-//            }
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
-                content = {
-                    item {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(12.dp)
-                            ) {
-//                                Row(
-//                                    modifier = Modifier.fillMaxWidth(),
-//                                    horizontalArrangement = Arrangement.SpaceBetween
-//                                ) {
-//                                    Text(text = "${selectedMonthModel.month}/${selectedMonthModel.year}")
-//                                }
-                                ListItem(
-                                    headlineContent = {
-                                        Text(
-                                            text = "${selectedMonthModel.month}/${selectedMonthModel.year}",
-                                            style = MaterialTheme.typography.titleLarge,
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = "${selectedMonthModel.month}/${selectedMonthModel.year}",
+                                    style = MaterialTheme.typography.titleLarge,
 
-                                            )
+                                    )
 
-                                    },
-                                    trailingContent = {
-                                        Text(
-                                            text = "${selectedMonthModel.sumOfCategories}",
-                                            style = MaterialTheme.typography.titleLarge,
+                            },
+                            trailingContent = {
+                                Text(
+                                    text = "${selectedMonthModel.sumOfCategories}",
+                                    style = MaterialTheme.typography.titleLarge,
 
-                                            )
+                                    )
 
-                                    },
-                                    colors = ListItemDefaults.colors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                    ),
-                                )
-                                Divider()
-                                Column {
-                                    selectedMonthModel.categoriesModelList.forEach {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ){
-                                            Text(
-                                                text = it.category?.name ?: "No category",
-                                                style = MaterialTheme.typography.titleMedium,
-                                            )
-                                            Text(
-                                                text = it.sumOfPayments.toString(),
-                                                style = MaterialTheme.typography.titleMedium,
-                                            )
-                                        }
-                                    }
+                            },
+                            colors = ListItemDefaults.colors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            ),
+                        )
+                        Divider()
+                        Column {
+                            selectedMonthModel.categoriesModelList.forEach {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = it.category?.name ?: "No category",
+                                        style = MaterialTheme.typography.titleMedium,
+                                    )
+                                    Text(
+                                        text = it.sumOfPayments.toString(),
+                                        style = MaterialTheme.typography.titleMedium,
+                                    )
                                 }
                             }
                         }
                     }
                 }
-            )
+            }
+            item {
+                FABFooter()
+            }
         }
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -234,8 +154,10 @@ private fun StatisticByTimeTabLayoutPreview() {
     MotMaterialTheme {
         StatisticByTimeTabLayout(
             scrollBehavior = behavior,
-            selectedMonthModel = PreviewData.statisticByMonthModelPreviewData,
             model = PreviewData.statisticByMonthListPreviewData,
+            selectedTimeViewState = SelectedTimeViewState(
+                selectedTimeModel = PreviewData.statisticByMonthModelPreviewData,
+            ),
             onMonthModelSelected = {}
         )
     }

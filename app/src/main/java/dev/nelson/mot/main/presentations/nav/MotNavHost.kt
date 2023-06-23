@@ -131,11 +131,11 @@ fun MotNavHost(
             },
         )
         composable(
-            route = Statistic.route,
+            route = StatisticExperimental.route,
             content = {
                 StatisticScreen(
                     viewModel = hiltViewModel(),
-                    appBarTitle = "Statistic",
+                    appBarTitle = "Statistic Old",
                     appBarNavigationIcon = {
                         MotNavBackIcon { navController.popBackStack() }
                     },
@@ -143,12 +143,14 @@ fun MotNavHost(
             },
         )
         composable(
-            route = Statistic2.route,
+            route = Statistic.route,
             content = {
                 Statistic2Screen(
                     viewModel = hiltViewModel(),
-                    appBarTitle = "Statistic2",
-                    onNavigationButtonClick = { navController.popBackStack() }
+                    appBarTitle = "Statistic",
+//                    onNavigationButtonClick = { navController.popBackStack() }
+                            navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+
                 )
             },
         )

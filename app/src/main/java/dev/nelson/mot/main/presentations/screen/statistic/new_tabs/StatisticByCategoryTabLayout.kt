@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,9 +30,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.github.tehras.charts.bar.renderer.xaxis.SimpleXAxisDrawer
+import com.github.tehras.charts.bar.renderer.yaxis.SimpleYAxisDrawer
+import com.github.tehras.charts.line.LineChart
+import com.github.tehras.charts.line.renderer.line.SolidLineDrawer
+import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
+import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
+import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -38,7 +48,8 @@ import dev.utils.preview.MotPreview
 @Composable
 fun StatisticByCategoryTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
-    modelList: List<StatisticByCategoryPerMonthModel>
+    selectedCategoryViewState: SelectedCategoryViewState
+//    modelList: List<StatisticByCategoryPerMonthModel>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -49,16 +60,29 @@ fun StatisticByCategoryTabLayout(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .aspectRatio(1.5f, true)
                         .padding(16.dp)
                 ) {
-                    Icon(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(164.dp)
-                            .padding(16.dp),
-                        imageVector = Icons.Default.StackedBarChart,
-                        contentDescription = ""
+                    LineChart(
+                        linesChartData = listOf(selectedCategoryViewState.selectedTimeLineChartData)
+                        // Optional properties.
+//                    modifier = Modifier.fillMaxSize(),
+//                    animation = simpleChartAnimation(),
+//                    pointDrawer = FilledCircularPointDrawer(),
+//                    lineDrawer = SolidLineDrawer(),
+//                    xAxisDrawer = SimpleXAxisDrawer(),
+//                    yAxisDrawer = SimpleYAxisDrawer(),
+//                    horizontalOffset = 5f,
+//                    labels = listOf("label 1" ...)
                     )
+//                    Icon(
+//                        modifier = Modifier
+//                            .align(Alignment.Center)
+//                            .size(164.dp)
+//                            .padding(16.dp),
+//                        imageVector = Icons.Default.StackedBarChart,
+//                        contentDescription = ""
+//                    )
                 }
             }
 //            item {
@@ -77,7 +101,7 @@ fun StatisticByCategoryTabLayout(
 //                }
 //            }
             item {
-                val item = modelList.first()
+                val item = selectedCategoryViewState.selectedTimeModel
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -126,6 +150,9 @@ fun StatisticByCategoryTabLayout(
                     }
                 }
             }
+            item {
+                FABFooter()
+            }
         }
     )
 }
@@ -138,7 +165,9 @@ private fun StatisticByCategoryTabLayoutPreview() {
     MotMaterialTheme {
         StatisticByCategoryTabLayout(
             scrollBehavior = behavior,
-            modelList = PreviewData.generateStatisticByCategoryPerMonthModelListPreviewProvider,
+            selectedCategoryViewState = SelectedCategoryViewState(
+                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
+            ),
         )
     }
 }
