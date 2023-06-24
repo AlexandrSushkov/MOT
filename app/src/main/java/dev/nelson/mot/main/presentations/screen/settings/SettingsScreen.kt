@@ -147,7 +147,7 @@ private fun SettingsScreenLayout(
                 .fillMaxSize()
                 .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
-            item { HeadingListøItem(text = "Appearance") }
+            item { HeadingListItem(text = "Appearance") }
             item {
                 ListItem(
                     headlineContent = { Text(text = "Price Field Example") },

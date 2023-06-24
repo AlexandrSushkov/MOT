@@ -14,6 +14,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryMod
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import java.io.InputStream
 import java.util.UUID
 
@@ -51,9 +52,10 @@ object PreviewData {
 
             // Generate a list of 5-10 items for categoriesModelList
             val categoriesModelList = generateCategoriesModelList
-
+            val time = generateTime // Example sum of categories
             return StatisticByMonthModel(
                 key = generateKey(),
+                monthText = time.convertMillisecondsToDate(),
                 month = month,
                 year = year,
                 sumOfCategories = sumOfCategories,
@@ -62,6 +64,28 @@ object PreviewData {
             )
         }
 
+    val statisticByMonthModelEmptyPreviewData
+        get(): StatisticByMonthModel {
+            val month = generateMonth
+            val year = generateYear
+            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+            val time = generateTime // Example sum of categories
+            return StatisticByMonthModel(
+                key = generateKey(),
+                monthText = time.convertMillisecondsToDate(),
+                month = month,
+                year = year,
+                sumOfCategories = sumOfCategories,
+                isExpanded = false,
+                categoriesModelList = emptyList()
+            )
+        }
+
+    val generateTime
+        get() = (1672609228000..1704058828000).random()
 
     val statisticByYearModelPreviewData
         get(): StatisticByYearModel {
@@ -103,11 +127,28 @@ object PreviewData {
 
     val statisticByCategoryPerMonthModel
         get(): StatisticByCategoryPerMonthModel {
-            val month = Month(generateMonth, generateYear)
+            val itemCount = (6..10).random()
+            val monthToPaymentsForMonthPreviewData = (1..itemCount).associate {
+                paymentItemPreview
+                val month =
+                    Month(generateTime.convertMillisecondsToDate(), generateMonth, generateYear)
+                month to generateStatisticForMonthForCategoryModel
+            }
             return StatisticByCategoryPerMonthModel(
-                generateKey,
-                categoryPreview,
-                mapOf(month to generateStatisticForMonthForCategoryModel)
+                key = generateKey,
+                category = categoryPreview,
+                totalPrice = generateSumForCategory,
+                paymentToMonth = monthToPaymentsForMonthPreviewData
+            )
+        }
+
+    val statisticByCategoryPerMonthModelEmpty
+        get(): StatisticByCategoryPerMonthModel {
+            return StatisticByCategoryPerMonthModel(
+                key = generateKey,
+                category = categoryPreview,
+                totalPrice = generateSumForCategory,
+                paymentToMonth = emptyMap()
             )
         }
 

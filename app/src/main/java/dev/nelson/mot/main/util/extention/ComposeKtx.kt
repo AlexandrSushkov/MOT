@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.util.compose
+package dev.nelson.mot.main.util.extention
 
 import androidx.compose.ui.Modifier
 

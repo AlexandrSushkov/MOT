@@ -80,7 +80,7 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
-import dev.nelson.mot.main.util.compose.ifNotNull
+import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
@@ -212,13 +212,7 @@ fun CategoryList(
         is Success -> {
             val categories = categoriesListUiState.successOr(emptyList())
             if (categories.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ListPlaceholder(
-                        Modifier.align(Alignment.Center),
-                        Icons.Default.FormatListBulleted,
-                        stringResource(R.string.text_empty)
-                    )
-                }
+                ListPlaceholder(Modifier.fillMaxSize())
             } else {
                 LazyColumn(
                     modifier = Modifier

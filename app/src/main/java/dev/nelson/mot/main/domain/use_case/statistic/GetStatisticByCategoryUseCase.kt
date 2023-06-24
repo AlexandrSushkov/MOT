@@ -6,7 +6,9 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
@@ -43,7 +45,15 @@ class GetStatisticByCategoryUseCase @Inject constructor(
                             val paymentsForMonth = monthToPaymentMap.value
                             val sumOfPaymentsForThisMonth =
                                 paymentsForMonth.sumOf { paymentWithCategory -> paymentWithCategory.paymentEntity.cost }
-                            val month = Month(monthToPaymentMap.key, year)
+                            val monthText = paymentsForMonth.first()
+                                .paymentEntity
+                                .dateInMilliseconds
+                                ?.convertMillisecondsToDate() ?: StringUtils.EMPTY
+                            val month = Month(
+                                monthText = monthText,
+                                monthToPaymentMap.key,
+                                year
+                            )
                             val model = StatisticForMonthForCategoryModel(
                                 sumOfPaymentsForThisMonth = sumOfPaymentsForThisMonth,
                                 payments = monthToPaymentMap.value.toPaymentList()
@@ -51,8 +61,12 @@ class GetStatisticByCategoryUseCase @Inject constructor(
                             month to model
                         }
                     }.flatten().toMap()
+
+                val totalPrice =
+                    resultForCategoryByMonth.values.sumOf { it.sumOfPaymentsForThisMonth }
                 StatisticByCategoryPerMonthModel(
                     key = UUIDUtils.randomKey,
+                    totalPrice = totalPrice,
                     category = cat?.toCategory() ?: Category("No category"),
                     paymentToMonth = resultForCategoryByMonth
                 )
@@ -69,10 +83,12 @@ class GetStatisticByCategoryUseCase @Inject constructor(
 data class StatisticByCategoryPerMonthModel(
     val key: String,
     val category: Category? = null,
+    val totalPrice: Int = 0,
     val paymentToMonth: Map<Month, StatisticForMonthForCategoryModel>
 )
 
 data class Month(
+    val monthText: String = StringUtils.EMPTY,
     val month: Int = 0,
     val year: Int = 0,
 )

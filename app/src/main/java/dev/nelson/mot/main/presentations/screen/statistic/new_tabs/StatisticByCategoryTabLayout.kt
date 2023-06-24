@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.Placeholder
 import com.github.tehras.charts.bar.renderer.xaxis.SimpleXAxisDrawer
 import com.github.tehras.charts.bar.renderer.yaxis.SimpleYAxisDrawer
 import com.github.tehras.charts.line.LineChart
@@ -38,9 +39,13 @@ import com.github.tehras.charts.line.renderer.point.FilledCircularPointDrawer
 import com.github.tehras.charts.piechart.animation.simpleChartAnimation
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotOutlinedButton
+import dev.nelson.mot.core.ui.PriceText
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
 import dev.nelson.mot.main.presentations.widgets.FABFooter
+import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.ListPlaceholderPreview
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -48,24 +53,28 @@ import dev.utils.preview.MotPreview
 @Composable
 fun StatisticByCategoryTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
-    selectedCategoryViewState: SelectedCategoryViewState
-//    modelList: List<StatisticByCategoryPerMonthModel>
+    selectedCategoryViewState: SelectedCategoryViewState,
+//    modelList: List<StatisticByCategoryPerMonthModel>,
+    priceViewState: PriceViewState
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        content = {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1.5f, true)
-                        .padding(16.dp)
-                ) {
-                    LineChart(
-                        linesChartData = listOf(selectedCategoryViewState.selectedTimeLineChartData)
-                        // Optional properties.
+    if (selectedCategoryViewState.selectedTimeModel.paymentToMonth.isEmpty()) {
+        ListPlaceholder(modifier = Modifier.fillMaxSize())
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            content = {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1.5f, true)
+                            .padding(16.dp)
+                    ) {
+                        LineChart(
+                            linesChartData = listOf(selectedCategoryViewState.selectedTimeLineChartData)
+                            // Optional properties.
 //                    modifier = Modifier.fillMaxSize(),
 //                    animation = simpleChartAnimation(),
 //                    pointDrawer = FilledCircularPointDrawer(),
@@ -74,7 +83,7 @@ fun StatisticByCategoryTabLayout(
 //                    yAxisDrawer = SimpleYAxisDrawer(),
 //                    horizontalOffset = 5f,
 //                    labels = listOf("label 1" ...)
-                    )
+                        )
 //                    Icon(
 //                        modifier = Modifier
 //                            .align(Alignment.Center)
@@ -83,8 +92,8 @@ fun StatisticByCategoryTabLayout(
 //                        imageVector = Icons.Default.StackedBarChart,
 //                        contentDescription = ""
 //                    )
+                    }
                 }
-            }
 //            item {
 //                Row(
 //                    modifier = Modifier.fillMaxWidth(),
@@ -100,61 +109,59 @@ fun StatisticByCategoryTabLayout(
 //                    }
 //                }
 //            }
-            item {
-                val item = selectedCategoryViewState.selectedTimeModel
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp)
+                item {
+                    val item = selectedCategoryViewState.selectedTimeModel
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                     ) {
-                        ListItem(
-                            headlineContent = {
+                        Column(
+                            modifier = Modifier.padding(12.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 Text(
                                     text = item.category?.name ?: "No category",
                                     style = MaterialTheme.typography.titleLarge,
                                 )
-                            },
-                            trailingContent = {
-//                                Text(
-//                                    text = "${item.}",
-//                                    style = MaterialTheme.typography.titleLarge,
-//
-//                                    )
-
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant
-                            ),
-                        )
-                        Divider()
-                        Column {
-                            item.paymentToMonth.forEach {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = "${it.key.month}/${it.key.year}",
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
-                                    Text(
-                                        text = it.value.sumOfPaymentsForThisMonth.toString(),
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
+                                PriceText(
+                                    price = item.totalPrice,
+                                    priceViewState = priceViewState,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider()
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Column {
+                                item.paymentToMonth.forEach {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = it.key.monthText,
+                                            style = MaterialTheme.typography.titleMedium,
+                                        )
+                                        PriceText(
+                                            price = it.value.sumOfPaymentsForThisMonth,
+                                            priceViewState = priceViewState,
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                item {
+                    FABFooter()
+                }
             }
-            item {
-                FABFooter()
-            }
-        }
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -168,6 +175,23 @@ private fun StatisticByCategoryTabLayoutPreview() {
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
             ),
+            priceViewState = PriceViewState()
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@MotPreview
+@Composable
+private fun StatisticByCategoryTabLayoutEmptyContentPreview() {
+    val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    MotMaterialTheme {
+        StatisticByCategoryTabLayout(
+            scrollBehavior = behavior,
+            selectedCategoryViewState = SelectedCategoryViewState(
+                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModelEmpty,
+            ),
+            priceViewState = PriceViewState()
         )
     }
 }

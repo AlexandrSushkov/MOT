@@ -33,5 +33,6 @@
     <string name="accessibility_info_icon" translatable="false">info icon</string>
     <string name="accessibility_add_icon" translatable="false">add icon</string>
     <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
+    <string name="accessibility_done_icon" translatable="false">done icon</string>
 
 </resources>

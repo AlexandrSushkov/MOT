@@ -45,11 +45,9 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -80,7 +78,7 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
-import dev.nelson.mot.main.util.compose.ifNotNull
+import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
@@ -336,13 +334,7 @@ fun PaymentList(
         is Success -> {
             val paymentList = paymentListResult.successOr(emptyList())
             if (paymentList.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ListPlaceholder(
-                        Modifier.align(Alignment.Center),
-                        Icons.Default.Filter,
-                        "Empty"
-                    )
-                }
+                ListPlaceholder(Modifier.fillMaxSize())
             } else {
                 Column(
                     modifier = Modifier

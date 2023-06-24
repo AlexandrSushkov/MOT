@@ -232,6 +232,7 @@ data class StatisticByYearModel(
 
 data class StatisticByMonthModel(
     val key: String = StringUtils.EMPTY,
+    val monthText: String = StringUtils.EMPTY,
     val month: Int = 0,
     val year: Int = 0,
     val sumOfCategories: Int = 0,

@@ -100,6 +100,7 @@ fun Statistic2Screen(
 //        priceViewState = priceViewState,
 //        onExpandYearItemClick = { viewModel.onExpandYearClicked(it) },
 //        onExpandMonthItemClick = { viewModel.onExpandMonthClicked(it) }
+        priceViewState = priceViewState,
         modalBottomSheetState = modalBottomSheetState,
         onFabClick = { coroutineScope.launch { modalBottomSheetState.show() } }
     )
@@ -123,6 +124,7 @@ private fun Statistic2Layout(
     selectedCategoryViewState: SelectedCategoryViewState,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
     onCategoryModelSelected: (StatisticByCategoryPerMonthModel) -> Unit,
+    priceViewState: PriceViewState,
     modalBottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden
     )
@@ -259,11 +261,13 @@ private fun Statistic2Layout(
                             selectedTimeViewState = selectedTimeViewState,
                             model = statByMonthList,
                             onMonthModelSelected = onMonthModelSelected,
+                            priceViewState = priceViewState,    
                         )
 
                         is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
                             scrollBehavior = scrollBehavior,
                             selectedCategoryViewState = selectedCategoryViewState,
+                            priceViewState = priceViewState
                         )
                     }
                 }
@@ -302,9 +306,10 @@ private fun Static2LayoutPreview() {
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
 
                 ),
-            modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Expanded),
+            modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
             onFabClick = {},
-            onCategoryModelSelected = {}
+            onCategoryModelSelected = {},
+            priceViewState = PriceViewState()
         )
     }
 }

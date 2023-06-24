@@ -47,9 +47,12 @@ import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
 import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.PriceText
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.widgets.FABFooter
+import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -62,88 +65,90 @@ fun StatisticByTimeTabLayout(
     selectedTimeViewState: SelectedTimeViewState,
     model: List<StatisticByMonthModel>,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
+    priceViewState: PriceViewState
 ) {
     val switchState = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val layColumnState = rememberLazyListState()
     val selectedMonthModel = selectedTimeViewState.selectedTimeModel
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        content = {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1.5f, true)
-                        .padding(16.dp)
-                ) {
-                    PieChart(
-                        pieChartData = selectedTimeViewState.selectedTimePieChartData,
-                        modifier = Modifier.fillMaxWidth(),
-                        sliceDrawer = SimpleSliceDrawer()
-
-                    )
-                }
-            }
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp)
+    if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
+        ListPlaceholder(modifier = Modifier.fillMaxSize())
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            content = {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1.5f, true)
+                            .padding(16.dp)
                     ) {
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = "${selectedMonthModel.month}/${selectedMonthModel.year}",
-                                    style = MaterialTheme.typography.titleLarge,
+                        PieChart(
+                            pieChartData = selectedTimeViewState.selectedTimePieChartData,
+                            modifier = Modifier.fillMaxWidth(),
+                            sliceDrawer = SimpleSliceDrawer()
 
-                                    )
-
-                            },
-                            trailingContent = {
-                                Text(
-                                    text = "${selectedMonthModel.sumOfCategories}",
-                                    style = MaterialTheme.typography.titleLarge,
-
-                                    )
-
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant
-                            ),
                         )
-                        Divider()
-                        Column {
-                            selectedMonthModel.categoriesModelList.forEach {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = it.category?.name ?: "No category",
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
-                                    Text(
-                                        text = it.sumOfPayments.toString(),
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
+                    }
+                }
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(12.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = selectedMonthModel.monthText,
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                                PriceText(
+                                    price = selectedMonthModel.sumOfCategories,
+                                    priceViewState = priceViewState,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider()
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Column {
+                                selectedMonthModel.categoriesModelList.forEach {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(
+                                            text = it.category?.name ?: "No category",
+                                            style = MaterialTheme.typography.titleMedium,
+                                        )
+                                        PriceText(
+                                            price = it.sumOfPayments,
+                                            priceViewState = priceViewState,
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                item {
+                    FABFooter()
+                }
             }
-            item {
-                FABFooter()
-            }
-        }
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -158,7 +163,26 @@ private fun StatisticByTimeTabLayoutPreview() {
             selectedTimeViewState = SelectedTimeViewState(
                 selectedTimeModel = PreviewData.statisticByMonthModelPreviewData,
             ),
-            onMonthModelSelected = {}
+            onMonthModelSelected = {},
+            priceViewState = PriceViewState()
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@MotPreview
+@Composable
+private fun StatisticByTimeTabLayoutEmptyPreview() {
+    val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    MotMaterialTheme {
+        StatisticByTimeTabLayout(
+            scrollBehavior = behavior,
+            model = PreviewData.statisticByMonthListPreviewData,
+            selectedTimeViewState = SelectedTimeViewState(
+                selectedTimeModel = PreviewData.statisticByMonthModelEmptyPreviewData,
+            ),
+            onMonthModelSelected = {},
+            priceViewState = PriceViewState()
         )
     }
 }

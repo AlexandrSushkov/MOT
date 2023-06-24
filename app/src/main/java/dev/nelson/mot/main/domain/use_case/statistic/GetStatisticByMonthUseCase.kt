@@ -6,7 +6,9 @@ import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
@@ -50,8 +52,17 @@ class GetStatisticByMonthUseCase @Inject constructor(
                         }
                             .sortedByDescending { it.sumOfPayments } // sort categories by sum of payments, descending order
                     val sumOfCategories = statByCategoryList.sumOf { it.sumOfPayments }
+                    val monthText = categoryToPaymentListMap.entries
+                        .first()
+                        .value
+                        .first()
+                        .paymentEntity
+                        .dateInMilliseconds
+                        ?.convertMillisecondsToDate() ?: StringUtils.EMPTY
+
                     StatisticByMonthModel(
                         key = UUIDUtils.randomKey,
+                        monthText = monthText,
                         month = monthPaymentsEntity.key,
                         year = yearPaymentsEntity.key,
                         sumOfCategories = sumOfCategories,
