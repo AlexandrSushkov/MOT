@@ -17,7 +17,7 @@ val appId by extra("dev.nelson.mot")
 
 // App
 val versionName by extra("2.0.0") // X.Y.Z; X = Major, Y = minor, Z = Patch level
-val versionCode by extra(13)
+val versionCode by extra(14)
 
 // SDK and tools
 val compileSdk by extra(33)
