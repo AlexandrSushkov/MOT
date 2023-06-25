@@ -16,9 +16,12 @@ import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.country_picker.CountryPickerScreen
+import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
+import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
+import dev.nelson.mot.main.presentations.screen.statistic.Statistic2Screen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
@@ -48,9 +51,19 @@ fun MotNavHost(
         startDestination = startDestination.route
     ) {
         composable(
+            route = Dashboard.route,
+            content = {
+                DashboardScreen(
+                    appBarTitle = "dashboard",
+                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                )
+            },
+        )
+        composable(
             route = Payments.route,
             content = {
-                PaymentListScreen(viewModel = hiltViewModel(),
+                PaymentListScreen(
+                    viewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
@@ -62,7 +75,8 @@ fun MotNavHost(
         composable(
             route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
             content = {
-                PaymentListScreen(viewModel = hiltViewModel(),
+                PaymentListScreen(
+                    viewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
@@ -117,10 +131,26 @@ fun MotNavHost(
             },
         )
         composable(
-            route = Statistic.route,
+            route = StatisticExperimental.route,
             content = {
                 StatisticScreen(
-                    viewModel = hiltViewModel()
+                    viewModel = hiltViewModel(),
+                    appBarTitle = "Statistic Old",
+                    appBarNavigationIcon = {
+                        MotNavBackIcon { navController.popBackStack() }
+                    },
+                )
+            },
+        )
+        composable(
+            route = Statistic.route,
+            content = {
+                Statistic2Screen(
+                    viewModel = hiltViewModel(),
+                    appBarTitle = "Statistic",
+//                    onNavigationButtonClick = { navController.popBackStack() }
+                            navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+
                 )
             },
         )
@@ -130,8 +160,9 @@ fun MotNavHost(
                 SettingsScreen(
                     title = Settings.route,
                     settingsViewModel = hiltViewModel(),
-                    navigationIcon = { MotNavDrawerIcon { navController.popBackStack() } },
+                    navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
+                    openAppThemePickerScreen = { navController.navigate(AppThemePicker.route) },
                 )
             },
         )
@@ -139,8 +170,19 @@ fun MotNavHost(
             route = CountryPicker.route,
             content = {
                 CountryPickerScreen(
-                    viewModel = hiltViewModel()
-                ) { navController.popBackStack() }
+                    viewModel = hiltViewModel(),
+                    closeScreenAction = { navController.popBackStack() }
+                )
+            },
+        )
+        composable(
+            route = AppThemePicker.route,
+            content = {
+                SelectAppThemeScreen(
+                    title = "App Theme",
+                    selectAppThemeViewModel = hiltViewModel(),
+                    closeScreenAction = { navController.popBackStack() },
+                )
             },
         )
     }

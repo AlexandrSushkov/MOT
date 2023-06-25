@@ -2,12 +2,19 @@ package dev.nelson.mot.main.util.compose
 
 import android.content.Context
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.google.gson.Gson
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.domain.use_case.statistic.Month
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
+import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import java.io.InputStream
 import java.util.UUID
 
@@ -33,7 +40,169 @@ object PreviewData {
         get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, true, generateKey())
 
     val paymentListPreview: List<Payment>
-        get() = (1..30).map { Payment("payment $it", it * 10, id = it, category = categoryPreview) }
+        get() = (1..30).map {
+            Payment("payment $it", it * 10, id = it, category = categoryPreview)
+        }
+
+    val statisticByMonthModelPreviewData
+        get(): StatisticByMonthModel {
+            val month = generateMonth
+            val year = generateYear
+            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+            val time = generateTime // Example sum of categories
+            return StatisticByMonthModel(
+                key = generateKey(),
+                monthText = time.convertMillisecondsToDate(),
+                month = month,
+                year = year,
+                sumOfCategories = sumOfCategories,
+                isExpanded = false,
+                categoriesModelList = categoriesModelList
+            )
+        }
+
+    val statisticByMonthModelEmptyPreviewData
+        get(): StatisticByMonthModel {
+            val month = generateMonth
+            val year = generateYear
+            val sumOfCategories = (1000000..5000000).random() // Example sum of categories
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+            val time = generateTime // Example sum of categories
+            return StatisticByMonthModel(
+                key = generateKey(),
+                monthText = time.convertMillisecondsToDate(),
+                month = month,
+                year = year,
+                sumOfCategories = sumOfCategories,
+                isExpanded = false,
+                categoriesModelList = emptyList()
+            )
+        }
+
+    val generateTime
+        get() = (1672609228000..1704058828000).random()
+
+    val statisticByYearModelPreviewData
+        get(): StatisticByYearModel {
+            val year = generateYear
+            val sumOfCategories = generateSumForCategory
+
+            // Generate a list of 5-10 items for categoriesModelList
+            val categoriesModelList = generateCategoriesModelList
+
+            return StatisticByYearModel(
+                key = generateKey(),
+                year,
+                sumOfCategories,
+                isExpanded = false,
+                categoriesModelList
+            )
+        }
+
+//    val generateStatisticByCategoryPerMonthModelListPreviewProvider
+//        get() = object : PreviewParameterProvider<List<StatisticByCategoryPerMonthModel>> {
+//            override val values: Sequence<List<StatisticByCategoryPerMonthModel>>
+//                get() = sequenceOf(
+//                    listOf(
+//                        statisticByCategoryPerMonthModel,
+//                        statisticByCategoryPerMonthModel,
+//                        statisticByCategoryPerMonthModel
+//                    )
+//                )
+//        }
+
+    val generateStatisticByCategoryPerMonthModelListPreviewProvider
+        get(): List<StatisticByCategoryPerMonthModel> {
+            return listOf(
+                statisticByCategoryPerMonthModel,
+                statisticByCategoryPerMonthModel,
+                statisticByCategoryPerMonthModel
+            )
+        }
+
+    val statisticByCategoryPerMonthModel
+        get(): StatisticByCategoryPerMonthModel {
+            val itemCount = (6..10).random()
+            val monthToPaymentsForMonthPreviewData = (1..itemCount).associate {
+                paymentItemPreview
+                val month =
+                    Month(generateTime.convertMillisecondsToDate(), generateMonth, generateYear)
+                month to generateStatisticForMonthForCategoryModel
+            }
+            return StatisticByCategoryPerMonthModel(
+                key = generateKey,
+                category = categoryPreview,
+                totalPrice = generateSumForCategory,
+                paymentToMonth = monthToPaymentsForMonthPreviewData
+            )
+        }
+
+    val statisticByCategoryPerMonthModelEmpty
+        get(): StatisticByCategoryPerMonthModel {
+            return StatisticByCategoryPerMonthModel(
+                key = generateKey,
+                category = categoryPreview,
+                totalPrice = generateSumForCategory,
+                paymentToMonth = emptyMap()
+            )
+        }
+
+    val generateStatisticForMonthForCategoryModel
+        get(): StatisticForMonthForCategoryModel {
+            return StatisticForMonthForCategoryModel(
+                generateSumForCategory,
+                paymentListPreview
+            )
+        }
+
+    private val generateYear
+        get() = (2018..2023).random()
+
+    private val generateMonth
+        get() = (1..12).random()
+
+    private val generateKey
+        get() = UUIDUtils.randomKey
+
+    private val generateSumForCategory
+        get() = (1000000..5000000).random()
+
+
+    private val generateCategoriesModelList
+        get(): List<StatisticByCategoryModel> {
+            val numCategories =
+                (5..10).random() // Generate a random number of categories between 5 and 10
+            val categoriesModelList = mutableListOf<StatisticByCategoryModel>()
+
+            for (i in 1..numCategories) {
+                val value = (10000..50000).random() // Generate a random value for the category
+
+                val categoryModel = StatisticByCategoryModel(
+                    key = UUIDUtils.randomKey,
+                    category = categoryPreview,
+                    sumOfPayments = value,
+                    payments = paymentListPreview
+                )
+                categoriesModelList.add(categoryModel)
+            }
+
+            return categoriesModelList
+        }
+
+    val statisticByYearListPreviewData
+        get():List<StatisticByYearModel> {
+            return (1..5).map { statisticByYearModelPreviewData }
+        }
+
+    val statisticByMonthListPreviewData
+        get():List<StatisticByMonthModel> {
+            return (6..20).map { statisticByMonthModelPreviewData }
+        }
 
     fun jsonString(context: Context, assetFile: String): String {
         val inputStream: InputStream = context.assets.open(assetFile)

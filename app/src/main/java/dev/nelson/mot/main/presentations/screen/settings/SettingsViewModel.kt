@@ -3,11 +3,13 @@ package dev.nelson.mot.main.presentations.screen.settings
 import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ExportDataBaseUseCase
+import dev.nelson.mot.main.domain.use_case.settings.GetAppThemeUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSelectedLocaleUseCase
 import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.domain.use_case.settings.ImportDataBaseUseCase
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
@@ -34,7 +37,8 @@ class SettingsViewModel @Inject constructor(
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
-    private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase
+    private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase,
+    private val getAppThemeUseCase: GetAppThemeUseCase,
 ) : BaseViewModel() {
 
     // actions
@@ -51,7 +55,7 @@ class SettingsViewModel @Inject constructor(
         launch {
             combine(
                 getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme),
-                getSwitchStatusUseCase.execute(MotSwitchType.ForceDarkTheme),
+                getAppThemeUseCase.execute(),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
                 getSwitchStatusUseCase.execute(MotSwitchType.HideDigits),
@@ -60,7 +64,7 @@ class SettingsViewModel @Inject constructor(
             ) { array ->
                 _viewState.value.copy(
                     isDynamicThemeSwitchChecked = array[0] as Boolean,
-                    isForceDarkThemeSwitchChecked = array[1] as Boolean,
+                    selectedAppTheme = array[1] as MotAppTheme,
                     isShowCentsSwitchChecked = array[2] as Boolean,
                     isShowCurrencySymbolSwitchChecked = array[3] as Boolean,
                     isHideDigitsSwitchChecked = array[4] as Boolean,
@@ -69,10 +73,6 @@ class SettingsViewModel @Inject constructor(
                 )
             }.collect { _viewState.value = it }
         }
-    }
-
-    fun onForceDarkThemeCheckedChange(isChecked: Boolean) = launch {
-        setSwitchStatus(MotSwitchType.ForceDarkTheme, isChecked)
     }
 
     fun onDynamicColorThemeCheckedChange(isChecked: Boolean) = launch {
@@ -97,25 +97,26 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onExportDataBaseClick() = launch {
-        runCatching { exportDataBaseUseCase.execute() }.onSuccess { isExported ->
-            val message = if (isExported) {
-                R.string.database_exported_successfully_dialog_message
-            } else {
-                R.string.database_export_failed_dialog_message
+        runCatching { exportDataBaseUseCase.execute() }
+            .onSuccess { isExported ->
+                val message = if (isExported) {
+                    R.string.database_exported_successfully_dialog_message
+                } else {
+                    R.string.database_export_failed_dialog_message
+                }
+                val alertDialogParams = getExportDataBaseDialog(message)
+                _viewState.update { it.copy(alertDialog = alertDialogParams) }
+            }.onFailure { throwable ->
+                throwable.message?.let {
+                    showToast(it)
+                    Timber.e(it)
+                }
             }
-            val alertDialogParams = getExportDataBaseDialog(message)
-            _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
-        }.onFailure { throwable ->
-            throwable.message?.let {
-                showToast(it)
-                Timber.e(it)
-            }
-        }
     }
 
     fun onImportDataBaseEvent(uri: Uri) = launch {
         val alertDialogParams = getImportDataBaseDialog(uri)
-        _viewState.value = _viewState.value.copy(alertDialog = alertDialogParams)
+        _viewState.update { it.copy(alertDialog = alertDialogParams) }
     }
 
     private fun getExportDataBaseDialog(message: Int): AlertDialogParams {
@@ -158,9 +159,6 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun hideAlertDialog() = launch {
-        _viewState.value = _viewState.value.copy(
-            alertDialog = null
-        )
+        _viewState.update { it.copy(alertDialog = null) }
     }
-
 }

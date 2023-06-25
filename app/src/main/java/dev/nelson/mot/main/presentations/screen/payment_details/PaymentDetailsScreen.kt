@@ -4,17 +4,17 @@ import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
@@ -33,12 +33,15 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,6 +58,7 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -161,7 +165,7 @@ fun PaymentDetailsLayoutPreview() {
 @OptIn(
     ExperimentalComposeUiApi::class,
     ExperimentalMaterialApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class
 )
 @Composable
 fun PaymentDetailsLayout(
@@ -230,10 +234,6 @@ fun PaymentDetailsLayout(
                     )
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-//                BasicTextField(
-//                    value = costFieldValueState,
-//                    onValueChange = { onCostChange.invoke(it) },
-//                )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.weight(1f))
                     OutlinedTextField(
@@ -241,22 +241,18 @@ fun PaymentDetailsLayout(
                         value = costFieldValueState,
                         singleLine = true,
                         maxLines = 1,
-                        onValueChange = {
-                            //                            costFieldValueState = it
-                            onCostChange.invoke(it)
-                        },
-
-                        leadingIcon = {
-                            Text(
-                                text = "-",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.displayMedium
-                            )
-                        },
+                        onValueChange = { onCostChange.invoke(it) },
+//                        leadingIcon = {
+//                            Text(
+//                                text = "-",
+//                                color = MaterialTheme.colorScheme.error,
+//                                style = MaterialTheme.typography.displayMedium
+//                            )
+//                        },
                         placeholder = {
                             Text(
                                 text = "0",
-                                color = MaterialTheme.colorScheme.error,
+//                                color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.displayMedium
                             )
                         },
@@ -270,15 +266,14 @@ fun PaymentDetailsLayout(
 //                            disabledIndicatorColor = Color.Transparent,
 //                            focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.error,
-                            unfocusedTextColor = MaterialTheme.colorScheme.error,
+//                            focusedTextColor = MaterialTheme.colorScheme.error,
+//                            unfocusedTextColor = MaterialTheme.colorScheme.error,
                             cursorColor = Color.Transparent,
                             errorCursorColor = Color.Transparent,
                         ),
                         textStyle = MaterialTheme.typography.displayMedium,
                         shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-
-                        )
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -287,16 +282,12 @@ fun PaymentDetailsLayout(
                         modifier = Modifier
                             .focusRequester(paymentNameFocusRequester)
                             .fillMaxWidth(),
-                        //                    value = if (LocalInspectionMode.current) "preview new payment" else name,
                         value = paymentNameFieldValueState,
                         singleLine = true,
                         maxLines = 1,
-                        onValueChange = {
-                            //                            paymentNameFieldValueState = it
-                            onNameChange.invoke(it)
-                        },
+                        onValueChange = { onNameChange.invoke(it) },
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        placeholder = { Text(text = "new payment") },
+                        placeholder = { Text(text = stringResource(id = R.string.payment_name_hint)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     )
                 }
@@ -312,15 +303,9 @@ fun PaymentDetailsLayout(
                     minLines = 3,
                     maxLines = 5,
                     value = messageFieldValueState,
-                    onValueChange = {
-//                        messageFieldValueState = it
-                        onMessageChange.invoke(it)
-                    },
-                    placeholder = { Text(text = "message") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-//                        imeAction = ImeAction.Done
-                    ),
+                    onValueChange = { onMessageChange.invoke(it) },
+                    placeholder = { Text(text = stringResource(id = R.string.message_hint)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
                     keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() }),
                     colors = TextFieldDefaults.colors(
@@ -331,70 +316,164 @@ fun PaymentDetailsLayout(
 
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Spacer(modifier = Modifier.weight(1f))
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Column(
-                        modifier = Modifier
-                        //                    .clickable {
-                        //                        keyboardController?.hide()
-                        //                        focusManager.clearFocus()
-                        //                        onDateClick.invoke()
-                        //                    }
+                    MotOutlinedButton(
+                        onClick = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                            onDateClick.invoke()
+                        },
                     ) {
-                        MotOutlinedButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                                onDateClick.invoke()
-                            },
-                        ) {
-                            Icon(
-                                Icons.Default.EditCalendar,
-                                modifier = Modifier.padding(end = 8.dp),
-                                contentDescription = "date icon"
-                            )
+                        Icon(
+                            Icons.Default.EditCalendar,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "date icon"
+                        )
 
-                            Text(
-                                text = date,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        MotOutlinedButton(
-                            onClick = {
-                                //                            onCategoryClick.invoke()
-                                coroutineScope.launch {
-                                    keyboardController?.hide()
-                                    delay(Constants.DEFAULT_ANIMATION_DELAY)
-                                    focusManager.clearFocus()
-                                    modalBottomSheetState.show()
-                                }
-                            },
-                        ) {
-                            Icon(
-                                Icons.Default.Category,
-                                modifier = Modifier.padding(end = 8.dp),
-                                contentDescription = "category icon"
-                            )
-                            Text(
-                                text = categoryName,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
+                        Text(
+                            text = date,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(modifier = Modifier.fillMaxHeight()) {
-                        MotButton(
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            onClick = onSaveClick
-                        ) {
-                            //                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
-                            Text(text = "Save")
-                        }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    MotOutlinedButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                keyboardController?.hide()
+                                delay(Constants.DEFAULT_ANIMATION_DELAY)
+                                focusManager.clearFocus()
+                                modalBottomSheetState.show()
+                            }
+                        },
+                    ) {
+                        Icon(
+                            Icons.Default.Category,
+                            modifier = Modifier.padding(end = 4.dp),
+                            contentDescription = "category icon"
+                        )
+                        Text(
+                            text = categoryName,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(IntrinsicSize.Min)
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                        //                    .clickable {
+//                        //                        keyboardController?.hide()
+//                        //                        focusManager.clearFocus()
+//                        //                        onDateClick.invoke()
+//                        //                    }
+//                    ) {
+//                        MotOutlinedButton(
+//                            onClick = {
+//                                keyboardController?.hide()
+//                                focusManager.clearFocus()
+//                                onDateClick.invoke()
+//                            },
+//                        ) {
+//                            Icon(
+//                                Icons.Default.EditCalendar,
+//                                modifier = Modifier.padding(end = 8.dp),
+//                                contentDescription = "date icon"
+//                            )
+//
+//                            Text(
+//                                text = date,
+//                                modifier = Modifier.align(Alignment.CenterVertically)
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.height(8.dp))
+//                        MotOutlinedButton(
+//                            onClick = {
+//                                //                            onCategoryClick.invoke()
+//                                coroutineScope.launch {
+//                                    keyboardController?.hide()
+//                                    delay(Constants.DEFAULT_ANIMATION_DELAY)
+//                                    focusManager.clearFocus()
+//                                    modalBottomSheetState.show()
+//                                }
+//                            },
+//                        ) {
+//                            Icon(
+//                                Icons.Default.Category,
+//                                modifier = Modifier.padding(end = 8.dp),
+//                                contentDescription = "category icon"
+//                            )
+//                            Text(
+//                                text = categoryName,
+//                                modifier = Modifier.align(Alignment.CenterVertically)
+//                            )
+//                        }
+//                    }
+//                    Spacer(modifier = Modifier.weight(1f))
+//                    Box(modifier = Modifier.fillMaxHeight()) {
+//                        MotButton(
+//                            modifier = Modifier.align(Alignment.BottomEnd),
+//                            onClick = onSaveClick
+//                        ) {
+//                            //                    Icon(Icons.Default.Save, modifier = Modifier.padding(end = 8.dp), contentDescription = "IconButton")
+//                            Text(text = "Save")
+//                        }
+//                    }
+//                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+//                    MotOutlinedButton(
+//                        onClick = {
+//                            keyboardController?.hide()
+//                            focusManager.clearFocus()
+//                            onDateClick.invoke()
+//                        },
+//                    ) {
+////                        Icon(
+////                            Icons.Default.EditCalendar,
+////                            modifier = Modifier.padding(end = 8.dp),
+////                            contentDescription = "date icon"
+////                        )
+//
+//                        Text(
+//                            text = date,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+//                    MotOutlinedButton(
+//                        onClick = {
+//                            coroutineScope.launch {
+//                                keyboardController?.hide()
+//                                delay(Constants.DEFAULT_ANIMATION_DELAY)
+//                                focusManager.clearFocus()
+//                                modalBottomSheetState.show()
+//                            }
+//                        },
+//                    ) {
+////                        Icon(
+////                            Icons.Default.Category,
+////                            modifier = Modifier.padding(end = 8.dp),
+////                            contentDescription = "category icon"
+////                        )
+//                        Text(
+//                            text = categoryName,
+//                            modifier = Modifier.align(Alignment.CenterVertically)
+//                        )
+//                    }
+                    MotButton(
+                        onClick = onSaveClick
+                    ) {
+                        Text(text = "Save")
                     }
                 }
             }
@@ -403,7 +482,8 @@ fun PaymentDetailsLayout(
 
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesListBottomSheet(
     categories: List<Category>,

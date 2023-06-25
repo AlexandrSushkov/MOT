@@ -12,7 +12,11 @@ class GetStartOfMonthTimeUseCase @Inject constructor() : UseCaseSuspend<Long, Lo
     override suspend fun execute(params: Long): Long {
         val systemTZ = TimeZone.currentSystemDefault()
         val date = Instant.fromEpochMilliseconds(params).toLocalDateTime(systemTZ).date
-        val firstDayOfTheMonth = if (date.dayOfMonth > 1) date.minus(date.dayOfMonth - 1, DateTimeUnit.DAY) else date
+        val firstDayOfTheMonth = if (date.dayOfMonth > 1) {
+            date.minus(date.dayOfMonth - 1, DateTimeUnit.DAY)
+        } else {
+            date
+        }
         return firstDayOfTheMonth.atStartOfDayIn(systemTZ).toEpochMilliseconds()
     }
 }

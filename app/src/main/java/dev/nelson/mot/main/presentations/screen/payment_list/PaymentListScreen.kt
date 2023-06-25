@@ -39,6 +39,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
@@ -74,6 +78,7 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
@@ -172,16 +177,15 @@ fun PaymentListScreen(
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
-        onChangeCategoryForSelectedItemsClick = { viewModel.onChangeCategoryClick() },
         onChangeDateForSelectedItemsClick = { picker.show() },
         categories = categories,
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
         modalBottomSheetState = modalBottomSheetState,
-        priceViewState = priceViewState,
+        priceViewState = priceViewState
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
@@ -199,12 +203,12 @@ fun PaymentListLayout(
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
-    onChangeCategoryForSelectedItemsClick: () -> Unit,
     categories: List<Category>,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState,
     priceViewState: PriceViewState,
 ) {
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
 
     MotModalBottomSheetLayout(
@@ -248,22 +252,16 @@ fun PaymentListLayout(
                         val view = LocalView.current
                         if (!view.isInEditMode) {
                             val window = (view.context as Activity).window
-                            window.statusBarColor = MaterialTheme.colorScheme.tertiaryContainer.toArgb()
+                            window.statusBarColor =
+                                MaterialTheme.colorScheme.tertiaryContainer.toArgb()
                         }
                     }
                 } else {
                     MotTopAppBar(
                         appBarTitle = toolbarTitle,
                         navigationIcon = navigationIcon,
-                        isScrolling = paymentsLitScrollingState.firstVisibleItemIndex != 0
+                        scrollBehavior = appBarScrollBehavior
                     )
-//                        .also {
-//                        val view = LocalView.current
-//                        if (!view.isInEditMode) {
-//                            val window = (view.context as Activity).window
-//                            window.statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
-//                        }
-//                    }
                 }
             },
             floatingActionButton = {
@@ -305,7 +303,8 @@ fun PaymentListLayout(
                     onSwipeToDeleteItem,
                     isSelectedStateOn,
                     priceViewState,
-                    paymentsLitScrollingState
+                    paymentsLitScrollingState,
+                    scrollBehavior = appBarScrollBehavior
                 )
             }
         }
@@ -323,6 +322,7 @@ fun PaymentList(
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     state: LazyListState,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     when (paymentListResult) {
         is Loading -> {
@@ -334,15 +334,12 @@ fun PaymentList(
         is Success -> {
             val paymentList = paymentListResult.successOr(emptyList())
             if (paymentList.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    ListPlaceholder(
-                        Modifier.align(Alignment.Center),
-                        Icons.Default.Filter,
-                        "Empty"
-                    )
-                }
+                ListPlaceholder(Modifier.fillMaxSize())
             } else {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .ifNotNull(scrollBehavior) { Modifier.nestedScroll(it.nestedScrollConnection) }
+                ) {
                     // date range widget
 //                    val startDate =
 //                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
@@ -441,11 +438,10 @@ private fun PaymentListScreenLightPreview() {
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
-            onChangeCategoryForSelectedItemsClick = {},
             categories = emptyList(),
             onCategoryClick = {},
             modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            priceViewState = PriceViewState(),
+            priceViewState = PriceViewState()
         )
     }
 }

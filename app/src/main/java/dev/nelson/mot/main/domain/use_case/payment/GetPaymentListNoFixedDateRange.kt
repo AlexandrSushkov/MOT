@@ -54,13 +54,13 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         timeZone: TimeZone? = null, dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
-            payment.dateInMills?.let { mills ->
+            payment.dateInMills.let { mills ->
                 payment.copyWith(
                     date = formatTimeUseCase.execute(
                         mills, timeZone, dateTimeFormatter
                     )
                 )
-            } ?: payment
+            }
         }
     }
 
@@ -71,7 +71,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         return mutableListOf<PaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.dateString }
                 .forEach { (date, payments) ->
-                    add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.getRandomKey))
+                    add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))
                 }
             // TODO: add footer
@@ -89,7 +89,6 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
      *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
      */
     private fun Payment.toPaymentListItem(showCategory: Boolean): PaymentListItemModel {
-        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.getRandomKey)
+        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.randomKey)
     }
-
 }

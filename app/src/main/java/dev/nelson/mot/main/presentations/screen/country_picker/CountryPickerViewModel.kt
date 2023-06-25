@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.screen.country_picker
 
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.domain.use_case.settings.SetLocaleUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
@@ -9,12 +8,10 @@ import dev.nelson.mot.main.util.extention.doesSearchMatch
 import dev.nelson.mot.main.util.extention.filterDefaultCountries
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -30,22 +27,26 @@ class CountryPickerViewModel @Inject constructor(
     private val _closeScreenAction = MutableSharedFlow<Unit>()
 
     // states
-    private val _countriesPickerState =
-        MutableStateFlow(Locale.getAvailableLocales().filterDefaultCountries())
-
     val searchText
         get() = _searchText.asStateFlow()
     private val _searchText = MutableStateFlow(StringUtils.EMPTY)
 
-    val countriesPickerState = _searchText
-        .debounce(300)
-        .combine(_countriesPickerState) { searchText, countries ->
-            countries.filter { it.doesSearchMatch(searchText) }
-        }.stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            _countriesPickerState.value
-        )
+    val countryPickerViewState
+        get() = _countryPickerViewState.asStateFlow()
+    private val _countryPickerViewState = MutableStateFlow(CountryPickerViewState())
+
+    private val defaultCountries = Locale.getAvailableLocales().filterDefaultCountries()
+
+    init {
+        launch {
+            _searchText.debounce(SEARCH_DELAY)
+                .map { searchText -> defaultCountries.filter { it.doesSearchMatch(searchText) } }
+                .collect {
+                    _countryPickerViewState.value =
+                        _countryPickerViewState.value.copy(countries = it)
+                }
+        }
+    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
@@ -56,5 +57,9 @@ class CountryPickerViewModel @Inject constructor(
             setLocaleUseCase.execute(locale)
             _closeScreenAction.emit(Unit)
         }
+    }
+
+    companion object {
+        private const val SEARCH_DELAY = 300L
     }
 }

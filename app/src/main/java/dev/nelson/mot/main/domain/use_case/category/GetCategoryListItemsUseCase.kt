@@ -39,18 +39,18 @@ class GetCategoryListItemsUseCase @Inject constructor(
         return mutableListOf<CategoryListItemModel>().apply {
             // add no category item
             val noCategory = Category("No category")
-            add(CategoryListItemModel.CategoryItemModel(noCategory, UUIDUtils.getRandomKey))
+            add(CategoryListItemModel.CategoryItemModel(noCategory, UUIDUtils.randomKey))
             //add categories items
             value.forEach { (letter, categoryList) ->
-                add(CategoryListItemModel.Letter(letter.toString(), UUIDUtils.getRandomKey))
+                add(CategoryListItemModel.Letter(letter.toString(), UUIDUtils.randomKey))
                 addAll(categoryList.map { category -> category.toCategoryItemModel() })
             }
             //add footer
-            add(CategoryListItemModel.Footer(UUIDUtils.getRandomKey))
+            add(CategoryListItemModel.Footer(UUIDUtils.randomKey))
         }
     }
 
     private fun Category.toCategoryItemModel(): CategoryListItemModel.CategoryItemModel {
-        return CategoryListItemModel.CategoryItemModel(this, UUIDUtils.getRandomKey)
+        return CategoryListItemModel.CategoryItemModel(this, UUIDUtils.randomKey)
     }
 }

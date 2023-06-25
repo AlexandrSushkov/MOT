@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.theme.DarkColorScheme
 import dev.theme.LightColorScheme
@@ -28,7 +29,11 @@ fun MotMaterialTheme(
     appThemeViewState: AppThemeViewState = AppThemeViewState(),
     content: @Composable () -> Unit
 ) {
-    val isDarkTheme = isSystemInDarkTheme() || appThemeViewState.forceDarkThemeEnabled
+    val isDarkTheme = when (appThemeViewState.selectedTheme) {
+        is MotAppTheme.Dark -> true
+        is MotAppTheme.Light -> false
+        is MotAppTheme.System -> isSystemInDarkTheme()
+    }
 
     val colorScheme = when {
         appThemeViewState.dynamicColorThemeEnabled -> {
@@ -39,6 +44,7 @@ fun MotMaterialTheme(
                 dynamicLightColorScheme(context)
             }
         }
+
         isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

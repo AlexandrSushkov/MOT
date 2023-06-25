@@ -12,7 +12,6 @@ import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.db.model.category.CategoryDao
 import dev.nelson.mot.db.model.payment.PaymentDao
-import java.io.File
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -23,7 +22,6 @@ object DataBaseModule {
     @Singleton
     fun provideRoomDb(@ApplicationContext context: Context): MotDatabase =
         Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
-//            .createFromAsset(MotDatabaseInfo.NAME)
             .addMigrations(MIGRATION_1_2)
             .allowMainThreadQueries()
             .build()
@@ -36,14 +34,4 @@ object DataBaseModule {
     @Provides
     @Singleton
     fun provideCategoryDao(motDatabase: MotDatabase): CategoryDao = motDatabase.categoryDao()
-
-    fun s (@ApplicationContext context: Context, file: File){
-        val db = Room.databaseBuilder(context, MotDatabase::class.java, MotDatabaseInfo.FILE_NAME)
-            .createFromFile(file)
-            .addMigrations(MIGRATION_1_2)
-            .allowMainThreadQueries()
-            .build()
-        db.isOpen
-        db.openHelper.readableDatabase.version
-    }
 }

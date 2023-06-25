@@ -49,7 +49,7 @@ fun PaymentWithCategory.toPayment(): Payment {
             message = summary.orEmpty(),
             id = id,
             dateString = date,
-            dateInMills = dateInMilliseconds,
+            dateInMills = dateInMilliseconds?: 0L,
             category = categoryEntity?.toCategory()
         )
     }

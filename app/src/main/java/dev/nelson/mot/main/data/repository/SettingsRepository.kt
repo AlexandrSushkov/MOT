@@ -14,6 +14,7 @@ import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.data.preferences.PreferencesKeys
+import dev.nelson.mot.core.ui.model.MotAppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -108,6 +109,17 @@ class SettingsRepository @Inject constructor(
 
     suspend fun setLocale(locale: Locale) {
         dataStore.edit { it[PreferencesKeys.SELECTED_COUNTRY_CODE] = locale.country }
+    }
+
+    fun getAppTheme(): Flow<MotAppTheme> {
+        return dataStore.data.map { it[PreferencesKeys.APP_THEME] }
+            .map { appThemeString ->
+                appThemeString?.let { MotAppTheme.fromString(it) } ?: MotAppTheme.default
+            }
+    }
+
+    suspend fun setAppTheme(theme: MotAppTheme) {
+        dataStore.edit { it[PreferencesKeys.APP_THEME] = theme.name }
     }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {

@@ -6,8 +6,10 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -16,28 +18,34 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.BuildConfig
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
@@ -54,6 +62,7 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
     navigationIcon: @Composable () -> Unit = {},
     openCountryPickerScreen: () -> Unit,
+    openAppThemePickerScreen: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -90,17 +99,18 @@ fun SettingsScreen(
         navigationIcon = navigationIcon,
         viewState = viewState,
         onLocaleClick = openCountryPickerScreen,
-        onDarkThemeSwitchClick = { settingsViewModel.onForceDarkThemeCheckedChange(it) },
-        onDynamicColorThemeSwitchClick = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
+        onDynamicColorThemeSwitchChecked = { settingsViewModel.onDynamicColorThemeCheckedChange(it) },
         onExportDataBaseClick = { settingsViewModel.onExportDataBaseClick() },
         onImportDataBaseClick = { filePickerLauncher.launch(Constants.FILE_PICKER_FORMAT) },
-        onShowCentsClick = { settingsViewModel.onShowCentsCheckedChange(it) },
-        onShowCurrencySymbolClick = { settingsViewModel.onShowCurrencySymbolChange(it) },
-        onHideDigitsClick = { settingsViewModel.onHideDigitsChange(it) },
-        onRandomizeBaseDataClick = { settingsViewModel.onRandomizeDataBaseDataClick() },
+        onShowCentsSwitchChecked = { settingsViewModel.onShowCentsCheckedChange(it) },
+        onShowCurrencySymbolSwitchChecked = { settingsViewModel.onShowCurrencySymbolChange(it) },
+        onHideDigitsSwitchChecked = { settingsViewModel.onHideDigitsChange(it) },
+        onRandomizeBaseDataSwitchChecked = { settingsViewModel.onRandomizeDataBaseDataClick() },
+        onAppThemeClicked = openAppThemePickerScreen,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
     title: String,
@@ -109,24 +119,24 @@ private fun SettingsScreenLayout(
     onLocaleClick: () -> Unit,
     onExportDataBaseClick: () -> Unit,
     onImportDataBaseClick: () -> Unit,
-    onRandomizeBaseDataClick: () -> Unit,
-    onDarkThemeSwitchClick: (Boolean) -> Unit,
-    onDynamicColorThemeSwitchClick: (Boolean) -> Unit,
-    onShowCentsClick: (Boolean) -> Unit,
-    onShowCurrencySymbolClick: (Boolean) -> Unit,
-    onHideDigitsClick: (Boolean) -> Unit,
+    onRandomizeBaseDataSwitchChecked: () -> Unit,
+    onAppThemeClicked: () -> Unit,
+    onDynamicColorThemeSwitchChecked: (Boolean) -> Unit,
+    onShowCentsSwitchChecked: (Boolean) -> Unit,
+    onShowCurrencySymbolSwitchChecked: (Boolean) -> Unit,
+    onHideDigitsSwitchChecked: (Boolean) -> Unit,
 ) {
-
     viewState.alertDialog?.let { MotAlertDialog(it) }
+
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val settingsScreenContentScrollingState = rememberLazyListState()
-    val isSystemInLightTheme = isSystemInDarkTheme().not()
 
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = title,
                 navigationIcon = navigationIcon,
-                isScrolling = settingsScreenContentScrollingState.firstVisibleItemIndex != 0
+                scrollBehavior = appBarScrollBehavior,
             )
         }
     ) { innerPadding ->
@@ -135,6 +145,7 @@ private fun SettingsScreenLayout(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
             item { HeadingListItem(text = "Appearance") }
             item {
@@ -154,7 +165,7 @@ private fun SettingsScreenLayout(
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isShowCentsSwitchChecked,
-                            onCheckedChange = onShowCentsClick
+                            onCheckedChange = onShowCentsSwitchChecked
                         )
                     }
                 )
@@ -165,7 +176,7 @@ private fun SettingsScreenLayout(
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isShowCurrencySymbolSwitchChecked,
-                            onCheckedChange = onShowCurrencySymbolClick
+                            onCheckedChange = onShowCurrencySymbolSwitchChecked
                         )
                     }
                 )
@@ -176,7 +187,9 @@ private fun SettingsScreenLayout(
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isHideDigitsSwitchChecked,
-                            onCheckedChange = onHideDigitsClick
+                            onCheckedChange = onHideDigitsSwitchChecked,
+                            uncheckedStateIcon = Icons.Default.Visibility,
+                            checkedStateIcon = Icons.Default.VisibilityOff
                         )
                     }
                 )
@@ -198,18 +211,17 @@ private fun SettingsScreenLayout(
             item {
                 HeadingListItem(text = "Theme")
             }
-            if(isSystemInLightTheme){
-                item {
-                    ListItem(
-                        headlineContent = { Text(text = "Force Dark Theme") },
-                        trailingContent = {
-                            MotSwitch(
-                                checked = viewState.isForceDarkThemeSwitchChecked,
-                                onCheckedChange = onDarkThemeSwitchClick
-                            )
-                        }
-                    )
-                }
+            item {
+                ListItem(
+                    modifier = Modifier.clickable { onAppThemeClicked.invoke() },
+                    headlineContent = { Text(text = "App Theme") },
+                    trailingContent = {
+                        Text(
+                            text = viewState.selectedAppTheme.name,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    },
+                )
             }
             item {
                 ListItem(
@@ -217,7 +229,7 @@ private fun SettingsScreenLayout(
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isDynamicThemeSwitchChecked,
-                            onCheckedChange = onDynamicColorThemeSwitchClick
+                            onCheckedChange = onDynamicColorThemeSwitchChecked
                         )
                     }
                 )
@@ -254,7 +266,7 @@ private fun SettingsScreenLayout(
                         headlineContent = { Text(text = "Randomize Database data") },
                         trailingContent = {
                             MotTextButton(
-                                onClick = onRandomizeBaseDataClick,
+                                onClick = onRandomizeBaseDataSwitchChecked,
                                 text = "Randomize"
                             )
                         }
@@ -301,7 +313,7 @@ fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
         icon = {
             Icon(
                 imageVector = Icons.Default.Info,
-                contentDescription = stringResource(R.string.info_icon),
+                contentDescription = stringResource(R.string.accessibility_info_icon),
                 modifier = Modifier
                     .width(32.dp)
                     .height(32.dp)
@@ -339,8 +351,6 @@ private fun SettingsScreenLayoutPreview() {
             dismissClickCallback = {}
         )
         val viewState = SettingsViewState(
-            isForceDarkThemeSwitchChecked = false,
-            isDynamicThemeSwitchChecked = true,
             isShowCentsSwitchChecked = true,
             isShowCurrencySymbolSwitchChecked = true,
 //            alertDialog = alertDialogParams,
@@ -348,20 +358,20 @@ private fun SettingsScreenLayoutPreview() {
         SettingsScreenLayout(
             title = "Settings",
             navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "")
+                MotNavDrawerIcon {
+
                 }
             },
             viewState = viewState,
             onLocaleClick = {},
             onExportDataBaseClick = {},
             onImportDataBaseClick = {},
-            onDarkThemeSwitchClick = {},
-            onDynamicColorThemeSwitchClick = {},
-            onShowCentsClick = {},
-            onShowCurrencySymbolClick = {},
-            onHideDigitsClick = {},
-            onRandomizeBaseDataClick = {},
+            onDynamicColorThemeSwitchChecked = {},
+            onShowCentsSwitchChecked = {},
+            onShowCurrencySymbolSwitchChecked = {},
+            onHideDigitsSwitchChecked = {},
+            onRandomizeBaseDataSwitchChecked = {},
+            onAppThemeClicked = {}
         )
     }
 }

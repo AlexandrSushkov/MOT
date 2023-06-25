@@ -12,17 +12,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.Checkbox
@@ -30,8 +31,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,12 +47,10 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.presentations.widgets.MotVerticalExpandableArea
 import dev.nelson.mot.main.util.compose.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.utils.preview.MotPreview
-import java.util.Locale
 
 @Composable
 fun DateRangeWidget(startDate: String, endDate: String) {
@@ -238,12 +237,14 @@ fun PaymentListItem(
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
 //                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                Text(
-                                    style = MaterialTheme.typography.bodySmall,
-                                    text = paymentItemModel.payment.message,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2,
-                                )
+                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                    Text(
+                                        style = MaterialTheme.typography.bodySmall,
+                                        text = paymentItemModel.payment.message,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 2,
+                                    )
+                                }
                             }
                         }
                     }

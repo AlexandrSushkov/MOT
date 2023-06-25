@@ -35,7 +35,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
         order: SortingOrder = SortingOrder.Ascending
     ): Flow<List<PaymentListItemModel>> {
         val paymentsWithCategoryList = endTime?.let {
-            paymentRepository.getPaymentsWithCategoryByFixeedDateRange(
+            paymentRepository.getPaymentsWithCategoryByFixedDateRange(
                 startTime,
                 it,
                 order is SortingOrder.Ascending,
@@ -80,7 +80,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
         return mutableListOf<PaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.dateString }
                 .forEach { (date, payments) ->
-                    add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.getRandomKey))
+                    add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))
                 }
             // TODO: add footer
@@ -98,7 +98,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
      *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
      */
     private fun Payment.toPaymentListItem(showCategory: Boolean): PaymentListItemModel {
-        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.getRandomKey)
+        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.randomKey)
     }
 
 }

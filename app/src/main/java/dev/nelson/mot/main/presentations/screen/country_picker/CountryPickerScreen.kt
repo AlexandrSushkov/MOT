@@ -18,12 +18,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotCloseIcon
@@ -41,44 +45,46 @@ import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
-import dev.nelson.mot.main.util.extention.filterDefaultCountries
 import dev.utils.preview.MotPreviewScreen
 import java.util.Locale
 
 @Composable
 fun CountryPickerScreen(
     viewModel: CountryPickerViewModel,
-    closeScreen: () -> Unit
+    closeScreenAction: () -> Unit
 ) {
-    val countries by viewModel.countriesPickerState.collectAsState(emptyList())
+    val viewState by viewModel.countryPickerViewState.collectAsState()
     val searchText by viewModel.searchText.collectAsState()
 
     LaunchedEffect(
         key1 = Unit,
         block = {
             viewModel.closeScreenAction.collect {
-                closeScreen.invoke()
+                closeScreenAction.invoke()
             }
         }
     )
 
-    CountryPickerLayout(countries,
-        searchText,
-        viewModel::onSearchTextChange,
-        closeScreen,
+    CountryPickerLayout(
+        viewState = viewState,
+        searchText = searchText,
+        onSearchTextChange = { viewModel.onSearchTextChange(it) },
+        closeScreenAction = closeScreenAction,
         onCountryClick = { viewModel.onLocaleSelected(it) }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CountryPickerLayout(
-    countries: List<Locale>,
+    viewState: CountryPickerViewState,
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    closeScreen: () -> Unit,
+    closeScreenAction: () -> Unit,
     onCountryClick: (Locale) -> Unit,
 ) {
-    val state = rememberLazyListState()
+    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val countriesListScrollState = rememberLazyListState()
     val searchFieldTransitionState = remember { MutableTransitionState(false) }
     val searchFieldTransition = updateTransition(
         transitionState = searchFieldTransitionState,
@@ -114,10 +120,10 @@ private fun CountryPickerLayout(
                 appBarTitle = "Choose a country",
                 navigationIcon = {
                     MotNavBackIcon(
-                        onClick = closeScreen
+                        onClick = closeScreenAction
                     )
                 },
-                isScrolling = state.firstVisibleItemIndex != 0
+                scrollBehavior = appBarScrollBehavior
             )
         }
     ) { innerPadding ->
@@ -125,6 +131,7 @@ private fun CountryPickerLayout(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
             Box(
                 modifier = Modifier.padding(
@@ -155,8 +162,8 @@ private fun CountryPickerLayout(
                     },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        if (countries.isNotEmpty()) {
-                            onCountryClick.invoke(countries.first())
+                        if (viewState.countries.isNotEmpty()) {
+                            onCountryClick.invoke(viewState.countries.first())
                         }
                     }),
                     shape = RoundedCornerShape(searchFieldRoundedCornersTransition),
@@ -168,12 +175,12 @@ private fun CountryPickerLayout(
                 )
             }
             LazyColumn(
-                state = state,
+                state = countriesListScrollState,
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
             ) {
-                countries.forEach { country ->
+                viewState.countries.forEach { country ->
                     item {
                         ListItem(
                             leadingContent = {
@@ -197,11 +204,11 @@ private fun CountryPickerLayout(
 private fun CountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
-            countries = Locale.getAvailableLocales().filterDefaultCountries(),
+            viewState = CountryPickerViewState(),
             onCountryClick = {},
             searchText = "",
             onSearchTextChange = {},
-            closeScreen = {}
+            closeScreenAction = {}
         )
     }
 }

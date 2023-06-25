@@ -4,6 +4,6 @@ import java.util.UUID
 
 object UUIDUtils {
 
-    val getRandomKey: String
+    val randomKey: String
         get() = UUID.randomUUID().toString()
 }

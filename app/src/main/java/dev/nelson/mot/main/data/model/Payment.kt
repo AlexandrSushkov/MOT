@@ -21,12 +21,12 @@ import dev.nelson.mot.db.model.payment.PaymentEntity
  * @constructor Create empty Payment
  */
 data class Payment(
-    val name: String,
-    val cost: Int,
+    val name: String = StringUtils.EMPTY,
+    val cost: Int = 0,
     val message: String = StringUtils.EMPTY,
     val id: Int? = null,
     val dateString: String? = null,
-    val dateInMills: Long? = null,
+    val dateInMills: Long = System.currentTimeMillis(),
     val category: Category? = null,
     var isExpanded: Boolean = false,
     var isSelected: Boolean = false,
@@ -37,7 +37,7 @@ data class Payment(
         parcel.readString().orEmpty(), // message
         parcel.readValue(Long::class.java.classLoader) as? Int, //id
         parcel.readString(), // date
-        parcel.readValue(Long::class.java.classLoader) as? Long, // date in mills
+        (parcel.readValue(Long::class.java.classLoader) as? Long) ?: System.currentTimeMillis(), // date in mills
         parcel.readParcelable(Category::class.java.classLoader, Category::class.java), // category
         parcel.readBoolean(), // is expanded
         parcel.readBoolean() // is selected
@@ -75,7 +75,7 @@ data class Payment(
         override fun newArray(size: Int): Array<Payment?> = arrayOfNulls(size)
 
         fun empty(): Payment {
-            return Payment(StringUtils.EMPTY, 0)
+            return Payment()
         }
     }
 }

@@ -27,4 +27,3 @@ data class PaymentEntity(
     @ColumnInfo(name = PaymentTable.DATE) val date: String? = null,
     @ColumnInfo(name = PaymentTable.DATE_IN_MILLISECONDS) val dateInMilliseconds: Long? = null
 )
-

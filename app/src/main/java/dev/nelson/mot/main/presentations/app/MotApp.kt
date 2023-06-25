@@ -87,26 +87,29 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
         } else {
             Row {
                 NavigationRail {
-                    drawerViewState.drawerItems.forEach { destination ->
-                        NavigationRailItem(
-                            label = { Text(destination.route) },
-                            icon = { Icon(destination.icon, contentDescription = "") },
-                            selected = drawerViewState.selectedItem == destination.route,
-                            onClick = {
-                                if (navController.currentDestination?.route != destination.route) {
-                                    val isRouteInTheBackStack = navController.backQueue
-                                        .any { it.destination.route == destination.route }
-                                    if (isRouteInTheBackStack) {
-                                        navController.popBackStack(
-                                            destination.route,
-                                            inclusive = false
-                                        )
-                                    } else {
-                                        navController.navigate(destination.route)
+                    drawerViewState.motDrawerItems.forEach { motDrawerItem ->
+                        if (motDrawerItem.isAvailable){
+                            val destination = motDrawerItem.destination
+                            NavigationRailItem(
+                                label = { Text(destination.route) },
+                                icon = { Icon(destination.icon, contentDescription = "") },
+                                selected = drawerViewState.selectedItem == destination.route,
+                                onClick = {
+                                    if (navController.currentDestination?.route != destination.route) {
+                                        val isRouteInTheBackStack = navController.backQueue
+                                            .any { it.destination.route == destination.route }
+                                        if (isRouteInTheBackStack) {
+                                            navController.popBackStack(
+                                                destination.route,
+                                                inclusive = false
+                                            )
+                                        } else {
+                                            navController.navigate(destination.route)
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
                 MotNavHost(
