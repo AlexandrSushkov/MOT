@@ -66,6 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotButton
@@ -75,6 +76,7 @@ import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.utils.preview.MotPreview
@@ -355,7 +357,7 @@ fun PaymentDetailsLayout(
                             modifier = Modifier.padding(end = 4.dp),
                             contentDescription = "category icon"
                         )
-                        Text(
+                        MotSingleLineText(
                             text = categoryName,
                             modifier = Modifier.align(Alignment.CenterVertically),
                             style = MaterialTheme.typography.labelMedium
@@ -538,13 +540,13 @@ fun CategoriesListBottomSheet(
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Row(modifier = Modifier.fillMaxWidth()) {
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(
+                                        MotSingleLineText(
                                             text = category.name,
                                             modifier = Modifier
                                                 .padding(
                                                     vertical = 12.dp,
                                                     horizontal = textPadding
-                                                )
+                                                ),
                                         )
                                     }
                                     Column(

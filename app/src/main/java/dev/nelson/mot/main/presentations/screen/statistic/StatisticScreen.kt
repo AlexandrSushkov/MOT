@@ -152,7 +152,7 @@ private fun Statistic2Layout(
                         coroutineScope.launch { modalBottomSheetState.hide() }
                     },
                     hideBottomSheetCallback = { coroutineScope.launch { modalBottomSheetState.hide() } },
-                    selectedMonthModel = selectedMonthModel,
+                    selectedMonthModel = selectedTimeViewState.selectedTimeModel,
                 )
             } else {
                 ByCategoryFilterBottomSheet(

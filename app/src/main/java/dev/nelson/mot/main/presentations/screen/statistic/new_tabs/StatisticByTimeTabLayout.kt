@@ -54,6 +54,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
@@ -129,7 +130,8 @@ fun StatisticByTimeTabLayout(
                                             .padding(vertical = 4.dp),
                                         horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Text(
+                                        MotSingleLineText(
+                                            modifier = Modifier.weight(1f),
                                             text = it.category?.name ?: "No category",
                                             style = MaterialTheme.typography.titleMedium,
                                         )

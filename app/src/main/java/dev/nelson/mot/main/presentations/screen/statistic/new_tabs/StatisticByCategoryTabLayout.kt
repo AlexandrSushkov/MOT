@@ -46,6 +46,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewSt
 import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholderPreview
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -123,7 +124,8 @@ fun StatisticByCategoryTabLayout(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
+                                MotSingleLineText(
+                                    modifier = Modifier.weight(1f),
                                     text = item.category?.name ?: "No category",
                                     style = MaterialTheme.typography.titleLarge,
                                 )

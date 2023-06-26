@@ -1,12 +1,8 @@
 package dev.nelson.mot.main.presentations.screen.statistic
 
-import android.widget.Space
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +47,11 @@ fun ByTimeFilterBottomSheet(
                     .fillMaxSize()
             ) {
                 items(model) {
+                    val containerColor = if (it == selectedMonthModel) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    }
                     ListItem(
                         modifier = Modifier.clickable {
                             onItemSelected.invoke(it)
@@ -62,7 +65,10 @@ fun ByTimeFilterBottomSheet(
                                     contentDescription = stringResource(id = R.string.accessibility_done_icon)
                                 )
                             }
-                        }
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = containerColor
+                        )
                     )
                 }
             }

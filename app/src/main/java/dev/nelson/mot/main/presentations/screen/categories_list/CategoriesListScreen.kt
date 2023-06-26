@@ -74,6 +74,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
@@ -326,7 +327,7 @@ fun CategoryListItem(
     ) {
         ListItem(
             headlineContent = {
-                Text(
+                MotSingleLineText(
                     text = category.name,
                     style = MaterialTheme.typography.titleMedium
                 )
