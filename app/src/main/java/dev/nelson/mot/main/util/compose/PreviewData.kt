@@ -118,11 +118,10 @@ object PreviewData {
 
     val generateStatisticByCategoryPerMonthModelListPreviewProvider
         get(): List<StatisticByCategoryPerMonthModel> {
-            return listOf(
-                statisticByCategoryPerMonthModel,
-                statisticByCategoryPerMonthModel,
+            val itemCount = (6..10).random()
+            return (1..itemCount).map {
                 statisticByCategoryPerMonthModel
-            )
+            }
         }
 
     val statisticByCategoryPerMonthModel

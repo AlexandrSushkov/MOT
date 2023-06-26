@@ -24,13 +24,13 @@ import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticForCurrentMonth
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.StringUtils
+import dev.theme.lightChartColors
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class StatisticViewModel @Inject constructor(
@@ -167,11 +167,19 @@ class StatisticViewModel @Inject constructor(
 
     fun onMonthModelSelected(model: StatisticByMonthModel) {
         _selectedTimeViewState.update {
-            val pieSlices = model.categoriesModelList.map {
-                PieChartData.Slice(
-                    it.sumOfPayments.toFloat(),
-                    generateRandomColor()
-                )
+            val pieSlices = model.categoriesModelList
+                .mapIndexed{ index, item ->
+                    val colorIndex = index % lightChartColors.size
+                    PieChartData.Slice(
+                        item.sumOfPayments.toFloat(),
+                        lightChartColors[colorIndex]
+                    )
+//                }
+//                .map {
+//                PieChartData.Slice(
+//                    it.sumOfPayments.toFloat(),
+//                    generateRandomColor()
+//                )
             }
             SelectedTimeViewState(
                 selectedTimeModel = model,
@@ -198,11 +206,13 @@ class StatisticViewModel @Inject constructor(
     }
 
     private fun generateRandomColor(): Color {
-        val random = Random.Default
-        val red = random.nextInt(256)
-        val green = random.nextInt(256)
-        val blue = random.nextInt(256)
-        return Color(red, green, blue)
+        val i = (0..8).random()
+        return lightChartColors[i]
+//        val random = Random.Default
+//        val red = random.nextInt(256)
+//        val green = random.nextInt(256)
+//        val blue = random.nextInt(256)
+//        return Color(red, green, blue)
     }
 }
 

@@ -2,6 +2,7 @@ package dev.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
 
 val DarkColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -59,4 +60,28 @@ val LightColorScheme = lightColorScheme(
     inverseOnSurface = md_theme_light_inverseOnSurface,
     inverseSurface = md_theme_light_inverseSurface,
     inversePrimary = md_theme_light_inversePrimary,
+)
+
+val lightChartColors= listOf(
+    Color(0xFFfd7f6f),
+    Color(0xFF7eb0d5),
+    Color(0xFFb2e061),
+    Color(0xFFbd7ebe),
+    Color(0xFFffb55a),
+    Color(0xFFffee65),
+    Color(0xFFbeb9db),
+    Color(0xFFfdcce5),
+    Color(0xFF8bd3c7)
+)
+
+val darkChartColors= listOf(
+    dark_ChartColor1,
+    dark_ChartColor2,
+    dark_ChartColor3,
+    dark_ChartColor4,
+    dark_ChartColor5,
+    dark_ChartColor6,
+    dark_ChartColor7,
+    dark_ChartColor8,
+    dark_ChartColor9,
 )

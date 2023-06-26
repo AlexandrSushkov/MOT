@@ -214,9 +214,9 @@ fun PaymentListLayout(
     MotModalBottomSheetLayout(
         sheetContent = {
             CategoriesListBottomSheet(
-                categories,
-                onCategoryClick,
-                modalBottomSheetState
+                categories = categories,
+                onCategoryClick = onCategoryClick,
+                modalBottomSheetState = modalBottomSheetState
             )
         },
         sheetState = modalBottomSheetState

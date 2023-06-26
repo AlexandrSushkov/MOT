@@ -1,6 +1,7 @@
 package dev.nelson.mot.main.presentations.screen.statistic.new_tabs
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -56,6 +58,7 @@ import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.theme.lightChartColors
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
@@ -123,20 +126,27 @@ fun StatisticByTimeTabLayout(
                             Divider()
                             Spacer(modifier = Modifier.height(8.dp))
                             Column {
-                                selectedMonthModel.categoriesModelList.forEach {
+                                selectedMonthModel.categoriesModelList.forEachIndexed { index, item ->
                                     Row(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                            .padding(vertical = 8.dp)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(16.dp)
+                                                .background(selectedTimeViewState.selectedTimePieChartData.slices[index].color)
+                                        )
+                                        Spacer(modifier =  Modifier.size(16.dp) )
                                         MotSingleLineText(
                                             modifier = Modifier.weight(1f),
-                                            text = it.category?.name ?: "No category",
+                                            text = item.category?.name ?: "No category",
                                             style = MaterialTheme.typography.titleMedium,
                                         )
                                         PriceText(
-                                            price = it.sumOfPayments,
+                                            price = item.sumOfPayments,
                                             priceViewState = priceViewState,
                                         )
                                     }
@@ -158,12 +168,20 @@ fun StatisticByTimeTabLayout(
 @Composable
 private fun StatisticByTimeTabLayoutPreview() {
     val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val modelList = PreviewData.statisticByMonthModelPreviewData
+    val slices = modelList.categoriesModelList.map {
+        PieChartData.Slice(
+            value = it.sumOfPayments.toFloat(),
+            color = lightChartColors.random()
+        )
+    }
     MotMaterialTheme {
         StatisticByTimeTabLayout(
             scrollBehavior = behavior,
             model = PreviewData.statisticByMonthListPreviewData,
             selectedTimeViewState = SelectedTimeViewState(
-                selectedTimeModel = PreviewData.statisticByMonthModelPreviewData,
+                selectedTimeModel = modelList,
+                selectedTimePieChartData = PieChartData(slices)
             ),
             onMonthModelSelected = {},
             priceViewState = PriceViewState()

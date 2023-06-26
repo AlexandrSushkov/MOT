@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -78,11 +79,14 @@ fun ByTimeFilterBottomSheet(
 
 @MotPreview
 @Composable
-fun ByTimeFilterBottomSheetPreview() {
-    ByTimeFilterBottomSheet(
-        model = PreviewData.statisticByMonthListPreviewData,
-        selectedMonthModel = PreviewData.statisticByMonthListPreviewData.first(),
-        onItemSelected = {},
-        hideBottomSheetCallback = {}
-    )
+private fun ByTimeFilterBottomSheetPreview() {
+    val modelList = PreviewData.statisticByMonthListPreviewData
+    MotMaterialTheme {
+        ByTimeFilterBottomSheet(
+            model = modelList,
+            selectedMonthModel = modelList.first(),
+            onItemSelected = {},
+            hideBottomSheetCallback = {}
+        )
+    }
 }

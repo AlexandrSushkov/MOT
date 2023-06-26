@@ -213,9 +213,9 @@ fun PaymentDetailsLayout(
     MotModalBottomSheetLayout(
         sheetContent = {
             CategoriesListBottomSheet(
-                categories,
-                onCategoryClick,
-                modalBottomSheetState
+                categories = categories,
+                onCategoryClick = onCategoryClick,
+                modalBottomSheetState = modalBottomSheetState
             )
         },
         sheetState = modalBottomSheetState,
@@ -489,6 +489,7 @@ fun PaymentDetailsLayout(
 @Composable
 fun CategoriesListBottomSheet(
     categories: List<Category>,
+    selectedCategory:Category? = null,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState
 ) {
@@ -604,11 +605,12 @@ private fun getShape(firstItemIndex: Int?, lastItemIndex: Int?, currentItemIndex
 @MotPreview
 @Composable
 private fun CategoriesListBottomSheetPreview() {
+    val categories = PreviewData.categoriesSelectListItemsPreview
     MotMaterialTheme {
         CategoriesListBottomSheet(
-            PreviewData.categoriesSelectListItemsPreview,
+            categories = categories,
             onCategoryClick = {},
-            rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+            modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         )
     }
 }
