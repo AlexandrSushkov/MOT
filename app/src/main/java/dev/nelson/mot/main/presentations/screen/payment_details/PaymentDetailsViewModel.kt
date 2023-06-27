@@ -17,7 +17,9 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.db.utils.SortingOrder
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.constant.NetworkConstants
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -193,9 +195,9 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private fun setDate(dateInMills: Long) {
         this.dateInMills = dateInMills
-        val dateFromMills = DateUtils.createDateFromMills(dateInMills)
-        val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
-        _date.value = dateTextFormatted
+//        val dateFromMills = DateUtils.createDateFromMills(dateInMills)
+//        val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
+        _date.value = dateInMills.convertMillisecondsToDate(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
     }
 
     private sealed class SavePaymentMode {

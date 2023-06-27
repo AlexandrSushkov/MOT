@@ -13,4 +13,6 @@ object Constants {
     const val NO_CATEGORY_KEY = "no_category"
     const val IS_OPENED_FROM_WIDGET = "openedFromWidget"
     const val PRICE_EXAMPLE = 999999 // 9,999.99
+    const val DAY_SHORT_MONTH_YEAR_DATE_PATTERN = "d MMM yyyy"
+    const val MONTH_YEAR_DATE_PATTERN = "MMMM yyyy"
 }

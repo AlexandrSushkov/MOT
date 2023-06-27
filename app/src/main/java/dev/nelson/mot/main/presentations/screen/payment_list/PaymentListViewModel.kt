@@ -12,7 +12,7 @@ import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRangeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyListOfPaymentsUseCase
@@ -40,7 +40,7 @@ class PaymentListViewModel @Inject constructor(
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
     private val modifyListOfPaymentsUseCase: ModifyListOfPaymentsUseCase,
-    private val getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
+    private val getPaymentListByFixedDateRangeUseCase: GetPaymentListByFixedDateRangeUseCase,
     private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
@@ -130,7 +130,7 @@ class PaymentListViewModel @Inject constructor(
                     getCategoryByIdUseCase.execute(screenScreenType.categoryId)
                         .flatMapConcat {
                             _toolBarTitleState.value = it.name
-                            getPaymentListByFixedDateRange.execute(
+                            getPaymentListByFixedDateRangeUseCase.execute(
                                 category = it,
                                 order = SortingOrder.Descending
                             )

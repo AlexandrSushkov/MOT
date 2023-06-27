@@ -9,7 +9,7 @@ import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
 fun Payment.copyWith(
     name: String? = null,
     cost: Int? = null,
-    date: String? = null,
+    dateText: String? = null,
     dateInMills: Long? = null,
     category: Category? = null,
     message: String? = null,
@@ -18,7 +18,7 @@ fun Payment.copyWith(
     name = name ?: this.name,
     cost = cost ?: this.cost,
     id = id,
-    dateString = date ?: this.dateString,
+    dateString = dateText ?: this.dateString,
     dateInMills = dateInMills ?: this.dateInMills,
     category = category ?: this.category,
     message = message ?: this.message,

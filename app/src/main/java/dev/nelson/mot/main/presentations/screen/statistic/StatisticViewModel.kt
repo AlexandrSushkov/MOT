@@ -14,7 +14,7 @@ import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRange
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRangeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.domain.use_case.statistic.GetStatisticByCategoryUseCase
@@ -37,7 +37,7 @@ class StatisticViewModel @Inject constructor(
     getCurrentTimeUseCase: GetCurrentTimeUseCase,
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
-    getPaymentListByFixedDateRange: GetPaymentListByFixedDateRange,
+    getPaymentListByFixedDateRangeUseCase: GetPaymentListByFixedDateRangeUseCase,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
     getStatisticByYearsUseCase: GetStatisticByYearsUseCase,
     private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,

@@ -9,17 +9,17 @@ import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
 import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
-import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /**
  * By default it returns list of [Payment] for current month sorted by the time, starting from the latest added [Payment].
  */
-class GetPaymentListByFixedDateRange @Inject constructor(
+class GetPaymentListByFixedDateRangeUseCase @Inject constructor(
     private val paymentRepository: PaymentRepositoryImpl,
     private val formatTimeUseCase: FormatTimeUseCase
 ) {
@@ -50,27 +50,28 @@ class GetPaymentListByFixedDateRange @Inject constructor(
 
         return paymentsWithCategoryList
             .map { it.toPaymentList() }
-            .map { it.formatDate(dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")) }
+            .map { it.addDateText(dateTimeFormatter = DateTimeFormatter.ofPattern(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)) }
             .map { it.toPaymentListItemModelNew(category == null) }
     }
 
     /**
-     * transform epoch mills into string date according to the system time zone
+     * Transform epoch mills into string date according to the system time zone
      */
-    private fun List<Payment>.formatDate(
+    private fun List<Payment>.addDateText(
         timeZone: TimeZone? = null,
         dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
-            payment.dateInMills?.let { mills ->
+            payment.dateInMills.let { mills ->
                 payment.copyWith(
+                    // TODO: can be replaced with Long.convertMillisecondsToDate
                     dateText = formatTimeUseCase.execute(
                         mills,
                         timeZone,
                         dateTimeFormatter
                     )
                 )
-            } ?: payment
+            }
         }
     }
 

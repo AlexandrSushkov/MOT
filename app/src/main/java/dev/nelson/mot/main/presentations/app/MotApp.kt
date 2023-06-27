@@ -1,5 +1,6 @@
 package dev.nelson.mot.main.presentations.app
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import dev.nelson.mot.main.presentations.nav.NavigationDrawerContent
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
@@ -50,6 +52,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
         destination.route?.let { currentRoute -> drawerViewModel.onDestinationChanged(currentRoute) }
     }
 
+    val currentBackStack by navController.currentBackStack.collectAsState()
+
     Scaffold { innerPadding ->
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
             ModalNavigationDrawer(
@@ -61,8 +65,8 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                         drawerViewState = drawerViewState
                     ) { destination ->
                         if (navController.currentDestination?.route != destination.route) {
-                            val isRouteInTheBackStack = navController.backQueue
-                                .any { it.destination.route == destination.route }
+                            val isRouteInTheBackStack =
+                                currentBackStack.any { it.destination.route == destination.route }
                             if (isRouteInTheBackStack) {
                                 navController.popBackStack(
                                     destination.route,
@@ -88,7 +92,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
             Row {
                 NavigationRail {
                     drawerViewState.motDrawerItems.forEach { motDrawerItem ->
-                        if (motDrawerItem.isAvailable){
+                        if (motDrawerItem.isAvailable) {
                             val destination = motDrawerItem.destination
                             NavigationRailItem(
                                 label = { Text(destination.route) },
@@ -96,7 +100,7 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                                 selected = drawerViewState.selectedItem == destination.route,
                                 onClick = {
                                     if (navController.currentDestination?.route != destination.route) {
-                                        val isRouteInTheBackStack = navController.backQueue
+                                        val isRouteInTheBackStack = currentBackStack
                                             .any { it.destination.route == destination.route }
                                         if (isRouteInTheBackStack) {
                                             navController.popBackStack(
