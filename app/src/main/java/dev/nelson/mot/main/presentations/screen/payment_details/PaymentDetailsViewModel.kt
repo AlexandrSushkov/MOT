@@ -47,9 +47,9 @@ class PaymentDetailsViewModel @Inject constructor(
         get() = _message.asStateFlow()
     private val _message = MutableStateFlow(TextFieldValue())
 
-    val categoryNameState
-        get() = _categoryName.asStateFlow()
-    private val _categoryName = MutableStateFlow("No Category")
+    val selectedCategoryState
+        get() = _selectedCategoryState.asStateFlow()
+    private val _selectedCategoryState = MutableStateFlow<Category?>(null)
 
     val dateState
         get() = _date.asStateFlow()
@@ -73,7 +73,7 @@ class PaymentDetailsViewModel @Inject constructor(
     private val paymentId: Int? = handle.get<Int>("id")
     private val mode: SavePaymentMode =
         paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
-    private var selectedCategory: Category? = null
+//    private var selectedCategory: Category? = null
     private var initialPayment: Payment? = null
     private var dateInMills = 0L
     private val calendar: Calendar by lazy { Calendar.getInstance() }
@@ -123,8 +123,7 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: Category) {
-        selectedCategory = category
-        _categoryName.value = category.name
+        _selectedCategoryState.value = category
     }
 
     private fun initializePaymentData() = launch {
@@ -143,10 +142,10 @@ class PaymentDetailsViewModel @Inject constructor(
                     )
                     _message.value =
                         TextFieldValue(it.message, selection = TextRange(it.message.length))
-                    selectedCategory = it.category
                     dateInMills = it.dateInMills ?: System.currentTimeMillis()
                     setDate(dateInMills)
-                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
+                    _selectedCategoryState.value = it.category
+//                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
                 }
         } ?: kotlin.run {
             setInitialDate()
@@ -159,7 +158,7 @@ class PaymentDetailsViewModel @Inject constructor(
             _paymentName.value.text,
             cost = priceToSave,
             dateInMills = dateInMills,
-            category = selectedCategory,
+            category = selectedCategoryState.value,
             message = _message.value.text
         )
         val params = ModifyPaymentParams(payment, ModifyPaymentAction.Add)
@@ -177,7 +176,7 @@ class PaymentDetailsViewModel @Inject constructor(
             id = initialPayment?.id,
             dateString = initialPayment?.dateString,
             dateInMills = dateInMills,
-            category = selectedCategory
+            category = selectedCategoryState.value
         )
         if (initialPayment != payment) {
             val params = ModifyPaymentParams(payment, ModifyPaymentAction.Edit)
