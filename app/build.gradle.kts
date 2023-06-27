@@ -75,13 +75,6 @@ android {
     android.buildFeatures.compose = true
 }
 
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://repo1.maven.org/maven2") }
-    maven { url = uri("https://jitpack.io") }
-}
-
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
@@ -146,4 +139,5 @@ dependencies {
     implementation(libs.firebase.config.ktx)
 
     implementation  (libs.charts)
+//    implementation  ("com.github.antvis:F2Native:2.1.16")
 }

@@ -24,11 +24,6 @@ android {
     }
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 dependencies {
     testApi(libs.junit)
     testApi(libs.coroutines.test)

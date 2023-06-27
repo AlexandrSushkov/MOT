@@ -22,11 +22,6 @@ android {
     }
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 dependencies {
     api(libs.androidx.core.ktx)
     api(libs.coroutines.core)

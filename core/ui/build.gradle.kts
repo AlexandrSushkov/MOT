@@ -31,11 +31,6 @@ android {
     android.buildFeatures.compose = true
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 dependencies {
     implementation(project(":core:test"))
 

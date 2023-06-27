@@ -12,6 +12,7 @@ import dev.nelson.mot.main.util.UUIDUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -49,7 +50,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
 
         return paymentsWithCategoryList
             .map { it.toPaymentList() }
-            .map { it.formatDate() }
+            .map { it.formatDate(dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")) }
             .map { it.toPaymentListItemModelNew(category == null) }
     }
 
@@ -63,7 +64,7 @@ class GetPaymentListByFixedDateRange @Inject constructor(
         return this.map { payment ->
             payment.dateInMills?.let { mills ->
                 payment.copyWith(
-                    date = formatTimeUseCase.execute(
+                    dateText = formatTimeUseCase.execute(
                         mills,
                         timeZone,
                         dateTimeFormatter
