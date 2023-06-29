@@ -68,41 +68,58 @@ fun StatisticByTimeTabLayout(
     val layColumnState = rememberLazyListState()
     val selectedMonthModel = selectedTimeViewState.selectedTimeModel
 
-    if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
-        Surface {
+    Surface(modifier = Modifier.fillMaxSize()) {
+        if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
             ListPlaceholder(modifier = Modifier.fillMaxSize())
-        }
-    } else {
-        Surface {
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
             ) {
-                MotPieChart(
-                    selectedTimeViewState = selectedTimeViewState,
-                    onPieEntrySelected = {},
-                    onNothingSelected = {}
-                )
-                Column {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = selectedMonthModel.monthText,
-                            style = MaterialTheme.typography.titleLarge,
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f, true),
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 24.dp,
+                        bottomEnd = 24.dp,
+                    ),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        MotPieChart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            selectedTimeViewState = selectedTimeViewState,
+                            onPieEntrySelected = {},
+                            onNothingSelected = {}
                         )
-                        PriceText(
-                            price = selectedMonthModel.sumOfCategories,
-                            priceViewState = priceViewState,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = selectedMonthModel.monthText,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                            PriceText(
+                                price = selectedMonthModel.sumOfCategories,
+                                priceViewState = priceViewState,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Divider()
+                }
+                Column {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -127,7 +144,7 @@ fun StatisticByTimeTabLayout(
                                                     .size(16.dp)
                                                     .background(selectedTimeViewState.selectedTimePieChartData.slices[index].color)
                                             )
-                                            Spacer(modifier = Modifier.size(16.dp))
+                                            Spacer(modifier = Modifier.width(16.dp))
                                             MotSingleLineText(
                                                 modifier = Modifier.weight(1f),
                                                 text = item.category?.name ?: "No category",
@@ -159,11 +176,6 @@ fun StatisticByTimeTabLayout(
                             }
                         }
                     )
-                }
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                ) {
                 }
             }
         }

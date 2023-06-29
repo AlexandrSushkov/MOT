@@ -1,6 +1,7 @@
 package dev.nelson.mot.db.typeconverter
 
 import androidx.room.TypeConverter
+import java.text.NumberFormat
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 

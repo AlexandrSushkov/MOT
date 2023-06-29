@@ -19,6 +19,15 @@ import dev.theme.DarkColorScheme
 import dev.theme.LightColorScheme
 import dev.theme.MotTypography
 
+
+@Composable
+fun motIsDarkTheme(appThemeViewState : AppThemeViewState):Boolean{
+    return when (appThemeViewState.selectedTheme) {
+        is MotAppTheme.Dark -> true
+        is MotAppTheme.Light -> false
+        is MotAppTheme.System -> isSystemInDarkTheme()
+    }
+}
 /**
  * Them for the whole app.
  *
@@ -29,11 +38,13 @@ fun MotMaterialTheme(
     appThemeViewState: AppThemeViewState = AppThemeViewState(),
     content: @Composable () -> Unit
 ) {
-    val isDarkTheme = when (appThemeViewState.selectedTheme) {
-        is MotAppTheme.Dark -> true
-        is MotAppTheme.Light -> false
-        is MotAppTheme.System -> isSystemInDarkTheme()
-    }
+//    val isDarkTheme = when (appThemeViewState.selectedTheme) {
+//        is MotAppTheme.Dark -> true
+//        is MotAppTheme.Light -> false
+//        is MotAppTheme.System -> isSystemInDarkTheme()
+//    }
+
+    val isDarkTheme = motIsDarkTheme(appThemeViewState = appThemeViewState)
 
     val colorScheme = when {
         appThemeViewState.dynamicColorThemeEnabled -> {

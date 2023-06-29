@@ -46,6 +46,7 @@ fun List<Color>.toIntRepresentation(): List<Int> {
 
 @Composable
 fun MotPieChart(
+    modifier: Modifier = Modifier,
     selectedTimeViewState: SelectedTimeViewState,
     onPieEntrySelected: (Int) -> Unit, // category id
     onNothingSelected: () -> Unit
@@ -73,10 +74,7 @@ fun MotPieChart(
         setDrawValues(false)
     }
     AndroidView(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1.2f, true)
-            .padding(vertical = 16.dp),
+        modifier = modifier,
         factory = { context ->
             PieChart(context).apply {
                 isRotationEnabled = false

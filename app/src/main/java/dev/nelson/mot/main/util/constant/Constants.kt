@@ -16,6 +16,7 @@ object Constants {
     const val IS_OPENED_FROM_WIDGET = "openedFromWidget"
     const val PRICE_EXAMPLE = 999999 // 9,999.99
     const val DAY_SHORT_MONTH_YEAR_DATE_PATTERN = "d MMM yyyy"
+    const val MONTH_SHORT_YEAR_DATE_PATTERN = "MMM yyyy"
     const val MONTH_YEAR_DATE_PATTERN = "MMMM yyyy"
     const val YEAR_MONTH_DATE_PATTERN = "yyyy MMMM"
 }
