@@ -255,7 +255,7 @@ fun PaymentListItem(
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
 //                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                CompositionLocalProvider(LocalContentAlpha provides 0.5f ) {
                                     Text(
                                         style = MaterialTheme.typography.bodySmall,
                                         text = paymentItemModel.payment.message,

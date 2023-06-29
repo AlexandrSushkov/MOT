@@ -37,16 +37,18 @@ class GetStatisticByMonthUseCase @Inject constructor(
                         paymentWithCategory.paymentEntity.dateInMilliseconds ?: 0
                     calendar.get(Calendar.MONTH)
                 }.map { monthPaymentsEntity ->
+                    val sumTotal = monthPaymentsEntity.value.sumOf { it.paymentEntity.cost }
                     val categoryToPaymentListMap =
                         monthPaymentsEntity.value.groupBy { it.categoryEntity }
                     val statByCategoryList =
                         categoryToPaymentListMap.map { categoryPaymentsEntity ->
-                            val sumOfPaymentsInCategory =
-                                categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
+                            val sumOfPaymentsInCategory = categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
+                            val percentage = (sumOfPaymentsInCategory.toDouble() / sumTotal.toDouble()) * 100.0
                             StatisticByCategoryModel(
                                 key = UUIDUtils.randomKey,
                                 category = categoryPaymentsEntity.key?.toCategory(),
                                 sumOfPayments = sumOfPaymentsInCategory,
+                                percentage = percentage,
                                 payments = categoryPaymentsEntity.value.toPaymentList()
                             )
                         }

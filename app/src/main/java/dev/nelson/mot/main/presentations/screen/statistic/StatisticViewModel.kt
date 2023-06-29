@@ -168,7 +168,7 @@ class StatisticViewModel @Inject constructor(
     fun onMonthModelSelected(model: StatisticByMonthModel) {
         _selectedTimeViewState.update {
             val pieSlices = model.categoriesModelList
-                .mapIndexed{ index, item ->
+                .mapIndexed { index, item ->
                     val colorIndex = index % lightChartColors.size
                     PieChartData.Slice(
                         item.sumOfPayments.toFloat(),
@@ -180,7 +180,7 @@ class StatisticViewModel @Inject constructor(
 //                    it.sumOfPayments.toFloat(),
 //                    generateRandomColor()
 //                )
-            }
+                }
             SelectedTimeViewState(
                 selectedTimeModel = model,
                 selectedTimePieChartData = PieChartData(pieSlices)
@@ -213,6 +213,10 @@ class StatisticViewModel @Inject constructor(
 //        val green = random.nextInt(256)
 //        val blue = random.nextInt(256)
 //        return Color(red, green, blue)
+    }
+
+    fun onMonthCategoryClick(model: StatisticByCategoryModel) {
+
     }
 }
 
@@ -254,5 +258,6 @@ data class StatisticByCategoryModel(
     val key: String,
     val category: Category?,
     val sumOfPayments: Int,
+    val percentage: Double,
     val payments: List<Payment>?
 )

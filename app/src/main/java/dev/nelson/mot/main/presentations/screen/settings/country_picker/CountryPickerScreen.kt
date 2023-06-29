@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.screen.country_picker
+package dev.nelson.mot.main.presentations.screen.settings.country_picker
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState

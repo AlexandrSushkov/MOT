@@ -61,6 +61,7 @@ fun Statistic2Screen(
     viewModel: StatisticViewModel,
     appBarTitle: String,
     navigationIcon: @Composable () -> Unit = {},
+    openPaymentsByCategoryAction: (Int) -> Unit,
 ) {
     val statCurrentMothList by viewModel.statCurrentMothViewState.collectAsState(emptyList())
     val statByMonthList by viewModel.statByMonthListViewState.collectAsState(emptyList())
@@ -95,6 +96,13 @@ fun Statistic2Screen(
         selectedCategoryViewState = selectedCategoryViewState,
         selectedMonthModel = selectedMonthModel,
         onMonthModelSelected = { viewModel.onMonthModelSelected(it) },
+        onMonthCategoryClick = {
+//            viewModel.onMonthCategoryClick(it)
+            val categoryId = it.category?.id
+            val startTime = it.payments?.first()?.dateInMills
+            val endTime = it.payments?.last()?.dateInMills
+            openPaymentsByCategoryAction.invoke(categoryId ?: -1)
+        },
         onCategoryModelSelected = { viewModel.onCategoryModelSelected(it) },
 //        statByYearList = statByYearList,
 //        priceViewState = priceViewState,
@@ -123,6 +131,7 @@ private fun Statistic2Layout(
     selectedTimeViewState: SelectedTimeViewState,
     selectedCategoryViewState: SelectedCategoryViewState,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
+    onMonthCategoryClick: (StatisticByCategoryModel) -> Unit,
     onCategoryModelSelected: (StatisticByCategoryPerMonthModel) -> Unit,
     priceViewState: PriceViewState,
     modalBottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(
@@ -130,7 +139,8 @@ private fun Statistic2Layout(
     )
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()
     val systemUiController = rememberSystemUiController()
@@ -261,7 +271,8 @@ private fun Statistic2Layout(
                             selectedTimeViewState = selectedTimeViewState,
                             model = statByMonthList,
                             onMonthModelSelected = onMonthModelSelected,
-                            priceViewState = priceViewState,    
+                            onMonthCategoryClick = onMonthCategoryClick,
+                            priceViewState = priceViewState,
                         )
 
                         is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
@@ -309,6 +320,7 @@ private fun Static2LayoutPreview() {
             modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
             onFabClick = {},
             onCategoryModelSelected = {},
+            onMonthCategoryClick = {},
             priceViewState = PriceViewState()
         )
     }

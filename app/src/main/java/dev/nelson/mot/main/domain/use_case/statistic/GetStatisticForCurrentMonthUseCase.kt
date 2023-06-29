@@ -23,12 +23,12 @@ class GetStatisticForCurrentMonthUseCase @Inject constructor(
                 payments.groupBy { paymentWithCategory ->
                     paymentWithCategory.categoryEntity
                 }.map { categoryPaymentsEntity ->
-                    val sumOfPaymentsInCategory =
-                        categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
+                    val sumOfPaymentsInCategory = categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
                     StatisticByCategoryModel(
                         key = UUIDUtils.randomKey,
                         category = categoryPaymentsEntity.key?.toCategory(),
                         sumOfPayments = sumOfPaymentsInCategory,
+                        percentage = 0.0,
                         payments = categoryPaymentsEntity.value.toPaymentList()
                     )
                 }.sortedByDescending { it.sumOfPayments } // sort categories by sum of payments, descending order

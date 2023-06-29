@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalNavigationDrawer
@@ -20,6 +21,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.nav.DrawerViewModel
@@ -34,11 +37,10 @@ import kotlinx.coroutines.launch
 fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
 
     val drawerViewModel = hiltViewModel<DrawerViewModel>()
-
-    val coroutineScope = rememberCoroutineScope()
-    val navController = rememberNavController()
     val navigationDrawerState = rememberDrawerState(DrawerValue.Closed)
     val drawerViewState by drawerViewModel.drawerViewState.collectAsState(DrawerViewState())
+    val coroutineScope = rememberCoroutineScope()
+    val navController = rememberNavController()
 
     /**
      * Close the app back handler.
@@ -53,6 +55,28 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
     }
 
     val currentBackStack by navController.currentBackStack.collectAsState()
+
+    MotAppLayout(
+        isOpenedFromWidget,
+        finishAction,
+        navigationDrawerState,
+        drawerViewState,
+        navController,
+        currentBackStack
+    )
+}
+
+@SuppressLint("RestrictedApi")
+@Composable
+private fun MotAppLayout(
+    isOpenedFromWidget: Boolean,
+    finishAction: () -> Unit,
+    navigationDrawerState: DrawerState,
+    drawerViewState: DrawerViewState,
+    navController: NavHostController,
+    currentBackStack: List<NavBackStackEntry>
+) {
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold { innerPadding ->
         if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -124,14 +148,20 @@ fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
                 )
             }
         }
-
     }
 }
 
 @MotPreview
 @Composable
-private fun MotAppDarkPreview() {
+private fun MotAppLayoutPreview() {
     MotMaterialTheme {
-        MotApp(isOpenedFromWidget = false, finishAction = {})
+        MotAppLayout(
+            isOpenedFromWidget = false,
+            finishAction = {},
+            navigationDrawerState = rememberDrawerState(initialValue = DrawerValue.Open),
+            drawerViewState = DrawerViewState(),
+            navController = rememberNavController(),
+            currentBackStack = emptyList()
+        )
     }
 }

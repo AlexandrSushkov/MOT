@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.screen.country_picker
+package dev.nelson.mot.main.presentations.screen.settings.country_picker
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.main.domain.use_case.settings.SetLocaleUseCase
@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -41,9 +42,8 @@ class CountryPickerViewModel @Inject constructor(
         launch {
             _searchText.debounce(SEARCH_DELAY)
                 .map { searchText -> defaultCountries.filter { it.doesSearchMatch(searchText) } }
-                .collect {
-                    _countryPickerViewState.value =
-                        _countryPickerViewState.value.copy(countries = it)
+                .collect { newLocaleList ->
+                    _countryPickerViewState.update { it.copy(countries = newLocaleList) }
                 }
         }
     }
