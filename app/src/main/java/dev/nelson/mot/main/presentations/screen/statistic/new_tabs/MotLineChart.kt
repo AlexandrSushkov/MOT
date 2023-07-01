@@ -1,13 +1,16 @@
 package dev.nelson.mot.main.presentations.screen.statistic.new_tabs
 
 import android.graphics.Color
-import android.graphics.drawable.VectorDrawable
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -97,6 +100,10 @@ fun MotLineChart(
     appThemeViewState: AppThemeViewState = AppThemeViewState()
 ) {
 
+    var initialViewState by remember { mutableStateOf(SelectedCategoryViewState()) }
+    val isClearLineChart =
+        selectedCategoryViewState.selectedTimeModel.category != initialViewState.selectedTimeModel.category
+    initialViewState = selectedCategoryViewState
     val isDarkTheme = motIsDarkTheme(appThemeViewState = appThemeViewState)
     val textColor = if (isDarkTheme) Color.WHITE else Color.BLACK
     val lineColor = MaterialTheme.colorScheme.onBackground
@@ -194,8 +201,13 @@ fun MotLineChart(
             }
         },
         update = {
-            it.data = lineData
-            it.invalidate()
+            if (isClearLineChart) {
+                it.clear()
+                it.data = lineData
+            } else {
+                it.data = lineData
+                it.invalidate()
+            }
         }
     )
 }

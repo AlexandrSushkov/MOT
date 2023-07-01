@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -17,6 +21,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.tehras.charts.piechart.PieChartData
 import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -52,6 +57,11 @@ fun MotPieChart(
     onNothingSelected: () -> Unit
 ) {
 
+    var initialViewState by remember { mutableStateOf(SelectedTimeViewState()) }
+    val isClearPieChart =
+        selectedTimeViewState.selectedTimeModel.month != initialViewState.selectedTimeModel.month ||
+                selectedTimeViewState.selectedTimeModel.year != initialViewState.selectedTimeModel.year
+    initialViewState = selectedTimeViewState
     val categories = selectedTimeViewState.selectedTimeModel.categoriesModelList
     val entries = selectedTimeViewState.selectedTimePieChartData.slices.mapIndexed { index, slice ->
         PieEntry(
@@ -119,8 +129,16 @@ fun MotPieChart(
             }
         },
         update = { chart ->
-            chart.data = pieData
-            chart.invalidate()
+            with(chart) {
+                if (isClearPieChart) {
+                    clear()
+                    centerText = ""
+                    data = pieData
+                } else {
+                    data = pieData
+                    invalidate()
+                }
+            }
         }
     )
 }

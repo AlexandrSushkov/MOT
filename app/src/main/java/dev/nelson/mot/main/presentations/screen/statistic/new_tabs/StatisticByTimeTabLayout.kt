@@ -132,10 +132,10 @@ fun StatisticByTimeTabLayout(
                                         Row(
                                             modifier = Modifier
                                                 .padding(vertical = 8.dp)
-                                                .fillMaxWidth()
-                                                .clickable {
-                                                    onMonthCategoryClick(item)
-                                                },
+                                                .fillMaxWidth(),
+//                                                .clickable {
+//                                                    onMonthCategoryClick(item)
+//                                                },
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
