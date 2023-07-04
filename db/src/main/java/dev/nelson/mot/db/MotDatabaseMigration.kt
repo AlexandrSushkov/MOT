@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * version 1 to version 2 migration is migration from plain SQLite to room implementation.
+ */
 //val MIGRATION_1_2: Migration = object : Migration(1, 2) {
 //    override fun migrate(database: SupportSQLiteDatabase) {
 //        val tempTableName = "temp_table"

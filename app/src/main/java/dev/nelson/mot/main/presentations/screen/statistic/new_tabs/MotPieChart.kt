@@ -2,7 +2,8 @@ package dev.nelson.mot.main.presentations.screen.statistic.new_tabs
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,38 +22,21 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.tehras.charts.piechart.PieChartData
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.nelson.mot.main.util.toIntRepresentation
 import dev.theme.lightChartColors
+import dev.utils.formatPrice
 import dev.utils.preview.MotPreview
 import timber.log.Timber
-
-fun Color.toIntRepresentation(): Int {
-    return android.graphics.Color.argb(
-        (alpha * 255).toInt(),
-        (red * 255).toInt(),
-        (green * 255).toInt(),
-        (blue * 255).toInt()
-    )
-}
-
-fun List<Color>.toIntRepresentation(): List<Int> {
-    return this.map {
-        android.graphics.Color.argb(
-            (it.alpha * 255).toInt(),
-            (it.red * 255).toInt(),
-            (it.green * 255).toInt(),
-            (it.blue * 255).toInt()
-        )
-    }
-}
 
 @Composable
 fun MotPieChart(
     modifier: Modifier = Modifier,
     selectedTimeViewState: SelectedTimeViewState,
+    priceViewState: PriceViewState,
     onPieEntrySelected: (Int) -> Unit, // category id
     onNothingSelected: () -> Unit
 ) {
@@ -83,6 +67,9 @@ fun MotPieChart(
     val pieData = PieData(pieDataSet).apply {
         setDrawValues(false)
     }
+
+    val centerTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+
     AndroidView(
         modifier = modifier,
         factory = { context ->
@@ -119,10 +106,14 @@ fun MotPieChart(
                         val categoryId = (e as? PieEntry)?.label?.toInt()
                         categoryId?.let {
                             onPieEntrySelected.invoke(it)
-                            val selectedCategoryModel =
-                                categories.find { categoryModel -> categoryModel.category?.id == it }
-                            val formattedCenterText = formatCenterText(selectedCategoryModel)
-                            this@apply.centerText = formattedCenterText
+                            categories.find { categoryModel -> categoryModel.category?.id == it }
+                                ?.let { selectedCategoryModel ->
+                                    val formattedCenterText =
+                                        formatCenterText(selectedCategoryModel, priceViewState)
+                                    setCenterTextColor(centerTextColor.toIntRepresentation())
+                                    this@apply.centerText = formattedCenterText
+                                }
+
                         }
                     }
                 })
@@ -143,11 +134,15 @@ fun MotPieChart(
     )
 }
 
-private fun formatCenterText(selectedCategoryModel: StatisticByCategoryModel?): String {
-    val categoryName = selectedCategoryModel?.category?.name
+private fun formatCenterText(
+    selectedCategoryModel: StatisticByCategoryModel,
+    priceViewState: PriceViewState
+): String {
+    val formattedPrice = formatPrice(selectedCategoryModel.sumOfPayments, priceViewState)
+    val categoryName = selectedCategoryModel.category?.name
     return """
         $categoryName
-        ${selectedCategoryModel?.sumOfPayments} | ${"%.1f%%".format(selectedCategoryModel?.percentage)}
+        $formattedPrice | ${"%.1f%%".format(selectedCategoryModel.percentage)}
     """.trimIndent()
 }
 
@@ -162,13 +157,19 @@ fun MotPieChartPreview() {
         )
     }
     MotMaterialTheme {
-        MotPieChart(
-            selectedTimeViewState = SelectedTimeViewState(
-                selectedTimeModel = modelList,
-                selectedTimePieChartData = PieChartData(slices)
-            ),
-            onPieEntrySelected = { },
-            onNothingSelected = {}
-        )
+        Card {
+            MotPieChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
+                selectedTimeViewState = SelectedTimeViewState(
+                    selectedTimeModel = modelList,
+                    selectedTimePieChartData = PieChartData(slices)
+                ),
+                priceViewState = PriceViewState(),
+                onPieEntrySelected = { },
+                onNothingSelected = {}
+            )
+        }
     }
 }

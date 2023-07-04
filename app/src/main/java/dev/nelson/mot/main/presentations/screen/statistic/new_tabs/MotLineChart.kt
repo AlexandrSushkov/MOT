@@ -1,10 +1,10 @@
 package dev.nelson.mot.main.presentations.screen.statistic.new_tabs
 
-import android.graphics.Color
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +32,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewSt
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.toIntRepresentation
 import dev.utils.preview.MotPreview
 
 val centsValueFormatter = object : ValueFormatter() {
@@ -40,56 +41,62 @@ val centsValueFormatter = object : ValueFormatter() {
     }
 }
 
-val centsXAxisValueFormatter = object : ValueFormatter() {
+val centsYAxisValueFormatter = object : ValueFormatter() {
     override fun getFormattedValue(value: Float): String {
-        val dollar = (value / 100).toInt()
-//        return formatValue(dollar.toLong())
-        return formatValue(value.toLong())
+        val dollar = (value / 100).toLong()
+        return formatValue(dollar)
     }
 }
 
-//private val suffixes: NavigableMap<Long, String> = TreeMap<Long, String>().apply {
-//    1_000L to "k"
-//    1_000_000L to "M"
-//    1_000_000_000L to "G"
-//    1_000_000_000_000L to "T"
-//    1_000_000_000_000_000L to "P"
-//    1_000_000_000_000_000_000L to "E"
-//}
-//
-//fun formatValue(value: Long): String {
-//    //Long.MIN_VALUE == -Long.MIN_VALUE so we need an adjustment here
-//    if (value == Long.MIN_VALUE) return format("${Long.MIN_VALUE + 1}")
-//    if (value < 0) return "-" + format(value.toString())
-//    if (value < 1000) return value.toString() //deal with easy case
-//    val (divideBy, suffix) = suffixes.floorEntry(value) ?: return value.toString()
-//    val truncated = value / (divideBy / 10) //the number part of the output times 10
-//    val hasDecimal = truncated < 100 && truncated / 10.0 != (truncated / 10).toDouble()
-//    return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
-//}
+val centsEntryValueFormatter = object : ValueFormatter() {
+    override fun getFormattedValue(value: Float): String {
+        return formatPriceShort(value.toLong())
+    }
+}
+fun formatValue(value: Long): String {
+    return if (value < 1000) {
+        value.toString()
+    } else if (value < 1000000) {
+        val newValue = value / 1000.0
+        String.format("%.0fk", newValue)
+    } else {
+        val newValue = value / 1000000.0
+        String.format("%.0fM", newValue)
+    }
+}
 
-fun formatValue(number: Long): String {
-    return when (number) {
-        0L -> {
-            "0"
-        }
-
-        in 0..99999 -> {
-            (number / 100).toString()
-        }
-
-        in 100000..99999999 -> {
-//            "${(number / 10000.0)}k"
-            "${(String.format("%.1f", number / 10000.0))}k"
-        }
-
-        else -> {
-            "${(number / 100000000.0)}M"
-        }
+fun formatK(string: String): String {
+//    val formatter = NumberFormat.getInstance(Locale.US) as DecimalFormat
+//    formatter.applyPattern("#.#")
+//    return formatter.format(number)
+    if (string.length < 2) {
+        return string // Return the original string if it has less than 2 characters
     }
 
-//    val formattedNumber = String.format("%.1f", num.toDouble())
-//    return "$formattedNumber${suffixes[index]}"
+    val penultimateIndex = string.length - 1
+    val builder = StringBuilder(string)
+    builder.insert(penultimateIndex, ".")
+
+    return builder.toString()
+}
+
+/**
+ * @param number price in cents
+ */
+fun formatPriceShort(number: Long): String {
+    return when (number) {
+        0L -> "0"
+        // in 1.00 - 999.99
+        in 1..99999 -> (number / 100).toString() // 999.99 -> 999
+        // in 1,000.00 - 999,999.99
+        in 100000..99999999 -> "${formatK((number / 10000).toString())}k" // 1k - 9.9k
+        // in 10,000.00 - 99,999.99
+//        in 1000000..9999999 -> "${formatK((number / 10000).toString())}k" // 10k - 99.9k
+        // in 100,000.00 - 999,999.99
+//        in 10000000..99999999 -> "${formatK((number / 10000).toString())}k" // 1k - 999.9k
+        // in 1,000,000.00 - 9,999,999.99
+        else -> "${number / 100000000}M" // 1M - 999M
+    }
 }
 
 
@@ -105,8 +112,8 @@ fun MotLineChart(
         selectedCategoryViewState.selectedTimeModel.category != initialViewState.selectedTimeModel.category
     initialViewState = selectedCategoryViewState
     val isDarkTheme = motIsDarkTheme(appThemeViewState = appThemeViewState)
-    val textColor = if (isDarkTheme) Color.WHITE else Color.BLACK
-    val lineColor = MaterialTheme.colorScheme.onBackground
+    val textColor = MaterialTheme.colorScheme.onPrimaryContainer
+    val lineColor = MaterialTheme.colorScheme.onPrimaryContainer
     val axisTextSize = MaterialTheme.typography.bodySmall
     val dataTextSize = MaterialTheme.typography.labelSmall
     val markerBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -127,8 +134,8 @@ fun MotLineChart(
         entries,
         "Total: X"
     ).apply {
-        valueFormatter = centsXAxisValueFormatter
-        valueTextColor = textColor
+        valueFormatter = centsEntryValueFormatter
+        valueTextColor = textColor.toIntRepresentation()
         valueTextSize = dataTextSize.fontSize.value
         color = lineColor.toIntRepresentation()
         setCircleColor(lineColor.toIntRepresentation())
@@ -148,13 +155,13 @@ fun MotLineChart(
                     position = XAxis.XAxisPosition.BOTTOM
                     textSize = axisTextSize.fontSize.value
                     granularity = 1f // minimum axis-step (interval) is 1
-                    setTextColor(textColor)
+                    setTextColor(textColor.toIntRepresentation())
                 }
 
                 with(axisLeft) {
-                    valueFormatter = centsXAxisValueFormatter
+                    valueFormatter = centsYAxisValueFormatter
                     textSize = axisTextSize.fontSize.value
-                    setTextColor(textColor)
+                    setTextColor(textColor.toIntRepresentation())
                 }
 
                 axisRight.isEnabled = false
@@ -194,10 +201,7 @@ fun MotLineChart(
                 }
 
                 mv.chartView = this // For bounds control
-
                 marker = mv
-
-
             }
         },
         update = {
@@ -212,18 +216,19 @@ fun MotLineChart(
     )
 }
 
-
 @MotPreview
 @Composable
 private fun MotLineChartPreview() {
     MotMaterialTheme {
-        MotLineChart(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1.2f, true),
-            selectedCategoryViewState = SelectedCategoryViewState(
-                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
-            ),
-        )
+        Card {
+            MotLineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.2f, true),
+                selectedCategoryViewState = SelectedCategoryViewState(
+                    selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
+                ),
+            )
+        }
     }
 }

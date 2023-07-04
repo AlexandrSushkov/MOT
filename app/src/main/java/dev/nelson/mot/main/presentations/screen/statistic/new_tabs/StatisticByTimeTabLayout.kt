@@ -96,6 +96,7 @@ fun StatisticByTimeTabLayout(
                                 .fillMaxWidth()
                                 .weight(1f),
                             selectedTimeViewState = selectedTimeViewState,
+                            priceViewState = priceViewState,
                             onPieEntrySelected = {},
                             onNothingSelected = {}
                         )
