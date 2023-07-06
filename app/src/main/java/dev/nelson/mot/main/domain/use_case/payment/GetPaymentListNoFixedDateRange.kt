@@ -24,6 +24,8 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
     /**
      * @param startTime time in epoc milliseconds.
      * @param category to find payments for. if null, ignore category, find any payment.
+     * @param order sorting order for. Sorting field is [Payment.dateInMills].
+     * @param onlyPaymentsWithoutCategory if true, only payments without category will be returned.
      */
     fun execute(
         startTime: Long = 0,
@@ -49,7 +51,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
     }
 
     /**
-     * transform epoch mills into string date according to the system time zone
+     *  Transform epoch mills into string date according to the system time zone
      */
     private fun List<Payment>.formatDate(
         timeZone: TimeZone? = null, dateTimeFormatter: DateTimeFormatter? = null

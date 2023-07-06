@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import dev.nelson.mot.db.model.category.CategoryTable
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -38,7 +38,15 @@ interface PaymentDao {
         LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}
     """
     )
-    fun getAllPaymentsWithCategory(): Flow<List<PaymentWithCategory>>
+    fun getAllPaymentsWithCategory(): Flow<List<PaymentWithCategoryEntity>>
+
+//    @Query(
+//        """
+//        SELECT * FROM ${PaymentTable.TABLE_NAME}
+//        LEFT JOIN ${CategoryTable.TABLE_NAME} ON ${PaymentTable.CATEGORY_ID_KEY} = ${CategoryTable.ID}
+//    """
+//    )
+//    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>>
 
     @Query(
         """
@@ -47,7 +55,7 @@ interface PaymentDao {
         WHERE ${PaymentTable.ID} = :id
     """
     )
-    fun getPaymentById(id: Int): Flow<PaymentWithCategory>
+    fun getPaymentById(id: Int): Flow<PaymentWithCategoryEntity>
 
     @Query(
         """
@@ -60,7 +68,7 @@ interface PaymentDao {
     )
     fun getAllPaymentsWithCategoryOrderedById(
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     @Query(
         """
@@ -73,7 +81,7 @@ interface PaymentDao {
     )
     fun getAllPaymentsWithCategoryOrderDate(
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     /**
      * has end time
@@ -93,7 +101,7 @@ interface PaymentDao {
         startTime: Long,
         endTime: Long,
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     /**
      * doesn't have end time
@@ -111,7 +119,7 @@ interface PaymentDao {
     fun getPaymentsWithCategoryNoCategoryNoFixedDateRange(
         startTime: Long,
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     @Query(
         """
@@ -128,9 +136,11 @@ interface PaymentDao {
         startTime: Long,
         categoryId: Int,
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
-    //get payments without category
+    /**
+     * Get payments that are not assigned to any category.
+     */
     @Query("SELECT * FROM ${PaymentTable.TABLE_NAME} WHERE ${PaymentTable.CATEGORY_ID_KEY} IS NULL")
-    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategory>>
+    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategoryEntity>>
 }

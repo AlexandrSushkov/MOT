@@ -10,7 +10,7 @@ import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentByIdUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
@@ -18,9 +18,7 @@ import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.constant.NetworkConstants
 import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
-import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -32,7 +30,7 @@ class PaymentDetailsViewModel @Inject constructor(
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     handle: SavedStateHandle,
-    private val getPaymentUseCase: GetPaymentUseCase,
+    private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
     private val modifyPaymentUseCase: ModifyPaymentUseCase
 ) : BaseViewModel() {
 
@@ -130,7 +128,7 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private fun initializePaymentData() = launch {
         paymentId?.let { paymentId ->
-            getPaymentUseCase.execute(paymentId)
+            getPaymentByIdUseCase.execute(paymentId)
                 .catch { exception -> handleThrowable(exception) }
                 .collect {
                     initialPayment = it

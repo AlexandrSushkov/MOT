@@ -3,11 +3,11 @@ package dev.nelson.mot.main.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 import dev.nelson.mot.db.model.payment.PaymentEntity
 
 /**
- * Data class for [PaymentWithCategory] and [PaymentEntity] for presentation layer.
+ * Data class for [PaymentWithCategoryEntity] and [PaymentEntity] for presentation layer.
  *
  * @property name
  * @property cost

@@ -25,7 +25,6 @@ import androidx.compose.material.Snackbar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
@@ -82,8 +81,8 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
-import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.constant.Constants
+import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.delay
@@ -323,8 +322,18 @@ fun CategoryListItem(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { onCategoryClick.invoke(category.id ?: -1) },
-                onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
+                onClick = {
+                    onCategoryClick.invoke(
+                        category.id ?: Constants.NO_CATEGORY_CATEGORY_ID
+                    )
+                },
+                onLongClick = {
+                    category.id?.let {
+                        if (it > 0) {
+                            onCategoryLongPress.invoke(category)
+                        }
+                    }
+                }
             ),
     ) {
         ListItem(
@@ -336,19 +345,21 @@ fun CategoryListItem(
             },
             trailingContent = {
                 category.id?.let {
-                    IconToggleButton(
-                        checked = checked,
-                        onCheckedChange = { isChecked ->
-                            checked = isChecked
-                            onFavoriteClick.invoke(category, isChecked)
-                        },
-                    ) {
-                        Icon(
-                            Icons.Filled.Star,
-                            contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                            tint = iconTint,
-                            modifier = Modifier.size(24.dp)
-                        )
+                    if (it > 0) {
+                        IconToggleButton(
+                            checked = checked,
+                            onCheckedChange = { isChecked ->
+                                checked = isChecked
+                                onFavoriteClick.invoke(category, isChecked)
+                            },
+                        ) {
+                            Icon(
+                                Icons.Filled.Star,
+                                contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
+                                tint = iconTint,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -410,7 +421,8 @@ private fun CardFooter() {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(80.dp),
-    ) {}
+        content = {}
+    )
 }
 
 @MotPreviewScreen
@@ -486,7 +498,8 @@ private fun EditCategoryDialogPreview() {
             categoryToEditId = null,
             categoryNameState = TextFieldValue(),
             onCategoryNameChanged = {},
-            closeEditCategoryDialog = {}
-        ) {}
+            closeEditCategoryDialog = {},
+            onSaveCategoryClick = {}
+        )
     }
 }

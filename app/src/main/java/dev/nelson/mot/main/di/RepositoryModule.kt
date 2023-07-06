@@ -15,11 +15,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object RepositoryModule {
-    @Provides
-    @Singleton
-    fun provideCategoryRepository(categoryDao: CategoryDao): CategoryRepository = CategoryRepositoryImpl(categoryDao)
 
     @Provides
     @Singleton
-    fun providePaymentRepository(paymentDao: PaymentDao): PaymentRepository = PaymentRepositoryImpl(paymentDao)
+    fun provideCategoryRepository(categoryDao: CategoryDao): CategoryRepository =
+        CategoryRepositoryImpl(categoryDao)
+
+    @Provides
+    @Singleton
+    fun providePaymentRepository(paymentDao: PaymentDao): PaymentRepository =
+        PaymentRepositoryImpl(paymentDao)
 }

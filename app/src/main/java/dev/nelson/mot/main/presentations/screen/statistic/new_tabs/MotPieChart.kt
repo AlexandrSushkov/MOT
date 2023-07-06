@@ -113,7 +113,6 @@ fun MotPieChart(
                                     setCenterTextColor(centerTextColor.toIntRepresentation())
                                     this@apply.centerText = formattedCenterText
                                 }
-
                         }
                     }
                 })
