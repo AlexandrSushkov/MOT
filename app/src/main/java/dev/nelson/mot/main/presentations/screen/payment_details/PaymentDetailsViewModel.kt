@@ -17,7 +17,9 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.db.utils.SortingOrder
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.constant.NetworkConstants
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import dev.nelson.mot.main.util.toFormattedDate
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,9 +49,9 @@ class PaymentDetailsViewModel @Inject constructor(
         get() = _message.asStateFlow()
     private val _message = MutableStateFlow(TextFieldValue())
 
-    val categoryNameState
-        get() = _categoryName.asStateFlow()
-    private val _categoryName = MutableStateFlow("No Category")
+    val selectedCategoryState
+        get() = _selectedCategoryState.asStateFlow()
+    private val _selectedCategoryState = MutableStateFlow<Category?>(null)
 
     val dateState
         get() = _date.asStateFlow()
@@ -73,7 +75,7 @@ class PaymentDetailsViewModel @Inject constructor(
     private val paymentId: Int? = handle.get<Int>("id")
     private val mode: SavePaymentMode =
         paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
-    private var selectedCategory: Category? = null
+//    private var selectedCategory: Category? = null
     private var initialPayment: Payment? = null
     private var dateInMills = 0L
     private val calendar: Calendar by lazy { Calendar.getInstance() }
@@ -123,8 +125,7 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     fun onCategorySelected(category: Category) {
-        selectedCategory = category
-        _categoryName.value = category.name
+        _selectedCategoryState.value = category
     }
 
     private fun initializePaymentData() = launch {
@@ -143,10 +144,10 @@ class PaymentDetailsViewModel @Inject constructor(
                     )
                     _message.value =
                         TextFieldValue(it.message, selection = TextRange(it.message.length))
-                    selectedCategory = it.category
                     dateInMills = it.dateInMills ?: System.currentTimeMillis()
                     setDate(dateInMills)
-                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
+                    _selectedCategoryState.value = it.category
+//                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
                 }
         } ?: kotlin.run {
             setInitialDate()
@@ -159,7 +160,7 @@ class PaymentDetailsViewModel @Inject constructor(
             _paymentName.value.text,
             cost = priceToSave,
             dateInMills = dateInMills,
-            category = selectedCategory,
+            category = selectedCategoryState.value,
             message = _message.value.text
         )
         val params = ModifyPaymentParams(payment, ModifyPaymentAction.Add)
@@ -177,7 +178,7 @@ class PaymentDetailsViewModel @Inject constructor(
             id = initialPayment?.id,
             dateString = initialPayment?.dateString,
             dateInMills = dateInMills,
-            category = selectedCategory
+            category = selectedCategoryState.value
         )
         if (initialPayment != payment) {
             val params = ModifyPaymentParams(payment, ModifyPaymentAction.Edit)
@@ -194,9 +195,9 @@ class PaymentDetailsViewModel @Inject constructor(
 
     private fun setDate(dateInMills: Long) {
         this.dateInMills = dateInMills
-        val dateFromMills = DateUtils.createDateFromMills(dateInMills)
-        val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
-        _date.value = dateTextFormatted
+//        val dateFromMills = DateUtils.createDateFromMills(dateInMills)
+//        val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
+        _date.value = dateInMills.convertMillisecondsToDate(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
     }
 
     private sealed class SavePaymentMode {

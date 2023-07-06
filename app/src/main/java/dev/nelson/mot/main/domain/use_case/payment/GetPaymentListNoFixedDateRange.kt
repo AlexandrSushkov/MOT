@@ -9,6 +9,7 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.TimeZone
@@ -43,7 +44,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
                 }
             }
         }.map { it.toPaymentList() }
-            .map { it.formatDate() }
+            .map { it.formatDate(dateTimeFormatter = DateTimeFormatter.ofPattern(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)) }
             .map { it.toPaymentListItemModelNew(category == null) }
     }
 
@@ -56,7 +57,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         return this.map { payment ->
             payment.dateInMills.let { mills ->
                 payment.copyWith(
-                    date = formatTimeUseCase.execute(
+                    dateText = formatTimeUseCase.execute(
                         mills, timeZone, dateTimeFormatter
                     )
                 )

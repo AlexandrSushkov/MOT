@@ -14,6 +14,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryMod
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import dev.nelson.mot.main.util.UUIDUtils
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 import java.io.InputStream
 import java.util.UUID
@@ -118,11 +119,10 @@ object PreviewData {
 
     val generateStatisticByCategoryPerMonthModelListPreviewProvider
         get(): List<StatisticByCategoryPerMonthModel> {
-            return listOf(
-                statisticByCategoryPerMonthModel,
-                statisticByCategoryPerMonthModel,
+            val itemCount = (6..10).random()
+            return (1..itemCount).map {
                 statisticByCategoryPerMonthModel
-            )
+            }
         }
 
     val statisticByCategoryPerMonthModel
@@ -131,7 +131,11 @@ object PreviewData {
             val monthToPaymentsForMonthPreviewData = (1..itemCount).associate {
                 paymentItemPreview
                 val month =
-                    Month(generateTime.convertMillisecondsToDate(), generateMonth, generateYear)
+                    Month(
+                        generateTime.convertMillisecondsToDate(Constants.YEAR_MONTH_DATE_PATTERN),
+                        generateMonth,
+                        generateYear
+                    )
                 month to generateStatisticForMonthForCategoryModel
             }
             return StatisticByCategoryPerMonthModel(
@@ -186,6 +190,7 @@ object PreviewData {
                     key = UUIDUtils.randomKey,
                     category = categoryPreview,
                     sumOfPayments = value,
+                    percentage = value / 100.0,
                     payments = paymentListPreview
                 )
                 categoriesModelList.add(categoryModel)
@@ -290,6 +295,23 @@ class CategoryPreviewProvider : PreviewParameterProvider<Category> {
 val categoryNames = listOf(
     "Support",
     "Legal",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
+    "Veeeeeeeeeee rrryyyyy llllooooongg caaaaategooorryyyy",
     "Sales",
     "Human Resources",
     "Support",

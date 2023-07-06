@@ -31,12 +31,6 @@ android {
     kotlinOptions { jvmTarget = rootProject.extra["jvmTarget"] as String }
 }
 
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://repo1.maven.org/maven2") }
-}
-
 dependencies {
     implementation(project(":core:common"))
 

@@ -3,9 +3,12 @@
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -26,6 +29,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,9 +51,11 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
+import dev.nelson.mot.main.util.extention.capitalizeFirstLetter
 import dev.utils.preview.MotPreview
 
 @Composable
@@ -169,6 +175,17 @@ fun PaymentListItem(
         label = "paymentNamePaddingStart"
     )
 
+    val cardBackgroundColor = if (paymentItemModel.payment.isSelected) {
+        MaterialTheme.colorScheme.tertiaryContainer
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    val cardBackgroundColorState by animateColorAsState(
+        targetValue = cardBackgroundColor,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "system_bar_animate_color"
+    )
+
     MotCard(
         modifier = Modifier.combinedClickable(
             onClick = { onClick.invoke(paymentItemModel) },
@@ -177,8 +194,10 @@ fun PaymentListItem(
                     onLongClick.invoke(paymentItemModel)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
-
             }),
+        colors = CardDefaults.cardColors(
+            containerColor = cardBackgroundColorState
+        ),
     ) {
         Row {
             Column(modifier = Modifier.align(Alignment.CenterVertically)) {
@@ -209,13 +228,20 @@ fun PaymentListItem(
                             .fillMaxWidth()
                     ) {
                         Row {
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleMedium,
-                                text = paymentItemModel.payment.name,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
+                            Column(modifier = Modifier.weight(1f)) {
+                                MotSingleLineText(
+                                    text = paymentItemModel.payment.name.capitalizeFirstLetter(),
+                                    style = MaterialTheme.typography.titleMedium,
+                                )
+                                if (paymentItemModel.showCategory) {
+                                    paymentItemModel.payment.category?.name?.let {
+                                        MotSingleLineText(
+                                            text = it,
+                                            style = MaterialTheme.typography.labelMedium,
+                                        )
+                                    }
+                                }
+                            }
                             Column(
                                 modifier = Modifier.align(alignment = Alignment.CenterVertically)
                             ) {
@@ -226,18 +252,10 @@ fun PaymentListItem(
                                 )
                             }
                         }
-                        if (paymentItemModel.showCategory) {
-                            paymentItemModel.payment.category?.name?.let {
-                                Text(
-                                    it,
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
-                            }
-                        }
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
 //                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                CompositionLocalProvider(LocalContentAlpha provides 0.5f ) {
                                     Text(
                                         style = MaterialTheme.typography.bodySmall,
                                         text = paymentItemModel.payment.message,

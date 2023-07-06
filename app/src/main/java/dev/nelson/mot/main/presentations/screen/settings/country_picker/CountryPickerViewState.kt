@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.screen.country_picker
+package dev.nelson.mot.main.presentations.screen.settings.country_picker
 
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.filterDefaultCountries

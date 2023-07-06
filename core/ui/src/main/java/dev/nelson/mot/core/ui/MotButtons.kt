@@ -62,7 +62,10 @@ fun MotTextButton(
 private fun MotTextButtonPreview() {
     MotMaterialTheme {
         ListItem(headlineContent = {
-            MotTextButton(onClick = { /*TODO*/ }, text = "Button")
+            MotTextButton(
+                onClick = {},
+                text = "Button"
+            )
         })
     }
 }
@@ -93,7 +96,7 @@ private fun MotButtonPreview() {
                         Icon(
                             Icons.Default.Save,
                             modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "IconButton"
+                            contentDescription = "save icon"
                         )
                         Text(text = "Button")
                     }
@@ -129,7 +132,7 @@ private fun MotOutlinePreview() {
                         Icon(
                             Icons.Default.Save,
                             modifier = Modifier.padding(end = 4.dp),
-                            contentDescription = "IconButton"
+                            contentDescription = "save icon"
                         )
                         Text(text = "Button")
                     }
@@ -142,28 +145,40 @@ private fun MotOutlinePreview() {
 @Composable
 fun MotNavBackIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(Icons.Default.ArrowBack, contentDescription = "back icon")
+        Icon(
+            Icons.Default.ArrowBack,
+            contentDescription = "back icon"
+        )
     }
 }
 
 @Composable
 fun MotCloseIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(Icons.Default.Close, contentDescription = "close icon")
+        Icon(
+            Icons.Default.Close,
+            contentDescription = "close icon"
+        )
     }
 }
 
 @Composable
 fun MotNavDrawerIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(Icons.Default.Menu, contentDescription = "drawer menu icon")
+        Icon(
+            Icons.Default.Menu,
+            contentDescription = "drawer icon"
+        )
     }
 }
 
 @Composable
 fun MotNavSettingsIcon(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(Icons.Default.Settings, contentDescription = "settings icon")
+        Icon(
+            Icons.Default.Settings,
+            contentDescription = "settings icon"
+        )
     }
 }
 
@@ -183,11 +198,12 @@ fun MotFilterIconButton(
     onClick: () -> Unit
 ) {
     IconButton(
+        modifier = modifier,
         onClick = onClick
     ) {
         Icon(
             Icons.Default.FilterList,
-            contentDescription = "save icon"
+            contentDescription = "filter icon"
         )
     }
 }

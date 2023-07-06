@@ -8,6 +8,7 @@ import javax.inject.Inject
 class SetAppThemeUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) : UseCaseSuspend<MotAppTheme, Unit> {
+
     override suspend fun execute(params: MotAppTheme) {
         settingsRepository.setAppTheme(params)
     }

@@ -30,8 +30,8 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,8 +40,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -58,7 +56,6 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -75,6 +72,7 @@ import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
+import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.utils.preview.MotPreview
@@ -124,6 +122,7 @@ fun PaymentDetailsScreen(
 
     val date by viewModel.dateState.collectAsState("")
     val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
+    val selectedCategory by viewModel.selectedCategoryState.collectAsState(null)
 
     PaymentDetailsLayout(
         paymentNameState = viewModel.paymentNameState,
@@ -137,7 +136,7 @@ fun PaymentDetailsScreen(
         onDateClick = { picker.show() },
         onCategoryClick = { viewModel.onCategorySelected(it) },
         onSaveClick = { viewModel.onSaveClick() },
-        categoryNameState = viewModel.categoryNameState,
+        selectedCategory = selectedCategory,
     )
 }
 
@@ -149,7 +148,7 @@ fun PaymentDetailsLayoutPreview() {
             paymentNameState = MutableStateFlow(TextFieldValue()),
             costState = MutableStateFlow(TextFieldValue()),
             date = "1/1/2022",
-            categoryNameState = MutableStateFlow("category"),
+            selectedCategory = PreviewData.categoryPreview,
             messageState = MutableStateFlow(TextFieldValue()),
             categories = emptyList(),
             onNameChange = {},
@@ -172,7 +171,7 @@ fun PaymentDetailsLayout(
     paymentNameState: StateFlow<TextFieldValue>,
     costState: StateFlow<TextFieldValue>,
     date: String,
-    categoryNameState: StateFlow<String>,
+    selectedCategory: Category?,
     messageState: StateFlow<TextFieldValue>,
     categories: List<Category>,
     onNameChange: (TextFieldValue) -> Unit,
@@ -190,7 +189,7 @@ fun PaymentDetailsLayout(
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
-    val categoryName by categoryNameState.collectAsState()
+//    val categoryName by selectedCategory.collectAsState()
     val paymentNameFieldValueState by paymentNameState.collectAsState(TextFieldValue())
     val costFieldValueState by costState.collectAsState(TextFieldValue())
     val messageFieldValueState by messageState.collectAsState(TextFieldValue())
@@ -211,9 +210,10 @@ fun PaymentDetailsLayout(
     MotModalBottomSheetLayout(
         sheetContent = {
             CategoriesListBottomSheet(
-                categories,
-                onCategoryClick,
-                modalBottomSheetState
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategoryClick = onCategoryClick,
+                modalBottomSheetState = modalBottomSheetState
             )
         },
         sheetState = modalBottomSheetState,
@@ -355,8 +355,8 @@ fun PaymentDetailsLayout(
                             modifier = Modifier.padding(end = 4.dp),
                             contentDescription = "category icon"
                         )
-                        Text(
-                            text = categoryName,
+                        MotSingleLineText(
+                            text = selectedCategory?.name ?: "No category",
                             modifier = Modifier.align(Alignment.CenterVertically),
                             style = MaterialTheme.typography.labelMedium
                         )
@@ -487,6 +487,7 @@ fun PaymentDetailsLayout(
 @Composable
 fun CategoriesListBottomSheet(
     categories: List<Category>,
+    selectedCategory: Category? = null,
     onCategoryClick: (Category) -> Unit,
     modalBottomSheetState: ModalBottomSheetState
 ) {
@@ -501,31 +502,21 @@ fun CategoriesListBottomSheet(
         ) {
             categories.forEachIndexed { index, category ->
                 item {
-                    val outerPadding = if (category.isFavorite) 16.dp else 0.dp
-                    val textPadding = if (category.isFavorite) 16.dp else 32.dp
-
                     val firstFavoriteItemIndex =
                         categories.find { it.isFavorite }?.let { categories.indexOf(it) }
                     val lastFavoriteItemIndex =
                         categories.findLast { it.isFavorite }?.let { categories.indexOf(it) }
                     val shape = getShape(firstFavoriteItemIndex, lastFavoriteItemIndex, index)
-
+                    val isSelected = selectedCategory?.id == category.id
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = outerPadding)
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                     ) {
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(shape)
-//                            .background(
-//                                if (category.isFavorite) {
-//                                    MaterialTheme.colorScheme.secondaryContainer
-//                                } else {
-//                                    MaterialTheme.colorScheme.surface
-//                                }
-//                            )
                                 .clickable {
                                     onCategoryClick.invoke(category)
                                     scope.launch {
@@ -535,32 +526,29 @@ fun CategoriesListBottomSheet(
                                 },
                             tonalElevation = if (category.isFavorite) 4.dp else 0.dp
                         ) {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Row(modifier = Modifier.fillMaxWidth()) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = category.name,
-                                            modifier = Modifier
-                                                .padding(
-                                                    vertical = 12.dp,
-                                                    horizontal = textPadding
-                                                )
-                                        )
-                                    }
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .padding(end = outerPadding)
-                                    ) {
-                                        if (category.isFavorite) {
-                                            Icon(
-                                                Icons.Filled.Star,
-                                                contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                                                tint = MaterialTheme.colorScheme.secondary,
-                                                modifier = Modifier.size(24.dp)
-                                            )
-                                        }
-                                    }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        vertical = 12.dp,
+                                        horizontal = 16.dp
+                                    ),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                MotSingleLineText(
+                                    text = category.name,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(end = 8.dp)
+                                )
+                                if (isSelected) {
+                                    Icon(
+                                        Icons.Filled.Done,
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription = stringResource(id = R.string.accessibility_done_icon),
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
                                 }
                             }
                         }
@@ -571,7 +559,11 @@ fun CategoriesListBottomSheet(
     }
 }
 
-private fun getShape(firstItemIndex: Int?, lastItemIndex: Int?, currentItemIndex: Int): Shape {
+private fun getShape(
+    firstItemIndex: Int?,
+    lastItemIndex: Int?,
+    currentItemIndex: Int
+): Shape {
     val cornerRadius = 24.dp
 
     val topRoundedCornerShape = RoundedCornerShape(
@@ -602,11 +594,13 @@ private fun getShape(firstItemIndex: Int?, lastItemIndex: Int?, currentItemIndex
 @MotPreview
 @Composable
 private fun CategoriesListBottomSheetPreview() {
+    val categories = PreviewData.categoriesSelectListItemsPreview
     MotMaterialTheme {
         CategoriesListBottomSheet(
-            PreviewData.categoriesSelectListItemsPreview,
+            categories = categories,
             onCategoryClick = {},
-            rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+            selectedCategory = categories[0],
+            modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         )
     }
 }

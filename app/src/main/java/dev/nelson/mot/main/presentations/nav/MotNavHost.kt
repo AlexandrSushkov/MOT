@@ -15,7 +15,7 @@ import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
-import dev.nelson.mot.main.presentations.screen.country_picker.CountryPickerScreen
+import dev.nelson.mot.main.presentations.screen.settings.country_picker.CountryPickerScreen
 import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
@@ -107,8 +107,13 @@ fun MotNavHost(
             content = {
                 CategoryListScreen(
                     viewModel = hiltViewModel(),
-                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } }
-                ) { categoryId -> navController.navigate("${Payments.route}?category_id=$categoryId") }
+                    appBarNavigationIcon = {
+                        MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
+                    },
+                    openPaymentsByCategoryAction = { categoryId ->
+                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                    }
+                )
             },
         )
         composable(
@@ -136,9 +141,7 @@ fun MotNavHost(
                 StatisticScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic Old",
-                    appBarNavigationIcon = {
-                        MotNavBackIcon { navController.popBackStack() }
-                    },
+                    appBarNavigationIcon = { MotNavBackIcon { navController.popBackStack() } }
                 )
             },
         )
@@ -148,10 +151,11 @@ fun MotNavHost(
                 Statistic2Screen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic",
-//                    onNavigationButtonClick = { navController.popBackStack() }
-                            navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
-
-                )
+                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+                    openPaymentsByCategoryAction = { categoryId ->
+                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                    }
+                    )
             },
         )
         composable(

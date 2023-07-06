@@ -167,7 +167,7 @@ class CategoriesListViewModel @Inject constructor(
 
     private fun initialCategoriesLoading() = launch {
         getCategoryListItemsUseCase.execute(SortingOrder.Ascending).collect {
-            delay(500)
+//            delay(1500)
             initialCategoriesList.clear()
             initialCategoriesList.addAll(it)
             _categoriesResult.value = MotUiState.Success(it)

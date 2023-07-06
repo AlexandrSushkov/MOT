@@ -31,14 +31,16 @@ class GetStatisticByYearsUseCase @Inject constructor(
             }
         }.map { yearPaymentsMap ->
             yearPaymentsMap.map { yearPaymentsEntity ->
+                val sumTotal = yearPaymentsEntity.value.sumOf { it.paymentEntity.cost }
                 val categoryToPaymentListMap = yearPaymentsEntity.value.groupBy { it.categoryEntity }
                 val statByCategoryList = categoryToPaymentListMap.map { categoryPaymentsEntity ->
-                    val sumOfPaymentsInCategory =
-                        categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
+                    val sumOfPaymentsInCategory = categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
+                    val percentage = (sumOfPaymentsInCategory.toDouble() / sumTotal.toDouble() ) * 100.0
                     StatisticByCategoryModel(
                         key = UUIDUtils.randomKey,
                         category = categoryPaymentsEntity.key?.toCategory(),
                         sumOfPayments = sumOfPaymentsInCategory,
+                        percentage = percentage,
                         payments = categoryPaymentsEntity.value.toPaymentList()
                     )
                 }.sortedByDescending { it.sumOfPayments } // sort categories by sum of payments, descending order

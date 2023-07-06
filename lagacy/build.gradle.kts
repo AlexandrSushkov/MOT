@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
 }
@@ -19,14 +20,6 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-}
-
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://repo1.maven.org/maven2") }
-    maven { url = uri("https://jitpack.io") }
-
 }
 
 dependencies {
