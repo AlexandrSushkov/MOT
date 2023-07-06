@@ -9,6 +9,7 @@ import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,17 +26,19 @@ class MotThemeViewModel @Inject constructor(
     init {
         launch {
             getAppThemeUseCase.execute()
-                .collect {
-                    _appThemeViewState.value =
-                        _appThemeViewState.value.copy(selectedTheme = it)
+                .collect { appTheme ->
+                    _appThemeViewState.update {
+                        it.copy(selectedTheme = appTheme)
+                    }
                 }
         }
 
         launch {
             getSwitchStatusUseCase.execute(MotSwitchType.DynamicColorTheme)
-                .collect {
-                    _appThemeViewState.value =
-                        _appThemeViewState.value.copy(dynamicColorThemeEnabled = it)
+                .collect { isDynamicColorThemeEnabled ->
+                    _appThemeViewState.update {
+                        it.copy(dynamicColorThemeEnabled = isDynamicColorThemeEnabled)
+                    }
                 }
         }
     }

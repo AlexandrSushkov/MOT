@@ -34,11 +34,11 @@ class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
     getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
+    getAppThemeUseCase: GetAppThemeUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
     private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase,
-    private val getAppThemeUseCase: GetAppThemeUseCase,
 ) : BaseViewModel() {
 
     // actions

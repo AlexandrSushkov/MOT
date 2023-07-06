@@ -157,15 +157,13 @@ class PaymentListViewModel @Inject constructor(
         }
 
         launch {
-            getCategoriesOrderedByName.execute(SortingOrder.Ascending).collect {
-                _categories.value = it
-            }
+            getCategoriesOrderedByName.execute(SortingOrder.Ascending)
+                .collect { _categories.value = it }
         }
 
         launch {
-            getPriceViewStateUseCase.execute().collect {
-                _priceViewState.value = it
-            }
+            getPriceViewStateUseCase.execute()
+                .collect { _priceViewState.value = it }
         }
     }
 
