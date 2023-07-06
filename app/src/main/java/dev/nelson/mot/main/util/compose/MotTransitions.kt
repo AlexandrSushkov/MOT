@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.util.constant.Constants
 
 object MotTransitions {

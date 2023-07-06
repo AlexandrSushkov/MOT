@@ -139,8 +139,7 @@ private fun Statistic2Layout(
     )
 ) {
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()
     val systemUiController = rememberSystemUiController()

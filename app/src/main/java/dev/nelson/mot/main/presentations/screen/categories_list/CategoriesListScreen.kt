@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.main.presentations.screen.categories_list
 
@@ -17,17 +17,14 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Snackbar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,11 +34,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -198,7 +197,7 @@ fun CategoryListLayout(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryList(
     categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
@@ -226,14 +225,15 @@ fun CategoryList(
                                 is CategoryItemModel -> {
                                     item(key = categoryListItem.key) {
                                         val dismissState = rememberDismissState(
-                                            confirmStateChange = { dismissValue ->
+                                            confirmValueChange = { dismissValue ->
                                                 if (dismissValue == DismissValue.DismissedToStart) {
                                                     onSwipeCategory.invoke(categoryListItem)
                                                     true
                                                 } else {
                                                     false
                                                 }
-                                            }
+                                            },
+                                            positionalThreshold = { 0.35f }
                                         )
                                         categoryListItem.category.id?.let {
                                             MotDismissibleListItem(

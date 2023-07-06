@@ -15,32 +15,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Filter
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -264,12 +263,6 @@ fun PaymentListLayout(
                     )
                 }
             },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = onFabClick,
-                    content = { Icon(Icons.Default.Add, "new payment fab") }
-                )
-            },
             snackbarHost = {
                 if (snackbarVisibleState) {
                     Snackbar(
@@ -293,6 +286,12 @@ fun PaymentListLayout(
                         }
                     )
                 }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = onFabClick,
+                    content = { Icon(Icons.Default.Add, "new payment fab") }
+                )
             }
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
@@ -312,7 +311,9 @@ fun PaymentListLayout(
 
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun PaymentList(
     paymentListResult: MotUiState<List<PaymentListItemModel>>,
@@ -360,14 +361,15 @@ fun PaymentList(
                             if (paymentListItemModel is PaymentListItemModel.PaymentItemModel) {
                                 item(key = paymentListItemModel.key) {
                                     val dismissState = rememberDismissState(
-                                        confirmStateChange = { dismissValue ->
+                                        confirmValueChange = { dismissValue ->
                                             if (dismissValue == DismissValue.DismissedToStart) {
                                                 onSwipeToDeleteItem.invoke(paymentListItemModel)
                                                 true
                                             } else {
                                                 false
                                             }
-                                        }
+                                        },
+                                        positionalThreshold = { 0.35f }
                                     )
                                     MotDismissibleListItem(
                                         dismissState = dismissState,
@@ -378,7 +380,6 @@ fun PaymentList(
                                             PaymentListItem(
                                                 paymentListItemModel,
                                                 onClick = { payment -> onItemClick.invoke(payment) },
-                                                dismissDirection = dismissState.dismissDirection,
                                                 onLongClick = { payment ->
                                                     onItemLongClick.invoke(
                                                         payment

@@ -2,7 +2,6 @@ package dev.nelson.mot.main.presentations.nav
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,7 +25,6 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotNavHost(
     navController: NavHostController,

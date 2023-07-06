@@ -20,10 +20,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissState
-import androidx.compose.material.DismissValue
+import androidx.compose.material3.DismissState
+import androidx.compose.material3.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalContentAlpha
@@ -31,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -139,7 +138,6 @@ fun PaymentListItemSelectedPreview() {
             paymentItemModel = PreviewData.paymentItemModelPreview,
             onClick = {},
             onLongClick = {},
-            dismissDirection = DismissDirection.EndToStart,
             isSelectedStateOn = true,
             priceViewState = PriceViewState(),
             checkBoxTransitionState = checkBoxTransitionState,
@@ -157,7 +155,6 @@ fun PaymentListItem(
     paymentItemModel: PaymentListItemModel.PaymentItemModel,
     onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
     onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    dismissDirection: DismissDirection?,
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     checkBoxTransitionState: MutableTransitionState<Boolean>,
@@ -281,7 +278,7 @@ fun PaymentListItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun DismissiblePaymentListItemPreview() {
@@ -292,7 +289,6 @@ private fun DismissiblePaymentListItemPreview() {
                 paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
                 onLongClick = {},
-                dismissDirection = DismissDirection.EndToStart,
                 isSelectedStateOn = false,
                 priceViewState = PriceViewState(),
                 checkBoxTransitionState = checkBoxTransitionState,
