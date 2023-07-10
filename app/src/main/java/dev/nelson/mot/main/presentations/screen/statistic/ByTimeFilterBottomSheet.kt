@@ -29,8 +29,7 @@ import dev.utils.preview.MotPreview
 fun ByTimeFilterBottomSheet(
     model: List<StatisticByMonthModel>,
     selectedMonthModel: StatisticByMonthModel,
-    onItemSelected: (StatisticByMonthModel) -> Unit,
-    hideBottomSheetCallback: () -> Unit
+    onItemSelected: (StatisticByMonthModel) -> Unit
 ) {
     val layColumnState = rememberLazyListState()
 
@@ -54,10 +53,7 @@ fun ByTimeFilterBottomSheet(
                         MaterialTheme.colorScheme.surface
                     }
                     ListItem(
-                        modifier = Modifier.clickable {
-                            onItemSelected.invoke(it)
-                            hideBottomSheetCallback.invoke()
-                        },
+                        modifier = Modifier.clickable { onItemSelected.invoke(it) },
                         headlineContent = { Text(text = it.monthText) },
                         trailingContent = {
                             if (it == selectedMonthModel) {
@@ -84,9 +80,7 @@ private fun ByTimeFilterBottomSheetPreview() {
     MotMaterialTheme {
         ByTimeFilterBottomSheet(
             model = modelList,
-            selectedMonthModel = modelList.first(),
-            onItemSelected = {},
-            hideBottomSheetCallback = {}
-        )
+            selectedMonthModel = modelList.first()
+        ) {}
     }
 }

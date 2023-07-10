@@ -147,7 +147,7 @@ private fun StatisticByCategoryTabLayoutPreview() {
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
             ),
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }
@@ -163,7 +163,7 @@ private fun StatisticByCategoryTabLayoutEmptyContentPreview() {
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModelEmpty,
             ),
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

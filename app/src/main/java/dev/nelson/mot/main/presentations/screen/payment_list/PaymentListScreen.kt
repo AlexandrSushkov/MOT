@@ -1,9 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import android.app.Activity
-import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.updateTransition
@@ -15,16 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -35,6 +32,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -43,19 +41,21 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -67,13 +67,12 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotSelectionTopAppBar
 import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.PaymentListItemModel
-import dev.nelson.mot.main.presentations.screen.payment_details.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
+import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
-import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
@@ -84,9 +83,8 @@ import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaymentListScreen(
     navigationIcon: @Composable () -> Unit,
@@ -106,8 +104,9 @@ fun PaymentListScreen(
 
     val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateViewState.mills)
+    val modalBottomSheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     /**
      * Open payment details
@@ -131,13 +130,13 @@ fun PaymentListScreen(
         onBack = { viewModel.onCancelSelectionClickEvent() }
     )
 
-    /**
-     * Back handler to hide modal bottom sheet
-     */
-    BackHandler(
-        enabled = modalBottomSheetState.isVisible,
-        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
-    )
+//    /**
+//     * Back handler to hide modal bottom sheet
+//     */
+//    BackHandler(
+//        enabled = modalBottomSheetState.isVisible,
+//        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
+//    )
 
     if (onShowDateDialog) {
         DatePickerDialog(
@@ -163,6 +162,47 @@ fun PaymentListScreen(
         }
     }
 
+    if (showBottomSheet) {
+        /**
+         * Back handler to hide modal bottom sheet
+         */
+        BackHandler(
+            enabled = true,
+            onBack = {
+                Timber.d("bottom sheet BackHandler")
+                coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                    if (!modalBottomSheetState.isVisible) {
+                        showBottomSheet = false
+                    }
+                }
+            }
+        )
+
+        val displayCornerRadius = getDisplayCornerRadius()
+
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = modalBottomSheetState,
+            shape = RoundedCornerShape(
+                topStart = displayCornerRadius,
+                topEnd = displayCornerRadius
+            ),
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+        ) {
+            CategoriesListBottomSheet(
+                categories = categories,
+                onCategoryClick = {
+                    viewModel.onCategorySelected(it)
+                    coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                        if (!modalBottomSheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                },
+            )
+        }
+    }
+
     PaymentListLayout(
         navigationIcon = navigationIcon,
         toolbarTitle = toolbarTitle,
@@ -185,14 +225,12 @@ fun PaymentListScreen(
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeDateForSelectedItemsClick = { viewModel.onDateClick() },
-        categories = categories,
-        onCategoryClick = { category -> viewModel.onCategorySelected(category) },
-        modalBottomSheetState = modalBottomSheetState,
+        onSelectCategoryIconClcik = { showBottomSheet = true },
         priceViewState = priceViewState
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
@@ -210,116 +248,98 @@ fun PaymentListLayout(
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
-    categories: List<Category>,
-    onCategoryClick: (Category) -> Unit,
-    modalBottomSheetState: ModalBottomSheetState,
+    onSelectCategoryIconClcik: () -> Unit,
     priceViewState: PriceViewState,
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
 
-    MotModalBottomSheetLayout(
-        sheetContent = {
-            CategoriesListBottomSheet(
-                categories = categories,
-                onCategoryClick = onCategoryClick,
-                modalBottomSheetState = modalBottomSheetState
-            )
-        },
-        sheetState = modalBottomSheetState
-    ) {
-        Scaffold(
-            topBar = {
-                if (isSelectedStateOn) {
-                    MotSelectionTopAppBar(
-                        navigationIcon = {
-                            MotCloseIcon {
-                                onCancelSelectionClick.invoke()
-                            }
-                        },
-                        title = selectedItemsCount.toString(),
-                        actions = {
-                            val scope = rememberCoroutineScope()
-
-                            IconButton(onClick = onChangeDateForSelectedItemsClick) {
-                                Icon(Icons.Default.EditCalendar, contentDescription = "")
-                            }
-                            IconButton(onClick = {
-                                scope.launch {
-                                    modalBottomSheetState.show()
-                                }
-                            }) {
-                                Icon(Icons.Default.Category, contentDescription = "")
-                            }
-                            IconButton(onClick = onDeleteSelectedItemsClick) {
-                                Icon(Icons.Default.Delete, contentDescription = "")
-                            }
-                        },
-                    ).also {
-                        val view = LocalView.current
-                        if (!view.isInEditMode) {
-                            val window = (view.context as Activity).window
-                            window.statusBarColor =
-                                MaterialTheme.colorScheme.tertiaryContainer.toArgb()
+    Scaffold(
+        topBar = {
+            if (isSelectedStateOn) {
+                MotSelectionTopAppBar(
+                    navigationIcon = {
+                        MotCloseIcon {
+                            onCancelSelectionClick.invoke()
                         }
+                    },
+                    title = selectedItemsCount.toString(),
+                    actions = {
+                        IconButton(onClick = onChangeDateForSelectedItemsClick) {
+                            Icon(Icons.Default.EditCalendar, contentDescription = "")
+                        }
+                        IconButton(onClick = onSelectCategoryIconClcik) {
+                            Icon(Icons.Default.Category, contentDescription = "")
+                        }
+                        IconButton(onClick = onDeleteSelectedItemsClick) {
+                            Icon(Icons.Default.Delete, contentDescription = "")
+                        }
+                    },
+                ).also {
+                    // TODO: use accompanist like id done with scroll
+                    val view = LocalView.current
+                    if (!view.isInEditMode) {
+                        val window = (view.context as Activity).window
+                        window.statusBarColor =
+                            MaterialTheme.colorScheme.tertiaryContainer.toArgb()
                     }
-                } else {
-                    MotTopAppBar(
-                        appBarTitle = toolbarTitle,
-                        navigationIcon = navigationIcon,
-                        scrollBehavior = appBarScrollBehavior
-                    )
                 }
-            },
-            snackbarHost = {
-                if (snackbarVisibleState) {
-                    Snackbar(
-                        action = {
-                            TextButton(
-                                onClick = onUndoButtonClickEvent,
-                                content = { Text(stringResource(R.string.text_undo)) }
-                            )
-                        },
-                        modifier = Modifier.padding(8.dp),
-                        content = {
-                            val deletedItemText = if (deletedItemsCount == 1) {
-                                stringResource(R.string.text_deleted_item_format, deletedItemsCount)
-                            } else {
-                                stringResource(
-                                    R.string.text_deleted_items_format,
-                                    deletedItemsCount
-                                )
-                            }
-                            Text(text = deletedItemText)
-                        }
-                    )
-                }
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = onFabClick,
-                    content = { Icon(Icons.Default.Add, "new payment fab") }
-                )
-            }
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                PaymentList(
-                    paymentListResult,
-                    onItemClick,
-                    onItemLongClick,
-                    onSwipeToDeleteItem,
-                    isSelectedStateOn,
-                    priceViewState,
-                    paymentsLitScrollingState,
+            } else {
+                MotTopAppBar(
+                    appBarTitle = toolbarTitle,
+                    navigationIcon = navigationIcon,
                     scrollBehavior = appBarScrollBehavior
                 )
             }
+        },
+        snackbarHost = {
+            if (snackbarVisibleState) {
+                Snackbar(
+                    action = {
+                        TextButton(
+                            onClick = onUndoButtonClickEvent,
+                            content = { Text(stringResource(R.string.text_undo)) }
+                        )
+                    },
+                    modifier = Modifier.padding(8.dp),
+                    content = {
+                        val deletedItemText = if (deletedItemsCount == 1) {
+                            stringResource(R.string.text_deleted_item_format, deletedItemsCount)
+                        } else {
+                            stringResource(
+                                R.string.text_deleted_items_format,
+                                deletedItemsCount
+                            )
+                        }
+                        Text(text = deletedItemText)
+                    }
+                )
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onFabClick,
+                content = { Icon(Icons.Default.Add, "new payment fab") }
+            )
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            PaymentList(
+                paymentListResult,
+                onItemClick,
+                onItemLongClick,
+                onSwipeToDeleteItem,
+                isSelectedStateOn,
+                priceViewState,
+                paymentsLitScrollingState,
+                scrollBehavior = appBarScrollBehavior
+            )
         }
     }
-
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
+@OptIn(
+    ExperimentalFoundationApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable
@@ -425,7 +445,6 @@ fun PaymentList(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @MotPreviewScreen
 @Composable
 private fun PaymentListScreenLightPreview() {
@@ -447,10 +466,8 @@ private fun PaymentListScreenLightPreview() {
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
-            categories = emptyList(),
-            onCategoryClick = {},
-            modalBottomSheetState = ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-            priceViewState = PriceViewState()
+            onSelectCategoryIconClcik = {},
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

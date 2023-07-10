@@ -64,7 +64,7 @@ import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
 @Composable
-fun StatisticScreen(
+fun StatisticScreenExperemental(
     viewModel: StatisticViewModel,
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {}
@@ -364,7 +364,7 @@ private fun StatisticLayoutPreview() {
             statCurrentMothList = PreviewData.statisticByYearModelPreviewData.categoriesModelList,
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByYearList = PreviewData.statisticByYearListPreviewData,
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

@@ -31,7 +31,6 @@ import dev.utils.preview.MotPreview
 fun ByCategoryFilterBottomSheet(
     model: List<StatisticByCategoryPerMonthModel>,
     onItemSelected: (StatisticByCategoryPerMonthModel) -> Unit,
-    hideBottomSheetCallback: () -> Unit,
     selectedMonthModel: StatisticByCategoryPerMonthModel
 ) {
     val layColumnState = rememberLazyListState()
@@ -55,10 +54,7 @@ fun ByCategoryFilterBottomSheet(
                         MaterialTheme.colorScheme.surface
                     }
                     ListItem(
-                        modifier = Modifier.clickable {
-                            onItemSelected.invoke(it)
-                            hideBottomSheetCallback.invoke()
-                        },
+                        modifier = Modifier.clickable { onItemSelected.invoke(it) },
                         headlineContent = {
                             MotSingleLineText(
                                 text = it.category?.name ?: "no category"
@@ -90,8 +86,7 @@ private fun ByCategoryFilterBottomSheetPreview(){
         ByCategoryFilterBottomSheet(
             model = modelList,
             onItemSelected = {},
-            selectedMonthModel = modelList.first(),
-            hideBottomSheetCallback = {}
+            selectedMonthModel = modelList.first()
         )
     }
 }

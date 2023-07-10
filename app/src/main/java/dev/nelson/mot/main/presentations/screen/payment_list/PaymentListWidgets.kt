@@ -139,7 +139,7 @@ fun PaymentListItemSelectedPreview() {
             onClick = {},
             onLongClick = {},
             isSelectedStateOn = true,
-            priceViewState = PriceViewState(),
+            priceViewState = PreviewData.priceViewState,
             checkBoxTransitionState = checkBoxTransitionState,
             transition = updateTransition(
                 checkBoxTransitionState,

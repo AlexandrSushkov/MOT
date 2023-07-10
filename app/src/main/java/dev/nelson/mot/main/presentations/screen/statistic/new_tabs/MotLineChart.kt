@@ -26,7 +26,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.motIsDarkTheme
+import dev.nelson.mot.core.ui.fundation.motIsDarkTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
 import dev.nelson.mot.main.util.compose.PreviewData

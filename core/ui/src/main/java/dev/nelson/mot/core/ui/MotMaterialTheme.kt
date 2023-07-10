@@ -1,6 +1,5 @@
 package dev.nelson.mot.core.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -8,21 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import dev.nelson.mot.core.ui.model.MotAppTheme
+import dev.nelson.mot.core.ui.fundation.motIsDarkTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.theme.DarkColorScheme
 import dev.theme.LightColorScheme
 import dev.theme.MotTypography
 
-
-@Composable
-fun motIsDarkTheme(appThemeViewState : AppThemeViewState):Boolean{
-    return when (appThemeViewState.selectedTheme) {
-        is MotAppTheme.Dark -> true
-        is MotAppTheme.Light -> false
-        is MotAppTheme.System -> isSystemInDarkTheme()
-    }
-}
 /**
  * Them for the whole app.
  *
@@ -33,12 +23,6 @@ fun MotMaterialTheme(
     appThemeViewState: AppThemeViewState = AppThemeViewState(),
     content: @Composable () -> Unit
 ) {
-//    val isDarkTheme = when (appThemeViewState.selectedTheme) {
-//        is MotAppTheme.Dark -> true
-//        is MotAppTheme.Light -> false
-//        is MotAppTheme.System -> isSystemInDarkTheme()
-//    }
-
     val isDarkTheme = motIsDarkTheme(appThemeViewState = appThemeViewState)
 
     val colorScheme = when {

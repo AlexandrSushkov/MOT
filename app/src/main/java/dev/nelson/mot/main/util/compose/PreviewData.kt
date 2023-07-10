@@ -2,6 +2,7 @@ package dev.nelson.mot.main.util.compose
 
 import android.content.Context
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
@@ -279,6 +280,8 @@ object PreviewData {
         CategoryListItemModel.CategoryItemModel(categoryPreview, generateKey())
 
     val letterPreview = CategoryListItemModel.Letter("A", generateKey())
+
+    val priceViewState = PriceViewState()
 
     private fun generateKey() = UUID.randomUUID().toString()
 }

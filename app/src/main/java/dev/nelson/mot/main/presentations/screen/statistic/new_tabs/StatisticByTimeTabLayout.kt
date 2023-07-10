@@ -199,7 +199,7 @@ private fun StatisticByTimeTabLayoutPreview() {
             ),
             onMonthModelSelected = {},
             onMonthCategoryClick = {},
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }
@@ -218,7 +218,7 @@ private fun StatisticByTimeTabLayoutEmptyPreview() {
             ),
             onMonthModelSelected = {},
             onMonthCategoryClick = {},
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

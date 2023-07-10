@@ -20,8 +20,8 @@ import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsSc
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
-import dev.nelson.mot.main.presentations.screen.statistic.Statistic2Screen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreenExperemental
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
 
@@ -136,7 +136,7 @@ fun MotNavHost(
         composable(
             route = StatisticExperimental.route,
             content = {
-                StatisticScreen(
+                StatisticScreenExperemental(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic Old",
                     appBarNavigationIcon = { MotNavBackIcon { navController.popBackStack() } }
@@ -146,7 +146,7 @@ fun MotNavHost(
         composable(
             route = Statistic.route,
             content = {
-                Statistic2Screen(
+                StatisticScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic",
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
