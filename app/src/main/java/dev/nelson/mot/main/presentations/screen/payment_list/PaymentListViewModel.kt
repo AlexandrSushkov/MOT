@@ -35,6 +35,8 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import dev.nelson.mot.R
+import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
+import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
@@ -64,10 +66,6 @@ class PaymentListViewModel @Inject constructor(
         get() = _toolBarTitleState.asStateFlow()
     private val _toolBarTitleState = MutableStateFlow(StringUtils.EMPTY)
 
-    val toolbarElevation
-        get() = _toolbarElevation.asStateFlow()
-    private val _toolbarElevation = MutableStateFlow(0)
-
     val snackBarVisibilityState
         get() = _snackBarVisibilityState.asStateFlow()
     private val _snackBarVisibilityState = MutableStateFlow(false)
@@ -96,6 +94,14 @@ class PaymentListViewModel @Inject constructor(
     val categoriesState: Flow<List<Category>>
         get() = _categories.asStateFlow()
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
+
+    val showDatePickerDialogState
+        get() = _showDatePickerDialogState.asStateFlow()
+    private val _showDatePickerDialogState = MutableStateFlow(false)
+
+    val dateViewState
+        get() = _dateViewState.asStateFlow()
+    private val _dateViewState = MutableStateFlow(DateViewState())
 
     // actions
     val openPaymentDetailsAction: Flow<OpenPaymentDetailsAction>
@@ -278,6 +284,18 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
+    fun onDismissDatePickerDialog() {
+        _showDatePickerDialogState.value = false
+    }
+
+    fun onDateSelected(selectedTime: Long) = launch {
+        val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedTime) }
+        cancelSelection()
+        val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
+        modifyPaymentsListUseCase.execute(params)
+        onDismissDatePickerDialog()
+    }
+
     private suspend fun initRecentPaymentsList() {
         _toolBarTitleState.value = resources.getString(R.string.recent_payments)
 
@@ -385,16 +403,6 @@ class PaymentListViewModel @Inject constructor(
         // open category modal
     }
 
-    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) = launch {
-        val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
-        val selectedDate: Date = selectedDateCalendar.time
-        val newItems =
-            selectedItemsList.map { it.payment.copyWith(dateInMills = selectedDate.time) }
-        cancelSelection()
-        val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
-        modifyPaymentsListUseCase.execute(params)
-    }
-
     private fun clearItemsToDeleteList() {
         paymentsToDeleteList.clear()
         _deletedItemsCount.value = paymentsToDeleteList.size
@@ -422,6 +430,10 @@ class PaymentListViewModel @Inject constructor(
                 modifyPaymentsListUseCase.execute(params)
             }
         }
+    }
+
+    fun onDateClick() {
+        _showDatePickerDialogState.value = true
     }
 
     companion object {

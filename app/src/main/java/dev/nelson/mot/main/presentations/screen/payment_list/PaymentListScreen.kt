@@ -26,6 +26,8 @@ import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -90,11 +93,6 @@ fun PaymentListScreen(
     openPaymentDetails: (Int?) -> Unit,
     viewModel: PaymentListViewModel
 ) {
-    val haptic = LocalHapticFeedback.current
-    val coroutineScope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-
-    // listen states
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
     val paymentListResult by viewModel.paymentListResult.collectAsState(Loading)
     val snackbarVisibilityState by viewModel.snackBarVisibilityState.collectAsState()
@@ -103,6 +101,13 @@ fun PaymentListScreen(
     val selectedItemsCount by viewModel.selectedItemsCountState.collectAsState(0)
     val categories by viewModel.categoriesState.collectAsState(emptyList())
     val priceViewState by viewModel.priceViewState.collectAsState(PriceViewState())
+    val dateViewState by viewModel.dateViewState.collectAsState()
+    val onShowDateDialog by viewModel.showDatePickerDialogState.collectAsState(false)
+
+    val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateViewState.mills)
 
     /**
      * Open payment details
@@ -134,26 +139,29 @@ fun PaymentListScreen(
         onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
     )
 
-    // TODO: move to VM
-    val cldr: Calendar = Calendar.getInstance()
-    val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
-    val month: Int = cldr.get(Calendar.MONTH)
-    val year: Int = cldr.get(Calendar.YEAR)
-    val picker = DatePickerDialog(
-        LocalContext.current,
-        { _, selectedYear, monthOfYear, dayOfMonth ->
-            run {
-                viewModel.onDateSet(
-                    selectedYear,
-                    monthOfYear,
-                    dayOfMonth
-                )
+    if (onShowDateDialog) {
+        DatePickerDialog(
+            onDismissRequest = { viewModel.onDismissDatePickerDialog() },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        viewModel.onDateSelected(
+                            it
+                        )
+                    }
+                }) {
+                    Text(stringResource(id = android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onDismissDatePickerDialog() }) {
+                    Text(stringResource(id = android.R.string.cancel))
+                }
             }
-        },
-        year,
-        month,
-        day
-    )
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     PaymentListLayout(
         navigationIcon = navigationIcon,
@@ -176,7 +184,7 @@ fun PaymentListScreen(
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
-        onChangeDateForSelectedItemsClick = { picker.show() },
+        onChangeDateForSelectedItemsClick = { viewModel.onDateClick() },
         categories = categories,
         onCategoryClick = { category -> viewModel.onCategorySelected(category) },
         modalBottomSheetState = modalBottomSheetState,

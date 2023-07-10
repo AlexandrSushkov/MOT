@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.presentations.screen.payment_details
 
-import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -33,13 +32,17 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,7 +59,6 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -71,6 +73,7 @@ import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
 import dev.nelson.mot.main.presentations.widgets.MotModalBottomSheetLayout
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -80,13 +83,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentDetailsScreen(
     viewModel: PaymentDetailsViewModel,
     closeScreen: () -> Unit
 ) {
+    val dateViewState by viewModel.dateViewState.collectAsState()
+    val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
+    val selectedCategory by viewModel.selectedCategoryState.collectAsState(null)
+    val onShowDateDialog by viewModel.showDatePickerDialogState.collectAsState(false)
+
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateViewState.mills)
+    datePickerState.setSelection(dateViewState.mills)
 
     /**
      * Close screen effect
@@ -98,42 +108,42 @@ fun PaymentDetailsScreen(
         }
     )
 
-    // TODO: move to VM
-    val context = LocalContext.current
-    val cldr: Calendar = Calendar.getInstance()
-    val day: Int = cldr.get(Calendar.DAY_OF_MONTH)
-    val month: Int = cldr.get(Calendar.MONTH)
-    val year: Int = cldr.get(Calendar.YEAR)
-    val picker = DatePickerDialog(
-        context,
-        { _, selectedYear, monthOfYear, dayOfMonth ->
-            run {
-                viewModel.onDateSet(
-                    selectedYear,
-                    monthOfYear,
-                    dayOfMonth
-                )
-            }
-        },
-        year,
-        month,
-        day
-    )
+    DatePicker(state = datePickerState)
 
-    val date by viewModel.dateState.collectAsState("")
-    val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
-    val selectedCategory by viewModel.selectedCategoryState.collectAsState(null)
+    if (onShowDateDialog) {
+        DatePickerDialog(
+            onDismissRequest = { viewModel.onDismissDatePickerDialog() },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        viewModel.onDateSelected(
+                            it
+                        )
+                    }
+                }) {
+                    Text(stringResource(id = android.R.string.ok))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.onDismissDatePickerDialog() }) {
+                    Text(stringResource(id = android.R.string.cancel))
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     PaymentDetailsLayout(
         paymentNameState = viewModel.paymentNameState,
         costState = viewModel.costState,
-        date = date,
+        dateViewState = dateViewState,
         messageState = viewModel.messageState,
         categories = categories,
         onNameChange = { viewModel.onPaymentNameChanged(it) },
         onCostChange = { viewModel.onCostChange(it) },
         onMessageChange = { viewModel.onMessageChanged(it) },
-        onDateClick = { picker.show() },
+        onDateClick = { viewModel.onDateClick() },
         onCategoryClick = { viewModel.onCategorySelected(it) },
         onSaveClick = { viewModel.onSaveClick() },
         selectedCategory = selectedCategory,
@@ -147,7 +157,7 @@ fun PaymentDetailsLayoutPreview() {
         PaymentDetailsLayout(
             paymentNameState = MutableStateFlow(TextFieldValue()),
             costState = MutableStateFlow(TextFieldValue()),
-            date = "1/1/2022",
+            dateViewState = DateViewState(),
             selectedCategory = PreviewData.categoryPreview,
             messageState = MutableStateFlow(TextFieldValue()),
             categories = emptyList(),
@@ -170,7 +180,7 @@ fun PaymentDetailsLayoutPreview() {
 fun PaymentDetailsLayout(
     paymentNameState: StateFlow<TextFieldValue>,
     costState: StateFlow<TextFieldValue>,
-    date: String,
+    dateViewState: DateViewState,
     selectedCategory: Category?,
     messageState: StateFlow<TextFieldValue>,
     categories: List<Category>,
@@ -188,6 +198,7 @@ fun PaymentDetailsLayout(
     val costFocusRequester = remember { FocusRequester() }
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
 
 //    val categoryName by selectedCategory.collectAsState()
     val paymentNameFieldValueState by paymentNameState.collectAsState(TextFieldValue())
@@ -334,7 +345,7 @@ fun PaymentDetailsLayout(
                         )
 
                         Text(
-                            text = date,
+                            text = dateViewState.text,
                             modifier = Modifier.align(Alignment.CenterVertically),
                             style = MaterialTheme.typography.labelMedium
                         )
