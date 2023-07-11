@@ -2,9 +2,9 @@ package dev.nelson.mot.main.presentations.shared_view_state
 
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 
 data class DateViewState(
     val mills: Long = DateUtils.getCurrentDate().time,
-    val text: String = mills.convertMillisecondsToDate(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
+    val text: String = mills.formatMillsToDateText(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
 )

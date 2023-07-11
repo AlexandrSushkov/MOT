@@ -8,7 +8,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryMod
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.UUIDUtils
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
@@ -60,7 +60,7 @@ class GetStatisticByMonthUseCase @Inject constructor(
                         .first()
                         .paymentEntity
                         .dateInMilliseconds
-                        ?.convertMillisecondsToDate() ?: StringUtils.EMPTY
+                        ?.formatMillsToDateText() ?: StringUtils.EMPTY
 
                     StatisticByMonthModel(
                         key = UUIDUtils.randomKey,

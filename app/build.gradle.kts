@@ -132,12 +132,10 @@ dependencies {
     //other
     implementation(libs.kotlinx.datetime)
     implementation(libs.chart)
+    implementation(libs.charts)
 
     //firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.config.ktx)
-
-    implementation  (libs.charts)
-    implementation  ("com.github.antvis:F2Native:2.1.16")
 }

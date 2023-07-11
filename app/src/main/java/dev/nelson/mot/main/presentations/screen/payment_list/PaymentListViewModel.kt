@@ -26,7 +26,6 @@ import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -36,7 +35,6 @@ import java.util.*
 import javax.inject.Inject
 import dev.nelson.mot.R
 import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(

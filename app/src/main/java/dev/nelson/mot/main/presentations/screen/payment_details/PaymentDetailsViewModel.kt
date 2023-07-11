@@ -17,7 +17,7 @@ import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,7 +128,7 @@ class PaymentDetailsViewModel @Inject constructor(
         _dateViewState.update {
             it.copy(
                 mills = selectedTime,
-                text = selectedTime.convertMillisecondsToDate(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
+                text = selectedTime.formatMillsToDateText(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
             )
         }
         onDismissDatePickerDialog()

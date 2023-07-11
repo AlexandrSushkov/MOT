@@ -9,7 +9,7 @@ import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.UUIDUtils
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.Calendar
@@ -49,7 +49,7 @@ class GetStatisticByCategoryUseCase @Inject constructor(
                             val monthText = paymentsForMonth.first()
                                 .paymentEntity
                                 .dateInMilliseconds
-                                ?.convertMillisecondsToDate(Constants.YEAR_MONTH_DATE_PATTERN)
+                                ?.formatMillsToDateText(Constants.YEAR_MONTH_DATE_PATTERN)
                                 ?: StringUtils.EMPTY
                             val month = Month(
                                 monthText = monthText,

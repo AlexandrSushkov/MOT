@@ -199,8 +199,8 @@ val MIGRATION_1_2: Migration = object : Migration(1, 2) {
                         val date = cursor.getString(cursor.getColumnIndex(PaymentTableV1.DATE))
 
                         val dateFormat = SimpleDateFormat(MotDbV1Constants.DATE_FORMAT, Locale.getDefault())
-                        val parsedDate: Date = dateFormat.parse(date)
-                        val dateInMilliseconds = parsedDate.time
+                        val parsedDate: Date? = dateFormat.parse(date)
+                        val dateInMilliseconds = parsedDate?.time ?: System.currentTimeMillis()
 
                         val contentValues = ContentValues().apply {
                             put(PaymentTable.DATE_IN_MILLISECONDS, dateInMilliseconds)

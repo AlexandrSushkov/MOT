@@ -16,7 +16,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import dev.nelson.mot.main.util.UUIDUtils
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import java.io.InputStream
 import java.util.UUID
 
@@ -57,7 +57,7 @@ object PreviewData {
             val time = generateTime // Example sum of categories
             return StatisticByMonthModel(
                 key = generateKey(),
-                monthText = time.convertMillisecondsToDate(),
+                monthText = time.formatMillsToDateText(),
                 month = month,
                 year = year,
                 sumOfCategories = sumOfCategories,
@@ -77,7 +77,7 @@ object PreviewData {
             val time = generateTime // Example sum of categories
             return StatisticByMonthModel(
                 key = generateKey(),
-                monthText = time.convertMillisecondsToDate(),
+                monthText = time.formatMillsToDateText(),
                 month = month,
                 year = year,
                 sumOfCategories = sumOfCategories,
@@ -133,7 +133,7 @@ object PreviewData {
                 paymentItemPreview
                 val month =
                     Month(
-                        generateTime.convertMillisecondsToDate(Constants.YEAR_MONTH_DATE_PATTERN),
+                        generateTime.formatMillsToDateText(Constants.YEAR_MONTH_DATE_PATTERN),
                         generateMonth,
                         generateYear
                     )

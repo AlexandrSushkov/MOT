@@ -42,6 +42,6 @@ dependencies {
     testImplementation("junit:junit:4.12")
 
     //other
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation  (libs.chart)
     implementation("android.arch.navigation:navigation-fragment:1.0.0")
 }
