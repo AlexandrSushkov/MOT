@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -35,7 +35,7 @@ fun ByTimeFilterBottomSheet(
 
     Surface {
         if (model.isEmpty()) {
-            ListPlaceholder(
+            EmptyListPlaceholder(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 48.dp)

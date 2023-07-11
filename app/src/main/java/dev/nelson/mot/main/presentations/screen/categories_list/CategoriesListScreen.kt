@@ -72,7 +72,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
@@ -212,7 +212,7 @@ fun CategoryList(
         is Success -> {
             val categories = categoriesListUiState.successOr(emptyList())
             if (categories.isEmpty()) {
-                ListPlaceholder(Modifier.fillMaxSize())
+                EmptyListPlaceholder(Modifier.fillMaxSize())
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -294,7 +294,7 @@ fun CategoryList(
 
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                ListPlaceholder(
+                EmptyListPlaceholder(
                     Modifier.align(Alignment.Center),
                     Icons.Default.Error,
                     stringResource(R.string.text_error)

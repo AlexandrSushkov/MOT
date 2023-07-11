@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ListPlaceholder(
+fun EmptyListPlaceholder(
     modifier: Modifier = Modifier,
     imageVector: ImageVector = Icons.Default.Notes,
     text: String = "No data yet"
@@ -53,8 +53,8 @@ fun ListPlaceholder(
     showSystemUi = true
 )
 @Composable
-fun ListPlaceholderPreview() {
-    ListPlaceholder(
+private fun EmptyListPlaceholderPreview() {
+    EmptyListPlaceholder(
         modifier = Modifier.size(24.dp),
         imageVector = Icons.Default.List,
         text = "No data yet"

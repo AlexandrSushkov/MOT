@@ -33,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -73,7 +72,7 @@ import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
@@ -364,7 +363,7 @@ fun PaymentList(
         is Success -> {
             val paymentList = paymentListResult.successOr(emptyList())
             if (paymentList.isEmpty()) {
-                ListPlaceholder(Modifier.fillMaxSize())
+                EmptyListPlaceholder(Modifier.fillMaxSize())
             } else {
                 Column(
                     modifier = Modifier
@@ -436,7 +435,7 @@ fun PaymentList(
 
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                ListPlaceholder(
+                EmptyListPlaceholder(
                     Modifier.align(Alignment.Center),
                     Icons.Default.Error,
                     "error"

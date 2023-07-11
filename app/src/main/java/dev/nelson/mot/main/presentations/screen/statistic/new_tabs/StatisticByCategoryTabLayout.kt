@@ -29,7 +29,7 @@ import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
 import dev.nelson.mot.main.presentations.widgets.FABFooter
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -44,7 +44,7 @@ fun StatisticByCategoryTabLayout(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         if (selectedCategoryViewState.selectedTimeModel.paymentToMonth.isEmpty()) {
-            ListPlaceholder(modifier = Modifier.fillMaxSize())
+            EmptyListPlaceholder(modifier = Modifier.fillMaxSize())
         } else {
             Column(
                 modifier = Modifier

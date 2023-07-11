@@ -41,7 +41,7 @@ import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.widgets.FABFooter
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.theme.lightChartColors
@@ -64,7 +64,7 @@ fun StatisticByTimeTabLayout(
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
-            ListPlaceholder(modifier = Modifier.fillMaxSize())
+            EmptyListPlaceholder(modifier = Modifier.fillMaxSize())
         } else {
             Column(
                 modifier = Modifier
