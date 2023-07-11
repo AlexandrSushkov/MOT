@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -225,7 +226,7 @@ fun PaymentListScreen(
         },
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeDateForSelectedItemsClick = { viewModel.onDateClick() },
-        onSelectCategoryIconClcik = { showBottomSheet = true },
+        onSelectCategoryIconClick = { showBottomSheet = true },
         priceViewState = priceViewState
     )
 }
@@ -248,7 +249,7 @@ fun PaymentListLayout(
     onCancelSelectionClick: () -> Unit,
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
-    onSelectCategoryIconClcik: () -> Unit,
+    onSelectCategoryIconClick: () -> Unit,
     priceViewState: PriceViewState,
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -268,7 +269,7 @@ fun PaymentListLayout(
                         IconButton(onClick = onChangeDateForSelectedItemsClick) {
                             Icon(Icons.Default.EditCalendar, contentDescription = "")
                         }
-                        IconButton(onClick = onSelectCategoryIconClcik) {
+                        IconButton(onClick = onSelectCategoryIconClick) {
                             Icon(Icons.Default.Category, contentDescription = "")
                         }
                         IconButton(onClick = onDeleteSelectedItemsClick) {
@@ -466,7 +467,7 @@ private fun PaymentListScreenLightPreview() {
             onCancelSelectionClick = {},
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
-            onSelectCategoryIconClcik = {},
+            onSelectCategoryIconClick = {},
             priceViewState = PreviewData.priceViewState
         )
     }

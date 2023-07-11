@@ -10,6 +10,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -25,8 +27,12 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.RichTooltipBox
+import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,6 +43,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +64,7 @@ import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
 import dev.utils.preview.MotPreviewScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -276,6 +285,37 @@ private fun SettingsScreenLayout(
                                 onClick = onRandomizeBaseDataSwitchChecked,
                                 text = "Randomize"
                             )
+                        }
+                    )
+                }
+
+                item {
+                    val tooltipState = remember { RichTooltipState() }
+                    val scope = rememberCoroutineScope()
+                    ListItem(
+                        headlineContent = { Text(text = "RichTooltip") },
+                        trailingContent = {
+                            RichTooltipBox(
+                                title = { Text(text = "RichTooltip title") },
+                                text = { Text(text = "RichTooltip text") },
+                                action = {
+                                    TextButton(
+                                        onClick = { scope.launch { tooltipState.dismiss() } }
+                                    ) { Text("Learn More") }
+                                },
+                                tooltipState = tooltipState
+
+                            ) {
+                                IconButton(
+                                    onClick = { /* Icon button's click event */ },
+                                    modifier = Modifier.tooltipAnchor()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Info,
+                                        contentDescription = "info icon"
+                                    )
+                                }
+                            }
                         }
                     )
                 }
