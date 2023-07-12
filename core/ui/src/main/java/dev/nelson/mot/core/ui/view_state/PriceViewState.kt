@@ -6,5 +6,5 @@ data class PriceViewState(
     val locale: Locale = Locale.getDefault(),
     val isShowCents: Boolean = true,
     val isShowCurrencySymbol: Boolean = true,
-    val isShowDigits: Boolean = false
+    val isShowDigits: Boolean = true,
 )

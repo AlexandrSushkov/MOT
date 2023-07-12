@@ -2,10 +2,12 @@ package dev.nelson.mot.main.util.compose
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.ui.Alignment
 import dev.nelson.mot.main.util.constant.Constants
@@ -65,4 +67,14 @@ object MotTransitions {
 //        // Fade in with the initial alpha of 0.3f.
 //        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
 //    )
+
+    val exitRevealTransition = shrinkOut(
+        shrinkTowards = Alignment.Center,
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+    )
+
+    val enterRevealTransition = expandIn(
+        expandFrom = Alignment.Center,
+        animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+    )
 }

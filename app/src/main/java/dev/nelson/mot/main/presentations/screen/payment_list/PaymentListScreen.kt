@@ -4,6 +4,7 @@ package dev.nelson.mot.main.presentations.screen.payment_list
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -79,6 +80,7 @@ import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.compose.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
@@ -120,7 +122,9 @@ fun PaymentListScreen(
                 when (action) {
                     is OpenPaymentDetailsAction.NewPayment -> openPaymentDetails.invoke(null)
                     is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(action.paymentId)
-                    is OpenPaymentDetailsAction.NewPaymentForCategory -> openPaymentDetailsForCategory.invoke(action.categoryId)
+                    is OpenPaymentDetailsAction.NewPaymentForCategory -> openPaymentDetailsForCategory.invoke(
+                        action.categoryId
+                    )
                 }
             }
         })
@@ -229,7 +233,7 @@ fun PaymentListScreen(
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeDateForSelectedItemsClick = { viewModel.onDateClick() },
         onSelectCategoryIconClick = { showBottomSheet = true },
-        priceViewState = priceViewState
+        priceViewState = priceViewState,
     )
 }
 
@@ -256,6 +260,8 @@ fun PaymentListLayout(
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
+    val fabEnterTransition = remember { MotTransitions.enterRevealTransition }
+    val fabExitTransition = remember { MotTransitions.exitRevealTransition }
 
     Scaffold(
         topBar = {
@@ -320,10 +326,12 @@ fun PaymentListLayout(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onFabClick,
-                content = { Icon(Icons.Default.Add, "new payment fab") }
-            )
+            if (isSelectedStateOn.not()) {
+                FloatingActionButton(
+                    onClick = onFabClick,
+                    content = { Icon(Icons.Default.Add, "new payment fab") }
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -473,7 +481,7 @@ private fun PaymentListScreenLightPreview() {
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
             onSelectCategoryIconClick = {},
-            priceViewState = PreviewData.priceViewState
+            priceViewState = PreviewData.priceViewState,
         )
     }
 }
