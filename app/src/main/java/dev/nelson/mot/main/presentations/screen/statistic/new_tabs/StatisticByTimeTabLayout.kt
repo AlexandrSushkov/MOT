@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.statistic.new_tabs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,10 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,12 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.github.tehras.charts.piechart.PieChart
 import com.github.tehras.charts.piechart.PieChartData
-import com.github.tehras.charts.piechart.renderer.SimpleSliceDrawer
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
@@ -47,13 +41,13 @@ import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.widgets.FABFooter
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.theme.lightChartColors
 import dev.utils.preview.MotPreview
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticByTimeTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
@@ -70,7 +64,7 @@ fun StatisticByTimeTabLayout(
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
-            ListPlaceholder(modifier = Modifier.fillMaxSize())
+            EmptyListPlaceholder(modifier = Modifier.fillMaxSize())
         } else {
             Column(
                 modifier = Modifier
@@ -205,7 +199,7 @@ private fun StatisticByTimeTabLayoutPreview() {
             ),
             onMonthModelSelected = {},
             onMonthCategoryClick = {},
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }
@@ -224,7 +218,7 @@ private fun StatisticByTimeTabLayoutEmptyPreview() {
             ),
             onMonthModelSelected = {},
             onMonthCategoryClick = {},
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

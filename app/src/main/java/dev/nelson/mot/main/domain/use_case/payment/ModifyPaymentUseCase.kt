@@ -6,6 +6,10 @@ import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
 import javax.inject.Inject
 
+/**
+ * Add, edit or delete a [Payment].
+ * @see [ModifyPaymentsListUseCase]
+ */
 class ModifyPaymentUseCase @Inject constructor(
     private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseSuspend<ModifyPaymentParams, Unit> {
@@ -20,10 +24,10 @@ class ModifyPaymentUseCase @Inject constructor(
     }
 }
 
-data class ModifyPaymentParams(val payment: Payment, val action: ModifyPaymentAction)
-
 sealed class ModifyPaymentAction {
     object Add : ModifyPaymentAction()
     object Edit : ModifyPaymentAction()
     object Delete : ModifyPaymentAction()
 }
+
+data class ModifyPaymentParams(val payment: Payment, val action: ModifyPaymentAction)

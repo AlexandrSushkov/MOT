@@ -11,6 +11,7 @@ import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
+import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -36,7 +37,7 @@ class CategoryDetailsViewModel @Inject constructor(
     private val _closeScreenAction = MutableSharedFlow<Unit>()
 
     // private data
-    private val categoryId: Int? = extras.get<Int>("id")
+    private val categoryId: Int? = extras.get<Int>(Constants.CATEGORY_ID_KEY)
     private var initialCategory: Category? = null
 
     init {

@@ -7,6 +7,7 @@
     <string name="recent_payments" translatable="false">Recent Payments</string>
     <string name="categories" translatable="false">Categories</string>
     <string name="category" translatable="false">Category</string>
+    <string name="category_payments_without_category" translatable="false">Payments without a category</string>
     <string name="statistic" translatable="false">Statistic</string>
     <string name="about" translatable="false">About</string>
     <string name="settings" translatable="false">Settings</string>

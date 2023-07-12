@@ -3,28 +3,31 @@ package dev.nelson.mot.main.presentations.screen.payment_details
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
-import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
+import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentByIdUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.util.DateUtils
-import dev.nelson.mot.db.utils.SortingOrder
+import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.constant.NetworkConstants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
-import dev.nelson.mot.main.util.toFormattedDate
-import kotlinx.coroutines.flow.*
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +35,8 @@ class PaymentDetailsViewModel @Inject constructor(
     getCategoriesOrderedByName: GetCategoriesOrderedByNameFavoriteFirstUseCase,
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     handle: SavedStateHandle,
-    private val getPaymentUseCase: GetPaymentUseCase,
+    private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private val modifyPaymentUseCase: ModifyPaymentUseCase
 ) : BaseViewModel() {
 
@@ -53,9 +57,9 @@ class PaymentDetailsViewModel @Inject constructor(
         get() = _selectedCategoryState.asStateFlow()
     private val _selectedCategoryState = MutableStateFlow<Category?>(null)
 
-    val dateState
-        get() = _date.asStateFlow()
-    private val _date = MutableStateFlow("")
+    val dateViewState
+        get() = _dateViewState.asStateFlow()
+    private val _dateViewState = MutableStateFlow(DateViewState())
 
     val categoriesState: Flow<List<Category>>
         get() = _categories
@@ -67,18 +71,17 @@ class PaymentDetailsViewModel @Inject constructor(
         get() = _finishAction.asSharedFlow()
     private val _finishAction = MutableSharedFlow<Unit>()
 
-    val onDateClickAction
-        get() = _onDateClickAction.asSharedFlow()
-    private val _onDateClickAction = MutableSharedFlow<Unit>()
+    val showDatePickerDialogState
+        get() = _showDatePickerDialogState.asStateFlow()
+    private val _showDatePickerDialogState = MutableStateFlow(false)
 
     // private data
-    private val paymentId: Int? = handle.get<Int>("id")
+    private val paymentId: Int? = handle.get<Int>(Constants.PAYMENT_ID_KEY)
+    private val categoryId: Int? = handle.get<Int>(Constants.CATEGORY_ID_KEY)
     private val mode: SavePaymentMode =
         paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
-//    private var selectedCategory: Category? = null
+
     private var initialPayment: Payment? = null
-    private var dateInMills = 0L
-    private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
         initializePaymentData()
@@ -97,14 +100,7 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     fun onDateClick() {
-        Timber.e("on Date click")
-        onDateClickAction.launchIn(viewModelScope)
-    }
-
-    fun onDateSet(selectedYear: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val selectedDateCalendar = calendar.apply { set(selectedYear, monthOfYear, dayOfMonth) }
-        val selectedDate = selectedDateCalendar.time
-        setDate(selectedDate.time)
+        _showDatePickerDialogState.value = true
     }
 
     fun onPaymentNameChanged(textFieldValue: TextFieldValue) {
@@ -116,7 +112,6 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     fun onCostChange(textFieldValue: TextFieldValue) {
-//        cost.value = cost.value?.copy(text = formatAmountOrMessage(textFieldValue.text))
         val formattedPrice = formatAmountOrMessage(textFieldValue.text)
         _cost.value = textFieldValue.copy(
             text = formattedPrice,
@@ -128,9 +123,23 @@ class PaymentDetailsViewModel @Inject constructor(
         _selectedCategoryState.value = category
     }
 
+    fun onDismissDatePickerDialog() {
+        _showDatePickerDialogState.value = false
+    }
+
+    fun onDateSelected(selectedTime: Long) {
+        _dateViewState.update {
+            it.copy(
+                mills = selectedTime,
+                text = selectedTime.formatMillsToDateText(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
+            )
+        }
+        onDismissDatePickerDialog()
+    }
+
     private fun initializePaymentData() = launch {
         paymentId?.let { paymentId ->
-            getPaymentUseCase.execute(paymentId)
+            getPaymentByIdUseCase.execute(paymentId)
                 .catch { exception -> handleThrowable(exception) }
                 .collect {
                     initialPayment = it
@@ -144,13 +153,15 @@ class PaymentDetailsViewModel @Inject constructor(
                     )
                     _message.value =
                         TextFieldValue(it.message, selection = TextRange(it.message.length))
-                    dateInMills = it.dateInMills ?: System.currentTimeMillis()
-                    setDate(dateInMills)
+                    onDateSelected(it.dateInMills)
                     _selectedCategoryState.value = it.category
-//                    it.category?.name?.let { categoryName -> _categoryName.value = categoryName }
                 }
-        } ?: kotlin.run {
-            setInitialDate()
+        } ?: run {
+            categoryId?.let { categoryId ->
+                getCategoryByIdUseCase.execute(categoryId)
+                    .catch { exception -> handleThrowable(exception) }
+                    .collect { _selectedCategoryState.value = it }
+            }
         }
     }
 
@@ -159,7 +170,7 @@ class PaymentDetailsViewModel @Inject constructor(
         val payment = Payment(
             _paymentName.value.text,
             cost = priceToSave,
-            dateInMills = dateInMills,
+            dateInMills = dateViewState.value.mills,
             category = selectedCategoryState.value,
             message = _message.value.text
         )
@@ -177,7 +188,7 @@ class PaymentDetailsViewModel @Inject constructor(
             message = _message.value.text,
             id = initialPayment?.id,
             dateString = initialPayment?.dateString,
-            dateInMills = dateInMills,
+            dateInMills = dateViewState.value.mills,
             category = selectedCategoryState.value
         )
         if (initialPayment != payment) {
@@ -186,18 +197,6 @@ class PaymentDetailsViewModel @Inject constructor(
         }
         Timber.e("updated payment $payment")
         _finishAction.emit(Unit)
-    }
-
-    private fun setInitialDate() {
-        dateInMills = DateUtils.getCurrentDate().time
-        setDate(dateInMills)
-    }
-
-    private fun setDate(dateInMills: Long) {
-        this.dateInMills = dateInMills
-//        val dateFromMills = DateUtils.createDateFromMills(dateInMills)
-//        val dateTextFormatted = dateFromMills.toFormattedDate(NetworkConstants.DATE_FORMAT)
-        _date.value = dateInMills.convertMillisecondsToDate(Constants.DAY_SHORT_MONTH_YEAR_DATE_PATTERN)
     }
 
     private sealed class SavePaymentMode {
@@ -277,5 +276,4 @@ class PaymentDetailsViewModel @Inject constructor(
         }
         return rawPriceTxt.toInt()
     }
-
 }

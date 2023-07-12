@@ -16,7 +16,7 @@ fun formatPrice(price: Int, priceViewState: PriceViewState): String {
 
     }
     return price.toPrice(formatter, priceViewState.isShowCents)
-        .hideDigitsIfNeeded(priceViewState.isHideDigits)
+        .hideDigitsIfNeeded(priceViewState.isShowDigits)
         .removeCurrencySymbolIfNeeded(
             priceViewState.isShowCurrencySymbol,
             formatter.currency?.symbol
@@ -36,14 +36,10 @@ private fun Int.toPrice(priceFormatter: NumberFormat, isShowCents: Boolean): Str
 }
 
 /**
- * replace all digits with hashtag in a string if [isHideDigits] is true.
+ * replace all digits with hashtag in a string if [isShowDigits] is true.
  */
-private fun String.hideDigitsIfNeeded(isHideDigits: Boolean): String {
-    return if (isHideDigits) {
-        this.replace(Regex(DIGIT_PATTERN), HASHTAG)
-    } else {
-        this
-    }
+private fun String.hideDigitsIfNeeded(isShowDigits: Boolean): String {
+    return if (isShowDigits) this else this.replace(Regex(DIGIT_PATTERN), HASHTAG)
 }
 
 /**

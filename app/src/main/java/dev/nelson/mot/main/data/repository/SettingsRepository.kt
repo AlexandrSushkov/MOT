@@ -98,7 +98,10 @@ class SettingsRepository @Inject constructor(
     }
 
     fun getSwitchState(motSwitchType: MotSwitchType): Flow<Boolean> {
-        val defaultValue = motSwitchType is MotSwitchType.ShowCents
+        val defaultValue = when (motSwitchType) {
+            is MotSwitchType.ShowCents, MotSwitchType.ShowDigits -> true
+            else -> false
+        }
         return dataStore.data.map { it[motSwitchType.key] ?: defaultValue }
     }
 

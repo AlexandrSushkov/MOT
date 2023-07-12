@@ -20,13 +20,13 @@ class GetPriceViewStateUseCase @Inject constructor(
             getSelectedLocaleUseCase.execute(),
             getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
             getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
-            getSwitchStatusUseCase.execute(MotSwitchType.HideDigits),
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowDigits),
         ) { locale, showCents, showCurrencySymbol, hideDigits ->
             PriceViewState(
                 locale = locale,
                 isShowCents = showCents,
                 isShowCurrencySymbol = showCurrencySymbol,
-                isHideDigits = hideDigits,
+                isShowDigits = hideDigits,
             )
         }
     }

@@ -26,12 +26,12 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.motIsDarkTheme
+import dev.nelson.mot.core.ui.fundation.motIsDarkTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
-import dev.nelson.mot.main.util.extention.convertMillisecondsToDate
+import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import dev.nelson.mot.main.util.toIntRepresentation
 import dev.utils.preview.MotPreview
 
@@ -126,7 +126,7 @@ fun MotLineChart(
             Entry(
                 index.toFloat(),
                 entry.value.sumOfPaymentsForThisMonth.toFloat(),
-                entry.value.payments.first().dateInMills.convertMillisecondsToDate(Constants.MONTH_SHORT_YEAR_DATE_PATTERN) // month year text for marker
+                entry.value.payments.first().dateInMills.formatMillsToDateText(Constants.MONTH_SHORT_YEAR_DATE_PATTERN) // month year text for marker
             )
         }.toList()
 
@@ -151,6 +151,7 @@ fun MotLineChart(
         factory = { context ->
             LineChart(context).apply {
                 data = lineData
+                xAxis.isEnabled = false
                 with(xAxis) {
                     position = XAxis.XAxisPosition.BOTTOM
                     textSize = axisTextSize.fontSize.value

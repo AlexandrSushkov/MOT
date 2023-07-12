@@ -4,7 +4,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.db.model.category.CategoryEntity
 import dev.nelson.mot.db.model.payment.PaymentEntity
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 
 fun Payment.copyWith(
     name: String? = null,
@@ -38,7 +38,7 @@ fun Payment.toPaymentEntity(): PaymentEntity =
 
 fun List<Payment>.toPaymentEntityList(): List<PaymentEntity> = this.map { it.toPaymentEntity() }
 
-fun PaymentWithCategory.toPayment(): Payment {
+fun PaymentWithCategoryEntity.toPayment(): Payment {
     val paymentEntity: PaymentEntity = this.paymentEntity
     val categoryEntity: CategoryEntity? = this.categoryEntity
 
@@ -55,4 +55,4 @@ fun PaymentWithCategory.toPayment(): Payment {
     }
 }
 
-fun List<PaymentWithCategory>.toPaymentList(): List<Payment> = this.map { it.toPayment() }
+fun List<PaymentWithCategoryEntity>.toPaymentList(): List<Payment> = this.map { it.toPayment() }

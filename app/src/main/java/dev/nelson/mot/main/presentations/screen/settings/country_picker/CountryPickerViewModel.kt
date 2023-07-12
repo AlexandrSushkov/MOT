@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,11 +41,39 @@ class CountryPickerViewModel @Inject constructor(
     private val defaultCountries = Locale.getAvailableLocales().filterDefaultCountries()
 
     init {
+
+        /**
+         * this is for search result
+         */
+        launch {
+            _searchText.map { searchText ->
+                if (searchText.isEmpty()) {
+                    emptyList()
+                } else {
+                    defaultCountries.filter { it.doesSearchMatch(searchText) }
+                }
+            }
+                .collect { newLocaleList ->
+                    _countryPickerViewState.update {
+                        it.copy(
+                            countriesSearchResult = newLocaleList
+                        )
+                    }
+                }
+        }
+
+        /**
+         * this is for list of countries
+         */
         launch {
             _searchText.debounce(SEARCH_DELAY)
                 .map { searchText -> defaultCountries.filter { it.doesSearchMatch(searchText) } }
                 .collect { newLocaleList ->
-                    _countryPickerViewState.update { it.copy(countries = newLocaleList) }
+                    _countryPickerViewState.update {
+                        it.copy(
+                            countries = newLocaleList
+                        )
+                    }
                 }
         }
     }
@@ -57,6 +87,14 @@ class CountryPickerViewModel @Inject constructor(
             setLocaleUseCase.execute(locale)
             _closeScreenAction.emit(Unit)
         }
+    }
+
+    fun onSearchAction() {
+        _countryPickerViewState.update { it.copy(isSearchActive = false) }
+    }
+
+    fun onSearchActiveChange(isActive: Boolean) {
+        _countryPickerViewState.update { it.copy(isSearchActive = isActive) }
     }
 
     companion object {

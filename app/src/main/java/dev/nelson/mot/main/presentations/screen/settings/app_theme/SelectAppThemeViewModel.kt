@@ -23,9 +23,10 @@ class SelectAppThemeViewModel @Inject constructor(
 
     init {
         launch {
-            getAppThemeUseCase.execute().collect {
-                _selectAppViewState.value = SelectAppThemeViewState(selectedAppTheme = it)
-            }
+            getAppThemeUseCase.execute()
+                .collect {
+                    _selectAppViewState.value = SelectAppThemeViewState(selectedAppTheme = it)
+                }
         }
     }
 

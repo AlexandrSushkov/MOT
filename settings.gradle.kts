@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MOT"
+rootProject.name = "mot"
 
 include(":app") //main app
 include(":db")

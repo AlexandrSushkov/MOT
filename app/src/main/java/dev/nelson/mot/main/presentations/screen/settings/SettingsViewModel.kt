@@ -34,11 +34,11 @@ class SettingsViewModel @Inject constructor(
     getSwitchStatusUseCase: GetSwitchStatusUseCase,
     getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
     getPriceViewStateUseCase: GetPriceViewStateUseCase,
+    getAppThemeUseCase: GetAppThemeUseCase,
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
     private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase,
-    private val getAppThemeUseCase: GetAppThemeUseCase,
 ) : BaseViewModel() {
 
     // actions
@@ -58,7 +58,7 @@ class SettingsViewModel @Inject constructor(
                 getAppThemeUseCase.execute(),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
                 getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
-                getSwitchStatusUseCase.execute(MotSwitchType.HideDigits),
+                getSwitchStatusUseCase.execute(MotSwitchType.ShowDigits),
                 getSelectedLocaleUseCase.execute(),
                 getPriceViewStateUseCase.execute()
             ) { array ->
@@ -67,7 +67,7 @@ class SettingsViewModel @Inject constructor(
                     selectedAppTheme = array[1] as MotAppTheme,
                     isShowCentsSwitchChecked = array[2] as Boolean,
                     isShowCurrencySymbolSwitchChecked = array[3] as Boolean,
-                    isHideDigitsSwitchChecked = array[4] as Boolean,
+                    isShowDigitsSwitchChecked = array[4] as Boolean,
                     selectedLocale = array[5] as Locale,
                     priceViewState = array[6] as PriceViewState
                 )
@@ -88,7 +88,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onHideDigitsChange(isChecked: Boolean) = launch {
-        setSwitchStatus(MotSwitchType.HideDigits, isChecked)
+        setSwitchStatus(MotSwitchType.ShowDigits, isChecked)
     }
 
     fun onRandomizeDataBaseDataClick() = launch {

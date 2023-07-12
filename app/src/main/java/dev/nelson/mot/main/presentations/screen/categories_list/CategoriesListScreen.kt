@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package dev.nelson.mot.main.presentations.screen.categories_list
 
@@ -17,18 +17,14 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Snackbar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -38,11 +34,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -74,7 +72,7 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
 import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
@@ -82,8 +80,8 @@ import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
-import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.constant.Constants
+import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.delay
@@ -199,7 +197,7 @@ fun CategoryListLayout(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryList(
     categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
@@ -214,7 +212,7 @@ fun CategoryList(
         is Success -> {
             val categories = categoriesListUiState.successOr(emptyList())
             if (categories.isEmpty()) {
-                ListPlaceholder(Modifier.fillMaxSize())
+                EmptyListPlaceholder(Modifier.fillMaxSize())
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -227,14 +225,15 @@ fun CategoryList(
                                 is CategoryItemModel -> {
                                     item(key = categoryListItem.key) {
                                         val dismissState = rememberDismissState(
-                                            confirmStateChange = { dismissValue ->
+                                            confirmValueChange = { dismissValue ->
                                                 if (dismissValue == DismissValue.DismissedToStart) {
                                                     onSwipeCategory.invoke(categoryListItem)
                                                     true
                                                 } else {
                                                     false
                                                 }
-                                            }
+                                            },
+                                            positionalThreshold = { 0.35f }
                                         )
                                         categoryListItem.category.id?.let {
                                             MotDismissibleListItem(
@@ -295,7 +294,7 @@ fun CategoryList(
 
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                ListPlaceholder(
+                EmptyListPlaceholder(
                     Modifier.align(Alignment.Center),
                     Icons.Default.Error,
                     stringResource(R.string.text_error)
@@ -323,8 +322,18 @@ fun CategoryListItem(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { onCategoryClick.invoke(category.id ?: -1) },
-                onLongClick = { category.id?.let { onCategoryLongPress.invoke(category) } }
+                onClick = {
+                    onCategoryClick.invoke(
+                        category.id ?: Constants.NO_CATEGORY_CATEGORY_ID
+                    )
+                },
+                onLongClick = {
+                    category.id?.let {
+                        if (it > 0) {
+                            onCategoryLongPress.invoke(category)
+                        }
+                    }
+                }
             ),
     ) {
         ListItem(
@@ -336,19 +345,21 @@ fun CategoryListItem(
             },
             trailingContent = {
                 category.id?.let {
-                    IconToggleButton(
-                        checked = checked,
-                        onCheckedChange = { isChecked ->
-                            checked = isChecked
-                            onFavoriteClick.invoke(category, isChecked)
-                        },
-                    ) {
-                        Icon(
-                            Icons.Filled.Star,
-                            contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                            tint = iconTint,
-                            modifier = Modifier.size(24.dp)
-                        )
+                    if (it > 0) {
+                        IconToggleButton(
+                            checked = checked,
+                            onCheckedChange = { isChecked ->
+                                checked = isChecked
+                                onFavoriteClick.invoke(category, isChecked)
+                            },
+                        ) {
+                            Icon(
+                                Icons.Filled.Star,
+                                contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
+                                tint = iconTint,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -410,7 +421,8 @@ private fun CardFooter() {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(80.dp),
-    ) {}
+        content = {}
+    )
 }
 
 @MotPreviewScreen
@@ -486,7 +498,8 @@ private fun EditCategoryDialogPreview() {
             categoryToEditId = null,
             categoryNameState = TextFieldValue(),
             onCategoryNameChanged = {},
-            closeEditCategoryDialog = {}
-        ) {}
+            closeEditCategoryDialog = {},
+            onSaveCategoryClick = {}
+        )
     }
 }

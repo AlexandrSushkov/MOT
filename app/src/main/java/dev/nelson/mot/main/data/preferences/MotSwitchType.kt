@@ -14,5 +14,5 @@ sealed class MotSwitchType(val key: Preferences.Key<Boolean>) {
 
     object ShowCurrencySymbol : MotSwitchType(PreferencesKeys.SHOW_CURRENCY_SYMBOL_ENABLED)
 
-    object HideDigits : MotSwitchType(PreferencesKeys.HIDE_DIGITS_ENABLED)
+    object ShowDigits : MotSwitchType(PreferencesKeys.SHOW_DIGITS_ENABLED)
 }

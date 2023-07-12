@@ -13,23 +13,21 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -39,6 +37,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
+import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByCategoryTabLayout
@@ -54,10 +54,10 @@ import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByTi
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Statistic2Screen(
+fun StatisticScreen(
     viewModel: StatisticViewModel,
     appBarTitle: String,
     navigationIcon: @Composable () -> Unit = {},
@@ -73,19 +73,18 @@ fun Statistic2Screen(
     )
     val selectedTimeViewState by viewModel.selectedTimeViewState.collectAsState()
     val selectedCategoryViewState by viewModel.selectedCategoryViewState.collectAsState()
-
-    val modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
 
-    /**
-     * Back handler to hide modal bottom sheet
-     */
-    BackHandler(
-        enabled = modalBottomSheetState.isVisible,
-        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
-    )
 
-    Statistic2Layout(
+//    /**
+//     * Back handler to hide modal bottom sheet
+//     */
+//    BackHandler(
+//        enabled = modalBottomSheetState.isVisible,
+//        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
+//    )
+
+    StatisticLayout(
         appBarTitle = appBarTitle,
 //        onNavigationButtonClick = onNavigationButtonClick,
         navigationIcon = navigationIcon,
@@ -109,22 +108,18 @@ fun Statistic2Screen(
 //        onExpandYearItemClick = { viewModel.onExpandYearClicked(it) },
 //        onExpandMonthItemClick = { viewModel.onExpandMonthClicked(it) }
         priceViewState = priceViewState,
-        modalBottomSheetState = modalBottomSheetState,
-        onFabClick = { coroutineScope.launch { modalBottomSheetState.show() } }
     )
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
 )
 @Composable
-private fun Statistic2Layout(
+private fun StatisticLayout(
     appBarTitle: String,
 //    onNavigationButtonClick: () -> Unit,
     navigationIcon: @Composable () -> Unit = {},
-
-    onFabClick: () -> Unit = {},
     selectedMonthModel: StatisticByMonthModel,
     statByMonthList: List<StatisticByMonthModel>,
     statByCategoryList: List<StatisticByCategoryPerMonthModel>,
@@ -134,153 +129,181 @@ private fun Statistic2Layout(
     onMonthCategoryClick: (StatisticByCategoryModel) -> Unit,
     onCategoryModelSelected: (StatisticByCategoryPerMonthModel) -> Unit,
     priceViewState: PriceViewState,
-    modalBottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(
-        ModalBottomSheetValue.Hidden
-    )
 ) {
 
-    val scrollBehavior =
-        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val pagerState = rememberPagerState(0)
     val coroutineScope = rememberCoroutineScope()
     val systemUiController = rememberSystemUiController()
     val statusBarColor = MaterialTheme.colorScheme.secondaryContainer
     val statisticTabs = MotStatistic2Tab.tabs
+    val modalBottomSheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
 
     DisposableEffect(systemUiController, statusBarColor) {
         systemUiController.setStatusBarColor(color = statusBarColor)
         onDispose {}
     }
 
-    ModalBottomSheetLayout(
-        sheetContent = {
+    if (showBottomSheet) {
+        /**
+         * Back handler to hide modal bottom sheet
+         */
+        BackHandler(
+            enabled = true,
+            onBack = {
+                Timber.d("bottom sheet BackHandler")
+                coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                    if (!modalBottomSheetState.isVisible) {
+                        showBottomSheet = false
+                    }
+                }
+            }
+        )
+
+        val displayCornerRadius = getDisplayCornerRadius()
+
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
+            sheetState = modalBottomSheetState,
+            shape = RoundedCornerShape(
+                topStart = displayCornerRadius,
+                topEnd = displayCornerRadius
+            ),
+            dragHandle = { BottomSheetDefaults.DragHandle() },
+        ) {
             if (pagerState.currentPage == 0) {
                 ByTimeFilterBottomSheet(
                     model = statByMonthList,
-                    onItemSelected = {
-                        onMonthModelSelected(it)
-                        coroutineScope.launch { modalBottomSheetState.hide() }
-                    },
-                    hideBottomSheetCallback = { coroutineScope.launch { modalBottomSheetState.hide() } },
                     selectedMonthModel = selectedTimeViewState.selectedTimeModel,
-                )
+                ) {
+                    onMonthModelSelected(it)
+                    coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                        if (!modalBottomSheetState.isVisible) {
+                            showBottomSheet = false
+                        }
+                    }
+                }
             } else {
                 ByCategoryFilterBottomSheet(
                     model = statByCategoryList,
-                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel,
                     onItemSelected = {
                         onCategoryModelSelected(it)
-                        coroutineScope.launch { modalBottomSheetState.hide() }
-                    },
-                    hideBottomSheetCallback = { coroutineScope.launch { modalBottomSheetState.hide() } },
-                )
-            }
-        },
-        sheetState = modalBottomSheetState
-    ) {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = { Text(text = appBarTitle) },
-                    navigationIcon = navigationIcon,
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                )
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    onClick = onFabClick,
-                    content = { Icon(Icons.Default.FilterList, "new payment fab") }
-                )
-            }
-        ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = innerPadding)
-            ) {
-                val textWidth = remember { mutableStateOf(0) }
-
-                val density = LocalDensity.current
-                val tabWidths = remember {
-                    val tabWidthStateList = mutableStateListOf<Dp>()
-                    repeat(statisticTabs.size) {
-                        tabWidthStateList.add(0.dp)
-                    }
-                    tabWidthStateList
-                }
-
-                TabRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    indicator = { tabPositions ->
-                        Box(
-                            modifier = Modifier
-                                .customTabIndicatorOffset(
-                                    currentTabPosition = tabPositions[pagerState.currentPage],
-                                    tabWidth = tabWidths[pagerState.currentPage]
-                                )
-                                .height(4.dp)
-                                .width(with(LocalDensity.current) { textWidth.value.toDp() })
-                                .background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                                )
-                                .onGloballyPositioned { coordinates ->
-                                    textWidth.value = coordinates.size.width
-                                },
-                        )
-                    },
-                    tabs = {
-                        statisticTabs.forEachIndexed { index, statisticTab ->
-                            Tab(
-                                text = {
-                                    Text(
-                                        text = statisticTab.title,
-                                        onTextLayout = { textLayoutResult ->
-                                            tabWidths[index] =
-                                                with(density) {
-                                                    textLayoutResult.size.width
-                                                        .toDp()
-                                                }
-                                        }
-                                    )
-                                },
-                                selected = pagerState.currentPage == index,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                },
-                            )
+                        coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                            if (!modalBottomSheetState.isVisible) {
+                                showBottomSheet = false
+                            }
                         }
-                    }
+                    },
+                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel,
                 )
-                HorizontalPager(
-                    modifier = Modifier.fillMaxSize(),
-                    pageCount = statisticTabs.size,
-                    state = pagerState,
-                ) { tabId ->
-                    when (statisticTabs[tabId]) {
-                        is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
-                            scrollBehavior = scrollBehavior,
-                            selectedTimeViewState = selectedTimeViewState,
-                            model = statByMonthList,
-                            onMonthModelSelected = onMonthModelSelected,
-                            onMonthCategoryClick = onMonthCategoryClick,
-                            priceViewState = priceViewState,
-                        )
+            }
+        }
+    }
 
-                        is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
-                            scrollBehavior = scrollBehavior,
-                            selectedCategoryViewState = selectedCategoryViewState,
-                            priceViewState = priceViewState
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                scrollBehavior = scrollBehavior,
+                title = { Text(text = appBarTitle) },
+                navigationIcon = navigationIcon,
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { coroutineScope.launch { showBottomSheet = true } },
+                content = { Icon(Icons.Default.FilterList, "new payment fab") }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = innerPadding)
+        ) {
+            val textWidth = remember { mutableStateOf(0) }
+
+            val density = LocalDensity.current
+            val tabWidths = remember {
+                val tabWidthStateList = mutableStateListOf<Dp>()
+                repeat(statisticTabs.size) {
+                    tabWidthStateList.add(0.dp)
+                }
+                tabWidthStateList
+            }
+
+            TabRow(
+                modifier = Modifier.fillMaxWidth(),
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                indicator = { tabPositions ->
+                    Box(
+                        modifier = Modifier
+                            .customTabIndicatorOffset(
+                                currentTabPosition = tabPositions[pagerState.currentPage],
+                                tabWidth = tabWidths[pagerState.currentPage]
+                            )
+                            .height(4.dp)
+                            .width(with(LocalDensity.current) { textWidth.value.toDp() })
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                textWidth.value = coordinates.size.width
+                            },
+                    )
+                },
+                tabs = {
+                    statisticTabs.forEachIndexed { index, statisticTab ->
+                        Tab(
+                            text = {
+                                Text(
+                                    text = statisticTab.title,
+                                    onTextLayout = { textLayoutResult ->
+                                        tabWidths[index] =
+                                            with(density) {
+                                                textLayoutResult.size.width
+                                                    .toDp()
+                                            }
+                                    }
+                                )
+                            },
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
                         )
                     }
+                }
+            )
+            HorizontalPager(
+                modifier = Modifier.fillMaxSize(),
+                pageCount = statisticTabs.size,
+                state = pagerState,
+                userScrollEnabled = false,
+            ) { tabId ->
+                when (statisticTabs[tabId]) {
+                    is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
+                        scrollBehavior = scrollBehavior,
+                        selectedTimeViewState = selectedTimeViewState,
+                        model = statByMonthList,
+                        onMonthModelSelected = onMonthModelSelected,
+                        onMonthCategoryClick = onMonthCategoryClick,
+                        priceViewState = priceViewState,
+                    )
+
+                    is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
+                        scrollBehavior = scrollBehavior,
+                        selectedCategoryViewState = selectedCategoryViewState,
+                        priceViewState = priceViewState
+                    )
                 }
             }
         }
@@ -297,31 +320,27 @@ private sealed class MotStatistic2Tab(val title: String) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @MotPreview
 @Composable
-private fun Static2LayoutPreview() {
+private fun StaticLayoutPreview() {
     MotMaterialTheme {
-        Statistic2Layout(
-            appBarTitle = "Statistic2Layout",
+        StatisticLayout(
+            appBarTitle = "StatisticLayout",
             selectedMonthModel = PreviewData.statisticByMonthModelPreviewData,
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByCategoryList = emptyList(),
-//            onNavigationButtonClick = {},
+    //            onNavigationButtonClick = {},
             navigationIcon = { MotNavDrawerIcon {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
                 selectedTimeModel = PreviewData.statisticByMonthModelPreviewData,
             ),
             selectedCategoryViewState = SelectedCategoryViewState(
-                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
-
+                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel
                 ),
-            modalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
-            onFabClick = {},
             onCategoryModelSelected = {},
             onMonthCategoryClick = {},
-            priceViewState = PriceViewState()
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

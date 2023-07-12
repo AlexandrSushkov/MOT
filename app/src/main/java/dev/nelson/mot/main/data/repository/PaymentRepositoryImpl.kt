@@ -3,7 +3,7 @@ package dev.nelson.mot.main.data.repository
 import dev.nelson.mot.main.data.repository.base.PaymentRepository
 import dev.nelson.mot.db.model.payment.PaymentDao
 import dev.nelson.mot.db.model.payment.PaymentEntity
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -16,13 +16,17 @@ class PaymentRepositoryImpl @Inject constructor(
      * Get payment
      *
      * @param paymentId id of the payment
-     * @return [PaymentWithCategory]
+     * @return [PaymentWithCategoryEntity]
      */
-    override fun getPayment(paymentId: Int): Flow<PaymentWithCategory> =
+    override fun getPayment(paymentId: Int): Flow<PaymentWithCategoryEntity> =
         paymentDao.getPaymentById(paymentId)
 
     override suspend fun getAllPayments(): List<PaymentEntity> {
         return paymentDao.getAllPayments()
+    }
+
+    override fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategoryEntity>> {
+        return paymentDao.getAllPaymentsWithoutCategory()
     }
 
     /**
@@ -33,7 +37,7 @@ class PaymentRepositoryImpl @Inject constructor(
         startTime: Long,
         categoryId: Int?,
         isAsc: Boolean
-    ): Flow<List<PaymentWithCategory>> {
+    ): Flow<List<PaymentWithCategoryEntity>> {
         return categoryId?.let {
             paymentDao.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
                 startTime,
@@ -51,7 +55,7 @@ class PaymentRepositoryImpl @Inject constructor(
         startTime: Long,
         endTime: Long,
         isAsc: Boolean,
-    ): Flow<List<PaymentWithCategory>> {
+    ): Flow<List<PaymentWithCategoryEntity>> {
         return paymentDao.getPaymentsWithCategoryByFixedDateRange(
             startTime,
             endTime,

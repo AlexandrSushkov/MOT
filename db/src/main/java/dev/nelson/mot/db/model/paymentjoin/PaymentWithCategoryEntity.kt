@@ -7,7 +7,7 @@ import dev.nelson.mot.db.model.category.CategoryTable
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.payment.PaymentTable
 
-data class PaymentWithCategory(
+data class PaymentWithCategoryEntity(
     @Embedded var paymentEntity: PaymentEntity,
     @Relation(
         parentColumn = PaymentTable.CATEGORY_ID_KEY,

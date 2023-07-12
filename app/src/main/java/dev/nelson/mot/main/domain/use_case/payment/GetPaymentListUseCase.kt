@@ -8,6 +8,7 @@ import javax.inject.Inject
  * Return list of [Payment] based on input parameters.
  *
  */
+@Deprecated("Not implemented")
 class GetPaymentListUseCase @Inject constructor(private val paymentRepository: PaymentRepositoryImpl) {
 
     // get payment divided by day

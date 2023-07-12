@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.presentations.widgets.ListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
@@ -29,14 +29,13 @@ import dev.utils.preview.MotPreview
 fun ByTimeFilterBottomSheet(
     model: List<StatisticByMonthModel>,
     selectedMonthModel: StatisticByMonthModel,
-    onItemSelected: (StatisticByMonthModel) -> Unit,
-    hideBottomSheetCallback: () -> Unit
+    onItemSelected: (StatisticByMonthModel) -> Unit
 ) {
     val layColumnState = rememberLazyListState()
 
     Surface {
         if (model.isEmpty()) {
-            ListPlaceholder(
+            EmptyListPlaceholder(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 48.dp)
@@ -54,10 +53,7 @@ fun ByTimeFilterBottomSheet(
                         MaterialTheme.colorScheme.surface
                     }
                     ListItem(
-                        modifier = Modifier.clickable {
-                            onItemSelected.invoke(it)
-                            hideBottomSheetCallback.invoke()
-                        },
+                        modifier = Modifier.clickable { onItemSelected.invoke(it) },
                         headlineContent = { Text(text = it.monthText) },
                         trailingContent = {
                             if (it == selectedMonthModel) {
@@ -84,9 +80,7 @@ private fun ByTimeFilterBottomSheetPreview() {
     MotMaterialTheme {
         ByTimeFilterBottomSheet(
             model = modelList,
-            selectedMonthModel = modelList.first(),
-            onItemSelected = {},
-            hideBottomSheetCallback = {}
-        )
+            selectedMonthModel = modelList.first()
+        ) {}
     }
 }

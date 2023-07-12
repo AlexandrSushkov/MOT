@@ -2,7 +2,6 @@ package dev.nelson.mot.main.presentations.nav
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,12 +20,11 @@ import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsSc
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
-import dev.nelson.mot.main.presentations.screen.statistic.Statistic2Screen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
+import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreenExperemental
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotNavHost(
     navController: NavHostController,
@@ -66,8 +64,16 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
-                        paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
-                            ?: navController.navigate(route = PaymentDetails.route)
+                        paymentId?.let {
+                            navController.navigate(
+                                route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}=$paymentId"
+                            )
+                        } ?: navController.navigate(route = PaymentDetails.route)
+                    },
+                    openPaymentDetailsForCategory = { categoryId ->
+                        navController.navigate(
+                            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
+                        )
                     },
                 )
             },
@@ -79,21 +85,51 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
-                        paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
+                        paymentId?.let {
+                            navController.navigate(
+                                route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}=$paymentId"
+                            )
+                        }
                             ?: navController.navigate(route = PaymentDetails.route)
+                    },
+                    openPaymentDetailsForCategory = { categoryId ->
+                        navController.navigate(
+                            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
+                        )
                     },
                 )
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
+        /**
+         * Open payment details payment form payments list.
+         */
         composable(
-            route = "${PaymentDetails.route}?id={id}",
+            route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}={${Constants.PAYMENT_ID_KEY}}",
             content = {
-                PaymentDetailsScreen(viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() })
+                PaymentDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
             },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument(Constants.PAYMENT_ID_KEY) { type = NavType.IntType })
         )
+        /**
+         * Open new payment details payment form payments list for a selected category.
+         */
+        composable(
+            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
+            content = {
+                PaymentDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
+            },
+            arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
+        )
+        /**
+         * Open payment details form widget.
+         */
         composable(
             route = PaymentDetails.route,
             content = {
@@ -111,20 +147,20 @@ fun MotNavHost(
                         MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
                     },
                     openPaymentsByCategoryAction = { categoryId ->
-                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                        navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
                 )
             },
         )
         composable(
-            route = "${CategoryDetails.route}?id={id}",
+            route = "${CategoryDetails.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
             content = {
                 CategoryDetailsScreen(
                     viewModel = hiltViewModel(),
                     closeScreen = { navController.popBackStack() }
                 )
             },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
         composable(
             route = CategoryDetails.route,
@@ -138,7 +174,7 @@ fun MotNavHost(
         composable(
             route = StatisticExperimental.route,
             content = {
-                StatisticScreen(
+                StatisticScreenExperemental(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic Old",
                     appBarNavigationIcon = { MotNavBackIcon { navController.popBackStack() } }
@@ -148,14 +184,14 @@ fun MotNavHost(
         composable(
             route = Statistic.route,
             content = {
-                Statistic2Screen(
+                StatisticScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic",
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentsByCategoryAction = { categoryId ->
-                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                        navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
-                    )
+                )
             },
         )
         composable(

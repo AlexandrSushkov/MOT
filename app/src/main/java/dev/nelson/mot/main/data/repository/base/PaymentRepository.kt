@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.data.repository.base
 
 import dev.nelson.mot.db.model.payment.PaymentEntity
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategory
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PaymentRepository {
@@ -10,11 +10,13 @@ interface PaymentRepository {
      * Get payment
      *
      * @param paymentId id of the payment
-     * @return [PaymentWithCategory]
+     * @return [PaymentWithCategoryEntity]
      */
-    fun getPayment(paymentId: Int): Flow<PaymentWithCategory>
+    fun getPayment(paymentId: Int): Flow<PaymentWithCategoryEntity>
 
     suspend fun getAllPayments(): List<PaymentEntity>
+
+    fun getAllPaymentsWithoutCategory(): Flow<List<PaymentWithCategoryEntity>>
 
     /**
      * Get payments WITHOUT end date used on Payments list screen to listen for the updates when new payment is added.
@@ -24,7 +26,7 @@ interface PaymentRepository {
         startTime: Long,
         categoryId: Int? = null,
         isAsc: Boolean = false
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     /**
      * Get payments WITH end date used to get payments in a particular time period.
@@ -34,7 +36,7 @@ interface PaymentRepository {
         startTime: Long,
         endTime: Long,
         isAsc: Boolean = false
-    ): Flow<List<PaymentWithCategory>>
+    ): Flow<List<PaymentWithCategoryEntity>>
 
     suspend fun addPayment(paymentEntity: PaymentEntity)
 

@@ -1,22 +1,24 @@
 package dev.nelson.mot.main.util.extention
 
 import dev.nelson.mot.main.util.constant.Constants
-import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
  * Convert epoch time in milliseconds to date string
  * @param format date format. If null, [Constants.MONTH_YEAR_DATE_PATTERN] is used
+ * @param locale locale. If null, [Locale.getDefault] is used
  * @return date string
  */
-fun Long.convertMillisecondsToDate(
-    format: String = Constants.MONTH_YEAR_DATE_PATTERN
+fun Long.formatMillsToDateText(
+    format: String = Constants.MONTH_YEAR_DATE_PATTERN,
+    locale: Locale = Locale.getDefault()
 ): String {
-    val calendar = Calendar.getInstance().apply {
-        timeInMillis = this@convertMillisecondsToDate
-    }
-
-    val dateFormat = SimpleDateFormat(format, Locale.getDefault())
-    return dateFormat.format(calendar.time)
+    val instant = Instant.ofEpochMilli(this)
+    val zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())
+    return DateTimeFormatter.ofPattern(format, locale)
+        .format(zonedDateTime)
 }
