@@ -64,8 +64,16 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
-                        paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
-                            ?: navController.navigate(route = PaymentDetails.route)
+                        paymentId?.let {
+                            navController.navigate(
+                                route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}=$paymentId"
+                            )
+                        } ?: navController.navigate(route = PaymentDetails.route)
+                    },
+                    openPaymentDetailsForCategory = { categoryId ->
+                        navController.navigate(
+                            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
+                        )
                     },
                 )
             },
@@ -77,21 +85,51 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
-                        paymentId?.let { navController.navigate(route = "${PaymentDetails.route}?id=$paymentId") }
+                        paymentId?.let {
+                            navController.navigate(
+                                route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}=$paymentId"
+                            )
+                        }
                             ?: navController.navigate(route = PaymentDetails.route)
+                    },
+                    openPaymentDetailsForCategory = { categoryId ->
+                        navController.navigate(
+                            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
+                        )
                     },
                 )
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
+        /**
+         * Open payment details payment form payments list.
+         */
         composable(
-            route = "${PaymentDetails.route}?id={id}",
+            route = "${PaymentDetails.route}?${Constants.PAYMENT_ID_KEY}={${Constants.PAYMENT_ID_KEY}}",
             content = {
-                PaymentDetailsScreen(viewModel = hiltViewModel(),
-                    closeScreen = { navController.popBackStack() })
+                PaymentDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
             },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument(Constants.PAYMENT_ID_KEY) { type = NavType.IntType })
         )
+        /**
+         * Open new payment details payment form payments list for a selected category.
+         */
+        composable(
+            route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
+            content = {
+                PaymentDetailsScreen(
+                    viewModel = hiltViewModel(),
+                    closeScreen = { navController.popBackStack() }
+                )
+            },
+            arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
+        )
+        /**
+         * Open payment details form widget.
+         */
         composable(
             route = PaymentDetails.route,
             content = {
@@ -109,20 +147,20 @@ fun MotNavHost(
                         MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
                     },
                     openPaymentsByCategoryAction = { categoryId ->
-                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                        navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
                 )
             },
         )
         composable(
-            route = "${CategoryDetails.route}?id={id}",
+            route = "${CategoryDetails.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
             content = {
                 CategoryDetailsScreen(
                     viewModel = hiltViewModel(),
                     closeScreen = { navController.popBackStack() }
                 )
             },
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
         )
         composable(
             route = CategoryDetails.route,
@@ -151,9 +189,9 @@ fun MotNavHost(
                     appBarTitle = "Statistic",
                     navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
                     openPaymentsByCategoryAction = { categoryId ->
-                        navController.navigate("${Payments.route}?category_id=$categoryId")
+                        navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
-                    )
+                )
             },
         )
         composable(

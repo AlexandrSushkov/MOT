@@ -90,6 +90,7 @@ import timber.log.Timber
 fun PaymentListScreen(
     navigationIcon: @Composable () -> Unit,
     openPaymentDetails: (Int?) -> Unit,
+    openPaymentDetailsForCategory: (Int?) -> Unit,
     viewModel: PaymentListViewModel
 ) {
     val toolbarTitle by viewModel.toolBarTitleState.collectAsState(StringUtils.EMPTY)
@@ -118,7 +119,8 @@ fun PaymentListScreen(
             viewModel.openPaymentDetailsAction.collect { action ->
                 when (action) {
                     is OpenPaymentDetailsAction.NewPayment -> openPaymentDetails.invoke(null)
-                    is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(action.id)
+                    is OpenPaymentDetailsAction.ExistingPayment -> openPaymentDetails.invoke(action.paymentId)
+                    is OpenPaymentDetailsAction.NewPaymentForCategory -> openPaymentDetailsForCategory.invoke(action.categoryId)
                 }
             }
         })

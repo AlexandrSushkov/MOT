@@ -191,7 +191,10 @@ class PaymentListViewModel @Inject constructor(
 
     fun onFabClick() = launch {
         cancelSelection()
-        _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
+        when(screenScreenType){
+            is ScreenType.RecentPayments -> _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
+            else -> _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPaymentForCategory(categoryId))
+        }
     }
 
     fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {

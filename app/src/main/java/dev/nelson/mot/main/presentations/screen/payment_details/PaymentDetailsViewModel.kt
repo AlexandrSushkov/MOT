@@ -9,6 +9,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
+import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentByIdUseCase
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentAction
@@ -35,6 +36,7 @@ class PaymentDetailsViewModel @Inject constructor(
     getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     handle: SavedStateHandle,
     private val getPaymentByIdUseCase: GetPaymentByIdUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
     private val modifyPaymentUseCase: ModifyPaymentUseCase
 ) : BaseViewModel() {
 
@@ -74,7 +76,8 @@ class PaymentDetailsViewModel @Inject constructor(
     private val _showDatePickerDialogState = MutableStateFlow(false)
 
     // private data
-    private val paymentId: Int? = handle.get<Int>("id")
+    private val paymentId: Int? = handle.get<Int>(Constants.PAYMENT_ID_KEY)
+    private val categoryId: Int? = handle.get<Int>(Constants.CATEGORY_ID_KEY)
     private val mode: SavePaymentMode =
         paymentId?.let { SavePaymentMode.Edit } ?: SavePaymentMode.Add
 
@@ -153,6 +156,12 @@ class PaymentDetailsViewModel @Inject constructor(
                     onDateSelected(it.dateInMills)
                     _selectedCategoryState.value = it.category
                 }
+        } ?: run {
+            categoryId?.let { categoryId ->
+                getCategoryByIdUseCase.execute(categoryId)
+                    .catch { exception -> handleThrowable(exception) }
+                    .collect { _selectedCategoryState.value = it }
+            }
         }
     }
 
