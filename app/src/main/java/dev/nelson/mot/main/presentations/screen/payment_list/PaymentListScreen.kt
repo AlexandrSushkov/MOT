@@ -73,6 +73,7 @@ import dev.nelson.mot.main.data.model.PaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
@@ -426,6 +427,9 @@ fun PaymentList(
                                 stickyHeader(key = paymentListItemModel.key) {
                                     PaymentListDateItem(date = paymentListItemModel.date)
                                 }
+                            }
+                            if (paymentListItemModel is PaymentListItemModel.Footer) {
+                                item { FABFooter() }
                             }
                         }
                     }

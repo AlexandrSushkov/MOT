@@ -54,14 +54,13 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
      *  Transform epoch mills into string date according to the system time zone
      */
     private fun List<Payment>.formatDate(
-        timeZone: TimeZone? = null, dateTimeFormatter: DateTimeFormatter? = null
+        timeZone: TimeZone? = null,
+        dateTimeFormatter: DateTimeFormatter? = null
     ): List<Payment> {
         return this.map { payment ->
             payment.dateInMills.let { mills ->
                 payment.copyWith(
-                    dateText = formatTimeUseCase.execute(
-                        mills, timeZone, dateTimeFormatter
-                    )
+                    dateText = formatTimeUseCase.execute(mills, timeZone, dateTimeFormatter)
                 )
             }
         }
@@ -77,7 +76,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
                     add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))
                 }
-            // TODO: add footer
+            add(PaymentListItemModel.Footer(UUIDUtils.randomKey))
         }
     }
 
