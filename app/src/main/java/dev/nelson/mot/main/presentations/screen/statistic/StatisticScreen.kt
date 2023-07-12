@@ -287,6 +287,7 @@ private fun StatisticLayout(
                 modifier = Modifier.fillMaxSize(),
                 pageCount = statisticTabs.size,
                 state = pagerState,
+                userScrollEnabled = false,
             ) { tabId ->
                 when (statisticTabs[tabId]) {
                     is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(

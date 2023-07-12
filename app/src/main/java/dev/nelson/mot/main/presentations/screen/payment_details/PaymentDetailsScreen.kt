@@ -44,6 +44,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -68,6 +69,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotButton
 import dev.nelson.mot.core.ui.MotMaterialTheme
@@ -98,6 +100,8 @@ fun PaymentDetailsScreen(
     val selectedCategory by viewModel.selectedCategoryState.collectAsState(null)
     val onShowDateDialog by viewModel.showDatePickerDialogState.collectAsState(false)
 
+    val systemUiController = rememberSystemUiController()
+    val systemBarColor = MaterialTheme.colorScheme.surface
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateViewState.mills)
     datePickerState.setSelection(dateViewState.mills)
 
@@ -111,7 +115,10 @@ fun PaymentDetailsScreen(
         }
     )
 
-    DatePicker(state = datePickerState)
+    DisposableEffect(systemUiController, systemBarColor) {
+        systemUiController.setStatusBarColor(color = systemBarColor)
+        onDispose {}
+    }
 
     if (onShowDateDialog) {
         DatePickerDialog(

@@ -6,11 +6,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -19,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -30,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.RichTooltipBox
 import androidx.compose.material3.RichTooltipState
 import androidx.compose.material3.Scaffold
@@ -39,7 +33,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,7 +43,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.BuildConfig
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
@@ -160,7 +152,7 @@ private fun SettingsScreenLayout(
             item { HeadingListItem(text = "Appearance") }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Price Field Example") },
+                    headlineContent = { Text(text = "Price Field") },
                     trailingContent = {
                         PriceText(
                             price = Constants.PRICE_EXAMPLE,
@@ -193,13 +185,13 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Hide digits") },
+                    headlineContent = { Text(text = "Show digits") },
                     trailingContent = {
                         MotSwitch(
-                            checked = viewState.isHideDigitsSwitchChecked,
+                            checked = viewState.isShowDigitsSwitchChecked,
                             onCheckedChange = onHideDigitsSwitchChecked,
-                            uncheckedStateIcon = Icons.Default.Visibility,
-                            checkedStateIcon = Icons.Default.VisibilityOff
+                            uncheckedStateIcon = Icons.Default.VisibilityOff,
+                            checkedStateIcon = Icons.Default.Visibility
                         )
                     }
                 )

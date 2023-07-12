@@ -10,7 +10,7 @@ data class SettingsViewState(
     val isDynamicThemeSwitchChecked: Boolean= false,
     val isShowCentsSwitchChecked: Boolean = false,
     val isShowCurrencySymbolSwitchChecked: Boolean = false,
-    val isHideDigitsSwitchChecked: Boolean = false,
+    val isShowDigitsSwitchChecked: Boolean = false,
     val isShowCountryPicker: Boolean = false,
     val selectedLocale: Locale = Locale.getDefault(),
     val countries: List<Locale> = emptyList(),
