@@ -25,6 +25,7 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
+import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.toIntRepresentation
 import dev.theme.lightChartColors
@@ -98,15 +99,16 @@ fun MotPieChart(
                 setOnChartValueSelectedListener(object :
                     OnChartValueSelectedListener {
                     override fun onNothingSelected() {
-                        Timber.d("onNothingSelected")
-                        // TODO: clear selected category
+                        centerText = StringUtils.EMPTY
                     }
 
                     override fun onValueSelected(e: Entry?, h: Highlight?) {
                         val categoryId = (e as? PieEntry)?.label?.toInt()
                         categoryId?.let {
                             onPieEntrySelected.invoke(it)
-                            categories.find { categoryModel -> categoryModel.category?.id == it }
+                            initialViewState.selectedTimeModel
+                                .categoriesModelList
+                                .find { categoryModel -> categoryModel.category?.id == it }
                                 ?.let { selectedCategoryModel ->
                                     val formattedCenterText =
                                         formatCenterText(selectedCategoryModel, priceViewState)
@@ -122,7 +124,7 @@ fun MotPieChart(
             with(chart) {
                 if (isClearPieChart) {
                     clear()
-                    centerText = ""
+                    centerText = StringUtils.EMPTY
                     data = pieData
                 } else {
                     data = pieData
@@ -147,7 +149,7 @@ private fun formatCenterText(
 
 @MotPreview
 @Composable
-fun MotPieChartPreview() {
+private fun MotPieChartPreview() {
     val modelList = PreviewData.statisticByMonthModelPreviewData
     val slices = modelList.categoriesModelList.map {
         PieChartData.Slice(

@@ -5,7 +5,7 @@ import kotlinx.datetime.Clock
 import javax.inject.Inject
 
 /**
- * return current time in milliseconds
+ * Return current time in milliseconds
  */
 class GetCurrentTimeUseCase @Inject constructor() : UseCaseSuspend<Nothing?, Long> {
     // get oldest record in the db

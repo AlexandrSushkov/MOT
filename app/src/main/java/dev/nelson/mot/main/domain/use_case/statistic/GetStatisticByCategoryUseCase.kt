@@ -24,6 +24,7 @@ class GetStatisticByCategoryUseCase @Inject constructor(
     override fun execute(params: Nothing?): Flow<List<StatisticByCategoryPerMonthModel>> {
         return paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
             startTime = 0,
+            isAsc = true
         ).map { paymentsWithCategoryList ->
             paymentsWithCategoryList.groupBy { paymentWithCategory ->
                 paymentWithCategory.categoryEntity

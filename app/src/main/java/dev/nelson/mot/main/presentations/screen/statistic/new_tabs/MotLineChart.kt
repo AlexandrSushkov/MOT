@@ -151,6 +151,7 @@ fun MotLineChart(
         factory = { context ->
             LineChart(context).apply {
                 data = lineData
+                xAxis.isEnabled = false
                 with(xAxis) {
                     position = XAxis.XAxisPosition.BOTTOM
                     textSize = axisTextSize.fontSize.value
