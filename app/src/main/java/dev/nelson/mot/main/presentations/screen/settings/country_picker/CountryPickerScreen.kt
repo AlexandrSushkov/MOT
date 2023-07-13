@@ -27,7 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotCloseIcon
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavBackIcon
@@ -41,16 +43,16 @@ import java.util.Locale
 
 @Composable
 fun CountryPickerScreen(
-    viewModel: CountryPickerViewModel,
+    countryPickerViewModel: CountryPickerViewModel,
     closeScreenAction: () -> Unit
 ) {
-    val viewState by viewModel.countryPickerViewState.collectAsState()
-    val searchText by viewModel.searchText.collectAsState()
+    val viewState by countryPickerViewModel.countryPickerViewState.collectAsState()
+    val searchText by countryPickerViewModel.searchText.collectAsState()
 
     LaunchedEffect(
         key1 = "close screen action",
         block = {
-            viewModel.closeScreenAction.collect {
+            countryPickerViewModel.closeScreenAction.collect {
                 closeScreenAction.invoke()
             }
         }
@@ -59,11 +61,11 @@ fun CountryPickerScreen(
     CountryPickerLayout(
         viewState = viewState,
         searchText = searchText,
-        onSearchTextChange = { viewModel.onSearchTextChange(it) },
+        onSearchTextChange = { countryPickerViewModel.onSearchTextChange(it) },
         closeScreenAction = closeScreenAction,
-        onCountryClick = { viewModel.onLocaleSelected(it) },
-        onSearchAction = { viewModel.onSearchAction() },
-        onSearchActiveChange = { viewModel.onSearchActiveChange(it) }
+        onCountryClick = { countryPickerViewModel.onLocaleSelected(it) },
+        onSearchAction = { countryPickerViewModel.onSearchAction() },
+        onSearchActiveChange = { countryPickerViewModel.onSearchActiveChange(it) }
     )
 }
 
@@ -77,7 +79,6 @@ private fun CountryPickerLayout(
     onCountryClick: (Locale) -> Unit,
     onSearchAction: () -> Unit,
     onSearchActiveChange: (Boolean) -> Unit
-
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val countriesListScrollState = rememberLazyListState()
@@ -85,12 +86,8 @@ private fun CountryPickerLayout(
     Scaffold(
         topBar = {
             MotTopAppBar(
-                appBarTitle = "Choose a country",
-                navigationIcon = {
-                    MotNavBackIcon(
-                        onClick = closeScreenAction
-                    )
-                },
+                appBarTitle = stringResource(R.string.choose_a_country_title),
+                navigationIcon = { MotNavBackIcon(onClick = closeScreenAction) },
                 scrollBehavior = appBarScrollBehavior
             )
         }
@@ -114,11 +111,11 @@ private fun CountryPickerLayout(
                     } else {
                         Icon(
                             Icons.Default.Search,
-                            contentDescription = "Search icon"
+                            contentDescription = stringResource(id = R.string.accessibility_search_icon)
                         )
                     }
                 },
-                placeholder = { Text(text = "Search") },
+                placeholder = { Text(text = stringResource(id = android.R.string.search_go)) },
                 trailingIcon = {
                     if (searchText.isNotEmpty()) {
                         MotCloseIcon(
@@ -129,15 +126,7 @@ private fun CountryPickerLayout(
                 onActiveChange = { onSearchActiveChange.invoke(it) }) {
                 if (viewState.countriesSearchResult.isEmpty()) {
                     if (searchText.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(top = 32.dp),
-                                text = "No results found."
-                            )
-                        }
+                        EmptySearchResultPlaceholder()
                     }
                 } else {
                     CountriesList(
@@ -149,7 +138,7 @@ private fun CountryPickerLayout(
             if (viewState.countries.isEmpty()) {
                 EmptyListPlaceholder(
                     modifier = Modifier.fillMaxSize(),
-                    text = "No countries found."
+                    text = stringResource(R.string.no_countries_found_result)
                 )
             } else {
                 CountriesList(
@@ -160,6 +149,19 @@ private fun CountryPickerLayout(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun EmptySearchResultPlaceholder() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            modifier = Modifier.padding(top = 32.dp),
+            text = stringResource(R.string.no_results_found)
+        )
     }
 }
 
@@ -193,7 +195,7 @@ private fun CountriesList(
 
 @MotPreviewScreen
 @Composable
-private fun CountryPickerDefaultLayoutPreview() {
+private fun DefaultCountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(),
@@ -209,7 +211,7 @@ private fun CountryPickerDefaultLayoutPreview() {
 
 @MotPreviewScreen
 @Composable
-private fun CountryPickerEmptyResultLayoutPreview() {
+private fun EmptyResultCountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(
@@ -229,7 +231,7 @@ private fun CountryPickerEmptyResultLayoutPreview() {
 
 @MotPreviewScreen
 @Composable
-private fun CountryPickerActiveSearchLayoutPreview() {
+private fun ActiveSearchCountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(isSearchActive = true),
@@ -245,7 +247,7 @@ private fun CountryPickerActiveSearchLayoutPreview() {
 
 @MotPreviewScreen
 @Composable
-private fun CountryPickerActiveSearchWithResultsLayoutPreview() {
+private fun ActiveSearchWithResultsCountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(
@@ -264,7 +266,7 @@ private fun CountryPickerActiveSearchWithResultsLayoutPreview() {
 
 @MotPreviewScreen
 @Composable
-private fun CountryPickerActiveSearchNoResultsLayoutPreview() {
+private fun ActiveSearchNoResultsCountryPickerLayoutPreview() {
     MotMaterialTheme {
         CountryPickerLayout(
             viewState = CountryPickerViewState(

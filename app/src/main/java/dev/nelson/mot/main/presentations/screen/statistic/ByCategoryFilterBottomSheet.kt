@@ -48,10 +48,8 @@ fun ByCategoryFilterBottomSheet(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(model) {
-                    val containerColor = if (it == selectedMonthModel) {
-                        MaterialTheme.colorScheme.secondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
+                    val containerColor = with(MaterialTheme.colorScheme) {
+                        if (it == selectedMonthModel) secondaryContainer else surface
                     }
                     ListItem(
                         modifier = Modifier.clickable { onItemSelected.invoke(it) },
@@ -80,7 +78,7 @@ fun ByCategoryFilterBottomSheet(
 
 @MotPreview
 @Composable
-private fun ByCategoryFilterBottomSheetPreview(){
+private fun ByCategoryFilterBottomSheetPreview() {
     val modelList = PreviewData.generateStatisticByCategoryPerMonthModelListPreviewProvider
     MotMaterialTheme {
         ByCategoryFilterBottomSheet(

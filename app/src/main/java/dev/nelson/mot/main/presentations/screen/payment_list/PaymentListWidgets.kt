@@ -172,11 +172,10 @@ fun PaymentListItem(
         label = "paymentNamePaddingStart"
     )
 
-    val cardBackgroundColor = if (paymentItemModel.payment.isSelected) {
-        MaterialTheme.colorScheme.tertiaryContainer
-    } else {
-        MaterialTheme.colorScheme.surface
+    val cardBackgroundColor = with(MaterialTheme.colorScheme) {
+        if (paymentItemModel.payment.isSelected) tertiaryContainer else surface
     }
+
     val cardBackgroundColorState by animateColorAsState(
         targetValue = cardBackgroundColor,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
@@ -252,7 +251,7 @@ fun PaymentListItem(
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
 //                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                CompositionLocalProvider(LocalContentAlpha provides 0.5f ) {
+                                CompositionLocalProvider(LocalContentAlpha provides 0.5f) {
                                     Text(
                                         style = MaterialTheme.typography.bodySmall,
                                         text = paymentItemModel.payment.message,

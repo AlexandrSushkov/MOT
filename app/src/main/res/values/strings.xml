@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MOT</string>
+    <string name="app_name" translatable="false">MOT</string>
 
     <string name="payment" translatable="false">Payment</string>
     <string name="payments" translatable="false">Payments</string>
@@ -28,12 +28,19 @@
     <string name="database_exported_successfully_dialog_message" translatable="false">Database was exported successfully.\nPlease, check Downloads folder.</string>
     <string name="database_export_failed_dialog_message" translatable="false">Oops! Database export failed.</string>
 
-    <!--Accessibility text-->
+    <!--Accessibility text start-->
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
     <string name="accessibility_category_icon" translatable="false">category icon</string>
     <string name="accessibility_info_icon" translatable="false">info icon</string>
     <string name="accessibility_add_icon" translatable="false">add icon</string>
     <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
     <string name="accessibility_done_icon" translatable="false">done icon</string>
+    <string name="accessibility_search_icon" translatable="false">search icon</string>
+    <!--Accessibility text end-->
+
+    <string name="app_theme_title">App Theme</string>
+    <string name="choose_a_country_title">Choose a country</string>
+    <string name="no_countries_found_result">No countries found.</string>
+    <string name="no_results_found">No results found.</string>
 
 </resources>

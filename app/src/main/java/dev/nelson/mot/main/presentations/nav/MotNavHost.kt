@@ -210,7 +210,7 @@ fun MotNavHost(
             route = CountryPicker.route,
             content = {
                 CountryPickerScreen(
-                    viewModel = hiltViewModel(),
+                    countryPickerViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() }
                 )
             },
@@ -219,7 +219,6 @@ fun MotNavHost(
             route = AppThemePicker.route,
             content = {
                 SelectAppThemeScreen(
-                    title = "App Theme",
                     selectAppThemeViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() },
                 )
