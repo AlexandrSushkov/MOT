@@ -198,7 +198,6 @@ fun MotNavHost(
             route = Settings.route,
             content = {
                 SettingsScreen(
-                    title = Settings.route,
                     settingsViewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },

@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,7 +49,7 @@ import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.PriceText
-import dev.nelson.mot.main.presentations.AlertDialogParams
+import dev.nelson.mot.main.presentations.widgets.MotAlertDialog
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.emojiFlag
@@ -60,7 +58,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
-    title: String,
     settingsViewModel: SettingsViewModel,
     navigationIcon: @Composable () -> Unit = {},
     openCountryPickerScreen: () -> Unit,
@@ -97,7 +94,6 @@ fun SettingsScreen(
         }
 
     SettingsScreenLayout(
-        title = title,
         navigationIcon = navigationIcon,
         viewState = viewState,
         onLocaleClick = openCountryPickerScreen,
@@ -115,7 +111,6 @@ fun SettingsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreenLayout(
-    title: String,
     navigationIcon: @Composable () -> Unit = {},
     viewState: SettingsViewState,
     onLocaleClick: () -> Unit,
@@ -136,7 +131,7 @@ private fun SettingsScreenLayout(
     Scaffold(
         topBar = {
             MotTopAppBar(
-                appBarTitle = title,
+                appBarTitle = stringResource(id = R.string.settings),
                 navigationIcon = navigationIcon,
                 scrollBehavior = appBarScrollBehavior,
             )
@@ -149,10 +144,10 @@ private fun SettingsScreenLayout(
                 .fillMaxSize()
                 .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
         ) {
-            item { HeadingListItem(text = "Appearance") }
+            item { HeadingListItem(text = stringResource(R.string.appearance_text)) }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Price Field") },
+                    headlineContent = { Text(text = stringResource(R.string.price_field_text)) },
                     trailingContent = {
                         PriceText(
                             price = Constants.PRICE_EXAMPLE,
@@ -163,7 +158,7 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Show Cents") },
+                    headlineContent = { Text(text = stringResource(R.string.show_cents_text)) },
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isShowCentsSwitchChecked,
@@ -174,7 +169,7 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Show Currency Symbol") },
+                    headlineContent = { Text(text = stringResource(R.string.show_currency_symbol_text)) },
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isShowCurrencySymbolSwitchChecked,
@@ -185,7 +180,7 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Show digits") },
+                    headlineContent = { Text(text = stringResource(R.string.show_digits_text)) },
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isShowDigitsSwitchChecked,
@@ -199,7 +194,7 @@ private fun SettingsScreenLayout(
             item {
                 ListItem(
                     modifier = Modifier.clickable { onLocaleClick.invoke() },
-                    headlineContent = { Text(text = "Locale") },
+                    headlineContent = { Text(text = stringResource(R.string.locale_text)) },
                     supportingContent = { Text(text = viewState.selectedLocale.displayCountry) },
                     trailingContent = {
                         Text(
@@ -214,12 +209,12 @@ private fun SettingsScreenLayout(
                 Divider()
             }
             item {
-                HeadingListItem(text = "Theme")
+                HeadingListItem(text = stringResource(R.string.theme_text))
             }
             item {
                 ListItem(
                     modifier = Modifier.clickable { onAppThemeClicked.invoke() },
-                    headlineContent = { Text(text = "App Theme") },
+                    headlineContent = { Text(text = stringResource(R.string.app_theme_text)) },
                     trailingContent = {
                         Text(
                             text = viewState.selectedAppTheme.name,
@@ -230,7 +225,7 @@ private fun SettingsScreenLayout(
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Dynamic Color Theme") },
+                    headlineContent = { Text(text = stringResource(R.string.dynamic_color_theme_text)) },
                     trailingContent = {
                         MotSwitch(
                             checked = viewState.isDynamicThemeSwitchChecked,
@@ -243,27 +238,27 @@ private fun SettingsScreenLayout(
                 Divider()
             }
             item {
-                HeadingListItem(text = "Database")
+                HeadingListItem(text = stringResource(R.string.database_text))
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Export Database") },
-                    supportingContent = { Text(text = "It will be exported to the Downloads folder.") },
+                    headlineContent = { Text(text = stringResource(R.string.export_database_text)) },
+                    supportingContent = { Text(text = stringResource(R.string.export_data_base_message)) },
                     trailingContent = {
                         MotTextButton(
                             onClick = onExportDataBaseClick,
-                            text = "Export"
+                            text = stringResource(R.string.export_text)
                         )
                     }
                 )
             }
             item {
                 ListItem(
-                    headlineContent = { Text(text = "Import Database") },
+                    headlineContent = { Text(text = stringResource(R.string.import_database_text)) },
                     trailingContent = {
                         MotTextButton(
                             onClick = onImportDataBaseClick,
-                            text = "Import"
+                            text = stringResource(R.string.import_text)
                         )
                     }
                 )
@@ -345,62 +340,16 @@ private fun HeadingListItem(text: String) {
     )
 }
 
-@Composable
-fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
-    AlertDialog(
-        onDismissRequest = alertDialogParams.dismissClickCallback,
-        icon = {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = stringResource(R.string.accessibility_info_icon),
-                modifier = Modifier
-                    .width(32.dp)
-                    .height(32.dp)
-            )
-        },
-        text = {
-            Text(
-                text = stringResource(alertDialogParams.message),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-        dismissButton = {
-            alertDialogParams.onNegativeClickCallback?.let {
-                TextButton(onClick = it) {
-                    Text(text = stringResource(android.R.string.cancel))
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = alertDialogParams.onPositiveClickCallback) {
-                Text(text = stringResource(android.R.string.ok))
-            }
-        }
-    )
-}
-
 @MotPreviewScreen
 @Composable
 private fun SettingsScreenLayoutPreview() {
+    val viewState = SettingsViewState(
+        isShowCentsSwitchChecked = true,
+        isShowCurrencySymbolSwitchChecked = true,
+    )
     MotMaterialTheme {
-        val alertDialogParams = AlertDialogParams(
-            message = R.string.database_export_failed_dialog_message,
-            onPositiveClickCallback = {},
-//            onNegativeClickCallback = {},
-            dismissClickCallback = {}
-        )
-        val viewState = SettingsViewState(
-            isShowCentsSwitchChecked = true,
-            isShowCurrencySymbolSwitchChecked = true,
-//            alertDialog = alertDialogParams,
-        )
         SettingsScreenLayout(
-            title = "Settings",
-            navigationIcon = {
-                MotNavDrawerIcon {
-
-                }
-            },
+            navigationIcon = { MotNavDrawerIcon {} },
             viewState = viewState,
             onLocaleClick = {},
             onExportDataBaseClick = {},
