@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.animation.AnimatedVisibility
@@ -22,13 +20,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -250,15 +246,12 @@ fun PaymentListItem(
                         }
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
-//                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                CompositionLocalProvider(LocalContentAlpha provides 0.5f) {
-                                    Text(
-                                        style = MaterialTheme.typography.bodySmall,
-                                        text = paymentItemModel.payment.message,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 2,
-                                    )
-                                }
+                                Text(
+                                    style = MaterialTheme.typography.bodySmall,
+                                    text = paymentItemModel.payment.message,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 2,
+                                )
                             }
                         }
                     }
@@ -277,7 +270,7 @@ fun PaymentListItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun DismissiblePaymentListItemPreview() {

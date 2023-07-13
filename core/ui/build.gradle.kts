@@ -41,8 +41,7 @@ dependencies {
     api(libs.compose.ui.tooling) // Tooling support (Previews, etc.)
     api(libs.compose.ui.tooling.preview)
     api(libs.compose.foundation) // Foundation (Border, Background, shapes, animations, etc.)
-    api(libs.compose.material) // Material Design
-    api(libs.compose.material3)
+    api(libs.compose.material3) // Material Design components
     api(libs.compose.material.icons.core) // Material design icons
     api(libs.compose.material.icons.extended)
     api(libs.compose.runtime)
