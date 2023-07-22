@@ -3,6 +3,12 @@
 package dev.nelson.mot.main.presentations.screen.categories_list
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +30,6 @@ import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,7 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -66,10 +70,7 @@ import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotTextButton
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.CategoryListItemModel
-import dev.nelson.mot.main.data.model.CategoryListItemModel.CategoryItemModel
-import dev.nelson.mot.main.data.model.CategoryListItemModel.Footer
-import dev.nelson.mot.main.data.model.CategoryListItemModel.Letter
+import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
@@ -123,7 +124,7 @@ fun CategoryListScreen(
         onFavoriteClick = { cat, che -> viewModel.onFavoriteClick(cat, che) },
         onAddCategoryClickEvent = { viewModel.onAddCategoryClick() },
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
-        onSwipeCategory = { viewModel.onSwipeCategory(it) },
+        onSwipeCategory = { viewModel.onCategorySwiped(it) },
         snackbarVisibleState = snackbarVisibleState,
         deleteItemsCountText = deleteItemsSnackbarText,
         undoDeleteClickEvent = { viewModel.onUndoDeleteClick() }
@@ -135,12 +136,12 @@ fun CategoryListScreen(
 fun CategoryListLayout(
     appBarTitle: String,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
+    categoriesListUiState: MotUiState<List<MotListItemModel>>,
     onCategoryClick: (Int?) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
     onAddCategoryClickEvent: () -> Unit,
     onCategoryLongPress: (Category) -> Unit,
-    onSwipeCategory: (CategoryItemModel) -> Unit,
+    onSwipeCategory: (MotListItemModel.Item) -> Unit,
     snackbarVisibleState: Boolean,
     deleteItemsCountText: String,
     undoDeleteClickEvent: () -> Unit,
@@ -198,9 +199,9 @@ fun CategoryListLayout(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryList(
-    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
+    categoriesListUiState: MotUiState<List<MotListItemModel>>,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onSwipeCategory: (CategoryItemModel) -> Unit,
+    onSwipeCategory: (MotListItemModel.Item) -> Unit,
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
@@ -220,62 +221,72 @@ fun CategoryList(
                     content = {
                         categories.forEach { categoryListItem ->
                             when (categoryListItem) {
-                                is CategoryItemModel -> {
+                                is MotListItemModel.Item -> {
                                     item(key = categoryListItem.key) {
-                                        val dismissState = rememberDismissState(
-                                            confirmValueChange = { dismissValue ->
-                                                if (dismissValue == DismissValue.DismissedToStart) {
-                                                    onSwipeCategory.invoke(categoryListItem)
-                                                    true
-                                                } else {
-                                                    false
-                                                }
-                                            },
-                                            positionalThreshold = { 0.35f }
-                                        )
                                         categoryListItem.category.id?.let {
-                                            MotDismissibleListItem(
-//                                                dismissState = dismissState,
-                                                directions = setOf(DismissDirection.EndToStart),
-                                                onItemSwiped = { onSwipeCategory.invoke(categoryListItem) }
-                                            ) {
+                                            if (it > 0) {
+                                                MotDismissibleListItem(
+                                                    isShow = categoryListItem.isShow,
+                                                    directions = setOf(DismissDirection.EndToStart),
+                                                    onItemSwiped = {
+                                                        onSwipeCategory.invoke(
+                                                            categoryListItem
+                                                        )
+                                                    }
+                                                ) {
+                                                    CategoryListItem(
+                                                        categoryListItem.category,
+                                                        onCategoryClick,
+                                                        onCategoryLongPress,
+                                                        onFavoriteClick,
+                                                    )
+                                                }
+                                            } else {
+                                                // for "No category" category
                                                 CategoryListItem(
                                                     categoryListItem.category,
                                                     onCategoryClick,
                                                     onCategoryLongPress,
-                                                    onFavoriteClick,
+                                                    onFavoriteClick
                                                 )
                                             }
-                                        } ?: CategoryListItem( // for "No category" category
-                                            categoryListItem.category,
-                                            onCategoryClick,
-                                            onCategoryLongPress,
-                                            onFavoriteClick
-                                        )
+                                        }
                                     }
                                 }
 
-                                is Letter -> {
+                                is MotListItemModel.Header -> {
                                     stickyHeader(key = categoryListItem.key) {
-                                        Surface(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            tonalElevation = 4.dp,
-                                            content = {
-                                                Text(
-                                                    modifier = Modifier
-                                                        .padding(
-                                                            vertical = 4.dp,
-                                                            horizontal = 16.dp
-                                                        ),
-                                                    text = categoryListItem.letter,
-                                                    style = MaterialTheme.typography.titleLarge
-                                                )
-                                            }
-                                        )
+                                        AnimatedVisibility(
+                                            visible = categoryListItem.isShow,
+                                            enter = fadeIn(animationSpec = tween(500)) + expandVertically(
+                                                expandFrom = Alignment.Top,
+                                                animationSpec = tween(500)
+                                            ),
+                                            exit = shrinkVertically(
+                                                shrinkTowards = Alignment.Top,
+                                                animationSpec = tween(500),
+                                            ) + fadeOut(animationSpec = tween(500))
+                                        ) {
+                                            Surface(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                tonalElevation = 4.dp,
+                                                content = {
+                                                    Text(
+                                                        modifier = Modifier
+                                                            .padding(
+                                                                vertical = 4.dp,
+                                                                horizontal = 16.dp
+                                                            ),
+                                                        text = categoryListItem.date,
+                                                        style = MaterialTheme.typography.titleLarge
+                                                    )
+                                                }
+                                            )
+                                        }
                                     }
                                 }
 
-                                is Footer -> item { CardFooter() }
+                                is MotListItemModel.Footer -> item { CardFooter() }
                             }
                         }
                     }
@@ -460,7 +471,7 @@ private fun CategoryListLayoutErrorPreview() {
 
 @Composable
 private fun CategoryListLayoutPreviewData(
-    categoriesListUiState: MotUiState<List<CategoryListItemModel>>,
+    categoriesListUiState: MotUiState<List<MotListItemModel>>,
     snackbarVisibleState: Boolean = false,
 ) {
     CategoryListLayout(

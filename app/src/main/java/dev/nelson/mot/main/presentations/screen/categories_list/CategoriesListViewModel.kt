@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.R
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.domain.use_case.category.DeleteCategoriesUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryListItemsUseCase
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
@@ -15,6 +14,7 @@ import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.db.utils.SortingOrder
+import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -54,7 +55,7 @@ class CategoriesListViewModel @Inject constructor(
     val categoriesResult
         get() = _categoriesResult.asStateFlow()
     private val _categoriesResult =
-        MutableStateFlow<MotUiState<List<CategoryListItemModel>>>(MotUiState.Loading)
+        MutableStateFlow<MotUiState<List<MotListItemModel>>>(MotUiState.Loading)
 
     val deleteItemsSnackbarText: Flow<String>
         get() = _deleteItemsSnackbarText.asStateFlow()
@@ -79,7 +80,7 @@ class CategoriesListViewModel @Inject constructor(
 
     // data
     private var initialCategory: Category? = null
-    private val initialCategoriesList = mutableListOf<CategoryListItemModel>()
+    private val initialCategoriesList = mutableListOf<MotListItemModel>()
     private var deleteCategoryJob: Job? = null
     private val categoriesToDeleteList = mutableListOf<Category>()
 
@@ -132,18 +133,67 @@ class CategoriesListViewModel @Inject constructor(
         _showEditCategoryDialogAction.emit(false)
     }
 
-    fun onSwipeCategory(categoryItemModel: CategoryListItemModel.CategoryItemModel) {
+    fun onCategorySwiped(categoryItemModel: MotListItemModel.Item) {
         // cancel previous jot if exist
         deleteCategoryJob?.cancel()
         // create new one
         deleteCategoryJob = launch {
             categoriesToDeleteList.add(categoryItemModel.category)
             showSnackBar()
-            val temp = mutableListOf<CategoryListItemModel>().apply {
-                addAll(_categoriesResult.value.successOr(emptyList()))
-                remove(categoryItemModel)
+            // first pass is to hide category item
+            _categoriesResult.update {
+                val items = it.successOr(emptyList())
+                val updatedItems = items.map { item ->
+                    when (item) {
+                        is MotListItemModel.Item -> {
+                            if (item.category.id == categoryItemModel.category.id) {
+                                item.copy(isShow = false)
+                            } else {
+                                item
+                            }
+                        }
+
+                        is MotListItemModel.Header -> item
+
+                        is MotListItemModel.Footer -> item
+                    }
+                }
+                MotUiState.Success(updatedItems)
             }
-            _categoriesResult.value = MotUiState.Success(temp)
+
+            // second pass is to hide header if there is no visible items between headers
+            _categoriesResult.update {
+                val items = it.successOr(emptyList())
+                val updatedItems = items.mapIndexed { index, item ->
+                    when (item) {
+                        is MotListItemModel.Item -> item
+
+                        is MotListItemModel.Header -> {
+                            // loop thought items between this and next header.
+                            // if all of them is hidden -> hide this header
+                            var i = index + 1
+                            var subItemsExist = false
+                            while (i < items.size && items[i] is MotListItemModel.Item) {
+                                if (items[i].isShow) {
+                                    subItemsExist = true
+                                    break
+                                } else {
+                                    i++
+                                }
+                            }
+                            if (subItemsExist) {
+                                item
+                            } else {
+                                item.copy(isShow = false)
+                            }
+                        }
+
+                        is MotListItemModel.Footer -> item
+                    }
+                }
+                MotUiState.Success(updatedItems)
+            }
+
             // ui updated, removed items is not visible on the screen
             // wait
             delay(4000)
