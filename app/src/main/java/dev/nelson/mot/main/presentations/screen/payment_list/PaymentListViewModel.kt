@@ -136,7 +136,7 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    fun onSwipeToDelete(payment: PaymentListItemModel.PaymentItemModel) {
+    fun onItemSwiped(payment: PaymentListItemModel.PaymentItemModel) {
         // cancel previous jot if exist
         deletePaymentJob?.cancel()
         // create new one
@@ -191,10 +191,11 @@ class PaymentListViewModel @Inject constructor(
 
     fun onFabClick() = launch {
         cancelSelection()
-        when(screenScreenType){
-            is ScreenType.RecentPayments -> _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPayment)
-            else -> _openPaymentDetailsAction.emit(OpenPaymentDetailsAction.NewPaymentForCategory(categoryId))
+        val action = when (screenScreenType) {
+            is ScreenType.RecentPayments -> OpenPaymentDetailsAction.NewPayment
+            else -> OpenPaymentDetailsAction.NewPaymentForCategory(categoryId)
         }
+        _openPaymentDetailsAction.emit(action)
     }
 
     fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {

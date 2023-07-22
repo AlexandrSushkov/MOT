@@ -1,5 +1,7 @@
 package dev.nelson.mot.main.data.model
 
+import dev.nelson.mot.main.util.UUIDUtils
+
 /**
  * Payment list item model. This models is used in presentation layer to show list of [Payment].
  */
@@ -28,4 +30,40 @@ sealed class PaymentListItemModel {
      * Footer - last item in the list to show data or set empty space
      */
     class Footer(override val key: String) : PaymentListItemModel()
+}
+
+/**
+ * Payment list item model. This models is used in presentation layer to show list of [Payment].
+ */
+sealed class MotListItemModel {
+
+    abstract val key: String
+    abstract val isShow: Boolean
+
+    /**
+     * Payment item model - main model to show category
+     */
+    data class Item(
+        val category: Category,
+        override val key: String = UUIDUtils.randomKey,
+        override val isShow: Boolean = true,
+    ) : MotListItemModel()
+
+    /**
+     * Letter - model that show letter to divide categories
+     */
+
+    data class Header(
+        val date: String,
+        override val key: String = UUIDUtils.randomKey,
+        override val isShow: Boolean = true,
+    ) : MotListItemModel()
+
+    /**
+     * Footer - last item in the list to show data or set empty space
+     */
+    data class Footer(
+        override val key: String = UUIDUtils.randomKey,
+        override val isShow: Boolean = true,
+    ) : MotListItemModel()
 }

@@ -52,6 +52,7 @@ fun MotNavHost(
             route = Dashboard.route,
             content = {
                 DashboardScreen(
+                    viewModel = hiltViewModel(),
                     appBarTitle = "dashboard",
                     appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                 )

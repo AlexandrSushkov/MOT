@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.CardDefaults
@@ -31,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,27 +52,29 @@ import dev.utils.preview.MotPreview
 
 @Composable
 fun DateRangeWidget(startDate: String, endDate: String) {
-    Column(modifier = Modifier.clickable { }) {
-        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            DateRageDateText(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                date = startDate
-            )
-            Icon(
-                Icons.Default.ArrowRightAlt,
-                modifier = Modifier.weight(1f),
-                contentDescription = "arrow right"
-            )
-            DateRageDateText(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                date = endDate
+    Surface {
+        Column(modifier = Modifier.clickable { }) {
+            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                DateRageDateText(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    date = startDate
+                )
+                Icon(
+                    Icons.Default.ArrowRightAlt,
+                    modifier = Modifier.weight(1f),
+                    contentDescription = "arrow right"
+                )
+                DateRageDateText(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    date = endDate
+                )
+            }
+            Divider(
+                Modifier
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
-        Divider(
-            Modifier
-                .height(1.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        )
     }
 }
 
@@ -276,7 +275,10 @@ fun PaymentListItem(
 private fun DismissiblePaymentListItemPreview() {
     val checkBoxTransitionState = remember { MutableTransitionState(false) }
     MotMaterialTheme {
-        MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
+        MotDismissibleListItem(
+//            dismissState = DismissState(DismissValue.Default),
+            onItemSwiped = {}
+        ) {
             PaymentListItem(
                 paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
@@ -289,6 +291,6 @@ private fun DismissiblePaymentListItemPreview() {
                     label = "paymentNamePaddingStart"
                 )
             )
-        })
+        }
     }
 }
