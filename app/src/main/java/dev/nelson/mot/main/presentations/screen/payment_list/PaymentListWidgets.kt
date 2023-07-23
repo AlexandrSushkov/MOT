@@ -42,9 +42,9 @@ import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
-import dev.nelson.mot.main.util.compose.MotTransitions
+import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.capitalizeFirstLetter
@@ -147,9 +147,9 @@ fun PaymentListItemSelectedPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PaymentListItem(
-    paymentItemModel: PaymentListItemModel.PaymentItemModel,
-    onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    paymentItemModel: MotPaymentListItemModel.Item,
+    onClick: (MotPaymentListItemModel.Item) -> Unit,
+    onLongClick: (MotPaymentListItemModel.Item) -> Unit,
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     checkBoxTransitionState: MutableTransitionState<Boolean>,

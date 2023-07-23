@@ -153,9 +153,7 @@ class CategoriesListViewModel @Inject constructor(
                             }
                         }
 
-                        is MotListItemModel.Header -> item
-
-                        is MotListItemModel.Footer -> item
+                        else -> item
                     }
                 }
                 MotUiState.Success(updatedItems)
@@ -166,8 +164,6 @@ class CategoriesListViewModel @Inject constructor(
                 val items = it.successOr(emptyList())
                 val updatedItems = items.mapIndexed { index, item ->
                     when (item) {
-                        is MotListItemModel.Item -> item
-
                         is MotListItemModel.Header -> {
                             // loop thought items between this and next header.
                             // if all of them is hidden -> hide this header
@@ -188,7 +184,7 @@ class CategoriesListViewModel @Inject constructor(
                             }
                         }
 
-                        is MotListItemModel.Footer -> item
+                        else -> item
                     }
                 }
                 MotUiState.Success(updatedItems)

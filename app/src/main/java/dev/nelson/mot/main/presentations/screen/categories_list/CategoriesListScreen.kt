@@ -82,6 +82,7 @@ import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
+import dev.utils.MotTransitions
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.delay
 
@@ -256,16 +257,14 @@ fun CategoryList(
 
                                 is MotListItemModel.Header -> {
                                     stickyHeader(key = categoryListItem.key) {
+                                        val enterTransition =
+                                            remember { MotTransitions.listItemEnterTransition }
+                                        val exitTransition =
+                                            remember { MotTransitions.listItemExitTransition }
                                         AnimatedVisibility(
                                             visible = categoryListItem.isShow,
-                                            enter = fadeIn(animationSpec = tween(500)) + expandVertically(
-                                                expandFrom = Alignment.Top,
-                                                animationSpec = tween(500)
-                                            ),
-                                            exit = shrinkVertically(
-                                                shrinkTowards = Alignment.Top,
-                                                animationSpec = tween(500),
-                                            ) + fadeOut(animationSpec = tween(500))
+                                            enter = enterTransition,
+                                            exit = exitTransition
                                         ) {
                                             Surface(
                                                 modifier = Modifier.fillMaxWidth(),
@@ -331,11 +330,7 @@ fun CategoryListItem(
                     onCategoryClick.invoke(category.id ?: Constants.NO_CATEGORY_CATEGORY_ID)
                 },
                 onLongClick = {
-                    category.id?.let {
-                        if (it > 0) {
-                            onCategoryLongPress.invoke(category)
-                        }
-                    }
+                    category.id?.let { if (it > 0) onCategoryLongPress.invoke(category) }
                 }
             ),
     ) {

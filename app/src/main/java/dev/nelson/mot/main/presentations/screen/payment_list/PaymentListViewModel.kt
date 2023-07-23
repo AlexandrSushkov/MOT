@@ -7,7 +7,7 @@ import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
@@ -35,6 +35,7 @@ import java.util.*
 import javax.inject.Inject
 import dev.nelson.mot.R
 import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
@@ -49,6 +50,7 @@ class PaymentListViewModel @Inject constructor(
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
     private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
 ) : BaseViewModel() {
+
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
     private val screenScreenType = categoryId?.let {
@@ -80,10 +82,10 @@ class PaymentListViewModel @Inject constructor(
         get() = _selectedItemsCount.asStateFlow()
     private val _selectedItemsCount = MutableStateFlow(0)
 
-    val paymentListResult: Flow<MotUiState<List<PaymentListItemModel>>>
+    val paymentListResult: Flow<MotUiState<List<MotPaymentListItemModel>>>
         get() = _paymentListResult.asStateFlow()
     private val _paymentListResult =
-        MutableStateFlow<MotUiState<List<PaymentListItemModel>>>(MotUiState.Loading)
+        MutableStateFlow<MotUiState<List<MotPaymentListItemModel>>>(MotUiState.Loading)
 
     val priceViewState: Flow<PriceViewState>
         get() = _priceViewState.asStateFlow()
@@ -107,9 +109,9 @@ class PaymentListViewModel @Inject constructor(
     private val _openPaymentDetailsAction = MutableSharedFlow<OpenPaymentDetailsAction>()
 
     // private data
-    private val initialPaymentList = mutableListOf<PaymentListItemModel>()
-    private val paymentsToDeleteList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
-    private val selectedItemsList = mutableListOf<PaymentListItemModel.PaymentItemModel>()
+    private val initialPaymentList = mutableListOf<MotPaymentListItemModel>()
+    private val paymentsToDeleteList = mutableListOf<MotPaymentListItemModel.Item>()
+    private val selectedItemsList = mutableListOf<MotPaymentListItemModel.Item>()
     private var deletePaymentJob: Job? = null
     private val calendar: Calendar by lazy { Calendar.getInstance() }
 
@@ -136,35 +138,83 @@ class PaymentListViewModel @Inject constructor(
         }
     }
 
-    fun onItemSwiped(payment: PaymentListItemModel.PaymentItemModel) {
+    fun onPaymentSwiped(payment: MotPaymentListItemModel.Item) {
         // cancel previous jot if exist
         deletePaymentJob?.cancel()
         // create new one
         deletePaymentJob = launch {
             paymentsToDeleteList.add(payment)
-            _deletedItemsCount.value = paymentsToDeleteList.size
+            _deletedItemsCount.update { paymentsToDeleteList.size }
             showSnackBar()
-            val temp = mutableListOf<PaymentListItemModel>().apply {
-                addAll(_paymentListResult.value.successOr(emptyList()))
-                val positionOfThePayment = indexOf(payment)
-                val previousElement = this[positionOfThePayment - 1]
-                if (positionOfThePayment + 1 == this.size) {
-                    // this it the last element in the list
-                    if (previousElement is PaymentListItemModel.Header) {
-                        // remove date item if there is only one payment fo this date
-                        remove(previousElement)
+//            val temp = mutableListOf<MotPaymentListItemModel>().apply {
+//                addAll(_paymentListResult.value.successOr(emptyList()))
+//                val positionOfThePayment = indexOf(payment)
+//                val previousElement = this[positionOfThePayment - 1]
+//                if (positionOfThePayment + 1 == this.size) {
+//                    // this it the last element in the list
+//                    if (previousElement is MotPaymentListItemModel.Header) {
+//                        // remove date item if there is only one payment fo this date
+//                        remove(previousElement)
+//                    }
+//                } else {
+//                    // this element is NOT last in the list
+//                    val nextElement = this[positionOfThePayment + 1]
+//                    if (previousElement is MotPaymentListItemModel.Header && nextElement is MotPaymentListItemModel.Header) {
+//                        // remove date item if there is only one payment fo this date
+//                        remove(previousElement)
+//                    }
+//                }
+//                remove(payment)
+//            }
+//            _paymentListResult.value = MotUiState.Success(temp)
+            _paymentListResult.update { paymentList ->
+                val updatedItems = paymentList.successOr(emptyList())
+                    .map { item ->
+                        when (item) {
+                            is MotPaymentListItemModel.Item -> {
+                                if (item.payment.id == payment.payment.id) {
+                                    item.copy(isShow = false)
+                                } else {
+                                    item
+                                }
+                            }
+
+                            else -> item
+                        }
                     }
-                } else {
-                    // this element is NOT last in the list
-                    val nextElement = this[positionOfThePayment + 1]
-                    if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
-                        // remove date item if there is only one payment fo this date
-                        remove(previousElement)
-                    }
-                }
-                remove(payment)
+                MotUiState.Success(updatedItems)
             }
-            _paymentListResult.value = MotUiState.Success(temp)
+
+            _paymentListResult.update { paymentList ->
+                val items = paymentList.successOr(emptyList())
+                val updatedItems = items
+                    .mapIndexed { index, item ->
+                        when (item) {
+                            is MotPaymentListItemModel.Header -> {
+                                // loop thought items between this and next header.
+                                // if all of them is hidden -> hide this header
+                                var i = index + 1
+                                var subItemsExist = false
+                                while (i < items.size && items[i] is MotPaymentListItemModel.Item) {
+                                    if (items[i].isShow) {
+                                        subItemsExist = true
+                                        break
+                                    } else {
+                                        i++
+                                    }
+                                }
+                                if (subItemsExist) {
+                                    item
+                                } else {
+                                    item.copy(isShow = false)
+                                }
+                            }
+
+                            else -> item
+                        }
+                    }
+                MotUiState.Success(updatedItems)
+            }
             // ui updated, removed items is not visible on the screen
             // wait
             delay(SNAKE_BAR_UNDO_DELAY_MILLS)
@@ -198,16 +248,16 @@ class PaymentListViewModel @Inject constructor(
         _openPaymentDetailsAction.emit(action)
     }
 
-    fun onItemClick(payment: PaymentListItemModel.PaymentItemModel) {
+    fun onItemClick(payment: MotPaymentListItemModel.Item) {
         if (_isSelectedModeOnState.value) {
             // select mode is on. select/deselect this item
             if (selectedItemsList.contains(payment)) {
-                deselectItem(payment)
+                deselectPayment(payment)
                 if (selectedItemsList.isEmpty()) {
                     _isSelectedModeOnState.value = false
                 }
             } else {
-                selectItem(payment)
+                selectPayment(payment)
             }
         } else {
             // select mode is off. open payment details
@@ -228,35 +278,57 @@ class PaymentListViewModel @Inject constructor(
         deletePaymentJob = launch {
             paymentsToDeleteList.addAll(selectedItemsList)
             onCancelSelectionClickEvent() // MUST be before apply list with deleted items. this method reset payment list to initial
-            val temp = mutableListOf<PaymentListItemModel>().apply {
-                addAll(_paymentListResult.value.successOr(emptyList()))
-            }
-            paymentsToDeleteList.forEach { paymentItemModel ->
-                // paymentItemModel is not the save in paymentsToDeleteList and temp list, as onCancelSelectionClick() reset list. make a copy from initial list. this is two different objects.
-                val positionOfThePayment =
-                    temp.indexOf(temp.find { item -> item.key == paymentItemModel.key })
-                val paymentElement = temp[positionOfThePayment]
-                // TODO:   should be easier to fond element by id and use it as in swipe to delete implementation. And not rely on the position of the element
-                val previousElementPosition = positionOfThePayment - 1
-                val previousElement = temp[previousElementPosition]
-                if (positionOfThePayment + 1 == temp.size) {
-                    // this it the last element in the list
-                    if (previousElement is PaymentListItemModel.Header) {
-                        // remove date item if there is only one payment fo this date
-                        temp.remove(previousElement)
+
+            _paymentListResult.update { paymentList ->
+                val updatedItems = paymentList.successOr(emptyList())
+                    .map { item ->
+                        when (item) {
+                            is MotPaymentListItemModel.Item -> {
+                                if (paymentsToDeleteList.any { selectedItem -> selectedItem.payment.id == item.payment.id }) {
+                                    item.copy(isShow = false)
+                                } else {
+                                    item
+                                }
+                            }
+
+                            else -> item
+                        }
                     }
-                } else {
-                    // this element is NOT last in the list
-                    val nextElement = temp[positionOfThePayment + 1]
-                    if (previousElement is PaymentListItemModel.Header && nextElement is PaymentListItemModel.Header) {
-                        // remove date item if there is only one payment fo this date
-                        temp.remove(previousElement)
-                    }
-                }
-                temp.remove(paymentElement)
+                MotUiState.Success(updatedItems)
             }
-            _paymentListResult.value = MotUiState.Success(temp)
-            _deletedItemsCount.value = paymentsToDeleteList.size
+
+            _paymentListResult.update { paymentList ->
+                val items = paymentList.successOr(emptyList())
+                val updatedItems = items
+                    .mapIndexed { index, item ->
+                        when (item) {
+                            is MotPaymentListItemModel.Header -> {
+                                // loop thought items between this and next header.
+                                // if all of them is hidden -> hide this header
+                                var i = index + 1
+                                var subItemsExist = false
+                                while (i < items.size && items[i] is MotPaymentListItemModel.Item) {
+                                    if (items[i].isShow) {
+                                        subItemsExist = true
+                                        break
+                                    } else {
+                                        i++
+                                    }
+                                }
+                                if (subItemsExist) {
+                                    item
+                                } else {
+                                    item.copy(isShow = false)
+                                }
+                            }
+
+                            else -> item
+                        }
+                    }
+                MotUiState.Success(updatedItems)
+            }
+
+            _deletedItemsCount.update { paymentsToDeleteList.size }
             showSnackBar()
             // ui updated, removed items is not visible on the screen
             // wait
@@ -277,12 +349,12 @@ class PaymentListViewModel @Inject constructor(
         cancelSelection()
     }
 
-    fun onItemLongClick(payment: PaymentListItemModel.PaymentItemModel) {
+    fun onItemLongClick(payment: MotPaymentListItemModel.Item) {
         if (_isSelectedModeOnState.value.not()) {
             // turn on selection state
             _isSelectedModeOnState.value = true
             // find and select item
-            selectItem(payment)
+            selectPayment(payment)
         }
     }
 
@@ -316,6 +388,7 @@ class PaymentListViewModel @Inject constructor(
             }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun initPaymentsForCategoryList(categoryId: Int) {
         getCategoryByIdUseCase.execute(categoryId)
             .flatMapConcat {
@@ -345,45 +418,48 @@ class PaymentListViewModel @Inject constructor(
             }
     }
 
-    private fun deselectItem(payment: PaymentListItemModel.PaymentItemModel) {
-        selectedItemsList.remove(payment)
-        val newPayment = payment.payment.copyWith(isSelected = false)
-        val newPaymentItemModel =
-            PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
-        val tempList = _paymentListResult.value.successOr(emptyList()).map { item ->
-            if (item is PaymentListItemModel.PaymentItemModel) {
-                if (item.payment.id == payment.payment.id) {
-                    newPaymentItemModel
-                } else {
-                    item
-                }
-            } else {
-                item
-            }
-        }
-        _paymentListResult.value = MotUiState.Success(tempList)
-        _selectedItemsCount.value = selectedItemsList.size
+    private fun deselectPayment(deselectPayment: MotPaymentListItemModel.Item) {
+        updatePaymentItemWithSelection(deselectPayment, false)
     }
 
-    private fun selectItem(payment: PaymentListItemModel.PaymentItemModel) {
-//        selectedItemsList.add(payment)
-        val newPayment = payment.payment.copyWith(isSelected = true)
-        val newPaymentItemModel =
-            PaymentListItemModel.PaymentItemModel(newPayment, payment.showCategory, payment.key)
-        selectedItemsList.add(newPaymentItemModel)
-        val tempList = _paymentListResult.value.successOr(emptyList()).map { item ->
-            if (item is PaymentListItemModel.PaymentItemModel) {
-                if (item.payment.id == payment.payment.id) {
-                    newPaymentItemModel
-                } else {
-                    item
+    private fun selectPayment(selectedPayment: MotPaymentListItemModel.Item) {
+        updatePaymentItemWithSelection(selectedPayment, true)
+    }
+
+    private fun updatePaymentItemWithSelection(
+        payment: MotPaymentListItemModel.Item,
+        isSelected: Boolean
+    ) {
+        _paymentListResult.update { paymentsList ->
+            val updatedItems = paymentsList.successOr(emptyList())
+                .map { item ->
+                    when (item) {
+                        is MotPaymentListItemModel.Item -> {
+                            if (item.payment.id == payment.payment.id) {
+                                val newPayment = payment.payment.copy(isSelected = isSelected)
+                                item.copy(payment = newPayment).also {
+                                    if (isSelected) {
+                                        selectedItemsList.add(it)
+                                    } else {
+                                        selectedItemsList.remove(payment)
+                                    }
+                                }
+                            } else {
+                                item
+                            }
+                        }
+
+                        else -> item
+                    }
                 }
-            } else {
-                item
-            }
+            MotUiState.Success(updatedItems)
         }
-        _paymentListResult.value = MotUiState.Success(tempList)
-        _selectedItemsCount.value = selectedItemsList.size
+
+        updateSelectedItemsCount()
+    }
+
+    private fun updateSelectedItemsCount() {
+        _selectedItemsCount.update { selectedItemsList.size }
     }
 
     private fun cancelSelection() {
@@ -418,7 +494,7 @@ class PaymentListViewModel @Inject constructor(
         _snackBarVisibilityState.value = false
     }
 
-    private fun MutableList<PaymentListItemModel.PaymentItemModel>.toPaymentList(): List<Payment> {
+    private fun MutableList<MotPaymentListItemModel.Item>.toPaymentList(): List<Payment> {
         return this.map { it.payment }
     }
 

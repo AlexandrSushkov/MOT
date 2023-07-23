@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import dev.utils.MotTransitions
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
@@ -60,20 +61,8 @@ fun MotDismissibleListItem(
     fun TimeInterpolator.toEasing() = Easing { x -> getInterpolation(x) }
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
-
-    val enterTransition = remember {
-        fadeIn(animationSpec = tween(ANIMATION_DURATION)) + expandVertically(
-            expandFrom = Alignment.Top,
-            animationSpec = tween(ANIMATION_DURATION)
-        )
-    }
-
-    val exitTransition = remember {
-        shrinkVertically(
-            shrinkTowards = Alignment.Top,
-            animationSpec = tween(ANIMATION_DURATION),
-        ) + fadeOut(animationSpec = tween(ANIMATION_DURATION))
-    }
+    val enterTransition = remember { MotTransitions.listItemEnterTransition }
+    val exitTransition = remember { MotTransitions.listItemExitTransition }
 
     val dismissState = rememberDismissState(
         confirmValueChange = { dismissValue ->

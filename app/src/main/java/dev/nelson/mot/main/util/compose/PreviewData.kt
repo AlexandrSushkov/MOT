@@ -8,7 +8,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.statistic.Month
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
@@ -40,7 +40,7 @@ object PreviewData {
         )
 
     val paymentItemModelPreview
-        get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, true, generateKey())
+        get() = MotPaymentListItemModel.Item(paymentItemPreview, true, generateKey())
 
     val paymentListPreview: List<Payment>
         get() = (1..30).map {
@@ -220,21 +220,21 @@ object PreviewData {
         return String(buffer, Charsets.UTF_8)
     }
 
-    val paymentListItemsPreview: List<PaymentListItemModel>
+    val paymentListItemsPreview: List<MotPaymentListItemModel>
         get() = paymentListPreview.map {
-            PaymentListItemModel.PaymentItemModel(
+            MotPaymentListItemModel.Item(
                 it,
                 true,
                 generateKey()
-            ) as PaymentListItemModel
+            ) as MotPaymentListItemModel
         }
             .toMutableList()
             .apply {
-                this.add(0, PaymentListItemModel.Header("start", generateKey()))
+                this.add(0, MotPaymentListItemModel.Header("start", generateKey()))
                 val indexOfTheLastElement = this.indexOf(this.last())
                 this.add(
                     indexOfTheLastElement / 2,
-                    PaymentListItemModel.Header("end", generateKey())
+                    MotPaymentListItemModel.Header("end", generateKey())
                 )
             }
 
