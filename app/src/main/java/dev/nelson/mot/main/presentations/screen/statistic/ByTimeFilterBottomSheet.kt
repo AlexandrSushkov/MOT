@@ -47,10 +47,8 @@ fun ByTimeFilterBottomSheet(
                     .fillMaxSize()
             ) {
                 items(model) {
-                    val containerColor = if (it == selectedMonthModel) {
-                        MaterialTheme.colorScheme.secondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surface
+                    val containerColor = with(MaterialTheme.colorScheme) {
+                        if (it == selectedMonthModel) secondaryContainer else surface
                     }
                     ListItem(
                         modifier = Modifier.clickable { onItemSelected.invoke(it) },

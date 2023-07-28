@@ -6,7 +6,13 @@ import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +33,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,7 +46,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberDismissState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -70,7 +74,7 @@ import dev.nelson.mot.core.ui.MotSelectionTopAppBar
 import dev.nelson.mot.core.ui.MotTopAppBar
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
@@ -80,7 +84,7 @@ import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.main.util.compose.MotTransitions
+import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
@@ -218,12 +222,9 @@ fun PaymentListScreen(
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
         onFabClick = { viewModel.onFabClick() },
         snackbarVisibleState = snackbarVisibilityState,
-        onUndoButtonClickEvent = {
-            viewModel.onUndoDeleteClick()
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-        },
+        onUndoButtonClickEvent = { viewModel.onUndoDeleteClick() },
         deletedItemsCount = deletedItemsCount,
-        onSwipeToDeleteItem = { paymentItemModel -> viewModel.onSwipeToDelete(paymentItemModel) },
+        onItemSwiped = { paymentItemModel -> viewModel.onPaymentSwiped(paymentItemModel) },
         isSelectedStateOn = isSelectedStateOn,
         selectedItemsCount = selectedItemsCount,
         onCancelSelectionClick = {
@@ -242,14 +243,14 @@ fun PaymentListScreen(
 fun PaymentListLayout(
     navigationIcon: @Composable () -> Unit,
     toolbarTitle: String,
-    paymentListResult: MotUiState<List<PaymentListItemModel>>,
-    onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    paymentListResult: MotUiState<List<MotPaymentListItemModel>>,
+    onItemClick: (MotPaymentListItemModel.Item) -> Unit,
+    onItemLongClick: (MotPaymentListItemModel.Item) -> Unit,
     onFabClick: () -> Unit,
     snackbarVisibleState: Boolean,
     onUndoButtonClickEvent: () -> Unit,
     deletedItemsCount: Int,
-    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    onItemSwiped: (MotPaymentListItemModel.Item) -> Unit,
     isSelectedStateOn: Boolean,
     selectedItemsCount: Int,
     onCancelSelectionClick: () -> Unit,
@@ -260,8 +261,6 @@ fun PaymentListLayout(
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
-    val fabEnterTransition = remember { MotTransitions.enterRevealTransition }
-    val fabExitTransition = remember { MotTransitions.exitRevealTransition }
 
     Scaffold(
         topBar = {
@@ -339,7 +338,7 @@ fun PaymentListLayout(
                 paymentListResult,
                 onItemClick,
                 onItemLongClick,
-                onSwipeToDeleteItem,
+                onItemSwiped,
                 isSelectedStateOn,
                 priceViewState,
                 paymentsLitScrollingState,
@@ -355,10 +354,10 @@ fun PaymentListLayout(
 )
 @Composable
 fun PaymentList(
-    paymentListResult: MotUiState<List<PaymentListItemModel>>,
-    onItemClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    onItemLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    onSwipeToDeleteItem: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    paymentListResult: MotUiState<List<MotPaymentListItemModel>>,
+    onItemClick: (MotPaymentListItemModel.Item) -> Unit,
+    onItemLongClick: (MotPaymentListItemModel.Item) -> Unit,
+    onItemSwiped: (MotPaymentListItemModel.Item) -> Unit,
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     state: LazyListState,
@@ -377,18 +376,10 @@ fun PaymentList(
                 EmptyListPlaceholder(Modifier.fillMaxSize())
             } else {
                 Column(
-                    modifier = Modifier
-                        .ifNotNull(scrollBehavior) { Modifier.nestedScroll(it.nestedScrollConnection) }
+                    modifier = Modifier.ifNotNull(scrollBehavior) {
+                        Modifier.nestedScroll(it.nestedScrollConnection)
+                    }
                 ) {
-                    // date range widget
-//                    val startDate =
-//                        paymentList.firstOrNull { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
-//                    val endDate =
-//                        paymentList.findLast { it is PaymentListItemModel.Header } as? PaymentListItemModel.Header
-//                    if (startDate != null && endDate != null) {
-//                        DateRangeWidget(startDate.date, endDate.date)
-//                    }
-
                     val checkBoxTransitionState = remember { MutableTransitionState(false) }
                     val transition = updateTransition(checkBoxTransitionState, label = "")
 
@@ -397,49 +388,39 @@ fun PaymentList(
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         paymentList.forEach { paymentListItemModel ->
-                            if (paymentListItemModel is PaymentListItemModel.PaymentItemModel) {
-                                item(key = paymentListItemModel.key) {
-                                    val dismissState = rememberDismissState(
-                                        confirmValueChange = { dismissValue ->
-                                            if (dismissValue == DismissValue.DismissedToStart) {
-                                                onSwipeToDeleteItem.invoke(paymentListItemModel)
-                                                true
-                                            } else {
-                                                false
-                                            }
-                                        },
-                                        positionalThreshold = { 0.35f }
-                                    )
-                                    MotDismissibleListItem(
-                                        dismissState = dismissState,
-                                        directions = if (isSelectedStateOn.not()) setOf(
-                                            DismissDirection.EndToStart
-                                        ) else emptySet(),
-                                        dismissContent = {
-                                            PaymentListItem(
-                                                paymentListItemModel,
-                                                onClick = { payment -> onItemClick.invoke(payment) },
-                                                onLongClick = { payment ->
-                                                    onItemLongClick.invoke(
-                                                        payment
-                                                    )
-                                                },
-                                                isSelectedStateOn = isSelectedStateOn,
-                                                priceViewState = priceViewState,
-                                                checkBoxTransitionState = checkBoxTransitionState,
-                                                transition = transition,
-                                            )
+                            when (paymentListItemModel) {
+                                is MotPaymentListItemModel.Header -> {
+                                    stickyHeader(key = paymentListItemModel.key) {
+                                        val enterTransition =
+                                            remember { MotTransitions.listItemEnterTransition }
+                                        val exitTransition =
+                                            remember { MotTransitions.listItemExitTransition }
+                                        AnimatedVisibility(
+                                            visible = paymentListItemModel.isShow,
+                                            enter = enterTransition,
+                                            exit = exitTransition
+                                        ) {
+                                            PaymentListDateItem(date = paymentListItemModel.date)
                                         }
-                                    )
+                                    }
                                 }
-                            }
-                            if (paymentListItemModel is PaymentListItemModel.Header) {
-                                stickyHeader(key = paymentListItemModel.key) {
-                                    PaymentListDateItem(date = paymentListItemModel.date)
+
+                                is MotPaymentListItemModel.Item -> {
+                                    item(key = paymentListItemModel.key) {
+                                        PaymentItem(
+                                            motPaymentListItemModel = paymentListItemModel,
+                                            isSelectedStateOn = isSelectedStateOn,
+                                            onItemClick = onItemClick,
+                                            onItemLongClick = onItemLongClick,
+                                            onItemSwiped = onItemSwiped,
+                                            priceViewState = priceViewState,
+                                            checkBoxTransitionState = checkBoxTransitionState,
+                                            transition = transition
+                                        )
+                                    }
                                 }
-                            }
-                            if (paymentListItemModel is PaymentListItemModel.Footer) {
-                                item { FABFooter() }
+
+                                is MotPaymentListItemModel.Footer -> item { FABFooter() }
                             }
                         }
                     }
@@ -459,6 +440,36 @@ fun PaymentList(
     }
 }
 
+@Composable
+private fun PaymentItem(
+    motPaymentListItemModel: MotPaymentListItemModel.Item,
+    isSelectedStateOn: Boolean,
+    onItemClick: (MotPaymentListItemModel.Item) -> Unit,
+    onItemLongClick: (MotPaymentListItemModel.Item) -> Unit,
+    onItemSwiped: (MotPaymentListItemModel.Item) -> Unit,
+    priceViewState: PriceViewState,
+    checkBoxTransitionState: MutableTransitionState<Boolean>,
+    transition: Transition<Boolean>,
+) {
+    val directions = if (isSelectedStateOn.not()) setOf(DismissDirection.EndToStart) else emptySet()
+
+    MotDismissibleListItem(
+        isShow = motPaymentListItemModel.isShow,
+        directions = directions,
+        onItemSwiped = { onItemSwiped.invoke(motPaymentListItemModel) }
+    ) {
+        PaymentListItem(
+            motPaymentListItemModel,
+            onClick = { payment -> onItemClick.invoke(payment) },
+            onLongClick = { payment -> onItemLongClick.invoke(payment) },
+            isSelectedStateOn = isSelectedStateOn,
+            priceViewState = priceViewState,
+            checkBoxTransitionState = checkBoxTransitionState,
+            transition = transition,
+        )
+    }
+}
+
 @MotPreviewScreen
 @Composable
 private fun PaymentListScreenLightPreview() {
@@ -474,7 +485,7 @@ private fun PaymentListScreenLightPreview() {
             snackbarVisibleState = false,
             onUndoButtonClickEvent = {},
             deletedItemsCount = 0,
-            onSwipeToDeleteItem = {},
+            onItemSwiped = {},
             isSelectedStateOn = false,
             selectedItemsCount = 0,
             onCancelSelectionClick = {},

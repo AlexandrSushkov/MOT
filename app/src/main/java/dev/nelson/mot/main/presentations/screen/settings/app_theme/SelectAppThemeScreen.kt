@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotTopAppBar
@@ -21,14 +23,12 @@ import dev.utils.preview.MotPreview
 
 @Composable
 fun SelectAppThemeScreen(
-    title: String,
     selectAppThemeViewModel: SelectAppThemeViewModel,
     closeScreenAction: () -> Unit,
 ) {
     val viewState by selectAppThemeViewModel.selectAppViewState.collectAsState()
 
     SelectAppThemeLayout(
-        title = title,
         closeScreenAction = closeScreenAction,
         viewState = viewState,
         onThemeSelected = { selectAppThemeViewModel.onAppThemeSelected(it) }
@@ -38,7 +38,6 @@ fun SelectAppThemeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SelectAppThemeLayout(
-    title: String,
     closeScreenAction: () -> Unit,
     viewState: SelectAppThemeViewState,
     onThemeSelected: (MotAppTheme) -> Unit = {},
@@ -46,7 +45,7 @@ private fun SelectAppThemeLayout(
     Scaffold(
         topBar = {
             MotTopAppBar(
-                appBarTitle = title,
+                appBarTitle = stringResource(R.string.app_theme_title),
                 navigationIcon = {
                     MotNavBackIcon {
                         closeScreenAction.invoke()
@@ -81,7 +80,6 @@ private fun SelectAppThemeLayout(
 private fun SelectAppThemePreview() {
     MotMaterialTheme {
         SelectAppThemeLayout(
-            title = "Select App Theme",
             viewState = SelectAppThemeViewState(),
             closeScreenAction = {}
         )

@@ -50,10 +50,8 @@ fun MotTopAppBar(
      */
     val colorTransitionFraction = scrollBehavior.state.overlappedFraction
     val fraction = if (colorTransitionFraction > 0.01f) 1f else 0f
-    val appBarColor = if (fraction == 1f) {
-        MaterialTheme.colorScheme.secondaryContainer
-    } else {
-        MaterialTheme.colorScheme.surface
+    val appBarColor = with(MaterialTheme.colorScheme) {
+        if (fraction == 1f) secondaryContainer else surface
     }
     val systemBarColor by animateColorAsState(
         targetValue = appBarColor,

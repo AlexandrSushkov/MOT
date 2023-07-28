@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package dev.nelson.mot.main.presentations.screen.payment_list
 
 import androidx.compose.animation.AnimatedVisibility
@@ -20,22 +18,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DismissState
-import androidx.compose.material3.DismissValue
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,9 +42,9 @@ import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
-import dev.nelson.mot.main.util.compose.MotTransitions
+import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.capitalizeFirstLetter
@@ -59,27 +52,29 @@ import dev.utils.preview.MotPreview
 
 @Composable
 fun DateRangeWidget(startDate: String, endDate: String) {
-    Column(modifier = Modifier.clickable { }) {
-        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-            DateRageDateText(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                date = startDate
-            )
-            Icon(
-                Icons.Default.ArrowRightAlt,
-                modifier = Modifier.weight(1f),
-                contentDescription = "arrow right"
-            )
-            DateRageDateText(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                date = endDate
+    Surface {
+        Column(modifier = Modifier.clickable { }) {
+            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                DateRageDateText(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    date = startDate
+                )
+                Icon(
+                    Icons.Default.ArrowRightAlt,
+                    modifier = Modifier.weight(1f),
+                    contentDescription = "arrow right"
+                )
+                DateRageDateText(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    date = endDate
+                )
+            }
+            Divider(
+                Modifier
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             )
         }
-        Divider(
-            Modifier
-                .height(1.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        )
     }
 }
 
@@ -152,9 +147,9 @@ fun PaymentListItemSelectedPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PaymentListItem(
-    paymentItemModel: PaymentListItemModel.PaymentItemModel,
-    onClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
-    onLongClick: (PaymentListItemModel.PaymentItemModel) -> Unit,
+    paymentItemModel: MotPaymentListItemModel.Item,
+    onClick: (MotPaymentListItemModel.Item) -> Unit,
+    onLongClick: (MotPaymentListItemModel.Item) -> Unit,
     isSelectedStateOn: Boolean,
     priceViewState: PriceViewState,
     checkBoxTransitionState: MutableTransitionState<Boolean>,
@@ -172,11 +167,10 @@ fun PaymentListItem(
         label = "paymentNamePaddingStart"
     )
 
-    val cardBackgroundColor = if (paymentItemModel.payment.isSelected) {
-        MaterialTheme.colorScheme.tertiaryContainer
-    } else {
-        MaterialTheme.colorScheme.surface
+    val cardBackgroundColor = with(MaterialTheme.colorScheme) {
+        if (paymentItemModel.payment.isSelected) tertiaryContainer else surface
     }
+
     val cardBackgroundColorState by animateColorAsState(
         targetValue = cardBackgroundColor,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
@@ -251,15 +245,12 @@ fun PaymentListItem(
                         }
                         if (paymentItemModel.payment.message.isNotEmpty()) {
                             Column {
-//                                MotVerticalExpandableArea(payment = paymentItemModel.payment)
-                                CompositionLocalProvider(LocalContentAlpha provides 0.5f ) {
-                                    Text(
-                                        style = MaterialTheme.typography.bodySmall,
-                                        text = paymentItemModel.payment.message,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 2,
-                                    )
-                                }
+                                Text(
+                                    style = MaterialTheme.typography.bodySmall,
+                                    text = paymentItemModel.payment.message,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 2,
+                                )
                             }
                         }
                     }
@@ -278,13 +269,16 @@ fun PaymentListItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun DismissiblePaymentListItemPreview() {
     val checkBoxTransitionState = remember { MutableTransitionState(false) }
     MotMaterialTheme {
-        MotDismissibleListItem(dismissState = DismissState(DismissValue.Default), dismissContent = {
+        MotDismissibleListItem(
+//            dismissState = DismissState(DismissValue.Default),
+            onItemSwiped = {}
+        ) {
             PaymentListItem(
                 paymentItemModel = PreviewData.paymentItemModelPreview,
                 onClick = {},
@@ -297,6 +291,6 @@ private fun DismissiblePaymentListItemPreview() {
                     label = "paymentNamePaddingStart"
                 )
             )
-        })
+        }
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MOT</string>
+    <string name="app_name" translatable="false">MOT</string>
 
     <string name="payment" translatable="false">Payment</string>
     <string name="payments" translatable="false">Payments</string>
@@ -28,12 +28,34 @@
     <string name="database_exported_successfully_dialog_message" translatable="false">Database was exported successfully.\nPlease, check Downloads folder.</string>
     <string name="database_export_failed_dialog_message" translatable="false">Oops! Database export failed.</string>
 
-    <!--Accessibility text-->
+    <!--Accessibility text start-->
     <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
     <string name="accessibility_category_icon" translatable="false">category icon</string>
     <string name="accessibility_info_icon" translatable="false">info icon</string>
     <string name="accessibility_add_icon" translatable="false">add icon</string>
     <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
     <string name="accessibility_done_icon" translatable="false">done icon</string>
+    <string name="accessibility_search_icon" translatable="false">search icon</string>
+    <!--Accessibility text end-->
+
+    <string name="app_theme_title">App Theme</string>
+    <string name="choose_a_country_title">Choose a country</string>
+    <string name="no_countries_found_result">No countries found.</string>
+    <string name="no_results_found">No results found.</string>
+    <string name="appearance_text">Appearance</string>
+    <string name="price_field_text">Price Field</string>
+    <string name="show_cents_text">Show Cents</string>
+    <string name="show_currency_symbol_text">Show Currency Symbol</string>
+    <string name="show_digits_text">Show digits</string>
+    <string name="locale_text">Locale</string>
+    <string name="theme_text">Theme</string>
+    <string name="app_theme_text">App Theme</string>
+    <string name="dynamic_color_theme_text">Dynamic Color Theme</string>
+    <string name="database_text">Database</string>
+    <string name="export_database_text">Export Database</string>
+    <string name="export_data_base_message">It will be exported to the Downloads folder.</string>
+    <string name="export_text">Export</string>
+    <string name="import_database_text">Import Database</string>
+    <string name="import_text">Import</string>
 
 </resources>

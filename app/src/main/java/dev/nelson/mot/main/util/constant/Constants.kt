@@ -1,9 +1,11 @@
 package dev.nelson.mot.main.util.constant
 
+
 object Constants {
 
     const val DEFAULT_ANIMATION_DELAY = 200L
     const val DEFAULT_ANIMATION_DURATION = 500
+    const val SWIPE_TO_DISMISS_THRESHOLD = 125
 
     const val DATA_STORE_FILE_NAME = "mot_preferences"
 

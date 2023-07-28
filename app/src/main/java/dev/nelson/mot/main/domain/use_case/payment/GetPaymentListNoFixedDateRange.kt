@@ -5,7 +5,7 @@ import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
 import dev.nelson.mot.main.util.UUIDUtils
@@ -32,7 +32,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         category: Category? = null,
         order: SortingOrder = SortingOrder.Ascending,
         onlyPaymentsWithoutCategory: Boolean = false
-    ): Flow<List<PaymentListItemModel>> {
+    ): Flow<List<MotPaymentListItemModel>> {
         return paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
             startTime,
             category?.id,
@@ -67,30 +67,30 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
     }
 
     /**
-     * Transform [Payment] to [PaymentListItemModel.PaymentItemModel] and divider items with date [PaymentListItemModel.Header]
+     * Transform [Payment] to [MotPaymentListItemModel.Item] and divider items with date [MotPaymentListItemModel.Header]
      */
-    private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean): List<PaymentListItemModel> {
-        return mutableListOf<PaymentListItemModel>().apply {
+    private fun List<Payment>.toPaymentListItemModelNew(showCategory: Boolean): List<MotPaymentListItemModel> {
+        return mutableListOf<MotPaymentListItemModel>().apply {
             this@toPaymentListItemModelNew.groupBy { payment -> payment.dateString }
                 .forEach { (date, payments) ->
-                    add(PaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
+                    add(MotPaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))
                 }
-            add(PaymentListItemModel.Footer(UUIDUtils.randomKey))
+            add(MotPaymentListItemModel.Footer(UUIDUtils.randomKey))
         }
     }
 
     /**
-     *Transform list of [Payment] to list of [PaymentListItemModel.PaymentItemModel]
+     *Transform list of [Payment] to list of [MotPaymentListItemModel.Item]
      */
-    private fun List<Payment>.toPaymentItemModelList(showCategory: Boolean): List<PaymentListItemModel> {
+    private fun List<Payment>.toPaymentItemModelList(showCategory: Boolean): List<MotPaymentListItemModel> {
         return this.map { it.toPaymentListItem(showCategory) }
     }
 
     /**
-     *Transform [Payment] to [PaymentListItemModel.PaymentItemModel]
+     *Transform [Payment] to [MotPaymentListItemModel.Item]
      */
-    private fun Payment.toPaymentListItem(showCategory: Boolean): PaymentListItemModel {
-        return PaymentListItemModel.PaymentItemModel(this, showCategory, UUIDUtils.randomKey)
+    private fun Payment.toPaymentListItem(showCategory: Boolean): MotPaymentListItemModel {
+        return MotPaymentListItemModel.Item(this, showCategory, UUIDUtils.randomKey)
     }
 }

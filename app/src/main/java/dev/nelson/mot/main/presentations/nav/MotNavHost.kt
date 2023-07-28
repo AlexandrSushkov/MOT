@@ -52,6 +52,7 @@ fun MotNavHost(
             route = Dashboard.route,
             content = {
                 DashboardScreen(
+                    viewModel = hiltViewModel(),
                     appBarTitle = "dashboard",
                     appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                 )
@@ -198,7 +199,6 @@ fun MotNavHost(
             route = Settings.route,
             content = {
                 SettingsScreen(
-                    title = Settings.route,
                     settingsViewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
@@ -210,7 +210,7 @@ fun MotNavHost(
             route = CountryPicker.route,
             content = {
                 CountryPickerScreen(
-                    viewModel = hiltViewModel(),
+                    countryPickerViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() }
                 )
             },
@@ -219,7 +219,6 @@ fun MotNavHost(
             route = AppThemePicker.route,
             content = {
                 SelectAppThemeScreen(
-                    title = "App Theme",
                     selectAppThemeViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() },
                 )

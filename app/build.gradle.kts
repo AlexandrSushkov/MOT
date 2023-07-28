@@ -90,7 +90,6 @@ dependencies {
     )
 
     implementation(libs.play.services.analytics.impl)
-    implementation(libs.material)
     implementation(libs.androidx.runner)
     implementation(libs.androidx.core.splashscreen)
 

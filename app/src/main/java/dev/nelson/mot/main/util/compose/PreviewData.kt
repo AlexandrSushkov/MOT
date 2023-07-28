@@ -6,8 +6,9 @@ import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
+import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.statistic.Month
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
@@ -39,7 +40,7 @@ object PreviewData {
         )
 
     val paymentItemModelPreview
-        get() = PaymentListItemModel.PaymentItemModel(paymentItemPreview, true, generateKey())
+        get() = MotPaymentListItemModel.Item(paymentItemPreview, true, generateKey())
 
     val paymentListPreview: List<Payment>
         get() = (1..30).map {
@@ -219,25 +220,25 @@ object PreviewData {
         return String(buffer, Charsets.UTF_8)
     }
 
-    val paymentListItemsPreview: List<PaymentListItemModel>
+    val paymentListItemsPreview: List<MotPaymentListItemModel>
         get() = paymentListPreview.map {
-            PaymentListItemModel.PaymentItemModel(
+            MotPaymentListItemModel.Item(
                 it,
                 true,
                 generateKey()
-            ) as PaymentListItemModel
+            ) as MotPaymentListItemModel
         }
             .toMutableList()
             .apply {
-                this.add(0, PaymentListItemModel.Header("start", generateKey()))
+                this.add(0, MotPaymentListItemModel.Header("start", generateKey()))
                 val indexOfTheLastElement = this.indexOf(this.last())
                 this.add(
                     indexOfTheLastElement / 2,
-                    PaymentListItemModel.Header("end", generateKey())
+                    MotPaymentListItemModel.Header("end", generateKey())
                 )
             }
 
-    val categoriesListItemsPreview: List<CategoryListItemModel> = getCategoryList()
+    val categoriesListItemsPreview: List<MotListItemModel> = getCategoryList()
 
     val categoriesSelectListItemsPreview: List<Category> = categoryNames
         .sortedBy { it.first() }
@@ -249,7 +250,7 @@ object PreviewData {
             )
         }
 
-    private fun getCategoryList(): List<CategoryListItemModel> {
+    private fun getCategoryList(): List<MotListItemModel> {
         val map = categoryNames
             .sortedBy { it.first() }
             .mapIndexed { index, categoryName -> Category(categoryName, id = index) }
@@ -257,17 +258,17 @@ object PreviewData {
         return createCategoryListViewRepresentation(map)
     }
 
-    private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<CategoryListItemModel> {
-        return mutableListOf<CategoryListItemModel>()
+    private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<MotListItemModel> {
+        return mutableListOf<MotListItemModel>()
             .apply {
                 //no category item
                 val noCategory = Category("No category")
-                add(CategoryListItemModel.CategoryItemModel(noCategory, generateKey()))
+                add(MotListItemModel.Item(noCategory, generateKey()))
                 //add categories items
                 value.forEach { (letter, categoryList) ->
-                    add(CategoryListItemModel.Letter(letter.toString(), generateKey()))
+                    add(MotListItemModel.Header(letter.toString(), generateKey()))
                     addAll(categoryList.map { category ->
-                        CategoryListItemModel.CategoryItemModel(
+                        MotListItemModel.Item(
                             category,
                             generateKey()
                         )

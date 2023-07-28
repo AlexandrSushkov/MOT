@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.data.model.PaymentListItemModel
+import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
@@ -50,15 +50,15 @@ class StatisticViewModel @Inject constructor(
     /**
      * list of categories with total spendings
      */
-    val currentMonthListResult: Flow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>
+    val currentMonthListResult: Flow<Map<Category?, List<MotPaymentListItemModel.Item>>>
         get() = _currentMonthListResult.asStateFlow()
     private val _currentMonthListResult =
-        MutableStateFlow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>(emptyMap())
+        MutableStateFlow<Map<Category?, List<MotPaymentListItemModel.Item>>>(emptyMap())
 
-    val previousMonthListResult: Flow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>
+    val previousMonthListResult: Flow<Map<Category?, List<MotPaymentListItemModel.Item>>>
         get() = _previousMonthListResult.asStateFlow()
     private val _previousMonthListResult =
-        MutableStateFlow<Map<Category?, List<PaymentListItemModel.PaymentItemModel>>>(emptyMap())
+        MutableStateFlow<Map<Category?, List<MotPaymentListItemModel.Item>>>(emptyMap())
 
     val priceViewState
         get() = _priceViewState.asStateFlow()
