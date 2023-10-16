@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.nav
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -18,11 +17,12 @@ import dev.utils.preview.MotPreview
 
 @Composable
 fun NavigationDrawerContent(
+    modifier: Modifier = Modifier, // default modifier is used to fix preview
     drawerViewState: DrawerViewState,
     onItemClick: (MotDestination) -> Unit = {}
 ) {
     ModalDrawerSheet(
-        modifier = Modifier.fillMaxWidth(0.7f), // remove it to fix preview
+        modifier = modifier,
         drawerShape = RectangleShape
     ) {
         Spacer(Modifier.height(12.dp))
@@ -77,6 +77,7 @@ fun NavigationDrawerContent(
 private fun NavigationDrawerContentPreview() {
     MotMaterialTheme {
         NavigationDrawerContent(
+            modifier = Modifier,
             drawerViewState = DrawerViewState(),
             onItemClick = {}
         )

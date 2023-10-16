@@ -33,15 +33,19 @@ fun PriceText(
 
 @MotPreview
 @Composable
-fun TextPricePreview() {
+private fun TextPricePreview() {
     MotMaterialTheme {
         ListItem(
             headlineContent = {
                 PriceText(
                     price = 999999,
-                    priceViewState = PriceViewState()
+                    priceViewState = PriceViewState(
+//                        isShowCents = false,
+//                        isShowCurrencySymbol = false,
+//                        isShowDigits = false
+                    )
                 )
-            },
+            }
         )
     }
 }

@@ -12,9 +12,7 @@ private const val DIGIT_PATTERN = "\\d"
  * @param priceViewState parameters to format price.
  */
 fun formatPrice(price: Int, priceViewState: PriceViewState): String {
-    val formatter = NumberFormat.getCurrencyInstance(priceViewState.locale).apply {
-
-    }
+    val formatter = NumberFormat.getCurrencyInstance(priceViewState.locale)
     return price.toPrice(formatter, priceViewState.isShowCents)
         .hideDigitsIfNeeded(priceViewState.isShowDigits)
         .removeCurrencySymbolIfNeeded(
@@ -27,12 +25,9 @@ fun formatPrice(price: Int, priceViewState: PriceViewState): String {
  * format price in cents to a string.
  */
 private fun Int.toPrice(priceFormatter: NumberFormat, isShowCents: Boolean): String {
-    return if (isShowCents) {
-        priceFormatter.format(this.toDouble() / 100)
-    } else {
-        priceFormatter.maximumFractionDigits = 0
-        priceFormatter.format(this / 100)
-    }
+    if (isShowCents) return priceFormatter.format(this.toDouble() / 100)
+    priceFormatter.maximumFractionDigits = 0
+    return priceFormatter.format(this / 100)
 }
 
 /**
@@ -49,11 +44,8 @@ private fun String.removeCurrencySymbolIfNeeded(
     isShowCurrencySymbol: Boolean,
     currencySymbol: String?
 ): String {
-    return if (isShowCurrencySymbol) {
-        this
-    } else {
-        currencySymbol
-            ?.let { this.replace(currencySymbol, EMPTY_STRING) }
-            ?: this
-    }
+    if (isShowCurrencySymbol) return this
+    return currencySymbol
+        ?.let { this.replace(currencySymbol, EMPTY_STRING) }
+        ?: this
 }

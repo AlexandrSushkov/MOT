@@ -19,14 +19,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -62,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotButton
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotOutlinedButton
 import dev.nelson.mot.core.ui.MotTextField
@@ -355,12 +354,7 @@ fun PaymentDetailsLayout(
                         onDateClick.invoke()
                     }
                 ) {
-                    Icon(
-                        Icons.Default.EditCalendar,
-                        modifier = Modifier.padding(end = 4.dp),
-                        contentDescription = stringResource(R.string.accessibility_date_icon)
-                    )
-
+                    MotIcons.EditCalendar(Modifier.padding(end = 4.dp))
                     Text(
                         text = dateViewState.text,
                         modifier = Modifier.align(Alignment.CenterVertically),
@@ -378,11 +372,7 @@ fun PaymentDetailsLayout(
                         }
                     }
                 ) {
-                    Icon(
-                        Icons.Default.Category,
-                        modifier = Modifier.padding(end = 4.dp),
-                        contentDescription = stringResource(R.string.accessibility_category_icon)
-                    )
+                    MotIcons.Category(Modifier.padding(end = 4.dp))
                     MotSingleLineText(
                         text = selectedCategory?.name ?: stringResource(R.string.no_category),
                         modifier = Modifier.align(Alignment.CenterVertically),

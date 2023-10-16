@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -24,9 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
@@ -54,7 +51,11 @@ fun CategoriesListBottomSheet(
                         categories.find { it.isFavorite }?.let { categories.indexOf(it) }
                     val lastFavoriteItemIndex =
                         categories.findLast { it.isFavorite }?.let { categories.indexOf(it) }
-                    val shape = getFavoriteCategoryContainerShape(firstFavoriteItemIndex, lastFavoriteItemIndex, index)
+                    val shape = getFavoriteCategoryContainerShape(
+                        firstFavoriteItemIndex,
+                        lastFavoriteItemIndex,
+                        index
+                    )
                     val isSelected = selectedCategory?.id == category.id
                     Box(
                         modifier = Modifier
@@ -88,10 +89,8 @@ fun CategoriesListBottomSheet(
                                         .padding(end = 8.dp)
                                 )
                                 if (isSelected) {
-                                    Icon(
-                                        Icons.Filled.Done,
+                                    MotIcons.Done(
                                         modifier = Modifier.size(24.dp),
-                                        contentDescription = stringResource(id = R.string.accessibility_done_icon),
                                         tint = MaterialTheme.colorScheme.secondary
                                     )
                                 }

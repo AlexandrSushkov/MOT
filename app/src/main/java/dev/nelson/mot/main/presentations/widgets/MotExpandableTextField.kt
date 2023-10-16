@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotIcons
 
 private const val EXPAND_ANIMATION_DURATION = 500
 private const val EXPAND_TRANSITION_DURATION = 300
@@ -126,7 +127,7 @@ fun MotExpandableTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = "",
                 onValueChange = {},
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "") },
+                leadingIcon = { MotIcons.Search() },
                 placeholder = { Text(text = "Search") },
                 shape = RoundedCornerShape(cardRoundedCorners),
                 colors = TextFieldDefaults.colors(

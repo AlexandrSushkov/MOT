@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="toolbar" translatable="false">Drawer icon</string>
+
+    <!--Accessibility text start-->
+    <string name="accessibility_drawer_icon" translatable="false">Drawer icon</string>
+    <string name="accessibility_delete_icon" translatable="false">Delete icon</string>
+    <string name="accessibility_category_icon" translatable="false">Category icon</string>
+    <string name="accessibility_calendar_icon" translatable="false">Calendar icon</string>
+    <string name="accessibility_edit_calendar_icon" translatable="false">Edit calendar icon</string>
+    <string name="accessibility_info_icon" translatable="false">Info icon</string>
+    <string name="accessibility_add_icon" translatable="false">Add icon</string>
+    <string name="accessibility_favorite_checked_icon" translatable="false">Favorite checked icon</string>
+    <string name="accessibility_favorite_unchecked_icon" translatable="false">Favorite unchecked icon</string>
+    <string name="accessibility_filter_icon" translatable="false">Filter icon</string>
+    <string name="accessibility_done_icon" translatable="false">Done icon</string>
+    <string name="accessibility_date_icon" translatable="false">Date icon</string>
+    <string name="accessibility_search_icon" translatable="false">Search icon</string>
+    <string name="accessibility_save_icon" translatable="false">Save icon</string>
+    <string name="accessibility_back_icon" translatable="false">Back icon</string>
+    <string name="accessibility_close_icon" translatable="false">Close icon</string>
+    <string name="accessibility_settings_icon" translatable="false">Settings icon</string>
+    <!--Accessibility text end-->
+</resources>

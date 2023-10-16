@@ -43,11 +43,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.BuildConfig
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.MotIconButtons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.MotTextButton
-import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.MotToolbar
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.main.presentations.widgets.MotAlertDialog
 import dev.nelson.mot.main.util.StringUtils
@@ -130,7 +130,7 @@ private fun SettingsScreenLayout(
 
     Scaffold(
         topBar = {
-            MotTopAppBar(
+            MotToolbar.RegularAppBar(
                 appBarTitle = stringResource(id = R.string.settings),
                 navigationIcon = navigationIcon,
                 scrollBehavior = appBarScrollBehavior
@@ -349,7 +349,7 @@ private fun SettingsScreenLayoutPreview() {
     )
     MotMaterialTheme {
         SettingsScreenLayout(
-            navigationIcon = { MotNavDrawerIcon {} },
+            navigationIcon = { MotIconButtons.Drawer {} },
             viewState = viewState,
             onLocaleClick = {},
             onExportDataBaseClick = {},

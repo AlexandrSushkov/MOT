@@ -1,11 +1,8 @@
 package dev.nelson.mot.main.presentations.widgets
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -14,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.utils.preview.MotPreviewScreen
@@ -22,15 +20,7 @@ import dev.utils.preview.MotPreviewScreen
 fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
     AlertDialog(
         onDismissRequest = alertDialogParams.dismissClickCallback,
-        icon = {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = stringResource(R.string.accessibility_info_icon),
-                modifier = Modifier
-                    .width(32.dp)
-                    .height(32.dp)
-            )
-        },
+        icon = { MotIcons.Info(modifier = Modifier.size(32.dp)) },
         text = {
             Text(
                 text = stringResource(alertDialogParams.message),

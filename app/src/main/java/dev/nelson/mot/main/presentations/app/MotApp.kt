@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -85,6 +86,7 @@ private fun MotAppLayout(
                 gesturesEnabled = navigationDrawerState.isOpen,
                 drawerContent = {
                     NavigationDrawerContent(
+                        modifier = Modifier.fillMaxWidth(0.7f),
                         drawerViewState = drawerViewState
                     ) { destination ->
                         if (navController.currentDestination?.route != destination.route) {

@@ -13,13 +13,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -33,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,8 +42,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dev.nelson.mot.core.ui.MotIconButtons
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
@@ -214,7 +213,7 @@ private fun StatisticLayout(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { coroutineScope.launch { showBottomSheet = true } },
-                content = { Icon(Icons.Default.FilterList, "new payment fab") }
+                content = { MotIcons.Filter() }
             )
         }
     ) { innerPadding ->
@@ -223,7 +222,7 @@ private fun StatisticLayout(
                 .fillMaxSize()
                 .padding(paddingValues = innerPadding)
         ) {
-            val textWidth = remember { mutableStateOf(0) }
+            val textWidth = remember { mutableIntStateOf(0) }
 
             val density = LocalDensity.current
             val tabWidths = remember {
@@ -327,7 +326,7 @@ private fun StaticLayoutPreview() {
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByCategoryList = emptyList(),
             //            onNavigationButtonClick = {},
-            navigationIcon = { MotNavDrawerIcon {} },
+            navigationIcon = { MotIconButtons.Drawer {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
                 selectedTimeModel = PreviewData.statisticByMonthModelPreviewData

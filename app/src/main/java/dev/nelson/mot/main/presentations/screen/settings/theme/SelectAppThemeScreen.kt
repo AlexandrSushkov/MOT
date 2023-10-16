@@ -15,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.MotIconButtons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavBackIcon
-import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.MotToolbar
 import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.utils.preview.MotPreview
 
@@ -44,10 +44,10 @@ private fun SelectAppThemeLayout(
 ) {
     Scaffold(
         topBar = {
-            MotTopAppBar(
+            MotToolbar.RegularAppBar(
                 appBarTitle = stringResource(R.string.app_theme_title),
                 navigationIcon = {
-                    MotNavBackIcon {
+                    MotIconButtons.Back {
                         closeScreenAction.invoke()
                     }
                 }

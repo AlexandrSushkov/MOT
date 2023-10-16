@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
@@ -30,10 +28,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotCloseIcon
+import dev.nelson.mot.core.ui.MotIconButtons
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavBackIcon
-import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.MotToolbar
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.emojiFlag
@@ -85,9 +83,9 @@ private fun CountryPickerLayout(
 
     Scaffold(
         topBar = {
-            MotTopAppBar(
+            MotToolbar.RegularAppBar(
                 appBarTitle = stringResource(R.string.choose_a_country_title),
-                navigationIcon = { MotNavBackIcon(onClick = closeScreenAction) },
+                navigationIcon = { MotIconButtons.Back(onClick = closeScreenAction) },
                 scrollBehavior = appBarScrollBehavior
             )
         }
@@ -105,22 +103,15 @@ private fun CountryPickerLayout(
                 active = viewState.isSearchActive,
                 leadingIcon = {
                     if (viewState.isSearchActive) {
-                        MotNavBackIcon {
-                            onSearchActiveChange.invoke(false)
-                        }
+                        MotIconButtons.Back { onSearchActiveChange.invoke(false) }
                     } else {
-                        Icon(
-                            Icons.Default.Search,
-                            contentDescription = stringResource(id = R.string.accessibility_search_icon)
-                        )
+                        MotIcons.Search()
                     }
                 },
                 placeholder = { Text(text = stringResource(id = android.R.string.search_go)) },
                 trailingIcon = {
                     if (searchText.isNotEmpty()) {
-                        MotCloseIcon(
-                            onClick = { onSearchTextChange.invoke(StringUtils.EMPTY) }
-                        )
+                        MotIconButtons.Close { onSearchTextChange.invoke(StringUtils.EMPTY) }
                     }
                 },
                 onActiveChange = { onSearchActiveChange.invoke(it) }

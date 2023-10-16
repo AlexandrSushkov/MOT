@@ -31,14 +31,14 @@
     <string name="database_export_failed_dialog_message" translatable="false">Oops! Database export failed.</string>
 
     <!--Accessibility text start-->
-    <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>
-    <string name="accessibility_category_icon" translatable="false">category icon</string>
-    <string name="accessibility_info_icon" translatable="false">info icon</string>
-    <string name="accessibility_add_icon" translatable="false">add icon</string>
-    <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
-    <string name="accessibility_done_icon" translatable="false">done icon</string>
-    <string name="accessibility_date_icon" translatable="false">date icon</string>
-    <string name="accessibility_search_icon" translatable="false">search icon</string>
+<!--    <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>-->
+<!--    <string name="accessibility_category_icon" translatable="false">category icon</string>-->
+<!--    <string name="accessibility_info_icon" translatable="false">info icon</string>-->
+<!--    <string name="accessibility_add_icon" translatable="false">add icon</string>-->
+<!--    <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>-->
+<!--    <string name="accessibility_done_icon" translatable="false">done icon</string>-->
+<!--    <string name="accessibility_date_icon" translatable="false">date icon</string>-->
+<!--    <string name="accessibility_search_icon" translatable="false">search icon</string>-->
     <!--Accessibility text end-->
 
     <string name="app_theme_title">App Theme</string>

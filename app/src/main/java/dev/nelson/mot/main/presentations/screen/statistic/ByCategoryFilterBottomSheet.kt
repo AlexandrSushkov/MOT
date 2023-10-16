@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
@@ -58,14 +57,7 @@ fun ByCategoryFilterBottomSheet(
                                 text = it.category?.name ?: "no category"
                             )
                         },
-                        trailingContent = {
-                            if (it == selectedMonthModel) {
-                                Icon(
-                                    imageVector = Icons.Default.Done,
-                                    contentDescription = ""
-                                )
-                            }
-                        },
+                        trailingContent = { if (it == selectedMonthModel) MotIcons.Done() },
                         colors = ListItemDefaults.colors(
                             containerColor = containerColor
                         )

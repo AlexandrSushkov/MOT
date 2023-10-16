@@ -15,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotIconButtons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavDrawerIcon
-import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.MotToolbar
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.utils.preview.MotPreview
 
@@ -48,7 +48,7 @@ fun DashboardScreenLayout(
 ) {
     Scaffold(
         topBar = {
-            MotTopAppBar(
+            MotToolbar.RegularAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon
             )
@@ -104,7 +104,7 @@ private fun DashboardScreenLayoutPreview() {
         DashboardScreenLayout(
             appBarTitle = "Dashboard",
             appBarNavigationIcon = {
-                MotNavDrawerIcon { }
+                MotIconButtons.Drawer { }
             },
             items = emptyList()
         )

@@ -18,16 +18,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
@@ -60,10 +56,11 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotCard
 import dev.nelson.mot.core.ui.MotDismissibleListItem
+import dev.nelson.mot.core.ui.MotIconButtons
+import dev.nelson.mot.core.ui.MotIcons
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.MotTextButton
-import dev.nelson.mot.core.ui.MotTopAppBar
+import dev.nelson.mot.core.ui.MotToolbar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
@@ -146,7 +143,7 @@ fun CategoryListLayout(
 
     Scaffold(
         topBar = {
-            MotTopAppBar(
+            MotToolbar.RegularAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
                 scrollBehavior = appBerScrollBehavior
@@ -168,7 +165,7 @@ fun CategoryListLayout(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddCategoryClickEvent) {
-                Icon(Icons.Default.Add, stringResource(R.string.accessibility_add_icon))
+                MotIcons.Add()
             }
         }
     ) { innerPadding ->
@@ -313,8 +310,6 @@ fun CategoryListItem(
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit
 ) {
-    val favoriteIcon = if (category.isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder
-
     MotCard(
         modifier = Modifier
             .fillMaxWidth()
@@ -343,12 +338,13 @@ fun CategoryListItem(
                                 onFavoriteClick.invoke(category, isChecked)
                             }
                         ) {
-                            Icon(
-                                favoriteIcon,
-                                contentDescription = stringResource(id = R.string.accessibility_favorite_icon),
-                                tint = MaterialTheme.colorScheme.secondary,
-                                modifier = Modifier.size(24.dp)
-                            )
+                            val modifier = Modifier.size(24.dp)
+                            val tint = MaterialTheme.colorScheme.secondary
+                            if (category.isFavorite) {
+                                MotIcons.FavoriteChecked(modifier, tint)
+                            } else {
+                                MotIcons.FavoriteUnchecked(modifier, tint)
+                            }
                         }
                     }
                 }
@@ -459,7 +455,7 @@ private fun CategoryListLayoutPreviewData(
         CategoryListLayout(
             appBarTitle = "Categories",
             categoriesListUiState = categoriesListUiState,
-            appBarNavigationIcon = { MotNavDrawerIcon(onClick = {}) },
+            appBarNavigationIcon = { MotIconButtons.Drawer(onClick = {}) },
             onCategoryClick = {},
             onFavoriteClick = { _, _ -> },
             onAddCategoryClickEvent = {},

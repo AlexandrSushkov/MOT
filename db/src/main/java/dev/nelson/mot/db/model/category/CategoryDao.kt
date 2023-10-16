@@ -39,5 +39,4 @@ interface CategoryDao {
 
     @Delete
     suspend fun deleteCategories(categories: List<CategoryEntity>)
-
 }

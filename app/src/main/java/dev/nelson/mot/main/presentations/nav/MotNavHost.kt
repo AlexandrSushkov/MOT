@@ -10,8 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.nelson.mot.core.ui.MotNavBackIcon
-import dev.nelson.mot.core.ui.MotNavDrawerIcon
+import dev.nelson.mot.core.ui.MotIconButtons
 import dev.nelson.mot.main.presentations.screen.categories.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.categorydetails.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
@@ -54,7 +53,11 @@ fun MotNavHost(
                 DashboardScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "dashboard",
-                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } }
+                    appBarNavigationIcon = {
+                        MotIconButtons.Drawer {
+                            coroutineScope.launch { navigationDrawerState.open() }
+                        }
+                    }
                 )
             }
         )
@@ -63,7 +66,7 @@ fun MotNavHost(
             content = {
                 PaymentListScreen(
                     viewModel = hiltViewModel(),
-                    navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                    navigationIcon = { MotIconButtons.Drawer { coroutineScope.launch { navigationDrawerState.open() } } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let {
                             navController.navigate(
@@ -84,7 +87,7 @@ fun MotNavHost(
             content = {
                 PaymentListScreen(
                     viewModel = hiltViewModel(),
-                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+                    navigationIcon = { MotIconButtons.Back { navController.popBackStack() } },
                     openPaymentDetails = { paymentId ->
                         paymentId?.let {
                             navController.navigate(
@@ -146,7 +149,7 @@ fun MotNavHost(
                 CategoryListScreen(
                     viewModel = hiltViewModel(),
                     appBarNavigationIcon = {
-                        MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } }
+                        MotIconButtons.Drawer { coroutineScope.launch { navigationDrawerState.open() } }
                     },
                     openPaymentsByCategoryAction = { categoryId ->
                         navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
@@ -179,7 +182,7 @@ fun MotNavHost(
                 StatisticScreenExperemental(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic Old",
-                    appBarNavigationIcon = { MotNavBackIcon { navController.popBackStack() } }
+                    appBarNavigationIcon = { MotIconButtons.Back { navController.popBackStack() } }
                 )
             }
         )
@@ -189,7 +192,7 @@ fun MotNavHost(
                 StatisticScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "Statistic",
-                    navigationIcon = { MotNavBackIcon { navController.popBackStack() } },
+                    navigationIcon = { MotIconButtons.Back { navController.popBackStack() } },
                     openPaymentsByCategoryAction = { categoryId ->
                         navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
@@ -201,7 +204,7 @@ fun MotNavHost(
             content = {
                 SettingsScreen(
                     settingsViewModel = hiltViewModel(),
-                    navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                    navigationIcon = { MotIconButtons.Drawer { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
                     openAppThemePickerScreen = { navController.navigate(AppThemePicker.route) }
                 )
