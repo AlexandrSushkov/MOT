@@ -48,9 +48,9 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
-import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
-import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByCategoryTabLayout
-import dev.nelson.mot.main.presentations.screen.statistic.new_tabs.StatisticByTimeTabLayout
+import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.presentations.screen.statistic.newtabs.StatisticByCategoryTabLayout
+import dev.nelson.mot.main.presentations.screen.statistic.newtabs.StatisticByTimeTabLayout
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch

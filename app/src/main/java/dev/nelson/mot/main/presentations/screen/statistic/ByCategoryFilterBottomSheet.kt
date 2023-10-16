@@ -18,7 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData

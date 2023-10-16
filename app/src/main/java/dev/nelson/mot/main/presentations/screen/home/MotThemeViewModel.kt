@@ -3,9 +3,9 @@ package dev.nelson.mot.main.presentations.screen.home
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.nelson.mot.main.data.preferences.MotSwitchType
-import dev.nelson.mot.main.domain.use_case.base.execute
-import dev.nelson.mot.main.domain.use_case.settings.GetAppThemeUseCase
-import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
+import dev.nelson.mot.main.domain.usecase.base.execute
+import dev.nelson.mot.main.domain.usecase.settings.GetAppThemeUseCase
+import dev.nelson.mot.main.domain.usecase.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

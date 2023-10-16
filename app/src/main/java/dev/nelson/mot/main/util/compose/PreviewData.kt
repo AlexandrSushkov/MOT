@@ -9,9 +9,9 @@ import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.data.model.Payment
-import dev.nelson.mot.main.domain.use_case.statistic.Month
-import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
-import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
+import dev.nelson.mot.main.domain.usecase.statistic.Month
+import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
+import dev.nelson.mot.main.domain.usecase.statistic.StatisticForMonthForCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
