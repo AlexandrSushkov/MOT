@@ -1,41 +1,41 @@
 [versions]
-androidGradlePlugin = "8.0.0"
+androidGradlePlugin = "8.1.2"
 tehrasCharts = "0.2.4-alpha"
-kotlinAndroidPlugin = "1.8.21"
-hiltPlugin = "2.44"
-kotlinAnnotationProcessingPlugin = "1.8.21-1.0.11"
+kotlinAndroidPlugin = "1.9.10"
+hiltPlugin = "2.48"
+kotlinAnnotationProcessingPlugin = "1.9.10-1.0.13"
 
-appcompat = "1.7.0-alpha02"
+appcompat = "1.7.0-alpha03"
 constraintlayout = "2.1.4"
 coreSplashscreen = "1.0.1"
 datastorePreferences = "1.0.0"
-androidxCoreKtx = "1.10.1"
-fragmentKtx = "1.6.0"
-hilt = "2.46"
+androidxCoreKtx = "1.12.0"
+fragmentKtx = "1.6.1"
+hilt = "2.48"
 hiltCompiler = "1.0.0"
 hiltNavigationCompose = "1.0.0"
 kotlinxDatetime = "0.4.0"
 lifecycleExtensions = "2.2.0"
-lifecycle = "2.6.1"
+lifecycle = "2.6.2"
 playServicesAnalyticsImpl = "18.0.3"
-material3 = "1.1.1"
-navavigation = "2.6.0"
+material3 = "1.1.2"
+navavigation = "2.7.4"
 runner = "1.5.2"
 timber = "5.0.1"
 gson = "2.10.1"
 coroutines = "1.7.1"
 junit = "4.13.2"
 room = "2.5.2"
-compose = "1.4.3"
-composeCompiler = "1.4.7"
-activityCompose = "1.7.2"
-viewModelCompose = "2.6.1"
+compose = "1.5.3"
+composeCompiler = "1.5.3"
+activityCompose = "1.8.0"
+viewModelCompose = "2.6.2"
 accompanist = "0.30.1"
 chart = "v3.1.0"
 androidxTestExtJunit = "1.1.5"
 espressoCore = "3.5.1"
-firebaseBom = "32.1.1"
-googleServices = "4.3.15"
+firebaseBom = "32.3.1"
+googleServices = "4.4.0"
 
 [libraries]
 kotlinx-datetime =                              { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -79,7 +79,6 @@ compose-ui-tooling =                            { group = "androidx.compose.ui",
 compose-ui-tooling-preview =                    { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 compose-ui-test-junit4 =                        { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
 compose-ui-test-manifest =                      { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose" }
-compose-material =                              { group = "androidx.compose.material", name = "material", version.ref = "compose" }
 compose-material-icons-core =                   { group = "androidx.compose.material", name = "material-icons-core", version.ref = "compose" }
 compose-material-icons-extended =               { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "compose" }
 compose-material3 =                             { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }

@@ -132,7 +132,7 @@ private fun StatisticLayout(
 ) {
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val pagerState = rememberPagerState(0)
+    val pagerState = rememberPagerState { 0 }
     val coroutineScope = rememberCoroutineScope()
     val systemUiController = rememberSystemUiController()
     val statusBarColor = MaterialTheme.colorScheme.secondaryContainer
@@ -285,7 +285,7 @@ private fun StatisticLayout(
             )
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-                pageCount = statisticTabs.size,
+//                pageCount = statisticTabs.size,
                 state = pagerState,
                 userScrollEnabled = false,
             ) { tabId ->
@@ -329,7 +329,7 @@ private fun StaticLayoutPreview() {
             selectedMonthModel = PreviewData.statisticByMonthModelPreviewData,
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByCategoryList = emptyList(),
-    //            onNavigationButtonClick = {},
+            //            onNavigationButtonClick = {},
             navigationIcon = { MotNavDrawerIcon {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
@@ -337,7 +337,7 @@ private fun StaticLayoutPreview() {
             ),
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel
-                ),
+            ),
             onCategoryModelSelected = {},
             onMonthCategoryClick = {},
             priceViewState = PreviewData.priceViewState

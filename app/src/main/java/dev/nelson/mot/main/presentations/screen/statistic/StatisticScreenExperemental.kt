@@ -99,7 +99,7 @@ private fun StatisticLayout(
     onExpandMonthItemClick: (StatisticByMonthModel) -> Unit = {}
 ) {
     val tabs = MotStatisticTab.getTabs()
-    val pagerState = rememberPagerState(0)
+    val pagerState = rememberPagerState { 0 }
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -113,7 +113,7 @@ private fun StatisticLayout(
                 title = { Text(text = appBarTitle) },
                 navigationIcon = appBarNavigationIcon,
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor =  MaterialTheme.colorScheme.secondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
                 ).also {
                     val view = LocalView.current
@@ -194,7 +194,7 @@ private fun StatisticLayout(
             )
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-                pageCount = tabs.size,
+//                pageCount = tabs.size,
                 state = pagerState,
             ) { tabId ->
                 when (tabs[tabId]) {

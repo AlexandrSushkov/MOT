@@ -28,5 +28,4 @@ include(":db")
 include(":core:ui")
 include(":core:test")
 include(":core:common")
-include(":lagacy") //legacy module
 include(":feature:settings")

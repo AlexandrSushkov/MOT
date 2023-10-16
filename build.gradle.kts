@@ -23,7 +23,7 @@ val versionCode by extra(17)
 val compileSdk by extra(33)
 val targetSdk by extra(33)
 val minSdk by extra(33)
-val buildToolsVersion by extra("30.0.3")
+val buildToolsVersion by extra("33.0.1")
 
 val javaVersion by extra(JavaVersion.VERSION_17)
 val jvmTarget by extra("17")
