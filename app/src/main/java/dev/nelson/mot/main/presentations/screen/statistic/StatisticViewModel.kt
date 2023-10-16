@@ -8,8 +8,8 @@ import com.github.tehras.charts.piechart.PieChartData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
+import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
@@ -43,9 +43,9 @@ class StatisticViewModel @Inject constructor(
     private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
     private val getStatisticForCurrentMonthUseCase: GetStatisticForCurrentMonthUseCase,
     private val getStatisticByMonthUseCase: GetStatisticByMonthUseCase,
-    private val getStatisticByCategoryUseCase: GetStatisticByCategoryUseCase,
+    private val getStatisticByCategoryUseCase: GetStatisticByCategoryUseCase
 
-    ) : BaseViewModel() {
+) : BaseViewModel() {
 
     /**
      * list of categories with total spendings
@@ -93,7 +93,6 @@ class StatisticViewModel @Inject constructor(
     val statByYearListViewState
         get() = _statByYearListViewState.asStateFlow()
     private val _statByYearListViewState = MutableStateFlow(emptyList<StatisticByYearModel>())
-
 
     init {
         launch {
@@ -195,7 +194,7 @@ class StatisticViewModel @Inject constructor(
                 .map { paymentsByMothModel ->
                     LineChartData.Point(
                         paymentsByMothModel.value.sumOfPaymentsForThisMonth.toFloat(),
-                        ""// label - x axis text
+                        "" // label - x axis text
                     )
                 }
             SelectedCategoryViewState(
@@ -216,7 +215,6 @@ class StatisticViewModel @Inject constructor(
     }
 
     fun onMonthCategoryClick(model: StatisticByCategoryModel) {
-
     }
 }
 

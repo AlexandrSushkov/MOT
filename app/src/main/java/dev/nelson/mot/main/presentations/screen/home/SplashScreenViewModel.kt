@@ -1,9 +1,6 @@
 package dev.nelson.mot.main.presentations.screen.home
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.nelson.mot.core.ui.view_state.AppThemeViewState
-import dev.nelson.mot.main.data.preferences.MotSwitchType
-import dev.nelson.mot.main.domain.use_case.settings.GetSwitchStatusUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +19,7 @@ class SplashScreenViewModel @Inject constructor() : BaseViewModel() {
 
     init {
         launch {
-            // do something
+            // imitate loading
 //            delay(1000)
 //            _isLoading.value = true
         }

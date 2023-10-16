@@ -24,7 +24,7 @@ import dev.utils.preview.MotPreview
 @Composable
 fun SelectAppThemeScreen(
     selectAppThemeViewModel: SelectAppThemeViewModel,
-    closeScreenAction: () -> Unit,
+    closeScreenAction: () -> Unit
 ) {
     val viewState by selectAppThemeViewModel.selectAppViewState.collectAsState()
 
@@ -40,7 +40,7 @@ fun SelectAppThemeScreen(
 private fun SelectAppThemeLayout(
     closeScreenAction: () -> Unit,
     viewState: SelectAppThemeViewState,
-    onThemeSelected: (MotAppTheme) -> Unit = {},
+    onThemeSelected: (MotAppTheme) -> Unit = {}
 ) {
     Scaffold(
         topBar = {

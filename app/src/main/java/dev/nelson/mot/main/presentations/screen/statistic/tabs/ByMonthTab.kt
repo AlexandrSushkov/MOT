@@ -26,7 +26,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
-import dev.nelson.mot.main.presentations.screen.statistic.StatisticByYearModel
 import dev.nelson.mot.main.presentations.widgets.MotExpandableItem
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -38,9 +37,8 @@ import java.util.Locale
 fun ByMonthTab(
     scrollBehavior: TopAppBarScrollBehavior,
     statByMonthList: List<StatisticByMonthModel>,
-    onExpandClick: (StatisticByMonthModel) -> Unit,
+    onExpandClick: (StatisticByMonthModel) -> Unit
 ) {
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -98,11 +96,11 @@ fun StatByMonthItem(
                         calendar.set(Calendar.MONTH, model.month - 1)
                         Text(
                             text = "${
-                                calendar.getDisplayName(
-                                    Calendar.MONTH,
-                                    Calendar.LONG,
-                                    Locale.getDefault()
-                                )
+                            calendar.getDisplayName(
+                                Calendar.MONTH,
+                                Calendar.LONG,
+                                Locale.getDefault()
+                            )
                             }/${model.year}"
                         )
                         Text(text = model.sumOfCategories.toString())

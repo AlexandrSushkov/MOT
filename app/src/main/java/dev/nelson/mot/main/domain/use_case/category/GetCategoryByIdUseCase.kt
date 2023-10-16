@@ -21,5 +21,4 @@ class GetCategoryByIdUseCase @Inject constructor(
      */
     override fun execute(params: Int): Flow<Category> = categoryRepository.getCategory(params)
         .map { it.toCategory() }
-
 }

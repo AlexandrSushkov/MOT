@@ -38,7 +38,7 @@ class SettingsViewModel @Inject constructor(
     private val exportDataBaseUseCase: ExportDataBaseUseCase,
     private val importDataBaseUseCase: ImportDataBaseUseCase,
     private val setSwitchStatusUseCase: SetSwitchStatusUseCase,
-    private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase,
+    private val randomizeDataBaseDataUseCase: RandomizeDataBaseDataUseCase
 ) : BaseViewModel() {
 
     // actions
@@ -123,18 +123,20 @@ class SettingsViewModel @Inject constructor(
         return AlertDialogParams(
             message = message,
             dismissClickCallback = { hideAlertDialog() },
-            onPositiveClickCallback = { hideAlertDialog() },
+            onPositiveClickCallback = { hideAlertDialog() }
         )
     }
 
     private fun getImportDataBaseDialog(uri: Uri): AlertDialogParams {
-        return AlertDialogParams(message = R.string.import_database_dialog_message,
+        return AlertDialogParams(
+            message = R.string.import_database_dialog_message,
             dismissClickCallback = { hideAlertDialog() },
             onPositiveClickCallback = {
                 hideAlertDialog()
                 importDataBase(uri)
             },
-            onNegativeClickCallback = { hideAlertDialog() })
+            onNegativeClickCallback = { hideAlertDialog() }
+        )
     }
 
     private fun importDataBase(uri: Uri) = launch {

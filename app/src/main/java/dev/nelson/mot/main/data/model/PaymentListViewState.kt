@@ -5,5 +5,5 @@ import java.util.Locale
 data class PaymentListViewState(
     val isShowCents: Boolean = false,
     val selectedLocale: Locale = Locale.getDefault(),
-    val paymentList: List<MotPaymentListItemModel> = emptyList(),
+    val paymentList: List<MotPaymentListItemModel> = emptyList()
 )

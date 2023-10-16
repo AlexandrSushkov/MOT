@@ -34,13 +34,11 @@ import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch
 
-
-
 @Composable
 fun CategoriesListBottomSheet(
     categories: List<Category>,
     selectedCategory: Category? = null,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Category) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val layColumnState = rememberLazyListState()
@@ -115,7 +113,7 @@ private fun getFavoriteCategoryContainerShape(
 
     val topRoundedCornerShape = RoundedCornerShape(
         topStart = cornerRadius,
-        topEnd = cornerRadius,
+        topEnd = cornerRadius
     )
     val bottomRoundedCornerShape = RoundedCornerShape(
         bottomStart = cornerRadius,
@@ -145,7 +143,7 @@ private fun CategoriesListBottomSheetPreview() {
         CategoriesListBottomSheet(
             categories = categories,
             onCategoryClick = {},
-            selectedCategory = categories[0],
+            selectedCategory = categories[0]
         )
     }
 }

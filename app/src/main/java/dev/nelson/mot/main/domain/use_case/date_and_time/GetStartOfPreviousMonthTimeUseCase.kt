@@ -1,9 +1,13 @@
 package dev.nelson.mot.main.domain.use_case.date_and_time
 
 import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import java.util.*
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
+import java.util.Calendar
 import javax.inject.Inject
 
 /**
@@ -23,7 +27,6 @@ class GetStartOfPreviousMonthTimeUseCase @Inject constructor(
                 .apply { set(previousYear, 12, 1) }
                 .time
                 .time
-
         } else {
             // take the first day of the the previous month.
             val previousMonth = date.minus(1, DateTimeUnit.MONTH)

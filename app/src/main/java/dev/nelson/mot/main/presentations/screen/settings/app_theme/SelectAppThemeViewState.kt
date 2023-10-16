@@ -4,5 +4,5 @@ import dev.nelson.mot.core.ui.model.MotAppTheme
 
 data class SelectAppThemeViewState(
     val appThemeList: List<MotAppTheme> = MotAppTheme.getThemes(),
-    val selectedAppTheme: MotAppTheme = MotAppTheme.default,
+    val selectedAppTheme: MotAppTheme = MotAppTheme.default
 )

@@ -14,12 +14,12 @@ import dev.nelson.mot.core.ui.MotNavBackIcon
 import dev.nelson.mot.core.ui.MotNavDrawerIcon
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.category_details.CategoryDetailsScreen
-import dev.nelson.mot.main.presentations.screen.settings.country_picker.CountryPickerScreen
 import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen
 import dev.nelson.mot.main.presentations.screen.payment_details.PaymentDetailsScreen
 import dev.nelson.mot.main.presentations.screen.payment_list.PaymentListScreen
 import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
 import dev.nelson.mot.main.presentations.screen.settings.app_theme.SelectAppThemeScreen
+import dev.nelson.mot.main.presentations.screen.settings.country_picker.CountryPickerScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreen
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticScreenExperemental
 import dev.nelson.mot.main.util.constant.Constants
@@ -54,9 +54,9 @@ fun MotNavHost(
                 DashboardScreen(
                     viewModel = hiltViewModel(),
                     appBarTitle = "dashboard",
-                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
+                    appBarNavigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } }
                 )
-            },
+            }
         )
         composable(
             route = Payments.route,
@@ -75,9 +75,9 @@ fun MotNavHost(
                         navController.navigate(
                             route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
                         )
-                    },
+                    }
                 )
-            },
+            }
         )
         composable(
             route = "${Payments.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
@@ -97,7 +97,7 @@ fun MotNavHost(
                         navController.navigate(
                             route = "${PaymentDetails.route}?${Constants.CATEGORY_ID_KEY}=$categoryId"
                         )
-                    },
+                    }
                 )
             },
             arguments = listOf(navArgument(Constants.CATEGORY_ID_KEY) { type = NavType.IntType })
@@ -136,7 +136,8 @@ fun MotNavHost(
             content = {
                 PaymentDetailsScreen(
                     viewModel = hiltViewModel(),
-                    closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() })
+                    closeScreen = { if (isOpenedFromWidget) finishAction.invoke() else navController.popBackStack() }
+                )
             }
         )
         composable(
@@ -151,7 +152,7 @@ fun MotNavHost(
                         navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
                 )
-            },
+            }
         )
         composable(
             route = "${CategoryDetails.route}?${Constants.CATEGORY_ID_KEY}={${Constants.CATEGORY_ID_KEY}}",
@@ -170,7 +171,7 @@ fun MotNavHost(
                     viewModel = hiltViewModel(),
                     closeScreen = { navController.popBackStack() }
                 )
-            },
+            }
         )
         composable(
             route = StatisticExperimental.route,
@@ -180,7 +181,7 @@ fun MotNavHost(
                     appBarTitle = "Statistic Old",
                     appBarNavigationIcon = { MotNavBackIcon { navController.popBackStack() } }
                 )
-            },
+            }
         )
         composable(
             route = Statistic.route,
@@ -193,7 +194,7 @@ fun MotNavHost(
                         navController.navigate("${Payments.route}?${Constants.CATEGORY_ID_KEY}=$categoryId")
                     }
                 )
-            },
+            }
         )
         composable(
             route = Settings.route,
@@ -202,9 +203,9 @@ fun MotNavHost(
                     settingsViewModel = hiltViewModel(),
                     navigationIcon = { MotNavDrawerIcon { coroutineScope.launch { navigationDrawerState.open() } } },
                     openCountryPickerScreen = { navController.navigate(CountryPicker.route) },
-                    openAppThemePickerScreen = { navController.navigate(AppThemePicker.route) },
+                    openAppThemePickerScreen = { navController.navigate(AppThemePicker.route) }
                 )
-            },
+            }
         )
         composable(
             route = CountryPicker.route,
@@ -213,16 +214,16 @@ fun MotNavHost(
                     countryPickerViewModel = hiltViewModel(),
                     closeScreenAction = { navController.popBackStack() }
                 )
-            },
+            }
         )
         composable(
             route = AppThemePicker.route,
             content = {
                 SelectAppThemeScreen(
                     selectAppThemeViewModel = hiltViewModel(),
-                    closeScreenAction = { navController.popBackStack() },
+                    closeScreenAction = { navController.popBackStack() }
                 )
-            },
+            }
         )
     }
 }

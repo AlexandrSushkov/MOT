@@ -28,8 +28,8 @@ import dev.nelson.mot.core.ui.MotMaterialTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
-import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -59,16 +59,16 @@ fun StatisticByCategoryTabLayout(
                         topStart = 0.dp,
                         topEnd = 0.dp,
                         bottomStart = 24.dp,
-                        bottomEnd = 24.dp,
+                        bottomEnd = 24.dp
                     ),
-                    elevation = CardDefaults.cardElevation(4.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Column {
                         MotLineChart(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                            selectedCategoryViewState = selectedCategoryViewState,
+                            selectedCategoryViewState = selectedCategoryViewState
                         )
 //                        Row {
 //                            Text(
@@ -90,7 +90,7 @@ fun StatisticByCategoryTabLayout(
                                 modifier = Modifier.weight(1f),
                                 text = selectedCategoryViewState.selectedTimeModel.category?.name
                                     ?: "No category",
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             PriceText(
                                 price = selectedCategoryViewState.selectedTimeModel.totalPrice,
@@ -117,11 +117,11 @@ fun StatisticByCategoryTabLayout(
                                     ) {
                                         Text(
                                             text = it.key.monthText,
-                                            style = MaterialTheme.typography.titleMedium,
+                                            style = MaterialTheme.typography.titleMedium
                                         )
                                         PriceText(
                                             price = it.value.sumOfPaymentsForThisMonth,
-                                            priceViewState = priceViewState,
+                                            priceViewState = priceViewState
                                         )
                                     }
                                 }
@@ -145,7 +145,7 @@ private fun StatisticByCategoryTabLayoutPreview() {
         StatisticByCategoryTabLayout(
             scrollBehavior = behavior,
             selectedCategoryViewState = SelectedCategoryViewState(
-                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
+                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel
             ),
             priceViewState = PreviewData.priceViewState
         )
@@ -161,7 +161,7 @@ private fun StatisticByCategoryTabLayoutEmptyContentPreview() {
         StatisticByCategoryTabLayout(
             scrollBehavior = behavior,
             selectedCategoryViewState = SelectedCategoryViewState(
-                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModelEmpty,
+                selectedTimeModel = PreviewData.statisticByCategoryPerMonthModelEmpty
             ),
             priceViewState = PreviewData.priceViewState
         )

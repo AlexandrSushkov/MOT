@@ -121,14 +121,14 @@ private fun StatisticLayout(
                         val window = (view.context as Activity).window
                         window.statusBarColor = appBarColor.toArgb()
                     }
-                },
+                }
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues = innerPadding),
+                .padding(paddingValues = innerPadding)
         ) {
             val textWidth = remember { mutableStateOf(0) }
 
@@ -161,7 +161,7 @@ private fun StatisticLayout(
                             )
                             .onGloballyPositioned { coordinates ->
                                 textWidth.value = coordinates.size.width
-                            },
+                            }
                     )
                 },
 //                divider = {
@@ -187,19 +187,19 @@ private fun StatisticLayout(
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(index)
                                 }
-                            },
+                            }
                         )
                     }
                 }
             )
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-                state = pagerState,
+                state = pagerState
             ) { tabId ->
                 when (tabs[tabId]) {
                     is MotStatisticTab.CurrentMonth -> CurrentMonthTab(
                         scrollBehavior = scrollBehavior,
-                        model = statCurrentMothList,
+                        model = statCurrentMothList
                     )
 
                     is MotStatisticTab.ByMonth -> ByMonthTab(
@@ -273,7 +273,7 @@ fun Tab3(scrollBehavior: TopAppBarScrollBehavior) {
         "test 9 tab 1",
         "test 10 tab 1",
         "test 11 tab 1",
-        "test 12 tab 1",
+        "test 12 tab 1"
     )
 
     val listState = rememberLazyListState()
@@ -317,7 +317,7 @@ fun Tab2(scrollBehavior: TopAppBarScrollBehavior) {
         "test 9 tab 2",
         "test 10 tab 2",
         "test 11 tab 2",
-        "test 12 tab 2",
+        "test 12 tab 2"
     )
 
     val listState = rememberLazyListState()
@@ -344,7 +344,6 @@ fun Tab2(scrollBehavior: TopAppBarScrollBehavior) {
         }
     )
 }
-
 
 @Composable
 fun StatisticContent() {

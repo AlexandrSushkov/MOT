@@ -18,6 +18,6 @@ fun MotSingleLineText(
         modifier = modifier,
         style = style,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
+        overflow = TextOverflow.Ellipsis
     )
 }

@@ -32,7 +32,7 @@ import dev.utils.preview.MotPreview
 @Composable
 fun CurrentMonthTab(
     scrollBehavior: TopAppBarScrollBehavior,
-    model: List<StatisticByCategoryModel>,
+    model: List<StatisticByCategoryModel>
 ) {
     val expandedState = remember { MutableTransitionState(true) }
     expandedState.targetState = true

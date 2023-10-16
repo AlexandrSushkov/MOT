@@ -6,6 +6,7 @@ plugins {
     kotlin("kapt")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
 }
 
 android {
@@ -20,7 +21,6 @@ android {
             useSupportLibrary = true
         }
 
-//        applicationId = appId
         applicationId = "dev.nelson.mot"
         minSdk = rootProject.extra["minSdk"] as Int
         targetSdk = rootProject.extra["targetSdk"] as Int
@@ -93,17 +93,17 @@ dependencies {
     implementation(libs.androidx.runner)
     implementation(libs.androidx.core.splashscreen)
 
-    //android support
+    // android support
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.fragment.ktx)
 
-    //navigation
+    // navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    //Lifecycle
+    // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.common.java8)
@@ -113,14 +113,14 @@ dependencies {
     // Preferences
     implementation(libs.androidx.datastore.preferences)
 
-    //compose
+    // compose
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.test.manifest)
     implementation(libs.activity.compose) // Integration with activities
     implementation(libs.viewmodel.compose) // Integration with ViewModels
     implementation(libs.accompanist.permissions) // compose permissions
 
-    //DI
+    // DI
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
     androidTestImplementation(libs.hilt.android.testing)
@@ -128,12 +128,12 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.androidx.hilt.compiler)
 
-    //other
+    // other
     implementation(libs.kotlinx.datetime)
     implementation(libs.chart)
     implementation(libs.charts)
 
-    //firebase
+    // firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.config.ktx)

@@ -1,18 +1,18 @@
 package dev.nelson.mot.main.domain.use_case.category
 
 import android.content.res.Resources
+import dev.nelson.mot.R
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.data.model.MotListItemModel
+import dev.nelson.mot.main.data.repository.base.PaymentRepository
 import dev.nelson.mot.main.domain.use_case.base.UseCaseFlow
 import dev.nelson.mot.main.presentations.screen.categories_list.CategoryListScreen
-import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.data.repository.base.PaymentRepository
 import dev.nelson.mot.main.util.UUIDUtils
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
-import dev.nelson.mot.R
-import dev.nelson.mot.main.data.model.MotListItemModel
 
 /**
  * Used on [CategoryListScreen] to show all categories.
@@ -20,7 +20,7 @@ import dev.nelson.mot.main.data.model.MotListItemModel
 class GetCategoryListItemsUseCase @Inject constructor(
     private val getAllCategoriesOrderedByName: GetAllCategoriesOrderedByNameUseCase,
     private val paymentRepository: PaymentRepository,
-    private val resources: Resources,
+    private val resources: Resources
 ) : UseCaseFlow<SortingOrder, List<MotListItemModel>> {
 
     /**
@@ -64,12 +64,12 @@ class GetCategoryListItemsUseCase @Inject constructor(
                 )
                 add(MotListItemModel.Item(noCategory, UUIDUtils.randomKey))
             }
-            //add categories items
+            // add categories items
             value.forEach { (letter, categoryList) ->
                 add(MotListItemModel.Header(letter.toString(), UUIDUtils.randomKey))
                 addAll(categoryList.map { category -> category.toCategoryItemModel() })
             }
-            //add footer
+            // add footer
             add(MotListItemModel.Footer(UUIDUtils.randomKey))
         }
     }
@@ -78,4 +78,3 @@ class GetCategoryListItemsUseCase @Inject constructor(
         return MotListItemModel.Item(this, UUIDUtils.randomKey)
     }
 }
-

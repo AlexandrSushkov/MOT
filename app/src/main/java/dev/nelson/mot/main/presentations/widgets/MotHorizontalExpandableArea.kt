@@ -20,13 +20,13 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Payment
-import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
+import dev.utils.MotTransitions
 
 @Composable
 fun MotHorizontalExpandableArea(
-    payment: Payment,
+    payment: Payment
 //    content: @Composable BoxScope.() -> Unit
 ) {
     val transitionState = remember { MutableTransitionState(payment.isExpanded) }
@@ -45,11 +45,11 @@ fun MotHorizontalExpandableArea(
         androidx.compose.animation.AnimatedVisibility(
             visibleState = transitionState,
             enter = enterTransition,
-            exit = exitTransition,
+            exit = exitTransition
         ) {
             Text(
                 text = payment.message,
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
         IconButton(
@@ -61,7 +61,7 @@ fun MotHorizontalExpandableArea(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
                     contentDescription = "Expandable Arrow",
-                    modifier = Modifier.rotate(arrowRotationDegree),
+                    modifier = Modifier.rotate(arrowRotationDegree)
                 )
             }
         )
@@ -72,6 +72,6 @@ fun MotHorizontalExpandableArea(
 @Composable
 private fun MotExpandableAreaPreview() {
     MotHorizontalExpandableArea(
-        payment = PreviewData.paymentItemPreview,
+        payment = PreviewData.paymentItemPreview
     )
 }

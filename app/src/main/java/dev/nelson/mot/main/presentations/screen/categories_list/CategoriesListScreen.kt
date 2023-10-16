@@ -85,9 +85,8 @@ import kotlinx.coroutines.delay
 fun CategoryListScreen(
     viewModel: CategoriesListViewModel,
     appBarNavigationIcon: @Composable () -> Unit = {},
-    openPaymentsByCategoryAction: (Int?) -> Unit,
+    openPaymentsByCategoryAction: (Int?) -> Unit
 ) {
-
     val titleStringsRes by viewModel.titleStringRes.collectAsState(R.string.categories)
     val categoriesListUiState by viewModel.categoriesResult.collectAsState()
     val categoryToEditId by viewModel.categoryToEditId.collectAsState()
@@ -140,7 +139,7 @@ fun CategoryListLayout(
     onSwipeCategory: (MotListItemModel.Item) -> Unit,
     snackbarVisibleState: Boolean,
     deleteItemsCountText: String,
-    undoDeleteClickEvent: () -> Unit,
+    undoDeleteClickEvent: () -> Unit
 ) {
     val categoriesListScrollingState = rememberLazyListState()
     val appBerScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -171,7 +170,7 @@ fun CategoryListLayout(
             FloatingActionButton(onClick = onAddCategoryClickEvent) {
                 Icon(Icons.Default.Add, stringResource(R.string.accessibility_add_icon))
             }
-        },
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -200,7 +199,7 @@ fun CategoryList(
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit,
-    scrollState: LazyListState,
+    scrollState: LazyListState
 ) {
     when (categoriesListUiState) {
         is Success -> {
@@ -233,7 +232,7 @@ fun CategoryList(
                                                         categoryListItem.category,
                                                         onCategoryClick,
                                                         onCategoryLongPress,
-                                                        onFavoriteClick,
+                                                        onFavoriteClick
                                                     )
                                                 }
                                             } else {
@@ -312,7 +311,7 @@ fun CategoryListItem(
     category: Category,
     onCategoryClick: (Int?) -> Unit,
     onCategoryLongPress: (Category) -> Unit,
-    onFavoriteClick: (Category, Boolean) -> Unit,
+    onFavoriteClick: (Category, Boolean) -> Unit
 ) {
     val favoriteIcon = if (category.isFavorite) Icons.Filled.Star else Icons.Filled.StarBorder
 
@@ -326,7 +325,7 @@ fun CategoryListItem(
                 onLongClick = {
                     category.id?.let { if (it > 0) onCategoryLongPress.invoke(category) }
                 }
-            ),
+            )
     ) {
         ListItem(
             headlineContent = {
@@ -342,7 +341,7 @@ fun CategoryListItem(
                             checked = category.isFavorite,
                             onCheckedChange = { isChecked ->
                                 onFavoriteClick.invoke(category, isChecked)
-                            },
+                            }
                         ) {
                             Icon(
                                 favoriteIcon,
@@ -364,7 +363,7 @@ private fun EditCategoryDialog(
     categoryNameState: TextFieldValue,
     onCategoryNameChanged: (TextFieldValue) -> Unit,
     closeEditCategoryDialog: () -> Unit,
-    onSaveCategoryClick: () -> Unit,
+    onSaveCategoryClick: () -> Unit
 ) {
     val categoryNameFocusRequester = remember { FocusRequester() }
 
@@ -373,7 +372,8 @@ private fun EditCategoryDialog(
         block = {
             delay(Constants.DEFAULT_ANIMATION_DELAY)
             categoryNameFocusRequester.requestFocus()
-        })
+        }
+    )
 
     AlertDialog(
         onDismissRequest = closeEditCategoryDialog,
@@ -453,7 +453,7 @@ private fun CategoryListLayoutErrorPreview() {
 @Composable
 private fun CategoryListLayoutPreviewData(
     categoriesListUiState: MotUiState<List<MotListItemModel>>,
-    snackbarVisibleState: Boolean = false,
+    snackbarVisibleState: Boolean = false
 ) {
     MotMaterialTheme {
         CategoryListLayout(

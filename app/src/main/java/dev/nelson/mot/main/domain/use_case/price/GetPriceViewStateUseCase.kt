@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetPriceViewStateUseCase @Inject constructor(
     private val getSwitchStatusUseCase: GetSwitchStatusUseCase,
-    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase,
+    private val getSelectedLocaleUseCase: GetSelectedLocaleUseCase
 ) : UseCaseFlow<Nothing?, PriceViewState> {
 
     override fun execute(params: Nothing?): Flow<PriceViewState> {
@@ -20,13 +20,13 @@ class GetPriceViewStateUseCase @Inject constructor(
             getSelectedLocaleUseCase.execute(),
             getSwitchStatusUseCase.execute(MotSwitchType.ShowCents),
             getSwitchStatusUseCase.execute(MotSwitchType.ShowCurrencySymbol),
-            getSwitchStatusUseCase.execute(MotSwitchType.ShowDigits),
+            getSwitchStatusUseCase.execute(MotSwitchType.ShowDigits)
         ) { locale, showCents, showCurrencySymbol, hideDigits ->
             PriceViewState(
                 locale = locale,
                 isShowCents = showCents,
                 isShowCurrencySymbol = showCurrencySymbol,
-                isShowDigits = hideDigits,
+                isShowDigits = hideDigits
             )
         }
     }

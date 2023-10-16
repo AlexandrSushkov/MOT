@@ -44,10 +44,10 @@ import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
-import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.capitalizeFirstLetter
+import dev.utils.MotTransitions
 import dev.utils.preview.MotPreview
 
 @Composable
@@ -102,7 +102,7 @@ private fun DateRangeWidgetPreview() {
 fun PaymentListDateItem(date: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        tonalElevation = 4.dp,
+        tonalElevation = 4.dp
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -185,17 +185,18 @@ fun PaymentListItem(
                     onLongClick.invoke(paymentItemModel)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 }
-            }),
+            }
+        ),
         colors = CardDefaults.cardColors(
             containerColor = cardBackgroundColorState
-        ),
+        )
     ) {
         Row {
             Column(modifier = Modifier.align(Alignment.CenterVertically)) {
                 AnimatedVisibility(
                     visibleState = checkBoxTransitionState,
                     enter = checkBoxEnterTransition,
-                    exit = checkBoxExitTransition,
+                    exit = checkBoxExitTransition
                 ) {
                     Checkbox(
                         modifier = Modifier.padding(horizontal = 8.dp),
@@ -222,13 +223,13 @@ fun PaymentListItem(
                             Column(modifier = Modifier.weight(1f)) {
                                 MotSingleLineText(
                                     text = paymentItemModel.payment.name.capitalizeFirstLetter(),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.titleMedium
                                 )
                                 if (paymentItemModel.showCategory) {
                                     paymentItemModel.payment.category?.name?.let {
                                         MotSingleLineText(
                                             text = it,
-                                            style = MaterialTheme.typography.labelMedium,
+                                            style = MaterialTheme.typography.labelMedium
                                         )
                                     }
                                 }
@@ -239,7 +240,7 @@ fun PaymentListItem(
                                 PriceText(
                                     modifier = Modifier.padding(start = 16.dp),
                                     price = paymentItemModel.payment.cost,
-                                    priceViewState = priceViewState,
+                                    priceViewState = priceViewState
                                 )
                             }
                         }
@@ -249,7 +250,7 @@ fun PaymentListItem(
                                     style = MaterialTheme.typography.bodySmall,
                                     text = paymentItemModel.payment.message,
                                     overflow = TextOverflow.Ellipsis,
-                                    maxLines = 2,
+                                    maxLines = 2
                                 )
                             }
                         }
@@ -262,7 +263,6 @@ fun PaymentListItem(
 //                            priceViewState = priceViewState,
 //                        )
                     }
-
                 }
             }
         }

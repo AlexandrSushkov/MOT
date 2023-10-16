@@ -17,7 +17,6 @@ class RandomizeDataBaseDataUseCase @Inject constructor(
                 category.copy(name = testCategoriesNames[index])
             } else {
                 category.copy(name = testCategoriesNames.random())
-
             }
         }
         categoryRepository.editCategories(randomizedCategories)

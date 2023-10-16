@@ -49,13 +49,13 @@ fun MotExpandableItem(
     val enterTransition = remember {
         expandVertically(
             expandFrom = Alignment.Top,
-            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         )
     }
     val exitTransition = remember {
         shrinkVertically(
             shrinkTowards = Alignment.Top,
-            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION),
+            animationSpec = tween(Constants.DEFAULT_ANIMATION_DURATION)
         )
     }
 
@@ -63,7 +63,7 @@ fun MotExpandableItem(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             titleContent()
             IconButton(
@@ -72,7 +72,7 @@ fun MotExpandableItem(
                     Icon(
                         imageVector = expandButtonIcon,
                         contentDescription = "Expandable Arrow",
-                        modifier = Modifier.rotate(arrowRotationDegree),
+                        modifier = Modifier.rotate(arrowRotationDegree)
                     )
                 }
             )
@@ -101,7 +101,7 @@ private fun MotExpandableItemPreview() {
                 expandedContent = {
                     Text(
                         text = payment.message,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 },
                 expandButtonIcon = Icons.Default.KeyboardArrowUp,

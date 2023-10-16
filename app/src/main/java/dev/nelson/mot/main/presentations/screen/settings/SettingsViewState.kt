@@ -7,7 +7,7 @@ import java.util.Locale
 
 data class SettingsViewState(
     val selectedAppTheme: MotAppTheme = MotAppTheme.default,
-    val isDynamicThemeSwitchChecked: Boolean= false,
+    val isDynamicThemeSwitchChecked: Boolean = false,
     val isShowCentsSwitchChecked: Boolean = false,
     val isShowCurrencySymbolSwitchChecked: Boolean = false,
     val isShowDigitsSwitchChecked: Boolean = false,

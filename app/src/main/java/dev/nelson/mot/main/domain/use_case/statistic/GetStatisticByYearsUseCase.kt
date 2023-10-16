@@ -13,7 +13,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class GetStatisticByYearsUseCase @Inject constructor(
-    private val paymentRepository: PaymentRepositoryImpl,
+    private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseFlow<Nothing?, List<StatisticByYearModel>> {
 
     private val calendar = Calendar.getInstance()
@@ -21,7 +21,7 @@ class GetStatisticByYearsUseCase @Inject constructor(
     override fun execute(params: Nothing?): Flow<List<StatisticByYearModel>> {
         val payments = paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
             startTime = 0,
-            categoryId = null,
+            categoryId = null
         )
         // sort payment by year
         return payments.map {
@@ -35,7 +35,7 @@ class GetStatisticByYearsUseCase @Inject constructor(
                 val categoryToPaymentListMap = yearPaymentsEntity.value.groupBy { it.categoryEntity }
                 val statByCategoryList = categoryToPaymentListMap.map { categoryPaymentsEntity ->
                     val sumOfPaymentsInCategory = categoryPaymentsEntity.value.sumOf { it.paymentEntity.cost }
-                    val percentage = (sumOfPaymentsInCategory.toDouble() / sumTotal.toDouble() ) * 100.0
+                    val percentage = (sumOfPaymentsInCategory.toDouble() / sumTotal.toDouble()) * 100.0
                     StatisticByCategoryModel(
                         key = UUIDUtils.randomKey,
                         category = categoryPaymentsEntity.key?.toCategory(),

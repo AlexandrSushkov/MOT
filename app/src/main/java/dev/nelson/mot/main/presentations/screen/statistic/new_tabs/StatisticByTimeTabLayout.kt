@@ -40,8 +40,8 @@ import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
-import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.theme.lightChartColors
@@ -79,9 +79,9 @@ fun StatisticByTimeTabLayout(
                         topStart = 0.dp,
                         topEnd = 0.dp,
                         bottomStart = 24.dp,
-                        bottomEnd = 24.dp,
+                        bottomEnd = 24.dp
                     ),
-                    elevation = CardDefaults.cardElevation(4.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Column {
                         Spacer(modifier = Modifier.height(16.dp))
@@ -103,7 +103,7 @@ fun StatisticByTimeTabLayout(
                         ) {
                             Text(
                                 text = selectedMonthModel.monthText,
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleLarge
                             )
                             PriceText(
                                 price = selectedMonthModel.sumOfCategories,
@@ -143,12 +143,12 @@ fun StatisticByTimeTabLayout(
                                             MotSingleLineText(
                                                 modifier = Modifier.weight(1f),
                                                 text = item.category?.name ?: "No category",
-                                                style = MaterialTheme.typography.titleMedium,
+                                                style = MaterialTheme.typography.titleMedium
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             PriceText(
                                                 price = item.sumOfPayments,
-                                                priceViewState = priceViewState,
+                                                priceViewState = priceViewState
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Box(
@@ -160,7 +160,7 @@ fun StatisticByTimeTabLayout(
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Text(
                                                 text = "%.1f%%".format(item.percentage),
-                                                style = MaterialTheme.typography.titleMedium,
+                                                style = MaterialTheme.typography.titleMedium
                                             )
                                         }
                                     }
@@ -214,7 +214,7 @@ private fun StatisticByTimeTabLayoutEmptyPreview() {
             scrollBehavior = behavior,
             model = PreviewData.statisticByMonthListPreviewData,
             selectedTimeViewState = SelectedTimeViewState(
-                selectedTimeModel = PreviewData.statisticByMonthModelEmptyPreviewData,
+                selectedTimeModel = PreviewData.statisticByMonthModelEmptyPreviewData
             ),
             onMonthModelSelected = {},
             onMonthCategoryClick = {},

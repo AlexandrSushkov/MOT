@@ -9,11 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ByCategoryTab(
-    scrollBehavior: TopAppBarScrollBehavior,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     LazyColumn(
         modifier = Modifier
@@ -25,5 +24,4 @@ fun ByCategoryTab(
             }
         }
     )
-
 }

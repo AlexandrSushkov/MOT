@@ -96,6 +96,5 @@ val initialMotDrawerItemsLists = listOf(
     MotDrawerItem(Categories, true),
     MotDrawerItem(StatisticExperimental),
     MotDrawerItem(Statistic),
-    MotDrawerItem(Settings, true),
+    MotDrawerItem(Settings, true)
 )
-

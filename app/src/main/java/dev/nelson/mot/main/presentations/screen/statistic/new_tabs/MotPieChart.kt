@@ -31,7 +31,6 @@ import dev.nelson.mot.main.util.toIntRepresentation
 import dev.theme.lightChartColors
 import dev.utils.formatPrice
 import dev.utils.preview.MotPreview
-import timber.log.Timber
 
 @Composable
 fun MotPieChart(
@@ -41,11 +40,10 @@ fun MotPieChart(
     onPieEntrySelected: (Int) -> Unit, // category id
     onNothingSelected: () -> Unit
 ) {
-
     var initialViewState by remember { mutableStateOf(SelectedTimeViewState()) }
     val isClearPieChart =
         selectedTimeViewState.selectedTimeModel.month != initialViewState.selectedTimeModel.month ||
-                selectedTimeViewState.selectedTimeModel.year != initialViewState.selectedTimeModel.year
+            selectedTimeViewState.selectedTimeModel.year != initialViewState.selectedTimeModel.year
     initialViewState = selectedTimeViewState
     val categories = selectedTimeViewState.selectedTimeModel.categoriesModelList
     val entries = selectedTimeViewState.selectedTimePieChartData.slices.mapIndexed { index, slice ->
@@ -97,27 +95,27 @@ fun MotPieChart(
 
                 data = pieData
                 setOnChartValueSelectedListener(object :
-                    OnChartValueSelectedListener {
-                    override fun onNothingSelected() {
-                        centerText = StringUtils.EMPTY
-                    }
-
-                    override fun onValueSelected(e: Entry?, h: Highlight?) {
-                        val categoryId = (e as? PieEntry)?.label?.toInt()
-                        categoryId?.let {
-                            onPieEntrySelected.invoke(it)
-                            initialViewState.selectedTimeModel
-                                .categoriesModelList
-                                .find { categoryModel -> categoryModel.category?.id == it }
-                                ?.let { selectedCategoryModel ->
-                                    val formattedCenterText =
-                                        formatCenterText(selectedCategoryModel, priceViewState)
-                                    setCenterTextColor(centerTextColor.toIntRepresentation())
-                                    this@apply.centerText = formattedCenterText
-                                }
+                        OnChartValueSelectedListener {
+                        override fun onNothingSelected() {
+                            centerText = StringUtils.EMPTY
                         }
-                    }
-                })
+
+                        override fun onValueSelected(e: Entry?, h: Highlight?) {
+                            val categoryId = (e as? PieEntry)?.label?.toInt()
+                            categoryId?.let {
+                                onPieEntrySelected.invoke(it)
+                                initialViewState.selectedTimeModel
+                                    .categoriesModelList
+                                    .find { categoryModel -> categoryModel.category?.id == it }
+                                    ?.let { selectedCategoryModel ->
+                                        val formattedCenterText =
+                                            formatCenterText(selectedCategoryModel, priceViewState)
+                                        setCenterTextColor(centerTextColor.toIntRepresentation())
+                                        this@apply.centerText = formattedCenterText
+                                    }
+                            }
+                        }
+                    })
             }
         },
         update = { chart ->

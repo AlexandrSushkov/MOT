@@ -20,7 +20,7 @@ sealed class MotPaymentListItemModel {
         val payment: Payment,
         val showCategory: Boolean,
         override val key: String = UUIDUtils.randomKey,
-        override val isShow: Boolean = true,
+        override val isShow: Boolean = true
     ) : MotPaymentListItemModel()
 
     /**

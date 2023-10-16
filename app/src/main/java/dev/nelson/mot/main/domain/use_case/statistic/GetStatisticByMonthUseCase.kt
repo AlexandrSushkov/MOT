@@ -15,15 +15,13 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class GetStatisticByMonthUseCase @Inject constructor(
-    private val paymentRepository: PaymentRepositoryImpl,
+    private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseFlow<Nothing?, List<StatisticByMonthModel>> {
 
     private val calendar = Calendar.getInstance()
 
     override fun execute(params: Nothing?): Flow<List<StatisticByMonthModel>> {
-        val payments = paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
-            startTime = 0,
-        )
+        val payments = paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(0)
         // sort payment by year
         return payments.map {
             it.groupBy { paymentWithCategory ->

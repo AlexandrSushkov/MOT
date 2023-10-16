@@ -1,8 +1,8 @@
 package dev.nelson.mot.main.domain.use_case.settings
 
+import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.nelson.mot.main.data.repository.SettingsRepository
 import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
-import dev.nelson.mot.core.ui.model.MotAppTheme
 import javax.inject.Inject
 
 class SetAppThemeUseCase @Inject constructor(

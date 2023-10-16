@@ -1,9 +1,7 @@
 package dev.nelson.mot.main.domain.use_case.settings
 
 import dev.nelson.mot.main.data.repository.SettingsRepository
-import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.domain.use_case.base.UseCaseSuspend
-import java.io.File
 import javax.inject.Inject
 
 /**

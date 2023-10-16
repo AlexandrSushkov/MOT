@@ -4,8 +4,8 @@ import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
+import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
 import dev.nelson.mot.main.util.UUIDUtils
@@ -36,7 +36,7 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
         return paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
             startTime,
             category?.id,
-            order is SortingOrder.Ascending,
+            order is SortingOrder.Ascending
         ).map { payments ->
             payments.filter { payment ->
                 if (onlyPaymentsWithoutCategory) {

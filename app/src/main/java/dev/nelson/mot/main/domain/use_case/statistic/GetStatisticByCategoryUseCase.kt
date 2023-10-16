@@ -16,7 +16,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 class GetStatisticByCategoryUseCase @Inject constructor(
-    private val paymentRepository: PaymentRepositoryImpl,
+    private val paymentRepository: PaymentRepositoryImpl
 ) : UseCaseFlow<Nothing?, List<StatisticByCategoryPerMonthModel>> {
 
     private val calendar = Calendar.getInstance()
@@ -93,13 +93,10 @@ data class StatisticByCategoryPerMonthModel(
 data class Month(
     val monthText: String = StringUtils.EMPTY,
     val month: Int = 0,
-    val year: Int = 0,
+    val year: Int = 0
 )
 
-/**
- *
- */
 data class StatisticForMonthForCategoryModel(
     val sumOfPaymentsForThisMonth: Int = 0,
-    val payments: List<Payment>,
+    val payments: List<Payment>
 )

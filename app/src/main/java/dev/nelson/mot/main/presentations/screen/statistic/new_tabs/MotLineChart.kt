@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -99,14 +99,12 @@ fun formatPriceShort(number: Long): String {
     }
 }
 
-
 @Composable
 fun MotLineChart(
     modifier: Modifier = Modifier,
     selectedCategoryViewState: SelectedCategoryViewState,
     appThemeViewState: AppThemeViewState = AppThemeViewState()
 ) {
-
     var initialViewState by remember { mutableStateOf(SelectedCategoryViewState()) }
     val isClearLineChart =
         selectedCategoryViewState.selectedTimeModel.category != initialViewState.selectedTimeModel.category
@@ -169,9 +167,9 @@ fun MotLineChart(
 
                 description.isEnabled = false
                 legend.isEnabled = false
-                //set up marker view
+                // set up marker view
 
-                //set up marker view
+                // set up marker view
                 val mv = object : MarkerView(context, R.layout.mot_chart_marker) {
                     override fun refreshContent(e: Entry, highlight: Highlight) {
                         findViewById<RelativeLayout>(R.id.mot_chart_marker_container).apply {
@@ -198,7 +196,6 @@ fun MotLineChart(
                     override fun getOffset(): MPPointF {
                         return MPPointF((-(width / 2)).toFloat(), (-height).toFloat())
                     }
-
                 }
 
                 mv.chartView = this // For bounds control
@@ -227,8 +224,8 @@ private fun MotLineChartPreview() {
                     .fillMaxWidth()
                     .aspectRatio(1.2f, true),
                 selectedCategoryViewState = SelectedCategoryViewState(
-                    selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel,
-                ),
+                    selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel
+                )
             )
         }
     }

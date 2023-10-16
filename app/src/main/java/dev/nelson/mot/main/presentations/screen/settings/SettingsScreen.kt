@@ -61,7 +61,7 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
     navigationIcon: @Composable () -> Unit = {},
     openCountryPickerScreen: () -> Unit,
-    openAppThemePickerScreen: () -> Unit,
+    openAppThemePickerScreen: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -104,7 +104,7 @@ fun SettingsScreen(
         onShowCurrencySymbolSwitchChecked = { settingsViewModel.onShowCurrencySymbolChange(it) },
         onHideDigitsSwitchChecked = { settingsViewModel.onHideDigitsChange(it) },
         onRandomizeBaseDataSwitchChecked = { settingsViewModel.onRandomizeDataBaseDataClick() },
-        onAppThemeClicked = openAppThemePickerScreen,
+        onAppThemeClicked = openAppThemePickerScreen
     )
 }
 
@@ -121,7 +121,7 @@ private fun SettingsScreenLayout(
     onDynamicColorThemeSwitchChecked: (Boolean) -> Unit,
     onShowCentsSwitchChecked: (Boolean) -> Unit,
     onShowCurrencySymbolSwitchChecked: (Boolean) -> Unit,
-    onHideDigitsSwitchChecked: (Boolean) -> Unit,
+    onHideDigitsSwitchChecked: (Boolean) -> Unit
 ) {
     viewState.alertDialog?.let { MotAlertDialog(it) }
 
@@ -133,7 +133,7 @@ private fun SettingsScreenLayout(
             MotTopAppBar(
                 appBarTitle = stringResource(id = R.string.settings),
                 navigationIcon = navigationIcon,
-                scrollBehavior = appBarScrollBehavior,
+                scrollBehavior = appBarScrollBehavior
             )
         }
     ) { innerPadding ->
@@ -202,7 +202,7 @@ private fun SettingsScreenLayout(
                             modifier = Modifier.padding(end = 8.dp),
                             style = MaterialTheme.typography.headlineMedium
                         )
-                    },
+                    }
                 )
             }
             item {
@@ -220,7 +220,7 @@ private fun SettingsScreenLayout(
                             text = viewState.selectedAppTheme.name,
                             style = MaterialTheme.typography.labelLarge
                         )
-                    },
+                    }
                 )
             }
             item {
@@ -313,13 +313,13 @@ private fun SettingsScreenLayout(
                     headlineContent = {
                         Text(
                             text = "App version: ${BuildConfig.VERSION_NAME}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     supportingContent = {
                         Text(
                             text = "Build: ${BuildConfig.VERSION_CODE}",
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                 )
@@ -336,7 +336,7 @@ private fun HeadingListItem(text: String) {
                 text = text,
                 style = MaterialTheme.typography.titleMedium
             )
-        },
+        }
     )
 }
 
@@ -345,7 +345,7 @@ private fun HeadingListItem(text: String) {
 private fun SettingsScreenLayoutPreview() {
     val viewState = SettingsViewState(
         isShowCentsSwitchChecked = true,
-        isShowCurrencySymbolSwitchChecked = true,
+        isShowCurrencySymbolSwitchChecked = true
     )
     MotMaterialTheme {
         SettingsScreenLayout(

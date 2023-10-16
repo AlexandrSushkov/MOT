@@ -53,7 +53,7 @@ class PaymentListViewModel @Inject constructor(
     private val getPaymentListNoFixedDateRange: GetPaymentListNoFixedDateRange,
     private val getStartOfCurrentMonthTimeUseCase: GetStartOfCurrentMonthTimeUseCase,
     private val getStartOfPreviousMonthTimeUseCase: GetStartOfPreviousMonthTimeUseCase,
-    private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
+    private val getCategoryByIdUseCase: GetCategoryByIdUseCase
 ) : BaseViewModel() {
 
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))

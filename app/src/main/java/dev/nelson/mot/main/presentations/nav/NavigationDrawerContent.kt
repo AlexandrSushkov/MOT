@@ -27,13 +27,14 @@ fun NavigationDrawerContent(
     ) {
         Spacer(Modifier.height(12.dp))
         drawerViewState.motDrawerItems.forEach { motDrawerItem ->
-            if (motDrawerItem.isAvailable){
+            if (motDrawerItem.isAvailable) {
                 val destination = motDrawerItem.destination
                 NavigationDrawerItem(
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     icon = {
                         Icon(
-                            destination.icon, contentDescription = "${destination.route} drawer item icon"
+                            destination.icon,
+                            contentDescription = "${destination.route} drawer item icon"
                         )
                     },
                     label = { Text(text = destination.route) },
@@ -49,7 +50,7 @@ fun NavigationDrawerContent(
 //                    }
 //                    closeNavDrawer.invoke()
 //                },
-                    selected = drawerViewState.selectedItem == destination.route,
+                    selected = drawerViewState.selectedItem == destination.route
 //                badge = {
 //                    Box(
 //                        modifier = Modifier

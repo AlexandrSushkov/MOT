@@ -1,5 +1,5 @@
 package dev.nelson.mot.main.util
 
-object StringUtils{
+object StringUtils {
     const val EMPTY = ""
 }

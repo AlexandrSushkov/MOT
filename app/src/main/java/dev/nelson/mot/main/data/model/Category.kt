@@ -3,7 +3,6 @@ package dev.nelson.mot.main.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.main.util.constant.Constants
 
 data class Category(
     val name: String,

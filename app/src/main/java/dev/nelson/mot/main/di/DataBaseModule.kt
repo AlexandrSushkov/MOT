@@ -26,7 +26,6 @@ object DataBaseModule {
             .allowMainThreadQueries()
             .build()
 
-
     @Provides
     @Singleton
     fun providePaymentDao(motDatabase: MotDatabase): PaymentDao = motDatabase.paymentDao()

@@ -61,7 +61,7 @@ fun StatisticScreen(
     viewModel: StatisticViewModel,
     appBarTitle: String,
     navigationIcon: @Composable () -> Unit = {},
-    openPaymentsByCategoryAction: (Int) -> Unit,
+    openPaymentsByCategoryAction: (Int) -> Unit
 ) {
     val statCurrentMothList by viewModel.statCurrentMothViewState.collectAsState(emptyList())
     val statByMonthList by viewModel.statByMonthListViewState.collectAsState(emptyList())
@@ -74,7 +74,6 @@ fun StatisticScreen(
     val selectedTimeViewState by viewModel.selectedTimeViewState.collectAsState()
     val selectedCategoryViewState by viewModel.selectedCategoryViewState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-
 
 //    /**
 //     * Back handler to hide modal bottom sheet
@@ -107,13 +106,13 @@ fun StatisticScreen(
 //        priceViewState = priceViewState,
 //        onExpandYearItemClick = { viewModel.onExpandYearClicked(it) },
 //        onExpandMonthItemClick = { viewModel.onExpandMonthClicked(it) }
-        priceViewState = priceViewState,
+        priceViewState = priceViewState
     )
 }
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class
 )
 @Composable
 private fun StatisticLayout(
@@ -128,9 +127,8 @@ private fun StatisticLayout(
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
     onMonthCategoryClick: (StatisticByCategoryModel) -> Unit,
     onCategoryModelSelected: (StatisticByCategoryPerMonthModel) -> Unit,
-    priceViewState: PriceViewState,
+    priceViewState: PriceViewState
 ) {
-
     val statusBarColor = MaterialTheme.colorScheme.secondaryContainer
     val statisticTabs = MotStatistic2Tab.tabs
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -170,12 +168,12 @@ private fun StatisticLayout(
                 topStart = displayCornerRadius,
                 topEnd = displayCornerRadius
             ),
-            dragHandle = { BottomSheetDefaults.DragHandle() },
+            dragHandle = { BottomSheetDefaults.DragHandle() }
         ) {
             if (pagerState.currentPage == 0) {
                 ByTimeFilterBottomSheet(
                     model = statByMonthList,
-                    selectedMonthModel = selectedTimeViewState.selectedTimeModel,
+                    selectedMonthModel = selectedTimeViewState.selectedTimeModel
                 ) {
                     onMonthModelSelected(it)
                     coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
@@ -195,7 +193,7 @@ private fun StatisticLayout(
                             }
                         }
                     },
-                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel,
+                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel
                 )
             }
         }
@@ -255,7 +253,7 @@ private fun StatisticLayout(
                             )
                             .onGloballyPositioned { coordinates ->
                                 textWidth.value = coordinates.size.width
-                            },
+                            }
                     )
                 },
                 tabs = {
@@ -278,7 +276,7 @@ private fun StatisticLayout(
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(index)
                                 }
-                            },
+                            }
                         )
                     }
                 }
@@ -286,7 +284,7 @@ private fun StatisticLayout(
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
                 state = pagerState,
-                userScrollEnabled = false,
+                userScrollEnabled = false
             ) { tabId ->
                 when (statisticTabs[tabId]) {
                     is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
@@ -295,7 +293,7 @@ private fun StatisticLayout(
                         model = statByMonthList,
                         onMonthModelSelected = onMonthModelSelected,
                         onMonthCategoryClick = onMonthCategoryClick,
-                        priceViewState = priceViewState,
+                        priceViewState = priceViewState
                     )
 
                     is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
@@ -332,7 +330,7 @@ private fun StaticLayoutPreview() {
             navigationIcon = { MotNavDrawerIcon {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
-                selectedTimeModel = PreviewData.statisticByMonthModelPreviewData,
+                selectedTimeModel = PreviewData.statisticByMonthModelPreviewData
             ),
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel

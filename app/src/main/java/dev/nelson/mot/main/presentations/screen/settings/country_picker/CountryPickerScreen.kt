@@ -123,7 +123,8 @@ private fun CountryPickerLayout(
                         )
                     }
                 },
-                onActiveChange = { onSearchActiveChange.invoke(it) }) {
+                onActiveChange = { onSearchActiveChange.invoke(it) }
+            ) {
                 if (viewState.countriesSearchResult.isEmpty()) {
                     if (searchText.isNotEmpty()) {
                         EmptySearchResultPlaceholder()
@@ -156,7 +157,7 @@ private fun CountryPickerLayout(
 private fun EmptySearchResultPlaceholder() {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
             modifier = Modifier.padding(top = 32.dp),
@@ -170,7 +171,7 @@ private fun CountriesList(
     modifier: Modifier = Modifier,
     scrollState: LazyListState = rememberLazyListState(),
     countries: List<Locale> = emptyList(),
-    onCountryClick: (Locale) -> Unit,
+    onCountryClick: (Locale) -> Unit
 ) {
     LazyColumn(
         state = scrollState,

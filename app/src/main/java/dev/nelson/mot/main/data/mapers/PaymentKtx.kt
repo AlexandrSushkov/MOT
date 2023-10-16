@@ -1,10 +1,10 @@
 package dev.nelson.mot.main.data.mapers
 
-import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.db.model.category.CategoryEntity
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
+import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.data.model.Payment
 
 fun Payment.copyWith(
     name: String? = null,
@@ -49,7 +49,7 @@ fun PaymentWithCategoryEntity.toPayment(): Payment {
             message = summary.orEmpty(),
             id = id,
             dateString = date,
-            dateInMills = dateInMilliseconds?: 0L,
+            dateInMills = dateInMilliseconds ?: 0L,
             category = categoryEntity?.toCategory()
         )
     }

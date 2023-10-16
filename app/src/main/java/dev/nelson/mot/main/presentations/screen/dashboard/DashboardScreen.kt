@@ -46,14 +46,13 @@ fun DashboardScreenLayout(
     onUndoClicked: () -> Unit = {},
     items: List<MotListItemModel>
 ) {
-
     Scaffold(
         topBar = {
             MotTopAppBar(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon
             )
-        },
+        }
     ) { innerPadding ->
         val directions = setOf(DismissDirection.EndToStart)
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
@@ -84,7 +83,7 @@ fun DashboardScreenLayout(
                                         modifier = Modifier.padding(vertical = 8.dp),
                                         headlineContent = {
                                             Text(text = it.category.name)
-                                        },
+                                        }
                                     )
                                 }
                             )

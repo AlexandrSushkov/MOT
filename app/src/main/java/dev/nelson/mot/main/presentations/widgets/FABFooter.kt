@@ -13,9 +13,10 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun FABFooter() {
-    Spacer(modifier = Modifier
-        .height(80.dp)
-        .fillMaxWidth()
+    Spacer(
+        modifier = Modifier
+            .height(80.dp)
+            .fillMaxWidth()
 //        .background(Color.Blue)
     )
 }

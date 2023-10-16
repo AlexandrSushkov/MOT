@@ -7,12 +7,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.Transition
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -84,10 +79,10 @@ import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
 import dev.nelson.mot.main.util.StringUtils
-import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
+import dev.utils.MotTransitions
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -131,7 +126,8 @@ fun PaymentListScreen(
                     )
                 }
             }
-        })
+        }
+    )
 
     /**
      * Back handler to cancel selection
@@ -140,7 +136,7 @@ fun PaymentListScreen(
         enabled = isSelectedStateOn && modalBottomSheetState.isVisible.not(),
         onBack = { viewModel.onCancelSelectionClickEvent() }
     )
-    
+
     if (onShowDateDialog) {
         DatePickerDialog(
             onDismissRequest = { viewModel.onDismissDatePickerDialog() },
@@ -190,7 +186,7 @@ fun PaymentListScreen(
                 topStart = displayCornerRadius,
                 topEnd = displayCornerRadius
             ),
-            dragHandle = { BottomSheetDefaults.DragHandle() },
+            dragHandle = { BottomSheetDefaults.DragHandle() }
         ) {
             CategoriesListBottomSheet(
                 categories = categories,
@@ -201,7 +197,7 @@ fun PaymentListScreen(
                             showBottomSheet = false
                         }
                     }
-                },
+                }
             )
         }
     }
@@ -226,7 +222,7 @@ fun PaymentListScreen(
         onDeleteSelectedItemsClick = { viewModel.onDeleteSelectedItemsClick() },
         onChangeDateForSelectedItemsClick = { viewModel.onDateClick() },
         onSelectCategoryIconClick = { showBottomSheet = true },
-        priceViewState = priceViewState,
+        priceViewState = priceViewState
     )
 }
 
@@ -249,7 +245,7 @@ fun PaymentListLayout(
     onDeleteSelectedItemsClick: () -> Unit,
     onChangeDateForSelectedItemsClick: () -> Unit,
     onSelectCategoryIconClick: () -> Unit,
-    priceViewState: PriceViewState,
+    priceViewState: PriceViewState
 ) {
     val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val paymentsLitScrollingState = rememberLazyListState()
@@ -274,7 +270,7 @@ fun PaymentListLayout(
                         IconButton(onClick = onDeleteSelectedItemsClick) {
                             Icon(Icons.Default.Delete, contentDescription = "")
                         }
-                    },
+                    }
                 ).also {
                     // TODO: use accompanist like id done with scroll
                     val view = LocalView.current
@@ -377,7 +373,7 @@ fun PaymentList(
 
                     LazyColumn(
                         state = state,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         paymentList.forEach { paymentListItemModel ->
                             when (paymentListItemModel) {
@@ -441,7 +437,7 @@ private fun PaymentItem(
     onItemSwiped: (MotPaymentListItemModel.Item) -> Unit,
     priceViewState: PriceViewState,
     checkBoxTransitionState: MutableTransitionState<Boolean>,
-    transition: Transition<Boolean>,
+    transition: Transition<Boolean>
 ) {
     val directions = if (isSelectedStateOn.not()) setOf(DismissDirection.EndToStart) else emptySet()
 
@@ -457,7 +453,7 @@ private fun PaymentItem(
             isSelectedStateOn = isSelectedStateOn,
             priceViewState = priceViewState,
             checkBoxTransitionState = checkBoxTransitionState,
-            transition = transition,
+            transition = transition
         )
     }
 }
@@ -502,7 +498,7 @@ private fun PaymentListScreenTemplatePreview(
             onDeleteSelectedItemsClick = {},
             onChangeDateForSelectedItemsClick = {},
             onSelectCategoryIconClick = {},
-            priceViewState = PreviewData.priceViewState,
+            priceViewState = PreviewData.priceViewState
         )
     }
 }

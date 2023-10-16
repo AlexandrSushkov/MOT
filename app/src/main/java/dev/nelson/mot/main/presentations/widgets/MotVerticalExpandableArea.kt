@@ -34,13 +34,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.main.data.model.Payment
-import dev.utils.MotTransitions
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
+import dev.utils.MotTransitions
 
 @Composable
 fun MotVerticalExpandableArea(
-    payment: Payment,
+    payment: Payment
 //    content: @Composable BoxScope.() -> Unit
 ) {
 //    val EXPAND_ANIMATION_DURATION = 500
@@ -94,7 +94,7 @@ fun MotVerticalExpandableArea(
     }
 
     Surface(
-        color = cardBgColor,
+        color = cardBgColor
 //        shape = RoundedCornerShape(cardRoundedCorners)
     ) {
         Row(
@@ -104,19 +104,19 @@ fun MotVerticalExpandableArea(
 //                bottom = textContentPadding
 //            ),
 
-            ) {
+        ) {
             Box(modifier = Modifier.weight(1f)) {
                 Column {
                     AnimatedVisibility(
                         visibleState = isShowPlaceholder,
                         enter = fadeInTrans,
-                        exit = fadeOutTrans,
+                        exit = fadeOutTrans
                     ) {
                         Text(
                             style = MaterialTheme.typography.bodySmall,
                             text = payment.message,
                             overflow = TextOverflow.Ellipsis,
-                            maxLines = 2,
+                            maxLines = 2
                         )
                     }
                 }
@@ -124,17 +124,17 @@ fun MotVerticalExpandableArea(
                     AnimatedVisibility(
                         visibleState = expandedState,
                         enter = enterTransition,
-                        exit = exitTransition,
+                        exit = exitTransition
                     ) {
                         Text(
                             text = payment.message,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodySmall
                         )
                     }
                 }
             }
             Column(
-                modifier = Modifier.align(Alignment.Bottom),
+                modifier = Modifier.align(Alignment.Bottom)
             ) {
                 IconButton(
                     onClick = {
@@ -146,7 +146,7 @@ fun MotVerticalExpandableArea(
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowUp,
                             contentDescription = "Expandable Arrow",
-                            modifier = Modifier.rotate(arrowRotationDegree),
+                            modifier = Modifier.rotate(arrowRotationDegree)
                         )
                     }
                 )
@@ -183,11 +183,11 @@ fun ExpandableContent(
     AnimatedVisibility(
         visibleState = transitionState,
         enter = enterTransition,
-        exit = exitTransition,
+        exit = exitTransition
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
@@ -196,7 +196,7 @@ fun ExpandableContent(
 @Composable
 private fun MotExpandableAreaPreview() {
     MotVerticalExpandableArea(
-        payment = PreviewData.paymentItemPreview,
+        payment = PreviewData.paymentItemPreview
 //        content = { Text(text = "data")}
     )
 }

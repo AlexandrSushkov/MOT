@@ -9,12 +9,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.room.Room
 import dev.nelson.mot.BuildConfig
+import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.nelson.mot.db.MIGRATION_1_2
 import dev.nelson.mot.db.MotDatabase
 import dev.nelson.mot.db.MotDatabaseInfo
 import dev.nelson.mot.main.data.preferences.MotSwitchType
 import dev.nelson.mot.main.data.preferences.PreferencesKeys
-import dev.nelson.mot.core.ui.model.MotAppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.File

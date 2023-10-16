@@ -41,7 +41,6 @@ private const val EXPAND_TRANSITION_DURATION = 300
 fun MotExpandableTextField(
     isExpanded: Boolean
 ) {
-
     val transitionState = remember { MutableTransitionState(isExpanded) }
     val transition = updateTransition(transitionState, label = "")
 
@@ -116,7 +115,6 @@ fun MotExpandableTextField(
     Column {
         Box(
             modifier = Modifier
-
 //                .background(
 //                    color = cardBgColor,
 //                    shape = RoundedCornerShape(cardRoundedCorners)
@@ -134,7 +132,7 @@ fun MotExpandableTextField(
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
                 )
             )
             IconButton(
@@ -144,7 +142,7 @@ fun MotExpandableTextField(
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = "Expandable Arrow",
-                        modifier = Modifier.rotate(arrowRotationDegree),
+                        modifier = Modifier.rotate(arrowRotationDegree)
                     )
                 }
             )

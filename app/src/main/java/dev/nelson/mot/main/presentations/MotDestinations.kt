@@ -40,20 +40,20 @@ data object Overview : MotDestinations(
     }
 )
 
-//object Bills : MotDestinations {
+// object Bills : MotDestinations {
 //    override val icon = Icons.Filled.MoneyOff
 //    override val route = "bills"
 //    override val screen: @Composable () -> Unit = { BillsScreen() }
-//}
+// }
 //
-//object SingleAccount : RallyDestination {
+// object SingleAccount : RallyDestination {
 //    // Added for simplicity, this icon will not in fact be used, as SingleAccount isn't
 //    // part of the RallyTabRow selection
 //    override val icon = Icons.Filled.Money
 //    override val route = "single_account"
 //    override val screen: @Composable () -> Unit = { SingleAccountScreen() }
 //    const val accountTypeArg = "account_type"
-//}
+// }
 
 // Screens to be displayed in the top motTabRow
 val motTabRowScreens = listOf(Overview, PaymentList, CategoryList)

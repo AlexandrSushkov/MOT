@@ -35,7 +35,6 @@ import kotlinx.coroutines.launch
 @SuppressLint("RestrictedApi")
 @Composable
 fun MotApp(isOpenedFromWidget: Boolean, finishAction: () -> Unit) {
-
     val drawerViewModel = hiltViewModel<DrawerViewModel>()
     val navigationDrawerState = rememberDrawerState(DrawerValue.Closed)
     val drawerViewState by drawerViewModel.drawerViewState.collectAsState(DrawerViewState())

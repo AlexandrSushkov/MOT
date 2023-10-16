@@ -40,7 +40,7 @@ class PaymentDetailsViewModel @Inject constructor(
     private val modifyPaymentUseCase: ModifyPaymentUseCase
 ) : BaseViewModel() {
 
-    //states
+    // states
     val paymentNameState
         get() = _paymentName.asStateFlow()
     private val _paymentName = MutableStateFlow(TextFieldValue()) // _ before name means mutable
@@ -208,9 +208,9 @@ class PaymentDetailsViewModel @Inject constructor(
      * Returns true if text contains maximum 6 digits
      */
     private val String.isValidFormattableAmount
-        get(): Boolean = isNotBlank()
+        get(): Boolean = isNotBlank() &&
 //        && isDigitsOnly()
-                && length <= 7
+            length <= 7
 
     /**
      * If [input] only include digits, it returns a formatted amount.

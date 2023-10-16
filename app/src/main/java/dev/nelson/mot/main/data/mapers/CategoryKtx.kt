@@ -1,7 +1,7 @@
 package dev.nelson.mot.main.data.mapers
 
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.db.model.category.CategoryEntity
+import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.util.StringUtils
 
 fun CategoryEntity.toCategory(): Category = Category(
@@ -19,4 +19,3 @@ fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(this.name, if (
 fun Category.copyWith(name: String): Category = Category(name, isFavorite, this.id)
 
 fun Category.empty(): Category = Category(StringUtils.EMPTY)
-

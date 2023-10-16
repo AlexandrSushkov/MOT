@@ -1,11 +1,6 @@
 package dev.nelson.mot.main.domain
 
-import dev.nelson.mot.main.domain.use_case.date_and_time.GetCurrentTimeUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import java.util.Calendar
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetCurrentTimeUseCaseTest {

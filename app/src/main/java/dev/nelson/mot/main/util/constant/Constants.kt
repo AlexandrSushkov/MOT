@@ -1,6 +1,5 @@
 package dev.nelson.mot.main.util.constant
 
-
 object Constants {
 
     const val ZERO = 0
@@ -10,7 +9,7 @@ object Constants {
 
     const val DATA_STORE_FILE_NAME = "mot_preferences"
 
-    //intent bundle/extras keys
+    // intent bundle/extras keys
     const val NO_CATEGORY_KEY = "no_category"
     const val PAYMENT_ID_KEY = "payment_id"
     const val CATEGORY_ID_KEY = "category_id"
@@ -18,6 +17,7 @@ object Constants {
 
     const val NO_CATEGORY_CATEGORY_ID = -1
     const val PRICE_EXAMPLE = 999999 // 9,999.99
+
     // format patterns
     const val FILE_PICKER_FORMAT: String = "*/*"
     const val DAY_SHORT_MONTH_YEAR_DATE_PATTERN = "d MMM yyyy"

@@ -7,8 +7,8 @@ import dev.nelson.mot.main.data.mapers.toCategoryEntity
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.CategoryListItemModel
 import dev.nelson.mot.main.data.model.MotListItemModel
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
+import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.domain.use_case.statistic.Month
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.domain.use_case.statistic.StatisticForMonthForCategoryModel
@@ -178,7 +178,6 @@ object PreviewData {
     private val generateSumForCategory
         get() = (1000000..5000000).random()
 
-
     private val generateCategoriesModelList
         get(): List<StatisticByCategoryModel> {
             val numCategories =
@@ -202,12 +201,12 @@ object PreviewData {
         }
 
     val statisticByYearListPreviewData
-        get():List<StatisticByYearModel> {
+        get(): List<StatisticByYearModel> {
             return (1..5).map { statisticByYearModelPreviewData }
         }
 
     val statisticByMonthListPreviewData
-        get():List<StatisticByMonthModel> {
+        get(): List<StatisticByMonthModel> {
             return (6..20).map { statisticByMonthModelPreviewData }
         }
 
@@ -261,18 +260,20 @@ object PreviewData {
     private fun createCategoryListViewRepresentation(value: Map<Char, List<Category>>): List<MotListItemModel> {
         return mutableListOf<MotListItemModel>()
             .apply {
-                //no category item
+                // no category item
                 val noCategory = Category("No category")
                 add(MotListItemModel.Item(noCategory, generateKey()))
-                //add categories items
+                // add categories items
                 value.forEach { (letter, categoryList) ->
                     add(MotListItemModel.Header(letter.toString(), generateKey()))
-                    addAll(categoryList.map { category ->
-                        MotListItemModel.Item(
-                            category,
-                            generateKey()
-                        )
-                    })
+                    addAll(
+                        categoryList.map { category ->
+                            MotListItemModel.Item(
+                                category,
+                                generateKey()
+                            )
+                        }
+                    )
                 }
             }
     }
@@ -343,5 +344,5 @@ val categoryNames = listOf(
     "Training",
     "Services",
     "Support",
-    "Support",
+    "Support"
 )

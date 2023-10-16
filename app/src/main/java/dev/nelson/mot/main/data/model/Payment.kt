@@ -2,9 +2,9 @@ package dev.nelson.mot.main.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import dev.nelson.mot.main.util.StringUtils
-import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
 import dev.nelson.mot.db.model.payment.PaymentEntity
+import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
+import dev.nelson.mot.main.util.StringUtils
 
 /**
  * Data class for [PaymentWithCategoryEntity] and [PaymentEntity] for presentation layer.
@@ -29,13 +29,13 @@ data class Payment(
     val dateInMills: Long = System.currentTimeMillis(),
     val category: Category? = null,
     var isExpanded: Boolean = false,
-    var isSelected: Boolean = false,
+    var isSelected: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().orEmpty(), // name
         parcel.readInt(), // cost
         parcel.readString().orEmpty(), // message
-        parcel.readValue(Long::class.java.classLoader) as? Int, //id
+        parcel.readValue(Long::class.java.classLoader) as? Int, // id
         parcel.readString(), // date
         (parcel.readValue(Long::class.java.classLoader) as? Long) ?: System.currentTimeMillis(), // date in mills
         parcel.readParcelable(Category::class.java.classLoader, Category::class.java), // category

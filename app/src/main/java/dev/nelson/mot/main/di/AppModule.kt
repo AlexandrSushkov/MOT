@@ -30,7 +30,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(context: Context): DataStore<Preferences>  = context.dataStore
+    fun provideDataStore(context: Context): DataStore<Preferences> = context.dataStore
 
     @Provides
     @Singleton

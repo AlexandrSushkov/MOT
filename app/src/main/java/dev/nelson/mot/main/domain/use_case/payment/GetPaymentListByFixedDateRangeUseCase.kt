@@ -1,13 +1,13 @@
 package dev.nelson.mot.main.domain.use_case.payment
 
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
+import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.repository.PaymentRepositoryImpl
 import dev.nelson.mot.main.domain.use_case.date_and_time.FormatTimeUseCase
-import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.util.UUIDUtils
 import dev.nelson.mot.main.util.constant.Constants
 import kotlinx.coroutines.flow.Flow
@@ -39,7 +39,7 @@ class GetPaymentListByFixedDateRangeUseCase @Inject constructor(
             paymentRepository.getPaymentsWithCategoryByFixedDateRange(
                 startTime,
                 it,
-                order is SortingOrder.Ascending,
+                order is SortingOrder.Ascending
             )
         }
             ?: paymentRepository.getPaymentsWithCategoryByCategoryIdNoFixedDateRange(
@@ -104,5 +104,4 @@ class GetPaymentListByFixedDateRangeUseCase @Inject constructor(
     private fun Payment.toPaymentListItem(showCategory: Boolean): MotPaymentListItemModel {
         return MotPaymentListItemModel.Item(this, showCategory, UUIDUtils.randomKey)
     }
-
 }

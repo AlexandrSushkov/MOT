@@ -18,7 +18,7 @@ fun Array<Locale>.filterDefaultCountries(): List<Locale> {
         .map { it.value.first() }
 }
 
-fun Locale.doesSearchMatch(search:String): Boolean {
+fun Locale.doesSearchMatch(search: String): Boolean {
     return this.displayCountry.contains(search, ignoreCase = true) ||
-            this.country.contains(search, ignoreCase = true)
+        this.country.contains(search, ignoreCase = true)
 }

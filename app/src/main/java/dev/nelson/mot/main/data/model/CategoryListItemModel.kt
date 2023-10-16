@@ -13,10 +13,12 @@ sealed class CategoryListItemModel {
      * Key is used for [androidx.compose.foundation.lazy.LazyColumn] item's key parameter
      */
     abstract val key: String
+
     /**
      * Category item model - main model to show category
      */
-    class CategoryItemModel(val category: Category, override val key: String) : CategoryListItemModel()
+    class CategoryItemModel(val category: Category, override val key: String) :
+        CategoryListItemModel()
 
     /**
      * Letter - model that show letter to divide categories
@@ -27,7 +29,6 @@ sealed class CategoryListItemModel {
      * Footer - last item in the list to show data or set empty space
      */
     class Footer(override val key: String) : CategoryListItemModel()
-
 }
 
 /**
@@ -44,7 +45,7 @@ sealed class MotListItemModel {
     data class Item(
         val category: Category,
         override val key: String = UUIDUtils.randomKey,
-        override val isShow: Boolean = true,
+        override val isShow: Boolean = true
     ) : MotListItemModel()
 
     /**
@@ -54,7 +55,7 @@ sealed class MotListItemModel {
     data class Header(
         val date: String,
         override val key: String = UUIDUtils.randomKey,
-        override val isShow: Boolean = true,
+        override val isShow: Boolean = true
     ) : MotListItemModel()
 
     /**
@@ -62,6 +63,6 @@ sealed class MotListItemModel {
      */
     data class Footer(
         override val key: String = UUIDUtils.randomKey,
-        override val isShow: Boolean = true,
+        override val isShow: Boolean = true
     ) : MotListItemModel()
 }

@@ -4,8 +4,10 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.R
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
+import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.domain.use_case.category.DeleteCategoriesUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryListItemsUseCase
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryAction
@@ -13,8 +15,6 @@ import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.use_case.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotUiState
-import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
@@ -33,7 +33,7 @@ import javax.inject.Inject
 class CategoriesListViewModel @Inject constructor(
     private val getCategoryListItemsUseCase: GetCategoryListItemsUseCase,
     private val deleteCategoriesUseCase: DeleteCategoriesUseCase,
-    private val modifyCategoryUseCase: ModifyCategoryUseCase,
+    private val modifyCategoryUseCase: ModifyCategoryUseCase
 ) : BaseViewModel() {
 
     // state

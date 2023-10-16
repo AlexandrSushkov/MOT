@@ -47,9 +47,8 @@ class CryptoManager {
         return decryptedText.decodeToString()
     }
 
-
     /**
-     * combinedData byteArray looks like this: [[ivSize],[iv],[encryptedData]]
+     * combinedData byteArray looks like this: [[ivSize], [iv], [encryptedData]]
      */
     private fun encryptWithIv(input: ByteArray): ByteArray {
         val cipher = getEncryptCipher()
@@ -75,11 +74,9 @@ class CryptoManager {
 
     /**
      * @param combinedData byteArray contains information about viSize, iv itself and encrypted data.
-     * Looks like this: [[ivSize],[iv],[encryptedData]]
-     *
+     * Looks like this: [[ivSize], [iv], [encryptedData]]
      */
     fun decryptWithIv(combinedData: ByteArray): ByteArray {
-
         // retrieve ivSize from the first byte of the combined data
         val ivSize = combinedData[0].toInt()
 
@@ -142,7 +139,6 @@ class CryptoManager {
     private fun base64Decode(input: String?): ByteArray {
         return Base64.decode(input, Base64.NO_PADDING or Base64.NO_WRAP)
     }
-
 
     companion object {
         private const val KEYSTORE_PROVIDER = "AndroidKeyStore"

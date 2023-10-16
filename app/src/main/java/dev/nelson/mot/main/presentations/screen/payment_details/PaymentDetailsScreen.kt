@@ -146,7 +146,7 @@ fun PaymentDetailsScreen(
         onDateClick = { viewModel.onDateClick() },
         onCategoryClick = { viewModel.onCategorySelected(it) },
         onSaveClick = { viewModel.onSaveClick() },
-        selectedCategory = selectedCategory,
+        selectedCategory = selectedCategory
     )
 }
 
@@ -166,7 +166,7 @@ fun PaymentDetailsLayoutPreview() {
             onMessageChange = {},
             onSaveClick = {},
             onCategoryClick = {},
-            onDateClick = {},
+            onDateClick = {}
         )
     }
 }
@@ -189,7 +189,7 @@ fun PaymentDetailsLayout(
     onMessageChange: (TextFieldValue) -> Unit,
     onDateClick: () -> Unit,
     onCategoryClick: (Category) -> Unit,
-    onSaveClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -237,7 +237,7 @@ fun PaymentDetailsLayout(
                 topStart = displayCornerRadius,
                 topEnd = displayCornerRadius
             ),
-            dragHandle = { BottomSheetDefaults.DragHandle() },
+            dragHandle = { BottomSheetDefaults.DragHandle() }
         ) {
             CategoriesListBottomSheet(
                 categories = categories,
@@ -249,7 +249,7 @@ fun PaymentDetailsLayout(
                             showBottomSheet = false
                         }
                     }
-                },
+                }
             )
         }
     }
@@ -261,12 +261,12 @@ fun PaymentDetailsLayout(
                 .padding(innerPadding)
                 .verticalScroll(
                     state = rememberScrollState(),
-                    enabled = true,
+                    enabled = true
                 )
                 .padding(
                     start = 16.dp,
                     end = 16.dp,
-                    bottom = 16.dp,
+                    bottom = 16.dp
                 )
         ) {
             Spacer(modifier = Modifier.height(32.dp))
@@ -298,10 +298,10 @@ fun PaymentDetailsLayout(
 //                            focusedTextColor = MaterialTheme.colorScheme.error,
 //                            unfocusedTextColor = MaterialTheme.colorScheme.error,
                         cursorColor = Color.Transparent,
-                        errorCursorColor = Color.Transparent,
+                        errorCursorColor = Color.Transparent
                     ),
                     textStyle = MaterialTheme.typography.displayMedium,
-                    shape = RoundedCornerShape(corner = CornerSize(16.dp)),
+                    shape = RoundedCornerShape(corner = CornerSize(16.dp))
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -317,7 +317,7 @@ fun PaymentDetailsLayout(
                     onValueChange = { onNameChange.invoke(it) },
                     shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                     placeholder = { Text(text = stringResource(id = R.string.payment_name_hint)) },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
             }
             MotTextField(
@@ -340,20 +340,20 @@ fun PaymentDetailsLayout(
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
                 )
             )
             Spacer(modifier = Modifier.height(24.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 MotOutlinedButton(
                     onClick = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
                         onDateClick.invoke()
-                    },
+                    }
                 ) {
                     Icon(
                         Icons.Default.EditCalendar,
@@ -376,7 +376,7 @@ fun PaymentDetailsLayout(
                             focusManager.clearFocus()
                             showBottomSheet = true
                         }
-                    },
+                    }
                 ) {
                     Icon(
                         Icons.Default.Category,

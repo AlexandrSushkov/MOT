@@ -66,7 +66,8 @@ fun CategoryDetailsLayout(
         block = {
             delay(Constants.DEFAULT_ANIMATION_DELAY)
             categoryNameFocusRequester.requestFocus()
-        })
+        }
+    )
 
     Column(
         modifier = Modifier
