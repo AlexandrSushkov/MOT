@@ -7,7 +7,7 @@ package dev.nelson.mot.main.util
  * @constructor Create empty Mot result
  */
 sealed class MotUiState<out R> {
-    object Loading : MotUiState<Nothing>()
+    data object Loading : MotUiState<Nothing>()
     data class Success<out T>(val data: T) : MotUiState<T>()
     data class Error(val error: Exception) : MotUiState<Nothing>()
 }

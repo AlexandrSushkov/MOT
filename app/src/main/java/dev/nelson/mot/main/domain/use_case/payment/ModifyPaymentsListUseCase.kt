@@ -23,8 +23,8 @@ class ModifyPaymentsListUseCase @Inject constructor(
 }
 
 sealed class ModifyPaymentsListAction {
-    object Edit : ModifyPaymentsListAction()
-    object Delete : ModifyPaymentsListAction()
+    data object Edit : ModifyPaymentsListAction()
+    data object Delete : ModifyPaymentsListAction()
 }
 
 data class ModifyPaymentsListParams(

@@ -26,7 +26,7 @@ class ModifyCategoryUseCase @Inject constructor(
 data class ModifyCategoryParams(val category: Category, val action: ModifyCategoryAction)
 
 sealed class ModifyCategoryAction {
-    object Add : ModifyCategoryAction()
-    object Edit : ModifyCategoryAction()
-    object Delete : ModifyCategoryAction()
+    data object Add : ModifyCategoryAction()
+    data object Edit : ModifyCategoryAction()
+    data object Delete : ModifyCategoryAction()
 }

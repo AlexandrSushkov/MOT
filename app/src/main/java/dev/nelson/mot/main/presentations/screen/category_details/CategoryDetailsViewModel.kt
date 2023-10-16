@@ -46,7 +46,10 @@ class CategoryDetailsViewModel @Inject constructor(
                 getCategoryByIdUseCase.execute(categoryId)
                     .collect { category ->
                         initialCategory = category
-                        _categoryNameState.value = TextFieldValue(category.name, selection = TextRange(category.name.length))
+                        _categoryNameState.value = TextFieldValue(
+                            category.name,
+                            selection = TextRange(category.name.length)
+                        )
                     }
             }
         }

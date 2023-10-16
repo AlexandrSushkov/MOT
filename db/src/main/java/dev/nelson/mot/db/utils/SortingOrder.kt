@@ -1,6 +1,6 @@
 package dev.nelson.mot.db.utils
 
 sealed class SortingOrder {
-    object Ascending : SortingOrder()
-    object Descending : SortingOrder()
+    data object Ascending : SortingOrder()
+    data object Descending : SortingOrder()
 }

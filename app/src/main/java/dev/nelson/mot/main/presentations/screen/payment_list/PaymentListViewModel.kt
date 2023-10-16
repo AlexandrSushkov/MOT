@@ -3,39 +3,44 @@ package dev.nelson.mot.main.presentations.screen.payment_list
 import android.content.res.Resources
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.db.utils.SortingOrder
 import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
-import dev.nelson.mot.main.data.model.Payment
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
+import dev.nelson.mot.main.data.model.Payment
+import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.category.GetCategoriesOrderedByNameFavoriteFirstUseCase
 import dev.nelson.mot.main.domain.use_case.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfCurrentMonthTimeUseCase
 import dev.nelson.mot.main.domain.use_case.date_and_time.GetStartOfPreviousMonthTimeUseCase
-import dev.nelson.mot.main.domain.use_case.base.execute
 import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListByFixedDateRangeUseCase
+import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentsListAction
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentsListParams
 import dev.nelson.mot.main.domain.use_case.payment.ModifyPaymentsListUseCase
 import dev.nelson.mot.main.domain.use_case.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payment_list.actions.OpenPaymentDetailsAction
-import dev.nelson.mot.main.util.constant.Constants
+import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
 import dev.nelson.mot.main.util.MotUiState
-import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.domain.use_case.payment.GetPaymentListNoFixedDateRange
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
-import dev.nelson.mot.R
-import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @HiltViewModel
 class PaymentListViewModel @Inject constructor(
@@ -51,15 +56,14 @@ class PaymentListViewModel @Inject constructor(
     private val getCategoryByIdUseCase: GetCategoryByIdUseCase,
 ) : BaseViewModel() {
 
-
     private val categoryId: Int? = (extras.get<Int>(Constants.CATEGORY_ID_KEY))
-    private val screenScreenType = categoryId?.let {
+    private val screenPaymentsScreenType = categoryId?.let {
         if (it == Constants.NO_CATEGORY_CATEGORY_ID) {
-            ScreenType.PaymentsWithoutCategory
+            PaymentsScreenType.PaymentsWithoutCategory
         } else {
-            ScreenType.PaymentsForExistingCategory(it)
+            PaymentsScreenType.PaymentsForExistingCategory(it)
         }
-    } ?: ScreenType.RecentPayments
+    } ?: PaymentsScreenType.RecentPayments
 
     // states
     val toolBarTitleState
@@ -113,17 +117,16 @@ class PaymentListViewModel @Inject constructor(
     private val paymentsToDeleteList = mutableListOf<MotPaymentListItemModel.Item>()
     private val selectedItemsList = mutableListOf<MotPaymentListItemModel.Item>()
     private var deletePaymentJob: Job? = null
-    private val calendar: Calendar by lazy { Calendar.getInstance() }
 
     init {
         launch {
-            when (screenScreenType) {
-                is ScreenType.RecentPayments -> initRecentPaymentsList()
-                is ScreenType.PaymentsForExistingCategory -> initPaymentsForCategoryList(
-                    screenScreenType.categoryId
+            when (screenPaymentsScreenType) {
+                is PaymentsScreenType.RecentPayments -> initRecentPaymentsList()
+                is PaymentsScreenType.PaymentsForExistingCategory -> initPaymentsForCategoryList(
+                    screenPaymentsScreenType.categoryId
                 )
 
-                is ScreenType.PaymentsWithoutCategory -> initPaymentsWithoutCategoryList()
+                is PaymentsScreenType.PaymentsWithoutCategory -> initPaymentsWithoutCategoryList()
             }
         }
 
@@ -146,27 +149,6 @@ class PaymentListViewModel @Inject constructor(
             paymentsToDeleteList.add(payment)
             _deletedItemsCount.update { paymentsToDeleteList.size }
             showSnackBar()
-//            val temp = mutableListOf<MotPaymentListItemModel>().apply {
-//                addAll(_paymentListResult.value.successOr(emptyList()))
-//                val positionOfThePayment = indexOf(payment)
-//                val previousElement = this[positionOfThePayment - 1]
-//                if (positionOfThePayment + 1 == this.size) {
-//                    // this it the last element in the list
-//                    if (previousElement is MotPaymentListItemModel.Header) {
-//                        // remove date item if there is only one payment fo this date
-//                        remove(previousElement)
-//                    }
-//                } else {
-//                    // this element is NOT last in the list
-//                    val nextElement = this[positionOfThePayment + 1]
-//                    if (previousElement is MotPaymentListItemModel.Header && nextElement is MotPaymentListItemModel.Header) {
-//                        // remove date item if there is only one payment fo this date
-//                        remove(previousElement)
-//                    }
-//                }
-//                remove(payment)
-//            }
-//            _paymentListResult.value = MotUiState.Success(temp)
             _paymentListResult.update { paymentList ->
                 val updatedItems = paymentList.successOr(emptyList())
                     .map { item ->
@@ -241,8 +223,8 @@ class PaymentListViewModel @Inject constructor(
 
     fun onFabClick() = launch {
         cancelSelection()
-        val action = when (screenScreenType) {
-            is ScreenType.RecentPayments -> OpenPaymentDetailsAction.NewPayment
+        val action = when (screenPaymentsScreenType) {
+            is PaymentsScreenType.RecentPayments -> OpenPaymentDetailsAction.NewPayment
             else -> OpenPaymentDetailsAction.NewPaymentForCategory(categoryId)
         }
         _openPaymentDetailsAction.emit(action)
@@ -370,6 +352,22 @@ class PaymentListViewModel @Inject constructor(
         onDismissDatePickerDialog()
     }
 
+    fun onCategorySelected(category: Category) = launch {
+        // workaround. for some reason if copy payments with category list isn't update
+        category.id?.let { categoryId ->
+            getCategoryByIdUseCase.execute(categoryId).collect { cat ->
+                val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
+                cancelSelection()
+                val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
+                modifyPaymentsListUseCase.execute(params)
+            }
+        }
+    }
+
+    fun onDateClick() {
+        _showDatePickerDialogState.value = true
+    }
+
     private suspend fun initRecentPaymentsList() {
         _toolBarTitleState.value = resources.getString(R.string.recent_payments)
 
@@ -469,18 +467,6 @@ class PaymentListViewModel @Inject constructor(
         _paymentListResult.value = MotUiState.Success(initialPaymentList)
     }
 
-    fun onDateRangeClick() {
-        // open date picker
-    }
-
-    fun onChangeDateClick() {
-        // open date picker
-    }
-
-    fun onChangeCategoryClick() {
-        // open category modal
-    }
-
     private fun clearItemsToDeleteList() {
         paymentsToDeleteList.clear()
         _deletedItemsCount.value = paymentsToDeleteList.size
@@ -498,40 +484,24 @@ class PaymentListViewModel @Inject constructor(
         return this.map { it.payment }
     }
 
-    fun onCategorySelected(category: Category) = launch {
-        // workaround. for some reason if copy payments with category list isn't update
-        category.id?.let { categoryId ->
-            getCategoryByIdUseCase.execute(categoryId).collect { cat ->
-                val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
-                cancelSelection()
-                val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
-                modifyPaymentsListUseCase.execute(params)
-            }
-        }
-    }
-
-    fun onDateClick() {
-        _showDatePickerDialogState.value = true
-    }
-
     companion object {
         const val SNAKE_BAR_UNDO_DELAY_MILLS = 4000L
     }
 
-    private sealed class ScreenType {
+    private sealed class PaymentsScreenType {
         /**
-         * Load payments for current month
+         * Load payments for certain date range (current month)
          */
-        object RecentPayments : ScreenType()
+        data object RecentPayments : PaymentsScreenType()
 
         /**
          * Load payments for a category
          */
-        class PaymentsForExistingCategory(val categoryId: Int) : ScreenType()
+        class PaymentsForExistingCategory(val categoryId: Int) : PaymentsScreenType()
 
         /**
          * Load payments without a category
          */
-        object PaymentsWithoutCategory : ScreenType()
+        data object PaymentsWithoutCategory : PaymentsScreenType()
     }
 }

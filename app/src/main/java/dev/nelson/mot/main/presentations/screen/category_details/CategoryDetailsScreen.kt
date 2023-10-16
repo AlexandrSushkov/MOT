@@ -58,8 +58,6 @@ fun CategoryDetailsLayout(
     onNameChanged: (TextFieldValue) -> Unit,
     onSaveClick: () -> Unit
 ) {
-//    val category: Category by categoryNameState.collectAsState(initial = Category.empty())
-//    var categoryNameValueState by remember { mutableStateOf(TextFieldValue(text = category.name, selection = TextRange(category.name.length))) }
     val categoryNameValueState by nameState.collectAsState()
     val categoryNameFocusRequester = remember { FocusRequester() }
 
@@ -68,9 +66,6 @@ fun CategoryDetailsLayout(
         block = {
             delay(Constants.DEFAULT_ANIMATION_DELAY)
             categoryNameFocusRequester.requestFocus()
-//            if (category.name.isNotEmpty()) {
-//                categoryNameValueState = TextFieldValue(text = category.name, selection = TextRange(category.name.length))
-//            }
         })
 
     Column(
@@ -85,7 +80,10 @@ fun CategoryDetailsLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(categoryNameFocusRequester),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
             keyboardActions = KeyboardActions(onDone = { onSaveClick.invoke() })
         )
         FilledTonalButton(
@@ -101,7 +99,7 @@ fun CategoryDetailsLayout(
 
 @MotPreview
 @Composable
-fun CategoryDetailsLayoutPreview() {
+private fun CategoryDetailsLayoutPreview() {
     MotMaterialTheme {
         CategoryDetailsLayout(
             innerPadding = PaddingValues(),

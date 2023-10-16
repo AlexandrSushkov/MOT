@@ -140,15 +140,7 @@ fun PaymentListScreen(
         enabled = isSelectedStateOn && modalBottomSheetState.isVisible.not(),
         onBack = { viewModel.onCancelSelectionClickEvent() }
     )
-
-//    /**
-//     * Back handler to hide modal bottom sheet
-//     */
-//    BackHandler(
-//        enabled = modalBottomSheetState.isVisible,
-//        onBack = { coroutineScope.launch { modalBottomSheetState.hide() } }
-//    )
-
+    
     if (onShowDateDialog) {
         DatePickerDialog(
             onDismissRequest = { viewModel.onDismissDatePickerDialog() },
@@ -472,13 +464,31 @@ private fun PaymentItem(
 
 @MotPreviewScreen
 @Composable
-private fun PaymentListScreenLightPreview() {
+private fun PaymentListScreenPreview() {
+    PaymentListScreenTemplatePreview(Success(PreviewData.paymentListItemsPreview))
+}
+
+@MotPreviewScreen
+@Composable
+private fun PaymentListScreenEmptyPreview() {
+    PaymentListScreenTemplatePreview(Success(emptyList()))
+}
+
+@MotPreviewScreen
+@Composable
+private fun PaymentListScreenErrorPreview() {
+    PaymentListScreenTemplatePreview(Error(IllegalStateException("my error")))
+}
+
+@Composable
+private fun PaymentListScreenTemplatePreview(
+    paymentListResult: MotUiState<List<MotPaymentListItemModel>>
+) {
     MotMaterialTheme {
         PaymentListLayout(
             navigationIcon = { MotNavDrawerIcon {} },
             toolbarTitle = "Title",
-            paymentListResult = Success(PreviewData.paymentListItemsPreview),
-//        paymentListResult = Error(IllegalStateException("my error")),
+            paymentListResult = paymentListResult,
             onItemClick = {},
             onItemLongClick = {},
             onFabClick = {},

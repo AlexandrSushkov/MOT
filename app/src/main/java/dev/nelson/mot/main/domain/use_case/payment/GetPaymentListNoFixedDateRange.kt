@@ -76,7 +76,9 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
                     add(MotPaymentListItemModel.Header(date.orEmpty(), UUIDUtils.randomKey))
                     addAll(payments.toPaymentItemModelList(showCategory))
                 }
-            add(MotPaymentListItemModel.Footer(UUIDUtils.randomKey))
+            if (this.isNotEmpty()) {
+                add(MotPaymentListItemModel.Footer(UUIDUtils.randomKey))
+            }
         }
     }
 

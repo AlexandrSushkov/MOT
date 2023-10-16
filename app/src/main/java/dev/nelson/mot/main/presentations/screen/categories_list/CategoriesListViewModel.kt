@@ -111,7 +111,6 @@ class CategoriesListViewModel @Inject constructor(
     /**
      * Open [_root_ide_package_.dev.nelson.mot.main.presentations.screen.categories_list.EditCategoryDialog()]
      * by click on fab
-     *
      */
     fun onAddCategoryClick() = launch {
         _categoryNameState.value = TextFieldValue("")

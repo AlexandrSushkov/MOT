@@ -96,7 +96,7 @@ fun PaymentDetailsScreen(
     datePickerState.setSelection(dateViewState.mills)
 
     /**
-     * Close screen effect
+     * Close screen launch effect
      */
     LaunchedEffect(
         key1 = true,
@@ -280,7 +280,7 @@ fun PaymentDetailsLayout(
                     onValueChange = { onCostChange.invoke(it) },
                     placeholder = {
                         Text(
-                            text = "0",
+                            text = Constants.ZERO.toString(),
 //                                color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.displayMedium
                         )
@@ -358,7 +358,7 @@ fun PaymentDetailsLayout(
                     Icon(
                         Icons.Default.EditCalendar,
                         modifier = Modifier.padding(end = 4.dp),
-                        contentDescription = "date icon"
+                        contentDescription = stringResource(R.string.accessibility_date_icon)
                     )
 
                     Text(
@@ -381,10 +381,10 @@ fun PaymentDetailsLayout(
                     Icon(
                         Icons.Default.Category,
                         modifier = Modifier.padding(end = 4.dp),
-                        contentDescription = "category icon"
+                        contentDescription = stringResource(R.string.accessibility_category_icon)
                     )
                     MotSingleLineText(
-                        text = selectedCategory?.name ?: "No category",
+                        text = selectedCategory?.name ?: stringResource(R.string.no_category),
                         modifier = Modifier.align(Alignment.CenterVertically),
                         style = MaterialTheme.typography.labelMedium
                     )
@@ -398,12 +398,9 @@ fun PaymentDetailsLayout(
                 MotButton(
                     onClick = onSaveClick
                 ) {
-                    Text(text = "Save")
+                    Text(text = stringResource(R.string.text_save))
                 }
             }
         }
     }
-
 }
-
-

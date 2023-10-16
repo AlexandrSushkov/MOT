@@ -3,6 +3,7 @@ package dev.nelson.mot.main.util.constant
 
 object Constants {
 
+    const val ZERO = 0
     const val DEFAULT_ANIMATION_DELAY = 200L
     const val DEFAULT_ANIMATION_DURATION = 500
     const val SWIPE_TO_DISMISS_THRESHOLD = 125

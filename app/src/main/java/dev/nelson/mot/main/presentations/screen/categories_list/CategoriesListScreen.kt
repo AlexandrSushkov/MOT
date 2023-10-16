@@ -4,11 +4,6 @@ package dev.nelson.mot.main.presentations.screen.categories_list
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -192,7 +187,6 @@ fun CategoryListLayout(
                 scrollState = categoriesListScrollingState,
                 scrollBehavior = appBerScrollBehavior
             )
-
         }
     }
 }
@@ -432,36 +426,28 @@ private fun CategoryListLayoutPreview() {
 @MotPreviewScreen
 @Composable
 private fun CategoryListLayoutSnackbarPreview() {
-    MotMaterialTheme {
-        CategoryListLayoutPreviewData(
-            categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
-            snackbarVisibleState = true
-        )
-    }
+    CategoryListLayoutPreviewData(
+        categoriesListUiState = Success(PreviewData.categoriesListItemsPreview),
+        snackbarVisibleState = true
+    )
 }
 
 @MotPreviewScreen
 @Composable
 private fun CategoryListLayoutEmptyPreview() {
-    MotMaterialTheme {
-        CategoryListLayoutPreviewData(categoriesListUiState = Success(emptyList()))
-    }
+    CategoryListLayoutPreviewData(categoriesListUiState = Success(emptyList()))
 }
 
 @MotPreviewScreen
 @Composable
 private fun CategoryListLayoutLoadingPreview() {
-    MotMaterialTheme {
-        CategoryListLayoutPreviewData(categoriesListUiState = Loading)
-    }
+    CategoryListLayoutPreviewData(categoriesListUiState = Loading)
 }
 
 @MotPreviewScreen
 @Composable
 private fun CategoryListLayoutErrorPreview() {
-    MotMaterialTheme {
-        CategoryListLayoutPreviewData(categoriesListUiState = Error(IllegalStateException("error")))
-    }
+    CategoryListLayoutPreviewData(categoriesListUiState = Error(IllegalStateException("error")))
 }
 
 @Composable
@@ -469,19 +455,21 @@ private fun CategoryListLayoutPreviewData(
     categoriesListUiState: MotUiState<List<MotListItemModel>>,
     snackbarVisibleState: Boolean = false,
 ) {
-    CategoryListLayout(
-        appBarTitle = "Categories",
-        categoriesListUiState = categoriesListUiState,
-        appBarNavigationIcon = { MotNavDrawerIcon(onClick = {}) },
-        onCategoryClick = {},
-        onFavoriteClick = { _, _ -> },
-        onAddCategoryClickEvent = {},
-        onCategoryLongPress = {},
-        onSwipeCategory = {},
-        snackbarVisibleState = snackbarVisibleState,
-        deleteItemsCountText = "",
-        undoDeleteClickEvent = {}
-    )
+    MotMaterialTheme {
+        CategoryListLayout(
+            appBarTitle = "Categories",
+            categoriesListUiState = categoriesListUiState,
+            appBarNavigationIcon = { MotNavDrawerIcon(onClick = {}) },
+            onCategoryClick = {},
+            onFavoriteClick = { _, _ -> },
+            onAddCategoryClickEvent = {},
+            onCategoryLongPress = {},
+            onSwipeCategory = {},
+            snackbarVisibleState = snackbarVisibleState,
+            deleteItemsCountText = "",
+            undoDeleteClickEvent = {}
+        )
+    }
 }
 
 @MotPreviewScreen

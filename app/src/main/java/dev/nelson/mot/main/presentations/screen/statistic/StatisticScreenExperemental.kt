@@ -99,7 +99,7 @@ private fun StatisticLayout(
     onExpandMonthItemClick: (StatisticByMonthModel) -> Unit = {}
 ) {
     val tabs = MotStatisticTab.getTabs()
-    val pagerState = rememberPagerState { 0 }
+    val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -194,7 +194,6 @@ private fun StatisticLayout(
             )
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-//                pageCount = tabs.size,
                 state = pagerState,
             ) { tabId ->
                 when (tabs[tabId]) {
@@ -223,10 +222,10 @@ private fun StatisticLayout(
 }
 
 sealed class MotStatisticTab(val title: String) {
-    object CurrentMonth : MotStatisticTab("Current Month")
-    object ByMonth : MotStatisticTab("By Month")
-    object ByYear : MotStatisticTab("By Year")
-    object ByCategory : MotStatisticTab("By Category")
+    data object CurrentMonth : MotStatisticTab("Current Month")
+    data object ByMonth : MotStatisticTab("By Month")
+    data object ByYear : MotStatisticTab("By Year")
+    data object ByCategory : MotStatisticTab("By Category")
 
     companion object {
         fun getTabs() = listOf(CurrentMonth, ByMonth, ByYear, ByCategory)

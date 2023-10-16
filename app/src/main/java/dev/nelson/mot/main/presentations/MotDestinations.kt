@@ -16,7 +16,7 @@ sealed class MotDestinations(
 /**
  * Mot app navigation destinations
  */
-object PaymentList : MotDestinations(
+data object PaymentList : MotDestinations(
     icon = Icons.Filled.PieChart,
     route = "PaymentList",
     screen = {
@@ -24,7 +24,7 @@ object PaymentList : MotDestinations(
     }
 )
 
-object CategoryList : MotDestinations(
+data object CategoryList : MotDestinations(
     icon = Icons.Filled.AttachMoney,
     route = "CategoryList",
     screen = {
@@ -32,7 +32,7 @@ object CategoryList : MotDestinations(
     }
 )
 
-object Overview : MotDestinations(
+data object Overview : MotDestinations(
     icon = Icons.Filled.AttachMoney,
     route = "Overview",
     screen = {

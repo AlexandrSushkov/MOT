@@ -8,11 +8,11 @@ import dev.nelson.mot.main.presentations.screen.settings.SettingsScreen
  */
 sealed class MotSwitchType(val key: Preferences.Key<Boolean>) {
 
-    object DynamicColorTheme : MotSwitchType(PreferencesKeys.DYNAMIC_COLOR_THEME_ENABLED)
+    data object DynamicColorTheme : MotSwitchType(PreferencesKeys.DYNAMIC_COLOR_THEME_ENABLED)
 
-    object ShowCents : MotSwitchType(PreferencesKeys.SHOW_CENTS_ENABLED)
+    data object ShowCents : MotSwitchType(PreferencesKeys.SHOW_CENTS_ENABLED)
 
-    object ShowCurrencySymbol : MotSwitchType(PreferencesKeys.SHOW_CURRENCY_SYMBOL_ENABLED)
+    data object ShowCurrencySymbol : MotSwitchType(PreferencesKeys.SHOW_CURRENCY_SYMBOL_ENABLED)
 
-    object ShowDigits : MotSwitchType(PreferencesKeys.SHOW_DIGITS_ENABLED)
+    data object ShowDigits : MotSwitchType(PreferencesKeys.SHOW_DIGITS_ENABLED)
 }

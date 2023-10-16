@@ -200,8 +200,8 @@ class PaymentDetailsViewModel @Inject constructor(
     }
 
     private sealed class SavePaymentMode {
-        object Add : SavePaymentMode()
-        object Edit : SavePaymentMode()
+        data object Add : SavePaymentMode()
+        data object Edit : SavePaymentMode()
     }
 
     /**

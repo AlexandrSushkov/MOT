@@ -131,12 +131,12 @@ private fun StatisticLayout(
     priceViewState: PriceViewState,
 ) {
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val pagerState = rememberPagerState { 0 }
-    val coroutineScope = rememberCoroutineScope()
-    val systemUiController = rememberSystemUiController()
     val statusBarColor = MaterialTheme.colorScheme.secondaryContainer
     val statisticTabs = MotStatistic2Tab.tabs
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val pagerState = rememberPagerState { statisticTabs.size }
+    val coroutineScope = rememberCoroutineScope()
+    val systemUiController = rememberSystemUiController()
     val modalBottomSheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -285,7 +285,6 @@ private fun StatisticLayout(
             )
             HorizontalPager(
                 modifier = Modifier.fillMaxSize(),
-//                pageCount = statisticTabs.size,
                 state = pagerState,
                 userScrollEnabled = false,
             ) { tabId ->
@@ -311,8 +310,8 @@ private fun StatisticLayout(
 }
 
 private sealed class MotStatistic2Tab(val title: String) {
-    object ByTime : MotStatistic2Tab("by Time")
-    object ByCategory : MotStatistic2Tab("by Category")
+    data object ByTime : MotStatistic2Tab("by Time")
+    data object ByCategory : MotStatistic2Tab("by Category")
 
     companion object {
         val tabs

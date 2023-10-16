@@ -25,9 +25,9 @@ class ModifyPaymentUseCase @Inject constructor(
 }
 
 sealed class ModifyPaymentAction {
-    object Add : ModifyPaymentAction()
-    object Edit : ModifyPaymentAction()
-    object Delete : ModifyPaymentAction()
+    data object Add : ModifyPaymentAction()
+    data object Edit : ModifyPaymentAction()
+    data object Delete : ModifyPaymentAction()
 }
 
 data class ModifyPaymentParams(val payment: Payment, val action: ModifyPaymentAction)

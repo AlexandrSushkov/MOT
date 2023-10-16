@@ -7,6 +7,7 @@
     <string name="recent_payments" translatable="false">Recent Payments</string>
     <string name="categories" translatable="false">Categories</string>
     <string name="category" translatable="false">Category</string>
+    <string name="no_category" translatable="false">No Category</string>
     <string name="category_payments_without_category" translatable="false">Payments without a category</string>
     <string name="statistic" translatable="false">Statistic</string>
     <string name="about" translatable="false">About</string>
@@ -19,6 +20,7 @@
     <string name="message_hint" translatable="false">Message</string>
     <string name="text_add" translatable="false">Add</string>
     <string name="text_edit" translatable="false">Edit</string>
+    <string name="text_save" translatable="false">Save</string>
     <string name="text_undo">Undo</string>
     <string name="text_empty">No data yet.</string>
     <string name="text_error">Error</string>
@@ -35,6 +37,7 @@
     <string name="accessibility_add_icon" translatable="false">add icon</string>
     <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>
     <string name="accessibility_done_icon" translatable="false">done icon</string>
+    <string name="accessibility_date_icon" translatable="false">date icon</string>
     <string name="accessibility_search_icon" translatable="false">search icon</string>
     <!--Accessibility text end-->
 
