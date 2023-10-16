@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/statistic_list_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clickable="false"
-    android:divider="@null"
-    android:scrollbars="none"
-    android:dividerHeight="0dp"/>
