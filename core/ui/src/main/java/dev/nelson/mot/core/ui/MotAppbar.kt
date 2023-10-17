@@ -133,7 +133,7 @@ private fun MotSelectionTopAppBarPreview() {
             title = "1",
             navigationIcon = { MotIconButtons.Close {} },
             actions = {
-                MotIconButtons.Calendar {}
+                MotIconButtons.EditCalendar {}
                 MotIconButtons.Category {}
                 MotIconButtons.Delete {}
             }

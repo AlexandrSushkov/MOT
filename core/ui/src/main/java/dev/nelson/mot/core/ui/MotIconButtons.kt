@@ -1,20 +1,18 @@
 package dev.nelson.mot.core.ui
 
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import dev.utils.preview.MotPreview
 
+@OptIn(ExperimentalMaterial3Api::class)
 object MotIconButtons {
     @Composable
     fun Settings(
@@ -81,25 +79,14 @@ object MotIconButtons {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun Close(
         modifier: Modifier = Modifier,
-        enableTooltip: Boolean = false,
         onClick: () -> Unit
     ) {
-        if (enableTooltip) {
-            PlainTooltipBox(tooltip = { Text(text = "Close") }) {
-                IconButton(
-                    modifier = modifier.tooltipAnchor(),
-                    onClick = onClick
-                ) {
-                    MotIcons.Close()
-                }
-            }
-        } else {
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.tooltip_close_text)) }) {
             IconButton(
-                modifier = modifier,
+                modifier = modifier.tooltipAnchor(),
                 onClick = onClick
             ) {
                 MotIcons.Close()
@@ -112,11 +99,13 @@ object MotIconButtons {
         modifier: Modifier = Modifier,
         onClick: () -> Unit
     ) {
-        IconButton(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            MotIcons.Category()
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.tooltip_category_text)) }) {
+            IconButton(
+                modifier = modifier.tooltipAnchor(),
+                onClick = onClick
+            ) {
+                MotIcons.Category()
+            }
         }
     }
 
@@ -138,11 +127,13 @@ object MotIconButtons {
         modifier: Modifier = Modifier,
         onClick: () -> Unit
     ) {
-        IconButton(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            MotIcons.EditCalendar()
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.tooltip_edit_calendar_text)) }) {
+            IconButton(
+                modifier = modifier.tooltipAnchor(),
+                onClick = onClick
+            ) {
+                MotIcons.EditCalendar()
+            }
         }
     }
 
@@ -151,11 +142,13 @@ object MotIconButtons {
         modifier: Modifier = Modifier,
         onClick: () -> Unit
     ) {
-        IconButton(
-            modifier = modifier,
-            onClick = onClick
-        ) {
-            MotIcons.Delete()
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.tooltip_delete_text)) }) {
+            IconButton(
+                modifier = modifier.tooltipAnchor(),
+                onClick = onClick
+            ) {
+                MotIcons.Delete()
+            }
         }
     }
 }
@@ -164,7 +157,8 @@ object MotIconButtons {
 @Composable
 private fun MotIconsPreview() {
     MotMaterialTheme {
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(5),
             content = {
                 item { Surface { MotIconButtons.Settings {} } }
                 item { Surface { MotIconButtons.Save {} } }
@@ -172,6 +166,10 @@ private fun MotIconsPreview() {
                 item { Surface { MotIconButtons.Drawer {} } }
                 item { Surface { MotIconButtons.Back {} } }
                 item { Surface { MotIconButtons.Close {} } }
+                item { Surface { MotIconButtons.Category {} } }
+                item { Surface { MotIconButtons.Calendar {} } }
+                item { Surface { MotIconButtons.EditCalendar {} } }
+                item { Surface { MotIconButtons.Delete {} } }
             }
         )
     }

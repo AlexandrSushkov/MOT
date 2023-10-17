@@ -251,11 +251,7 @@ fun PaymentListLayout(
         topBar = {
             if (isSelectedStateOn) {
                 MotToolbar.SelectionAppBar(
-                    navigationIcon = {
-                        MotIconButtons.Close {
-                            onCancelSelectionClick.invoke()
-                        }
-                    },
+                    navigationIcon = { MotIconButtons.Close(onClick = onCancelSelectionClick) },
                     title = selectedItemsCount.toString(),
                     actions = {
                         MotIconButtons.EditCalendar(onClick = onChangeDateForSelectedItemsClick)

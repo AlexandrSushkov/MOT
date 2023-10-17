@@ -43,7 +43,7 @@ object MotIcons {
             Icons.Default.FilterList,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_filter_icon)
+            contentDescription = stringResource(R.string.content_description_filter_icon)
         )
     }
 
@@ -56,7 +56,7 @@ object MotIcons {
             Icons.Default.Save,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_save_icon)
+            contentDescription = stringResource(R.string.content_description_save_icon)
         )
     }
 
@@ -69,7 +69,7 @@ object MotIcons {
             Icons.Default.Settings,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_settings_icon)
+            contentDescription = stringResource(R.string.content_description_settings_icon)
         )
     }
 
@@ -82,7 +82,7 @@ object MotIcons {
             Icons.Default.Menu,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_drawer_icon)
+            contentDescription = stringResource(R.string.content_description_drawer_icon)
         )
     }
 
@@ -95,7 +95,7 @@ object MotIcons {
             Icons.Default.Category,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_category_icon)
+            contentDescription = stringResource(R.string.content_description_category_icon)
         )
     }
 
@@ -108,7 +108,7 @@ object MotIcons {
             imageVector = Icons.Default.Info,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(R.string.accessibility_info_icon)
+            contentDescription = stringResource(R.string.content_description_info_icon)
         )
     }
 
@@ -121,7 +121,7 @@ object MotIcons {
             Icons.Default.Add,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(R.string.accessibility_add_icon)
+            contentDescription = stringResource(R.string.content_description_add_icon)
         )
     }
 
@@ -134,7 +134,7 @@ object MotIcons {
             Icons.Filled.Star,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_favorite_checked_icon)
+            contentDescription = stringResource(R.string.content_description_favorite_checked_icon)
         )
     }
 
@@ -147,7 +147,7 @@ object MotIcons {
             Icons.Filled.StarBorder,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_favorite_unchecked_icon)
+            contentDescription = stringResource(R.string.content_description_favorite_unchecked_icon)
         )
     }
 
@@ -160,7 +160,7 @@ object MotIcons {
             imageVector = Icons.Default.Done,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_done_icon)
+            contentDescription = stringResource(R.string.content_description_done_icon)
         )
     }
 
@@ -173,7 +173,7 @@ object MotIcons {
             Icons.Default.Delete,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_delete_icon)
+            contentDescription = stringResource(R.string.content_description_delete_icon)
         )
     }
 
@@ -186,7 +186,7 @@ object MotIcons {
             Icons.Default.CalendarMonth,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_calendar_icon)
+            contentDescription = stringResource(R.string.content_description_calendar_icon)
         )
     }
 
@@ -199,7 +199,7 @@ object MotIcons {
             Icons.Default.EditCalendar,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_calendar_icon)
+            contentDescription = stringResource(R.string.content_description_calendar_icon)
         )
     }
 
@@ -212,7 +212,7 @@ object MotIcons {
             Icons.Default.Search,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_search_icon)
+            contentDescription = stringResource(R.string.content_description_search_icon)
         )
     }
 
@@ -225,7 +225,7 @@ object MotIcons {
             Icons.Default.ArrowBack,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_back_icon)
+            contentDescription = stringResource(R.string.content_description_back_icon)
         )
     }
 
@@ -238,7 +238,7 @@ object MotIcons {
             Icons.Default.Close,
             modifier = modifier,
             tint = tint,
-            contentDescription = stringResource(id = R.string.accessibility_close_icon)
+            contentDescription = stringResource(R.string.content_description_close_icon)
         )
     }
 }
