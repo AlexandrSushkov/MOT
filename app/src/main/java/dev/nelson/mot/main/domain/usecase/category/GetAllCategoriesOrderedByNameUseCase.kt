@@ -7,6 +7,7 @@ import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.repository.CategoryRepositoryImpl
 import dev.nelson.mot.main.domain.usecase.base.UseCaseFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -24,6 +25,7 @@ class GetAllCategoriesOrderedByNameUseCase @Inject constructor(
         return when (params) {
             SortingOrder.Ascending -> categoryRepository.getAllCategoriesOrderedByNameAscending()
             SortingOrder.Descending -> categoryRepository.getAllCategoriesOrderedByNameDescending()
-        }.map { it.toCategoryList() }
+        }.map { categories -> categories.filter { categoryEntity -> categoryEntity.name.isNotEmpty() } }
+            .map { it.toCategoryList() }
     }
 }

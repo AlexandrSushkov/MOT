@@ -21,25 +21,29 @@ object AppButtons {
     @Composable
     fun TextButton(
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         @StringRes stringResource: Int,
         onClick: () -> Unit
     ) {
         val text = stringResource(id = stringResource)
         TextButton(
-            onClick = onClick,
             modifier = modifier,
-            text = text
+            enabled = enabled,
+            text = text,
+            onClick = onClick
         )
     }
 
     @Composable
     fun TextButton(
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         text: String,
         onClick: () -> Unit
     ) {
         TextButton(
             modifier = modifier,
+            enabled = enabled,
             onClick = onClick
         ) {
             Text(

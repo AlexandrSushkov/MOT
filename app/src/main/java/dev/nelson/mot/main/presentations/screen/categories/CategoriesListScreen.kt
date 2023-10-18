@@ -394,6 +394,7 @@ private fun EditCategoryDialog(
             val buttonTextId = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
             AppButtons.TextButton(
                 stringResource = buttonTextId,
+                enabled = categoryNameState.text.isNotEmpty(),
                 onClick = onSaveCategoryClick
             )
         }
