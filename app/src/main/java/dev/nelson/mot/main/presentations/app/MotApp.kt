@@ -25,7 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.main.presentations.nav.DrawerViewModel
 import dev.nelson.mot.main.presentations.nav.DrawerViewState
 import dev.nelson.mot.main.presentations.nav.MotNavHost
@@ -155,7 +155,7 @@ private fun MotAppLayout(
 @MotPreview
 @Composable
 private fun MotAppLayoutPreview() {
-    MotMaterialTheme {
+    AppTheme {
         MotAppLayout(
             isOpenedFromWidget = false,
             finishAction = {},

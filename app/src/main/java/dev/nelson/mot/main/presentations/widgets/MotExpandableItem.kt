@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.utils.preview.MotPreview
@@ -90,7 +90,7 @@ fun MotExpandableItem(
 @MotPreview
 @Composable
 private fun MotExpandableItemPreview() {
-    MotMaterialTheme {
+    AppTheme {
         val payment = PreviewData.paymentItemPreview
         val expandedState = remember { MutableTransitionState(payment.isExpanded) }
 

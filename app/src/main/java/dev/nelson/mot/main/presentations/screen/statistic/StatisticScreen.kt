@@ -42,9 +42,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import dev.nelson.mot.core.ui.MotIconButtons
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
@@ -213,7 +213,7 @@ private fun StatisticLayout(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { coroutineScope.launch { showBottomSheet = true } },
-                content = { MotIcons.Filter() }
+                content = { AppIcons.Filter() }
             )
         }
     ) { innerPadding ->
@@ -319,14 +319,14 @@ private sealed class MotStatistic2Tab(val title: String) {
 @MotPreview
 @Composable
 private fun StaticLayoutPreview() {
-    MotMaterialTheme {
+    AppTheme {
         StatisticLayout(
             appBarTitle = "StatisticLayout",
             selectedMonthModel = PreviewData.statisticByMonthModelPreviewData,
             statByMonthList = PreviewData.statisticByMonthListPreviewData,
             statByCategoryList = emptyList(),
             //            onNavigationButtonClick = {},
-            navigationIcon = { MotIconButtons.Drawer {} },
+            navigationIcon = { AppIconButtons.Drawer {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
                 selectedTimeModel = PreviewData.statisticByMonthModelPreviewData

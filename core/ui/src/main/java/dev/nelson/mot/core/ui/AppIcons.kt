@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.utils.preview.MotPreview
 
-object MotIcons {
+object AppIcons {
 
     @Composable
     fun Filter(
@@ -251,26 +251,26 @@ private fun MotIconsPreview() {
         .padding(16.dp)
         .aspectRatio(1f)
 
-    MotMaterialTheme {
+    AppTheme {
         LazyVerticalGrid(
             columns = GridCells.Fixed(5),
             content = {
-                item { Surface { MotIcons.Filter(modifier) } }
-                item { Surface { MotIcons.Save(modifier) } }
-                item { Surface { MotIcons.Settings(modifier) } }
-                item { Surface { MotIcons.Drawer(modifier) } }
-                item { Surface { MotIcons.Category(modifier) } }
-                item { Surface { MotIcons.Info(modifier) } }
-                item { Surface { MotIcons.Add(modifier) } }
-                item { Surface { MotIcons.FavoriteChecked(modifier) } }
-                item { Surface { MotIcons.FavoriteUnchecked(modifier) } }
-                item { Surface { MotIcons.Done(modifier) } }
-                item { Surface { MotIcons.Delete(modifier) } }
-                item { Surface { MotIcons.Calendar(modifier) } }
-                item { Surface { MotIcons.EditCalendar(modifier) } }
-                item { Surface { MotIcons.Search(modifier) } }
-                item { Surface { MotIcons.Back(modifier) } }
-                item { Surface { MotIcons.Close(modifier) } }
+                item { Surface { AppIcons.Filter(modifier) } }
+                item { Surface { AppIcons.Save(modifier) } }
+                item { Surface { AppIcons.Settings(modifier) } }
+                item { Surface { AppIcons.Drawer(modifier) } }
+                item { Surface { AppIcons.Category(modifier) } }
+                item { Surface { AppIcons.Info(modifier) } }
+                item { Surface { AppIcons.Add(modifier) } }
+                item { Surface { AppIcons.FavoriteChecked(modifier) } }
+                item { Surface { AppIcons.FavoriteUnchecked(modifier) } }
+                item { Surface { AppIcons.Done(modifier) } }
+                item { Surface { AppIcons.Delete(modifier) } }
+                item { Surface { AppIcons.Calendar(modifier) } }
+                item { Surface { AppIcons.EditCalendar(modifier) } }
+                item { Surface { AppIcons.Search(modifier) } }
+                item { Surface { AppIcons.Back(modifier) } }
+                item { Surface { AppIcons.Close(modifier) } }
             }
         )
     }

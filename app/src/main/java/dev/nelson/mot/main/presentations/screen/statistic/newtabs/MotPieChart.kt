@@ -21,7 +21,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.tehras.charts.piechart.PieChartData
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
@@ -155,7 +155,7 @@ private fun MotPieChartPreview() {
             color = lightChartColors.random()
         )
     }
-    MotMaterialTheme {
+    AppTheme {
         Card {
             MotPieChart(
                 modifier = Modifier

@@ -18,10 +18,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,10 +56,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.MotDismissibleListItem
-import dev.nelson.mot.core.ui.MotIconButtons
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotToolbar
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.AppToolbar
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
@@ -250,13 +246,13 @@ fun PaymentListLayout(
     Scaffold(
         topBar = {
             if (isSelectedStateOn) {
-                MotToolbar.SelectionAppBar(
-                    navigationIcon = { MotIconButtons.Close(onClick = onCancelSelectionClick) },
+                AppToolbar.Selectable(
+                    navigationIcon = { AppIconButtons.Close(onClick = onCancelSelectionClick) },
                     title = selectedItemsCount.toString(),
                     actions = {
-                        MotIconButtons.EditCalendar(onClick = onChangeDateForSelectedItemsClick)
-                        MotIconButtons.Category(onClick = onSelectCategoryIconClick)
-                        MotIconButtons.Delete(onClick = onDeleteSelectedItemsClick)
+                        AppIconButtons.EditCalendar(onClick = onChangeDateForSelectedItemsClick)
+                        AppIconButtons.Category(onClick = onSelectCategoryIconClick)
+                        AppIconButtons.Delete(onClick = onDeleteSelectedItemsClick)
                     }
                 ).also {
                     // TODO: use accompanist like id done with scroll
@@ -268,7 +264,7 @@ fun PaymentListLayout(
                     }
                 }
             } else {
-                MotToolbar.RegularAppBar(
+                AppToolbar.Regular(
                     appBarTitle = toolbarTitle,
                     navigationIcon = navigationIcon,
                     scrollBehavior = appBarScrollBehavior
@@ -303,7 +299,7 @@ fun PaymentListLayout(
             if (isSelectedStateOn.not()) {
                 FloatingActionButton(
                     onClick = onFabClick,
-                    content = { MotIcons.Add() }
+                    content = { AppIcons.Add() }
                 )
             }
         }
@@ -467,9 +463,9 @@ private fun PaymentListScreenErrorPreview() {
 private fun PaymentListScreenTemplatePreview(
     paymentListResult: MotUiState<List<MotPaymentListItemModel>>
 ) {
-    MotMaterialTheme {
+    AppTheme {
         PaymentListLayout(
-            navigationIcon = { MotIconButtons.Drawer {} },
+            navigationIcon = { AppIconButtons.Drawer {} },
             toolbarTitle = "Title",
             paymentListResult = paymentListResult,
             onItemClick = {},

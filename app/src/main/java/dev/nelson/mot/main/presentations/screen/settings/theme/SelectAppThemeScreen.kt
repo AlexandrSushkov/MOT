@@ -15,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotIconButtons
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotToolbar
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.AppToolbar
 import dev.nelson.mot.core.ui.model.MotAppTheme
 import dev.utils.preview.MotPreview
 
@@ -44,10 +44,10 @@ private fun SelectAppThemeLayout(
 ) {
     Scaffold(
         topBar = {
-            MotToolbar.RegularAppBar(
+            AppToolbar.Regular(
                 appBarTitle = stringResource(R.string.app_theme_title),
                 navigationIcon = {
-                    MotIconButtons.Back {
+                    AppIconButtons.Back {
                         closeScreenAction.invoke()
                     }
                 }
@@ -68,7 +68,7 @@ private fun SelectAppThemeLayout(
                             onClick = { onThemeSelected.invoke(it) }
                         )
                     },
-                    headlineContent = { Text(text = it.name) }
+                    headlineContent = { Text(it.javaClass.name) }
                 )
             }
         }
@@ -78,7 +78,7 @@ private fun SelectAppThemeLayout(
 @MotPreview
 @Composable
 private fun SelectAppThemePreview() {
-    MotMaterialTheme {
+    AppTheme {
         SelectAppThemeLayout(
             viewState = SelectAppThemeViewState(),
             closeScreenAction = {}

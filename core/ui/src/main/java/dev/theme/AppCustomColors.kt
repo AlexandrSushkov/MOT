@@ -2,7 +2,7 @@ package dev.theme
 
 import androidx.compose.ui.graphics.Color
 
-object MotColors {
+object AppCustomColors {
     val chartColors = listOf(
         Color(0xFFFF9E80),
         Color(0xFFFFD180),

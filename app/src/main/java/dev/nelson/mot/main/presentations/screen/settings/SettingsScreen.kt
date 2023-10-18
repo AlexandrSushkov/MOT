@@ -43,11 +43,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.BuildConfig
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotIconButtons
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppButtons
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.MotSwitch
-import dev.nelson.mot.core.ui.MotTextButton
-import dev.nelson.mot.core.ui.MotToolbar
+import dev.nelson.mot.core.ui.AppToolbar
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.main.presentations.widgets.MotAlertDialog
 import dev.nelson.mot.main.util.StringUtils
@@ -130,7 +130,7 @@ private fun SettingsScreenLayout(
 
     Scaffold(
         topBar = {
-            MotToolbar.RegularAppBar(
+            AppToolbar.Regular(
                 appBarTitle = stringResource(id = R.string.settings),
                 navigationIcon = navigationIcon,
                 scrollBehavior = appBarScrollBehavior
@@ -217,7 +217,7 @@ private fun SettingsScreenLayout(
                     headlineContent = { Text(text = stringResource(R.string.app_theme_text)) },
                     trailingContent = {
                         Text(
-                            text = viewState.selectedAppTheme.name,
+                            text = viewState.selectedAppTheme.javaClass.name,
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
@@ -245,9 +245,9 @@ private fun SettingsScreenLayout(
                     headlineContent = { Text(text = stringResource(R.string.export_database_text)) },
                     supportingContent = { Text(text = stringResource(R.string.export_data_base_message)) },
                     trailingContent = {
-                        MotTextButton(
-                            onClick = onExportDataBaseClick,
-                            text = stringResource(R.string.export_text)
+                        AppButtons.TextButton(
+                            text = stringResource(R.string.export_text),
+                            onClick = onExportDataBaseClick
                         )
                     }
                 )
@@ -256,9 +256,9 @@ private fun SettingsScreenLayout(
                 ListItem(
                     headlineContent = { Text(text = stringResource(R.string.import_database_text)) },
                     trailingContent = {
-                        MotTextButton(
-                            onClick = onImportDataBaseClick,
-                            text = stringResource(R.string.import_text)
+                        AppButtons.TextButton(
+                            text = stringResource(R.string.import_text),
+                            onClick = onImportDataBaseClick
                         )
                     }
                 )
@@ -268,9 +268,9 @@ private fun SettingsScreenLayout(
                     ListItem(
                         headlineContent = { Text(text = "Randomize Database data") },
                         trailingContent = {
-                            MotTextButton(
-                                onClick = onRandomizeBaseDataSwitchChecked,
-                                text = "Randomize"
+                            AppButtons.TextButton(
+                                text = "Randomize",
+                                onClick = onRandomizeBaseDataSwitchChecked
                             )
                         }
                     )
@@ -347,9 +347,9 @@ private fun SettingsScreenLayoutPreview() {
         isShowCentsSwitchChecked = true,
         isShowCurrencySymbolSwitchChecked = true
     )
-    MotMaterialTheme {
+    AppTheme {
         SettingsScreenLayout(
-            navigationIcon = { MotIconButtons.Drawer {} },
+            navigationIcon = { AppIconButtons.Drawer {} },
             viewState = viewState,
             onLocaleClick = {},
             onExportDataBaseClick = {},

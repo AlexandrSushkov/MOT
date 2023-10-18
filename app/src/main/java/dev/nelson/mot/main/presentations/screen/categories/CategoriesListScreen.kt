@@ -54,13 +54,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotCard
+import dev.nelson.mot.core.ui.AppButtons
+import dev.nelson.mot.core.ui.AppCard
+import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.AppToolbar
 import dev.nelson.mot.core.ui.MotDismissibleListItem
-import dev.nelson.mot.core.ui.MotIconButtons
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotTextButton
-import dev.nelson.mot.core.ui.MotToolbar
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppIcons
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
@@ -143,7 +143,7 @@ fun CategoryListLayout(
 
     Scaffold(
         topBar = {
-            MotToolbar.RegularAppBar(
+            AppToolbar.Regular(
                 appBarTitle = appBarTitle,
                 navigationIcon = appBarNavigationIcon,
                 scrollBehavior = appBerScrollBehavior
@@ -165,7 +165,7 @@ fun CategoryListLayout(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddCategoryClickEvent) {
-                MotIcons.Add()
+                AppIcons.Add()
             }
         }
     ) { innerPadding ->
@@ -310,7 +310,7 @@ fun CategoryListItem(
     onCategoryLongPress: (Category) -> Unit,
     onFavoriteClick: (Category, Boolean) -> Unit
 ) {
-    MotCard(
+    AppCard.Rectangular(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
@@ -341,9 +341,9 @@ fun CategoryListItem(
                             val modifier = Modifier.size(24.dp)
                             val tint = MaterialTheme.colorScheme.secondary
                             if (category.isFavorite) {
-                                MotIcons.FavoriteChecked(modifier, tint)
+                                AppIcons.FavoriteChecked(modifier, tint)
                             } else {
-                                MotIcons.FavoriteUnchecked(modifier, tint)
+                                AppIcons.FavoriteUnchecked(modifier, tint)
                             }
                         }
                     }
@@ -391,9 +391,10 @@ private fun EditCategoryDialog(
             )
         },
         confirmButton = {
-            MotTextButton(
-                onClick = onSaveCategoryClick,
-                stringResource = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
+            val buttonTextId = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
+            AppButtons.TextButton(
+                stringResource = buttonTextId,
+                onClick = onSaveCategoryClick
             )
         }
     )
@@ -401,7 +402,7 @@ private fun EditCategoryDialog(
 
 @Composable
 private fun CardFooter() {
-    MotCard(
+    AppCard.Rectangular(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(80.dp),
@@ -412,7 +413,7 @@ private fun CardFooter() {
 @MotPreviewScreen
 @Composable
 private fun CategoryListLayoutPreview() {
-    MotMaterialTheme {
+    AppTheme {
         CategoryListLayoutPreviewData(
             categoriesListUiState = Success(PreviewData.categoriesListItemsPreview)
         )
@@ -451,11 +452,11 @@ private fun CategoryListLayoutPreviewData(
     categoriesListUiState: MotUiState<List<MotListItemModel>>,
     snackbarVisibleState: Boolean = false
 ) {
-    MotMaterialTheme {
+    AppTheme {
         CategoryListLayout(
             appBarTitle = "Categories",
             categoriesListUiState = categoriesListUiState,
-            appBarNavigationIcon = { MotIconButtons.Drawer(onClick = {}) },
+            appBarNavigationIcon = { AppIconButtons.Drawer(onClick = {}) },
             onCategoryClick = {},
             onFavoriteClick = { _, _ -> },
             onAddCategoryClickEvent = {},
@@ -471,7 +472,7 @@ private fun CategoryListLayoutPreviewData(
 @MotPreviewScreen
 @Composable
 private fun EditCategoryDialogPreview() {
-    MotMaterialTheme {
+    AppTheme {
         EditCategoryDialog(
             categoryToEditId = null,
             categoryNameState = TextFieldValue(),

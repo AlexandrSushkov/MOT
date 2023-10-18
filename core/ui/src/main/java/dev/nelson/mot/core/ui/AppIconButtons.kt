@@ -1,5 +1,8 @@
 package dev.nelson.mot.core.ui
 
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,10 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import dev.utils.preview.MotPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
-object MotIconButtons {
+object AppIconButtons {
     @Composable
     fun Settings(
         modifier: Modifier = Modifier,
@@ -23,7 +27,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Settings()
+            AppIcons.Settings()
         }
     }
 
@@ -36,7 +40,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Save()
+            AppIcons.Save()
         }
     }
 
@@ -49,7 +53,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Filter()
+            AppIcons.Filter()
         }
     }
 
@@ -62,7 +66,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Drawer()
+            AppIcons.Drawer()
         }
     }
 
@@ -75,7 +79,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Back()
+            AppIcons.Back()
         }
     }
 
@@ -89,7 +93,7 @@ object MotIconButtons {
                 modifier = modifier.tooltipAnchor(),
                 onClick = onClick
             ) {
-                MotIcons.Close()
+                AppIcons.Close()
             }
         }
     }
@@ -104,7 +108,7 @@ object MotIconButtons {
                 modifier = modifier.tooltipAnchor(),
                 onClick = onClick
             ) {
-                MotIcons.Category()
+                AppIcons.Category()
             }
         }
     }
@@ -118,7 +122,7 @@ object MotIconButtons {
             modifier = modifier,
             onClick = onClick
         ) {
-            MotIcons.Calendar()
+            AppIcons.Calendar()
         }
     }
 
@@ -132,7 +136,7 @@ object MotIconButtons {
                 modifier = modifier.tooltipAnchor(),
                 onClick = onClick
             ) {
-                MotIcons.EditCalendar()
+                AppIcons.EditCalendar()
             }
         }
     }
@@ -147,7 +151,7 @@ object MotIconButtons {
                 modifier = modifier.tooltipAnchor(),
                 onClick = onClick
             ) {
-                MotIcons.Delete()
+                AppIcons.Delete()
             }
         }
     }
@@ -156,20 +160,24 @@ object MotIconButtons {
 @MotPreview
 @Composable
 private fun MotIconsPreview() {
-    MotMaterialTheme {
+    val modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)
+        .aspectRatio(1f)
+    AppTheme {
         LazyVerticalGrid(
             columns = GridCells.Fixed(5),
             content = {
-                item { Surface { MotIconButtons.Settings {} } }
-                item { Surface { MotIconButtons.Save {} } }
-                item { Surface { MotIconButtons.Filter {} } }
-                item { Surface { MotIconButtons.Drawer {} } }
-                item { Surface { MotIconButtons.Back {} } }
-                item { Surface { MotIconButtons.Close {} } }
-                item { Surface { MotIconButtons.Category {} } }
-                item { Surface { MotIconButtons.Calendar {} } }
-                item { Surface { MotIconButtons.EditCalendar {} } }
-                item { Surface { MotIconButtons.Delete {} } }
+                item { Surface { AppIconButtons.Settings(modifier) {} } }
+                item { Surface { AppIconButtons.Save(modifier) {} } }
+                item { Surface { AppIconButtons.Filter(modifier) {} } }
+                item { Surface { AppIconButtons.Drawer(modifier) {} } }
+                item { Surface { AppIconButtons.Back(modifier) {} } }
+                item { Surface { AppIconButtons.Close(modifier) {} } }
+                item { Surface { AppIconButtons.Category(modifier) {} } }
+                item { Surface { AppIconButtons.Calendar(modifier) {} } }
+                item { Surface { AppIconButtons.EditCalendar(modifier) {} } }
+                item { Surface { AppIconButtons.Delete(modifier) {} } }
             }
         )
     }

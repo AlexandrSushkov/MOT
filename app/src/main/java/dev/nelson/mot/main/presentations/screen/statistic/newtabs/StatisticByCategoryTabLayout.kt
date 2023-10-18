@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
@@ -141,7 +141,7 @@ fun StatisticByCategoryTabLayout(
 @Composable
 private fun StatisticByCategoryTabLayoutPreview() {
     val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    MotMaterialTheme {
+    AppTheme {
         StatisticByCategoryTabLayout(
             scrollBehavior = behavior,
             selectedCategoryViewState = SelectedCategoryViewState(
@@ -157,7 +157,7 @@ private fun StatisticByCategoryTabLayoutPreview() {
 @Composable
 private fun StatisticByCategoryTabLayoutEmptyContentPreview() {
     val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    MotMaterialTheme {
+    AppTheme {
         StatisticByCategoryTabLayout(
             scrollBehavior = behavior,
             selectedCategoryViewState = SelectedCategoryViewState(

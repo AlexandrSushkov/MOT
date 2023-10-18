@@ -19,8 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -59,10 +57,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotButton
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
-import dev.nelson.mot.core.ui.MotOutlinedButton
+import dev.nelson.mot.core.ui.AppButtons
+import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.main.data.model.Category
@@ -152,7 +149,7 @@ fun PaymentDetailsScreen(
 @MotPreview
 @Composable
 fun PaymentDetailsLayoutPreview() {
-    MotMaterialTheme {
+    AppTheme {
         PaymentDetailsLayout(
             paymentNameState = MutableStateFlow(TextFieldValue()),
             costState = MutableStateFlow(TextFieldValue()),
@@ -347,14 +344,14 @@ fun PaymentDetailsLayout(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                MotOutlinedButton(
+                AppButtons.Outlined(
                     onClick = {
                         keyboardController?.hide()
                         focusManager.clearFocus()
                         onDateClick.invoke()
                     }
                 ) {
-                    MotIcons.EditCalendar(Modifier.padding(end = 4.dp))
+                    AppIcons.EditCalendar(Modifier.padding(end = 4.dp))
                     Text(
                         text = dateViewState.text,
                         modifier = Modifier.align(Alignment.CenterVertically),
@@ -362,7 +359,7 @@ fun PaymentDetailsLayout(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                MotOutlinedButton(
+                AppButtons.Outlined(
                     onClick = {
                         coroutineScope.launch {
                             keyboardController?.hide()
@@ -372,7 +369,7 @@ fun PaymentDetailsLayout(
                         }
                     }
                 ) {
-                    MotIcons.Category(Modifier.padding(end = 4.dp))
+                    AppIcons.Category(Modifier.padding(end = 4.dp))
                     MotSingleLineText(
                         text = selectedCategory?.name ?: stringResource(R.string.no_category),
                         modifier = Modifier.align(Alignment.CenterVertically),
@@ -385,9 +382,7 @@ fun PaymentDetailsLayout(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                MotButton(
-                    onClick = onSaveClick
-                ) {
+                AppButtons.Regular(onClick = onSaveClick) {
                     Text(text = stringResource(R.string.text_save))
                 }
             }

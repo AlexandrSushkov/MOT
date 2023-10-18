@@ -122,7 +122,7 @@ class SettingsRepository @Inject constructor(
     }
 
     suspend fun setAppTheme(theme: MotAppTheme) {
-        dataStore.edit { it[PreferencesKeys.APP_THEME] = theme.name }
+        dataStore.edit { it[PreferencesKeys.APP_THEME] = theme.javaClass.name }
     }
 
     private fun getDataBaseBackupUniqueName(directory: File, fileName: String): String {

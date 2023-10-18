@@ -53,7 +53,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.LineChartMot
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByCategoryTab
 import dev.nelson.mot.main.presentations.screen.statistic.tabs.ByMonthTab
@@ -355,7 +355,7 @@ fun StatisticContent() {
 @MotPreview
 @Composable
 private fun StatisticLayoutPreview() {
-    MotMaterialTheme {
+    AppTheme {
         StatisticLayout(
             appBarTitle = "Statistic",
             appBarNavigationIcon = {},

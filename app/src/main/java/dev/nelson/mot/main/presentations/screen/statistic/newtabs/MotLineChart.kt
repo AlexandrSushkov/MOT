@@ -25,7 +25,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.fundation.motIsDarkTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
@@ -217,7 +217,7 @@ fun MotLineChart(
 @MotPreview
 @Composable
 private fun MotLineChartPreview() {
-    MotMaterialTheme {
+    AppTheme {
         Card {
             MotLineChart(
                 modifier = Modifier

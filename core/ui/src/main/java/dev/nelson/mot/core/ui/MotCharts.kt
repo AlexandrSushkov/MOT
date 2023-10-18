@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.theme.MotColors
+import dev.theme.AppCustomColors
 import kotlin.random.Random
 
 @Preview(showBackground = true)
@@ -32,14 +32,14 @@ fun LineChartMotPreview() {
  */
 @Composable
 fun LineChartMot(items: List<Float>){
-    val random = Random(MotColors.chartColors.size)
+    val random = Random(AppCustomColors.chartColors.size)
     Row(modifier = Modifier
         .clip(RoundedCornerShape(corner = CornerSize(8.dp)))
         .height(20.dp)
         .fillMaxWidth()) {
         items.forEach() {
-            val colorId = random.nextInt(MotColors.chartColors.size)
-            Box(Modifier.background(MotColors.chartColors[colorId])
+            val colorId = random.nextInt(AppCustomColors.chartColors.size)
+            Box(Modifier.background(AppCustomColors.chartColors[colorId])
                 .fillMaxSize()
                 .weight(it)){}
         }

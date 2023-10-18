@@ -34,7 +34,7 @@ fun PriceText(
 @MotPreview
 @Composable
 private fun TextPricePreview() {
-    MotMaterialTheme {
+    AppTheme {
         ListItem(
             headlineContent = {
                 PriceText(

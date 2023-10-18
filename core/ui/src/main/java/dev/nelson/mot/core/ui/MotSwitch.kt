@@ -45,7 +45,7 @@ fun MotSwitch(
 @MotPreview
 @Composable
 fun MotSwitchPreview() {
-    MotMaterialTheme {
+    AppTheme {
         Column {
             MotSwitchPreviewData(true)
             MotSwitchPreviewData(false)
@@ -55,7 +55,5 @@ fun MotSwitchPreview() {
 
 @Composable
 private fun MotSwitchPreviewData(checked: Boolean) {
-    ListItem(
-        headlineContent = { MotSwitch(checked = checked, onCheckedChange = {}) },
-    )
+    ListItem({ MotSwitch(checked = checked, onCheckedChange = {}) })
 }

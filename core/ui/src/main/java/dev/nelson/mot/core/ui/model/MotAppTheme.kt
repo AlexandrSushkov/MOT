@@ -1,9 +1,9 @@
 package dev.nelson.mot.core.ui.model
 
-sealed class MotAppTheme(val name: String) {
-    data object System : MotAppTheme("System")
-    data object Light : MotAppTheme("Light")
-    data object Dark : MotAppTheme("Dark")
+sealed class MotAppTheme {
+    data object System : MotAppTheme()
+    data object Light : MotAppTheme()
+    data object Dark : MotAppTheme()
 
     companion object {
         val default
@@ -11,8 +11,8 @@ sealed class MotAppTheme(val name: String) {
 
         fun fromString(name: String): MotAppTheme {
             return when (name) {
-                Light.name -> Light
-                Dark.name -> Dark
+                Light.javaClass.name -> Light
+                Dark.javaClass.name -> Dark
                 else -> System
             }
         }

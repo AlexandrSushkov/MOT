@@ -37,9 +37,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotCard
+import dev.nelson.mot.core.ui.AppCard
 import dev.nelson.mot.core.ui.MotDismissibleListItem
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
@@ -93,7 +93,7 @@ private fun DateRageDateText(
 @MotPreview
 @Composable
 private fun DateRangeWidgetPreview() {
-    MotMaterialTheme {
+    AppTheme {
         DateRangeWidget(startDate = "11.11.11", endDate = "22.22.22")
     }
 }
@@ -119,7 +119,7 @@ fun PaymentListDateItem(date: String) {
 @MotPreview
 @Composable
 private fun PaymentListDateItemPreview() {
-    MotMaterialTheme {
+    AppTheme {
         PaymentListDateItem("01.11.2022")
     }
 }
@@ -128,7 +128,7 @@ private fun PaymentListDateItemPreview() {
 @Composable
 fun PaymentListItemSelectedPreview() {
     val checkBoxTransitionState = remember { MutableTransitionState(true) }
-    MotMaterialTheme {
+    AppTheme {
         PaymentListItem(
             paymentItemModel = PreviewData.paymentItemModelPreview,
             onClick = {},
@@ -177,7 +177,7 @@ fun PaymentListItem(
         label = "system_bar_animate_color"
     )
 
-    MotCard(
+    AppCard.Rectangular(
         modifier = Modifier.combinedClickable(
             onClick = { onClick.invoke(paymentItemModel) },
             onLongClick = {
@@ -274,7 +274,7 @@ fun PaymentListItem(
 @Composable
 private fun DismissiblePaymentListItemPreview() {
     val checkBoxTransitionState = remember { MutableTransitionState(false) }
-    MotMaterialTheme {
+    AppTheme {
         MotDismissibleListItem(
 //            dismissState = DismissState(DismissValue.Default),
             onItemSwiped = {}

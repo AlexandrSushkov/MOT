@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package dev.nelson.mot.core.ui
 
 import android.animation.TimeInterpolator
@@ -10,11 +8,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
@@ -51,6 +44,7 @@ import kotlinx.coroutines.launch
 private const val ANIMATION_DURATION = 500 // in milliseconds
 private const val SWIPE_TO_DISMISS_THRESHOLD = 125 // in dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MotDismissibleListItem(
     isShow: Boolean = true,
@@ -157,15 +151,16 @@ fun MotDismissibleListItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun MotDismissibleListItemDefaultPreview() {
-    MotMaterialTheme {
+    AppTheme {
         MotDismissibleListItem(
             directions = setOf(DismissDirection.EndToStart),
             onItemSwiped = {}
         ) {
-            MotCard {
+            AppCard.Rectangular {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     content = {
@@ -180,15 +175,16 @@ private fun MotDismissibleListItemDefaultPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun MotDismissibleListItemDismissedToStartPreview() {
-    MotMaterialTheme {
+    AppTheme {
         MotDismissibleListItem(
             directions = setOf(DismissDirection.EndToStart),
             onItemSwiped = {}
         ) {
-            MotCard {
+            AppCard.Rectangular {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     content = {
@@ -203,15 +199,16 @@ private fun MotDismissibleListItemDismissedToStartPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun MotDismissibleListItemDismissedToEndPreview() {
-    MotMaterialTheme {
+    AppTheme {
         MotDismissibleListItem(
             directions = setOf(DismissDirection.EndToStart),
             onItemSwiped = {}
         ) {
-            MotCard {
+            AppCard.Rectangular {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     content = {

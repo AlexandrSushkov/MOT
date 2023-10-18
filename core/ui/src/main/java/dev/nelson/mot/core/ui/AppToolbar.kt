@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.utils.preview.MotPreview
 
-object MotToolbar {
+object AppToolbar {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun RegularAppBar(
+    fun Regular(
         appBarTitle: String,
         navigationIcon: @Composable () -> Unit = {},
         actions: @Composable RowScope.() -> Unit = {},
@@ -91,7 +91,7 @@ object MotToolbar {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SelectionAppBar(
+    fun Selectable(
         title: String,
         navigationIcon: @Composable () -> Unit = {},
         actions: @Composable RowScope.() -> Unit = {},
@@ -110,17 +110,16 @@ object MotToolbar {
             )
         )
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @MotPreview
 @Composable
 private fun MotTopAppBarPreview() {
-    MotMaterialTheme {
-        MotToolbar.RegularAppBar(
+    AppTheme {
+        AppToolbar.Regular(
             appBarTitle = "Toolbar",
-            navigationIcon = { MotIconButtons.Drawer {} },
+            navigationIcon = { AppIconButtons.Drawer {} },
         )
     }
 }
@@ -128,14 +127,14 @@ private fun MotTopAppBarPreview() {
 @MotPreview
 @Composable
 private fun MotSelectionTopAppBarPreview() {
-    MotMaterialTheme {
-        MotToolbar.SelectionAppBar(
+    AppTheme {
+        AppToolbar.Selectable(
             title = "1",
-            navigationIcon = { MotIconButtons.Close {} },
+            navigationIcon = { AppIconButtons.Close {} },
             actions = {
-                MotIconButtons.EditCalendar {}
-                MotIconButtons.Category {}
-                MotIconButtons.Delete {}
+                AppIconButtons.EditCalendar {}
+                AppIconButtons.Category {}
+                AppIconButtons.Delete {}
             }
         )
     }

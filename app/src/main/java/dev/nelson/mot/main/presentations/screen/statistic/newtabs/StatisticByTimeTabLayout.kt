@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.github.tehras.charts.piechart.PieChartData
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
@@ -189,7 +189,7 @@ private fun StatisticByTimeTabLayoutPreview() {
             color = lightChartColors.random()
         )
     }
-    MotMaterialTheme {
+    AppTheme {
         StatisticByTimeTabLayout(
             scrollBehavior = behavior,
             model = PreviewData.statisticByMonthListPreviewData,
@@ -209,7 +209,7 @@ private fun StatisticByTimeTabLayoutPreview() {
 @Composable
 private fun StatisticByTimeTabLayoutEmptyPreview() {
     val behavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    MotMaterialTheme {
+    AppTheme {
         StatisticByTimeTabLayout(
             scrollBehavior = behavior,
             model = PreviewData.statisticByMonthListPreviewData,

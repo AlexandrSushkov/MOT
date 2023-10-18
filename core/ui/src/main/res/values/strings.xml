@@ -1,22 +1,22 @@
 <resources>
     <!--Accessibility text start-->
-    <string name="content_description_drawer_icon" translatable="false">Drawer icon</string>
-    <string name="content_description_delete_icon" translatable="false">Delete icon</string>
-    <string name="content_description_category_icon" translatable="false">Category icon</string>
-    <string name="content_description_calendar_icon" translatable="false">Calendar icon</string>
-    <string name="content_description_edit_calendar_icon" translatable="false">Edit calendar icon</string>
-    <string name="content_description_info_icon" translatable="false">Info icon</string>
-    <string name="content_description_add_icon" translatable="false">Add icon</string>
-    <string name="content_description_favorite_checked_icon" translatable="false">Favorite checked icon</string>
-    <string name="content_description_favorite_unchecked_icon" translatable="false">Favorite unchecked icon</string>
-    <string name="content_description_filter_icon" translatable="false">Filter icon</string>
-    <string name="content_description_done_icon" translatable="false">Done icon</string>
-    <string name="content_description_date_icon" translatable="false">Date icon</string>
-    <string name="content_description_search_icon" translatable="false">Search icon</string>
-    <string name="content_description_save_icon" translatable="false">Save icon</string>
-    <string name="content_description_back_icon" translatable="false">Back icon</string>
-    <string name="content_description_close_icon" translatable="false">Close icon</string>
-    <string name="content_description_settings_icon" translatable="false">Settings icon</string>
+    <string name="content_description_drawer_icon" translatable="false">Drawer</string>
+    <string name="content_description_delete_icon" translatable="false">Delete</string>
+    <string name="content_description_category_icon" translatable="false">Category</string>
+    <string name="content_description_calendar_icon" translatable="false">Calendar</string>
+    <string name="content_description_edit_calendar_icon" translatable="false">Edit calendar</string>
+    <string name="content_description_info_icon" translatable="false">Info</string>
+    <string name="content_description_add_icon" translatable="false">Add</string>
+    <string name="content_description_favorite_checked_icon" translatable="false">Favorite checked</string>
+    <string name="content_description_favorite_unchecked_icon" translatable="false">Favorite unchecked</string>
+    <string name="content_description_filter_icon" translatable="false">Filter</string>
+    <string name="content_description_done_icon" translatable="false">Done</string>
+    <string name="content_description_date_icon" translatable="false">Date</string>
+    <string name="content_description_search_icon" translatable="false">Search</string>
+    <string name="content_description_save_icon" translatable="false">Save</string>
+    <string name="content_description_back_icon" translatable="false">Back</string>
+    <string name="content_description_close_icon" translatable="false">Close</string>
+    <string name="content_description_settings_icon" translatable="false">Settings</string>
 
     <string name="tooltip_settings_text" translatable="false">Settings</string>
     <string name="tooltip_close_text" translatable="false">Close</string>

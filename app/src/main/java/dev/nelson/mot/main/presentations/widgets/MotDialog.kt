@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.presentations.widgets
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.main.presentations.AlertDialogParams
 import dev.utils.preview.MotPreviewScreen
 
@@ -20,7 +19,7 @@ import dev.utils.preview.MotPreviewScreen
 fun MotAlertDialog(alertDialogParams: AlertDialogParams) {
     AlertDialog(
         onDismissRequest = alertDialogParams.dismissClickCallback,
-        icon = { MotIcons.Info(modifier = Modifier.size(32.dp)) },
+        icon = { AppIcons.Info(modifier = Modifier.size(32.dp)) },
         text = {
             Text(
                 text = stringResource(alertDialogParams.message),
@@ -50,7 +49,7 @@ private fun MotAlertDialogPreview() {
         onPositiveClickCallback = {},
         dismissClickCallback = {}
     )
-    MotMaterialTheme {
+    AppTheme {
         MotAlertDialog(alertDialogParams)
     }
 }
@@ -64,7 +63,7 @@ private fun MotAlertDialogWithNegativeActionPreview() {
         onNegativeClickCallback = {},
         dismissClickCallback = {}
     )
-    MotMaterialTheme {
+    AppTheme {
         MotAlertDialog(alertDialogParams)
     }
 }

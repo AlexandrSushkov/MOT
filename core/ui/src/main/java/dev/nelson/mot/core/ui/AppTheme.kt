@@ -11,7 +11,7 @@ import dev.nelson.mot.core.ui.fundation.motIsDarkTheme
 import dev.nelson.mot.core.ui.view_state.AppThemeViewState
 import dev.theme.DarkColorScheme
 import dev.theme.LightColorScheme
-import dev.theme.MotTypography
+import dev.theme.AppTypography
 
 /**
  * Them for the whole app.
@@ -19,7 +19,7 @@ import dev.theme.MotTypography
  * USE MATERIAL3 widgets to match this theme!!!!
  */
 @Composable
-fun MotMaterialTheme(
+fun AppTheme(
     appThemeViewState: AppThemeViewState = AppThemeViewState(),
     content: @Composable () -> Unit
 ) {
@@ -41,24 +41,16 @@ fun MotMaterialTheme(
 
     val systemUiController = rememberSystemUiController()
     val appBarColor = colorScheme.surface
+
     DisposableEffect(systemUiController, appBarColor) {
         systemUiController.setSystemBarsColor(color = appBarColor)
         systemUiController.setNavigationBarColor(color = appBarColor)
         onDispose {}
     }
-//    val view = LocalView.current
-//    if (!view.isInEditMode) {
-//        SideEffect {
-//            val window = (view.context as Activity).window
-//            window.statusBarColor = colorScheme.surface.toArgb()
-//            window.navigationBarColor = colorScheme.surface.toArgb()
-//            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
-//        }
-//    }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = MotTypography,
+        typography = AppTypography,
         content = content
     )
 }

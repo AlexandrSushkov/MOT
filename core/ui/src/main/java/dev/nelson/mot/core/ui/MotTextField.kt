@@ -55,7 +55,7 @@ fun MotTextField(
 @MotPreview
 @Composable
 fun MotTextFieldPreview() {
-    MotMaterialTheme {
+    AppTheme {
         ListItem(
             headlineContent = {
                 MotTextField(

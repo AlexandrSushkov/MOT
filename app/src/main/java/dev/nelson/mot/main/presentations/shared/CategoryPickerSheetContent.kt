@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -23,8 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotIcons
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -89,7 +88,7 @@ fun CategoriesListBottomSheet(
                                         .padding(end = 8.dp)
                                 )
                                 if (isSelected) {
-                                    MotIcons.Done(
+                                    AppIcons.Done(
                                         modifier = Modifier.size(24.dp),
                                         tint = MaterialTheme.colorScheme.secondary
                                     )
@@ -138,7 +137,7 @@ private fun getFavoriteCategoryContainerShape(
 @Composable
 private fun CategoriesListBottomSheetPreview() {
     val categories = PreviewData.categoriesSelectListItemsPreview
-    MotMaterialTheme {
+    AppTheme {
         CategoriesListBottomSheet(
             categories = categories,
             onCategoryClick = {},

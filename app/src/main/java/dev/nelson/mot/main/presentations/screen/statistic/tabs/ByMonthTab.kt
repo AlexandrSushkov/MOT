@@ -24,7 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.MotMaterialTheme
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
 import dev.nelson.mot.main.presentations.widgets.MotExpandableItem
 import dev.nelson.mot.main.util.compose.PreviewData
@@ -61,7 +61,7 @@ fun ByMonthTab(
 @MotPreview
 @Composable
 fun ByMonthTabPreview() {
-    MotMaterialTheme {
+    AppTheme {
         ByMonthTab(
             scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
                 rememberTopAppBarState()
