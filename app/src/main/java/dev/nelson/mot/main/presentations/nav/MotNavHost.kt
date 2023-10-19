@@ -10,7 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.widget.AppIconButtons
 import dev.nelson.mot.main.presentations.screen.categories.CategoryListScreen
 import dev.nelson.mot.main.presentations.screen.categorydetails.CategoryDetailsScreen
 import dev.nelson.mot.main.presentations.screen.dashboard.DashboardScreen

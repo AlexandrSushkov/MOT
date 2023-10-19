@@ -1,4 +1,4 @@
-package dev.nelson.mot.core.ui
+package dev.nelson.mot.core.ui.widget
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dev.nelson.mot.core.ui.AppTheme
 import dev.utils.preview.MotPreview
 
 object AppToolbar {

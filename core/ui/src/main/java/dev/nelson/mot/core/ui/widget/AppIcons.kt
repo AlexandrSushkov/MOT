@@ -1,4 +1,4 @@
-package dev.nelson.mot.core.ui
+package dev.nelson.mot.core.ui.widget
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.R
 import dev.utils.preview.MotPreview
 
 object AppIcons {

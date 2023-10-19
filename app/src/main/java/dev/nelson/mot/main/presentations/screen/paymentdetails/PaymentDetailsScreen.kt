@@ -57,8 +57,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.AppButtons
-import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.widget.AppButtons
+import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.MotTextField
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius

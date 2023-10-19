@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import dev.nelson.mot.core.ui.widget.AppCard
 import dev.utils.MotTransitions
 import dev.utils.preview.MotPreview
 import kotlinx.coroutines.launch

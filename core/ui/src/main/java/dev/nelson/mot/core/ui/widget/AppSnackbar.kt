@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.AppButtons
 import dev.nelson.mot.core.ui.AppTheme
 import dev.utils.preview.MotPreview
 
