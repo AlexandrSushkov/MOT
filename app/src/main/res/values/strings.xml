@@ -24,22 +24,9 @@
     <string name="text_undo">Undo</string>
     <string name="text_empty">No data yet.</string>
     <string name="text_error">Error</string>
-    <string name="text_deleted_item_format">%d item deleted</string>
-    <string name="text_deleted_items_format" translatable="false">%d items deleted</string>
     <string name="import_database_dialog_message" translatable="false">Are you sure you want to import this database?</string>
     <string name="database_exported_successfully_dialog_message" translatable="false">Database was exported successfully.\nPlease, check Downloads folder.</string>
     <string name="database_export_failed_dialog_message" translatable="false">Oops! Database export failed.</string>
-
-    <!--Accessibility text start-->
-<!--    <string name="accessibility_drawer_icon" translatable="false">drawer icon</string>-->
-<!--    <string name="accessibility_category_icon" translatable="false">category icon</string>-->
-<!--    <string name="accessibility_info_icon" translatable="false">info icon</string>-->
-<!--    <string name="accessibility_add_icon" translatable="false">add icon</string>-->
-<!--    <string name="accessibility_favorite_icon" translatable="false">favorite icon</string>-->
-<!--    <string name="accessibility_done_icon" translatable="false">done icon</string>-->
-<!--    <string name="accessibility_date_icon" translatable="false">date icon</string>-->
-<!--    <string name="accessibility_search_icon" translatable="false">search icon</string>-->
-    <!--Accessibility text end-->
 
     <string name="app_theme_title">App Theme</string>
     <string name="choose_a_country_title">Choose a country</string>
@@ -60,5 +47,10 @@
     <string name="export_text">Export</string>
     <string name="import_database_text">Import Database</string>
     <string name="import_text">Import</string>
+
+    <plurals name="items_deleted">
+        <item quantity="one">%d item deleted</item>
+        <item quantity="other">%d items deleted</item>
+    </plurals>
 
 </resources>

@@ -2,7 +2,6 @@
 
 package dev.nelson.mot.main.presentations.screen.categories
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -30,10 +29,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -47,7 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,11 +53,12 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.AppButtons
 import dev.nelson.mot.core.ui.AppCard
+import dev.nelson.mot.core.ui.AppIconButtons
+import dev.nelson.mot.core.ui.AppIcons
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.AppToolbar
 import dev.nelson.mot.core.ui.MotDismissibleListItem
-import dev.nelson.mot.core.ui.AppIconButtons
-import dev.nelson.mot.core.ui.AppIcons
+import dev.nelson.mot.core.ui.widget.AppSnackbar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
@@ -69,7 +67,6 @@ import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
 import dev.nelson.mot.main.util.MotUiState.Loading
 import dev.nelson.mot.main.util.MotUiState.Success
-import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.ifNotNull
@@ -90,9 +87,7 @@ fun CategoryListScreen(
     val categoryNameState by viewModel.categoryNameState.collectAsState()
     val showEditCategoryDialog by viewModel.showEditCategoryDialogAction.collectAsState(false)
     val snackbarVisibleState by viewModel.snackBarVisibilityState.collectAsState()
-    val deleteItemsSnackbarText by viewModel.deleteItemsSnackbarText.collectAsState(StringUtils.EMPTY)
-    val deletedItemsMessage by viewModel.deletedItemsMessage.collectAsState(StringUtils.EMPTY)
-    val showDeletedMessageToast by viewModel.showDeletedItemsMessageToast.collectAsState(false)
+    val deleteItemsCount by viewModel.deleteItemsCount.collectAsState(Constants.ZERO)
 
     if (showEditCategoryDialog) {
         EditCategoryDialog(
@@ -102,10 +97,6 @@ fun CategoryListScreen(
             onCategoryNameChanged = { viewModel.onNameChanged(it) },
             onSaveCategoryClick = { viewModel.onSaveCategoryClick() }
         )
-    }
-
-    if (showDeletedMessageToast) {
-        Toast.makeText(LocalContext.current, deletedItemsMessage, Toast.LENGTH_SHORT).show()
     }
 
     CategoryListLayout(
@@ -118,7 +109,7 @@ fun CategoryListScreen(
         onCategoryLongPress = { viewModel.onCategoryLongPress(it) },
         onSwipeCategory = { viewModel.onCategorySwiped(it) },
         snackbarVisibleState = snackbarVisibleState,
-        deleteItemsCountText = deleteItemsSnackbarText,
+        deleteItemsCount = deleteItemsCount,
         undoDeleteClickEvent = { viewModel.onUndoDeleteClick() }
     )
 }
@@ -135,7 +126,7 @@ fun CategoryListLayout(
     onCategoryLongPress: (Category) -> Unit,
     onSwipeCategory: (MotListItemModel.Item) -> Unit,
     snackbarVisibleState: Boolean,
-    deleteItemsCountText: String,
+    deleteItemsCount: Int,
     undoDeleteClickEvent: () -> Unit
 ) {
     val categoriesListScrollingState = rememberLazyListState()
@@ -151,22 +142,19 @@ fun CategoryListLayout(
         },
         snackbarHost = {
             if (snackbarVisibleState) {
-                Snackbar(
-                    action = {
-                        TextButton(
-                            onClick = undoDeleteClickEvent,
-                            content = { Text(stringResource(R.string.text_undo)) }
-                        )
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    content = { Text(text = deleteItemsCountText) }
+                AppSnackbar.Regular(
+                    messageText = pluralStringResource(
+                        R.plurals.items_deleted,
+                        deleteItemsCount,
+                        deleteItemsCount
+                    ),
+                    actionButtonText = stringResource(R.string.text_undo),
+                    undoDeleteClickEvent
                 )
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddCategoryClickEvent) {
-                AppIcons.Add()
-            }
+            FloatingActionButton(onAddCategoryClickEvent) { AppIcons.Add() }
         }
     ) { innerPadding ->
         Box(
@@ -393,7 +381,7 @@ private fun EditCategoryDialog(
         confirmButton = {
             val buttonTextId = categoryToEditId?.let { R.string.text_edit } ?: R.string.text_add
             AppButtons.TextButton(
-                stringResource = buttonTextId,
+                id = buttonTextId,
                 enabled = categoryNameState.text.isNotEmpty(),
                 onClick = onSaveCategoryClick
             )
@@ -464,7 +452,7 @@ private fun CategoryListLayoutPreviewData(
             onCategoryLongPress = {},
             onSwipeCategory = {},
             snackbarVisibleState = snackbarVisibleState,
-            deleteItemsCountText = "",
+            deleteItemsCount = 2,
             undoDeleteClickEvent = {}
         )
     }

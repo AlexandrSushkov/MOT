@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -22,14 +24,15 @@ object AppButtons {
     fun TextButton(
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
-        @StringRes stringResource: Int,
+        colors: ButtonColors = ButtonDefaults.textButtonColors(),
+        @StringRes id: Int,
         onClick: () -> Unit
     ) {
-        val text = stringResource(id = stringResource)
         TextButton(
             modifier = modifier,
             enabled = enabled,
-            text = text,
+            colors = colors,
+            text = stringResource(id),
             onClick = onClick
         )
     }
@@ -38,12 +41,14 @@ object AppButtons {
     fun TextButton(
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
+        colors: ButtonColors = ButtonDefaults.textButtonColors(),
         text: String,
         onClick: () -> Unit
     ) {
         TextButton(
             modifier = modifier,
             enabled = enabled,
+            colors = colors,
             onClick = onClick
         ) {
             Text(

@@ -16,6 +16,7 @@ import dev.nelson.mot.main.domain.usecase.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.StringUtils
+import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -57,13 +58,9 @@ class CategoriesListViewModel @Inject constructor(
     private val _categoriesResult =
         MutableStateFlow<MotUiState<List<MotListItemModel>>>(MotUiState.Loading)
 
-    val deleteItemsSnackbarText: Flow<String>
-        get() = _deleteItemsSnackbarText.asStateFlow()
-    private val _deleteItemsSnackbarText = MutableStateFlow(StringUtils.EMPTY)
-
-    val deletedItemsMessage: Flow<String>
-        get() = _deletedItemsMessage.asStateFlow()
-    private val _deletedItemsMessage = MutableStateFlow(StringUtils.EMPTY)
+    val deleteItemsCount: Flow<Int>
+        get() = _deleteItemsCount.asStateFlow()
+    private val _deleteItemsCount = MutableStateFlow(Constants.ZERO)
 
     val snackBarVisibilityState
         get() = _snackBarVisibilityState.asStateFlow()
@@ -73,10 +70,6 @@ class CategoriesListViewModel @Inject constructor(
     val showEditCategoryDialogAction
         get() = _showEditCategoryDialogAction.asSharedFlow()
     private val _showEditCategoryDialogAction = MutableSharedFlow<Boolean>()
-
-    val showDeletedItemsMessageToast
-        get() = _showDeletedItemsMessageToast.asSharedFlow()
-    private val _showDeletedItemsMessageToast = MutableSharedFlow<Boolean>()
 
     // data
     private var initialCategory: Category? = null
@@ -138,6 +131,7 @@ class CategoriesListViewModel @Inject constructor(
         // create new one
         deleteCategoryJob = launch {
             categoriesToDeleteList.add(categoryItemModel.category)
+            _deleteItemsCount.update { categoriesToDeleteList.size }
             showSnackBar()
             // first pass is to hide category item
             _categoriesResult.update {
@@ -195,8 +189,7 @@ class CategoriesListViewModel @Inject constructor(
             hideSnackBar()
             // remove payments from DB
             deleteCategoriesUseCase.execute(categoriesToDeleteList)
-            Timber.e("Deleted: $categoriesToDeleteList")
-            showDeletedItemsMessage()
+            Timber.e("Category deleted: $categoriesToDeleteList")
             clearItemsToDeleteList()
         }
     }
@@ -234,29 +227,11 @@ class CategoriesListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun showDeletedItemsMessage() {
-        val itemsWord = if (categoriesToDeleteList.size == 1) {
-            "item"
-        } else {
-            "items"
-        }
-        _deletedItemsMessage.value = "${categoriesToDeleteList.size} $itemsWord deleted"
-        _showDeletedItemsMessageToast.emit(true)
-        delay(200)
-        _showDeletedItemsMessageToast.emit(false)
-    }
-
     private fun clearItemsToDeleteList() {
         categoriesToDeleteList.clear()
     }
 
     private fun showSnackBar() {
-        val itemsWord = if (categoriesToDeleteList.size == 1) {
-            "item"
-        } else {
-            "items"
-        }
-        _deleteItemsSnackbarText.value = "${categoriesToDeleteList.size} $itemsWord will be deleted"
         _snackBarVisibilityState.value = true
     }
 

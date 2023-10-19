@@ -29,7 +29,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -52,16 +51,17 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
-import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.AppIconButtons
 import dev.nelson.mot.core.ui.AppIcons
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.AppToolbar
+import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.core.ui.widget.AppSnackbar
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payments.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
@@ -203,8 +203,8 @@ fun PaymentListScreen(
         onItemLongClick = { paymentItemModel -> viewModel.onItemLongClick(paymentItemModel) },
         onFabClick = { viewModel.onFabClick() },
         snackbarVisibleState = snackbarVisibilityState,
-        onUndoButtonClickEvent = { viewModel.onUndoDeleteClick() },
-        deletedItemsCount = deletedItemsCount,
+        undoDeleteClickEvent = { viewModel.onUndoDeleteClick() },
+        deleteItemsCount = deletedItemsCount,
         onItemSwiped = { paymentItemModel -> viewModel.onPaymentSwiped(paymentItemModel) },
         isSelectedStateOn = isSelectedStateOn,
         selectedItemsCount = selectedItemsCount,
@@ -229,8 +229,8 @@ fun PaymentListLayout(
     onItemLongClick: (MotPaymentListItemModel.Item) -> Unit,
     onFabClick: () -> Unit,
     snackbarVisibleState: Boolean,
-    onUndoButtonClickEvent: () -> Unit,
-    deletedItemsCount: Int,
+    undoDeleteClickEvent: () -> Unit,
+    deleteItemsCount: Int,
     onItemSwiped: (MotPaymentListItemModel.Item) -> Unit,
     isSelectedStateOn: Boolean,
     selectedItemsCount: Int,
@@ -273,25 +273,14 @@ fun PaymentListLayout(
         },
         snackbarHost = {
             if (snackbarVisibleState) {
-                Snackbar(
-                    action = {
-                        TextButton(
-                            onClick = onUndoButtonClickEvent,
-                            content = { Text(stringResource(R.string.text_undo)) }
-                        )
-                    },
-                    modifier = Modifier.padding(8.dp),
-                    content = {
-                        val deletedItemText = if (deletedItemsCount == 1) {
-                            stringResource(R.string.text_deleted_item_format, deletedItemsCount)
-                        } else {
-                            stringResource(
-                                R.string.text_deleted_items_format,
-                                deletedItemsCount
-                            )
-                        }
-                        Text(text = deletedItemText)
-                    }
+                AppSnackbar.Regular(
+                    messageText = pluralStringResource(
+                        R.plurals.items_deleted,
+                        deleteItemsCount,
+                        deleteItemsCount
+                    ),
+                    actionButtonText = stringResource(R.string.text_undo),
+                    undoDeleteClickEvent
                 )
             }
         },
@@ -472,8 +461,8 @@ private fun PaymentListScreenTemplatePreview(
             onItemLongClick = {},
             onFabClick = {},
             snackbarVisibleState = false,
-            onUndoButtonClickEvent = {},
-            deletedItemsCount = 0,
+            undoDeleteClickEvent = {},
+            deleteItemsCount = 0,
             onItemSwiped = {},
             isSelectedStateOn = false,
             selectedItemsCount = 0,
