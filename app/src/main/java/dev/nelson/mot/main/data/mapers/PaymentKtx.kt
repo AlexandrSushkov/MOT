@@ -3,27 +3,7 @@ package dev.nelson.mot.main.data.mapers
 import dev.nelson.mot.db.model.category.CategoryEntity
 import dev.nelson.mot.db.model.payment.PaymentEntity
 import dev.nelson.mot.db.model.paymentjoin.PaymentWithCategoryEntity
-import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.Payment
-
-fun Payment.copyWith(
-    name: String? = null,
-    cost: Int? = null,
-    dateText: String? = null,
-    dateInMills: Long? = null,
-    category: Category? = null,
-    message: String? = null,
-    isSelected: Boolean? = null
-): Payment = Payment(
-    name = name ?: this.name,
-    cost = cost ?: this.cost,
-    id = id,
-    dateString = dateText ?: this.dateString,
-    dateInMills = dateInMills ?: this.dateInMills,
-    category = category ?: this.category,
-    message = message ?: this.message,
-    isSelected = isSelected ?: this.isSelected
-)
 
 fun Payment.toPaymentEntity(): PaymentEntity =
     PaymentEntity(

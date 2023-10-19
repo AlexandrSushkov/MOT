@@ -1,7 +1,6 @@
 package dev.nelson.mot.main.domain.usecase.payment
 
 import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.mapers.toPaymentList
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
@@ -59,8 +58,8 @@ class GetPaymentListNoFixedDateRange @Inject constructor(
     ): List<Payment> {
         return this.map { payment ->
             payment.dateInMills.let { mills ->
-                payment.copyWith(
-                    dateText = formatTimeUseCase.execute(mills, timeZone, dateTimeFormatter)
+                payment.copy(
+                    dateString = formatTimeUseCase.execute(mills, timeZone, dateTimeFormatter)
                 )
             }
         }

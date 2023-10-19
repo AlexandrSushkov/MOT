@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.R
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.data.model.Payment
@@ -23,7 +22,7 @@ import dev.nelson.mot.main.domain.usecase.payment.ModifyPaymentsListUseCase
 import dev.nelson.mot.main.domain.usecase.price.GetPriceViewStateUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.presentations.screen.payments.actions.OpenPaymentDetailsAction
-import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
+import dev.nelson.mot.main.presentations.sharedviewstate.DateViewState
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
@@ -345,7 +344,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     fun onDateSelected(selectedTime: Long) = launch {
-        val newItems = selectedItemsList.map { it.payment.copyWith(dateInMills = selectedTime) }
+        val newItems = selectedItemsList.map { it.payment.copy(dateInMills = selectedTime) }
         cancelSelection()
         val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
         modifyPaymentsListUseCase.execute(params)
@@ -356,7 +355,7 @@ class PaymentListViewModel @Inject constructor(
         // workaround. for some reason if copy payments with category list isn't update
         category.id?.let { categoryId ->
             getCategoryByIdUseCase.execute(categoryId).collect { cat ->
-                val newItems = selectedItemsList.map { it.payment.copyWith(category = cat) }
+                val newItems = selectedItemsList.map { it.payment.copy(category = cat) }
                 cancelSelection()
                 val params = ModifyPaymentsListParams(newItems, ModifyPaymentsListAction.Edit)
                 modifyPaymentsListUseCase.execute(params)

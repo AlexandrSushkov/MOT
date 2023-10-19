@@ -1,4 +1,4 @@
-package dev.nelson.mot.main.presentations.shared_view_state
+package dev.nelson.mot.main.presentations.sharedviewstate
 
 import dev.nelson.mot.main.util.DateUtils
 import dev.nelson.mot.main.util.constant.Constants

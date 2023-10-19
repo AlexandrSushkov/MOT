@@ -16,7 +16,4 @@ fun List<Category>.toCategoryEntityList(): List<CategoryEntity> = this.map { it.
 
 fun Category.toCategoryEntity(): CategoryEntity = CategoryEntity(this.name, if (isFavorite) 1 else 0, this.id)
 
-@Deprecated("replace with default copy() method")
-fun Category.copyWith(name: String): Category = Category(name, isFavorite, this.id)
-
 fun Category.empty(): Category = Category(StringUtils.EMPTY)

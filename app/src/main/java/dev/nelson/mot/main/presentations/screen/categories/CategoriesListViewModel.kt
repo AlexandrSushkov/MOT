@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.nelson.mot.R
 import dev.nelson.mot.db.utils.SortingOrder
-import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
 import dev.nelson.mot.main.domain.usecase.category.DeleteCategoriesUseCase
@@ -15,7 +14,6 @@ import dev.nelson.mot.main.domain.usecase.category.ModifyCategoryParams
 import dev.nelson.mot.main.domain.usecase.category.ModifyCategoryUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
 import dev.nelson.mot.main.util.MotUiState
-import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.successOr
 import kotlinx.coroutines.Job
@@ -221,7 +219,7 @@ class CategoriesListViewModel @Inject constructor(
     private fun editCategory(category: Category) = launch {
         val enteredName = _categoryNameState.value.text
         if (category.name != enteredName) {
-            val modifiedCategory = category.copyWith(enteredName)
+            val modifiedCategory = category.copy(name = enteredName)
             val params = ModifyCategoryParams(modifiedCategory, ModifyCategoryAction.Edit)
             modifyCategoryUseCase.execute(params)
         }

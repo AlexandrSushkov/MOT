@@ -4,7 +4,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.nelson.mot.main.data.mapers.copyWith
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.domain.usecase.category.GetCategoryByIdUseCase
 import dev.nelson.mot.main.domain.usecase.category.ModifyCategoryAction
@@ -73,7 +72,7 @@ class CategoryDetailsViewModel @Inject constructor(
     private fun editCategory(category: Category) = launch {
         val enteredName = _categoryNameState.value.text
         if (category.name != enteredName) {
-            val modifiedCategory = category.copyWith(enteredName)
+            val modifiedCategory = category.copy(name = enteredName)
             val params = ModifyCategoryParams(modifiedCategory, ModifyCategoryAction.Edit)
             modifyCategoryUseCase.execute(params)
         }

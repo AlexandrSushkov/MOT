@@ -27,9 +27,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.R
+import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.widget.AppIconButtons
 import dev.nelson.mot.core.ui.widget.AppIcons
-import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.widget.AppToolbar
 import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
 import dev.nelson.mot.main.util.StringUtils

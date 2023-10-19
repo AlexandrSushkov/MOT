@@ -16,7 +16,7 @@ import dev.nelson.mot.main.domain.usecase.payment.ModifyPaymentAction
 import dev.nelson.mot.main.domain.usecase.payment.ModifyPaymentParams
 import dev.nelson.mot.main.domain.usecase.payment.ModifyPaymentUseCase
 import dev.nelson.mot.main.presentations.base.BaseViewModel
-import dev.nelson.mot.main.presentations.shared_view_state.DateViewState
+import dev.nelson.mot.main.presentations.sharedviewstate.DateViewState
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.formatMillsToDateText
 import kotlinx.coroutines.flow.Flow

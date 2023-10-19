@@ -22,8 +22,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData

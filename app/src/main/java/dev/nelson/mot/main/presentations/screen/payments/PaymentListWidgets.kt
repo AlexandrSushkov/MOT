@@ -37,11 +37,11 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.nelson.mot.core.ui.widget.AppCard
-import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.AppTheme
+import dev.nelson.mot.core.ui.MotDismissibleListItem
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.core.ui.widget.AppCard
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
