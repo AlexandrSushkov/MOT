@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -46,7 +45,6 @@ import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.fundation.getDisplayCornerRadius
 import dev.nelson.mot.core.ui.view_state.PriceViewState
 import dev.nelson.mot.core.ui.widget.AppIconButtons
-import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
 import dev.nelson.mot.main.presentations.screen.statistic.newtabs.StatisticByCategoryTabLayout
 import dev.nelson.mot.main.presentations.screen.statistic.newtabs.StatisticByTimeTabLayout
@@ -110,8 +108,7 @@ fun StatisticScreen(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class
 )
 @Composable
 private fun StatisticLayout(
@@ -146,29 +143,23 @@ private fun StatisticLayout(
         /**
          * Back handler to hide modal bottom sheet
          */
-        BackHandler(
-            enabled = true,
-            onBack = {
-                Timber.d("bottom sheet BackHandler")
-                coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
-                    if (!modalBottomSheetState.isVisible) {
-                        showBottomSheet = false
-                    }
+        BackHandler(enabled = true, onBack = {
+            Timber.d("bottom sheet BackHandler")
+            coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
+                if (!modalBottomSheetState.isVisible) {
+                    showBottomSheet = false
                 }
             }
-        )
+        })
 
         val displayCornerRadius = getDisplayCornerRadius()
 
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
+        ModalBottomSheet(onDismissRequest = { showBottomSheet = false },
             sheetState = modalBottomSheetState,
             shape = RoundedCornerShape(
-                topStart = displayCornerRadius,
-                topEnd = displayCornerRadius
+                topStart = displayCornerRadius, topEnd = displayCornerRadius
             ),
-            dragHandle = { BottomSheetDefaults.DragHandle() }
-        ) {
+            dragHandle = { BottomSheetDefaults.DragHandle() }) {
             if (pagerState.currentPage == 0) {
                 ByTimeFilterBottomSheet(
                     model = statByMonthList,
@@ -183,16 +174,14 @@ private fun StatisticLayout(
                 }
             } else {
                 ByCategoryFilterBottomSheet(
-                    model = statByCategoryList,
-                    onItemSelected = {
+                    model = statByCategoryList, onItemSelected = {
                         onCategoryModelSelected(it)
                         coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
                             if (!modalBottomSheetState.isVisible) {
                                 showBottomSheet = false
                             }
                         }
-                    },
-                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel
+                    }, selectedMonthModel = selectedCategoryViewState.selectedTimeModel
                 )
             }
         }
@@ -210,12 +199,6 @@ private fun StatisticLayout(
                 )
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { coroutineScope.launch { showBottomSheet = true } },
-                content = { AppIcons.Filter() }
-            )
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -227,79 +210,60 @@ private fun StatisticLayout(
             val density = LocalDensity.current
             val tabWidths = remember {
                 val tabWidthStateList = mutableStateListOf<Dp>()
-                repeat(statisticTabs.size) {
-                    tabWidthStateList.add(0.dp)
-                }
+                repeat(statisticTabs.size) { tabWidthStateList.add(0.dp) }
                 tabWidthStateList
             }
 
-            TabRow(
-                modifier = Modifier.fillMaxWidth(),
+            TabRow(modifier = Modifier.fillMaxWidth(),
                 selectedTabIndex = pagerState.currentPage,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 indicator = { tabPositions ->
-                    Box(
-                        modifier = Modifier
-                            .customTabIndicatorOffset(
-                                currentTabPosition = tabPositions[pagerState.currentPage],
-                                tabWidth = tabWidths[pagerState.currentPage]
-                            )
-                            .height(4.dp)
-                            .width(with(LocalDensity.current) { textWidth.value.toDp() })
-                            .background(
-                                color = MaterialTheme.colorScheme.primary,
-                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                            )
-                            .onGloballyPositioned { coordinates ->
-                                textWidth.value = coordinates.size.width
-                            }
-                    )
+                    Box(modifier = Modifier
+                        .customTabIndicatorOffset(
+                            currentTabPosition = tabPositions[pagerState.currentPage],
+                            tabWidth = tabWidths[pagerState.currentPage]
+                        )
+                        .height(4.dp)
+                        .width(with(LocalDensity.current) { textWidth.value.toDp() })
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                        )
+                        .onGloballyPositioned { coordinates ->
+                            textWidth.value = coordinates.size.width
+                        })
                 },
                 tabs = {
                     statisticTabs.forEachIndexed { index, statisticTab ->
-                        Tab(
-                            text = {
-                                Text(
-                                    text = statisticTab.title,
-                                    onTextLayout = { textLayoutResult ->
-                                        tabWidths[index] =
-                                            with(density) {
-                                                textLayoutResult.size.width
-                                                    .toDp()
-                                            }
-                                    }
-                                )
-                            },
-                            selected = pagerState.currentPage == index,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
+                        Tab(text = {
+                            Text(text = statisticTab.title, onTextLayout = { textLayoutResult ->
+                                tabWidths[index] = with(density) {
+                                    textLayoutResult.size.width.toDp()
                                 }
+                            })
+                        }, selected = pagerState.currentPage == index, onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
                             }
-                        )
+                        })
                     }
-                }
-            )
+                })
             HorizontalPager(
-                modifier = Modifier.fillMaxSize(),
-                state = pagerState,
-                userScrollEnabled = false
+                modifier = Modifier.fillMaxSize(), state = pagerState, userScrollEnabled = false
             ) { tabId ->
                 when (statisticTabs[tabId]) {
-                    is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
-                        scrollBehavior = scrollBehavior,
+                    is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(scrollBehavior = scrollBehavior,
                         selectedTimeViewState = selectedTimeViewState,
                         model = statByMonthList,
                         onMonthModelSelected = onMonthModelSelected,
                         onMonthCategoryClick = onMonthCategoryClick,
-                        priceViewState = priceViewState
-                    )
+                        priceViewState = priceViewState,
+                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } })
 
-                    is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
-                        scrollBehavior = scrollBehavior,
+                    is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(scrollBehavior = scrollBehavior,
                         selectedCategoryViewState = selectedCategoryViewState,
-                        priceViewState = priceViewState
-                    )
+                        priceViewState = priceViewState,
+                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } })
                 }
             }
         }
@@ -307,8 +271,8 @@ private fun StatisticLayout(
 }
 
 private sealed class MotStatistic2Tab(val title: String) {
-    data object ByTime : MotStatistic2Tab("by Time")
-    data object ByCategory : MotStatistic2Tab("by Category")
+    data object ByTime : MotStatistic2Tab("By Time")
+    data object ByCategory : MotStatistic2Tab("By Category")
 
     companion object {
         val tabs
@@ -329,7 +293,7 @@ private fun StaticLayoutPreview() {
             navigationIcon = { AppIconButtons.Drawer {} },
             onMonthModelSelected = {},
             selectedTimeViewState = SelectedTimeViewState(
-                selectedTimeModel = PreviewData.statisticByMonthModelPreviewData
+                selectedTimeModel = PreviewData.statisticByMonthModelEmptyPreviewData
             ),
             selectedCategoryViewState = SelectedCategoryViewState(
                 selectedTimeModel = PreviewData.statisticByCategoryPerMonthModel

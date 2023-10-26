@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -57,7 +58,8 @@ fun StatisticByTimeTabLayout(
     model: List<StatisticByMonthModel>,
     priceViewState: PriceViewState,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
-    onMonthCategoryClick: (StatisticByCategoryModel) -> Unit
+    onMonthCategoryClick: (StatisticByCategoryModel) -> Unit,
+    onFilterButtonClick: () -> Unit
 ) {
     val switchState = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -71,112 +73,121 @@ fun StatisticByTimeTabLayout(
                 iconContent = { AppIcons.PieChart(Modifier.size(AppDimens.list_placeholder_icon_size)) }
             )
         } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-            ) {
-                Card(
+            Box {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f, true),
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 24.dp,
-                        bottomEnd = 24.dp
-                    ),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                 ) {
-                    Column {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        MotPieChart(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            selectedTimeViewState = selectedTimeViewState,
-                            priceViewState = priceViewState,
-                            onPieEntrySelected = {},
-                            onNothingSelected = {}
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = selectedMonthModel.monthText,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            PriceText(
-                                price = selectedMonthModel.sumOfCategories,
-                                priceViewState = priceViewState,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                }
-                Column {
-                    LazyColumn(
+                    Card(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .padding(horizontal = 16.dp),
-                        content = {
-                            item {
-                                Column {
-                                    selectedMonthModel.categoriesModelList.forEachIndexed { index, item ->
-                                        Row(
-                                            modifier = Modifier
-                                                .padding(vertical = 8.dp)
-                                                .fillMaxWidth(),
-//                                                .clickable {
-//                                                    onMonthCategoryClick(item)
-//                                                },
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Box(
+                            .fillMaxWidth()
+                            .aspectRatio(1f, true),
+                        shape = RoundedCornerShape(
+                            topStart = 0.dp,
+                            topEnd = 0.dp,
+                            bottomStart = 24.dp,
+                            bottomEnd = 24.dp
+                        ),
+                        elevation = CardDefaults.cardElevation(4.dp)
+                    ) {
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            MotPieChart(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                selectedTimeViewState = selectedTimeViewState,
+                                priceViewState = priceViewState,
+                                onPieEntrySelected = {},
+                                onNothingSelected = {}
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = selectedMonthModel.monthText,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                PriceText(
+                                    price = selectedMonthModel.sumOfCategories,
+                                    priceViewState = priceViewState,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+                    Column {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                                .padding(horizontal = 16.dp),
+                            content = {
+                                item {
+                                    Column {
+                                        selectedMonthModel.categoriesModelList.forEachIndexed { index, item ->
+                                            Row(
                                                 modifier = Modifier
-                                                    .size(16.dp)
-                                                    .background(selectedTimeViewState.selectedTimePieChartData.slices[index].color)
-                                            )
-                                            Spacer(modifier = Modifier.width(16.dp))
-                                            MotSingleLineText(
-                                                modifier = Modifier.weight(1f),
-                                                text = item.category?.name ?: "No category",
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            PriceText(
-                                                price = item.sumOfPayments,
-                                                priceViewState = priceViewState
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Box(
-                                                modifier = Modifier
-                                                    .height(16.dp)
-                                                    .width(2.dp)
-                                                    .background(MaterialTheme.colorScheme.outlineVariant)
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(
-                                                text = "%.1f%%".format(item.percentage),
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
+                                                    .padding(vertical = 8.dp)
+                                                    .fillMaxWidth(),
+                                                //                                                .clickable {
+                                                //                                                    onMonthCategoryClick(item)
+                                                //                                                },
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(16.dp)
+                                                        .background(selectedTimeViewState.selectedTimePieChartData.slices[index].color)
+                                                )
+                                                Spacer(modifier = Modifier.width(16.dp))
+                                                MotSingleLineText(
+                                                    modifier = Modifier.weight(1f),
+                                                    text = item.category?.name ?: "No category",
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                PriceText(
+                                                    price = item.sumOfPayments,
+                                                    priceViewState = priceViewState
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Box(
+                                                    modifier = Modifier
+                                                        .height(16.dp)
+                                                        .width(2.dp)
+                                                        .background(MaterialTheme.colorScheme.outlineVariant)
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Text(
+                                                    text = "%.1f%%".format(item.percentage),
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                            }
                                         }
                                     }
                                 }
+                                item {
+                                    FABFooter()
+                                }
                             }
-                            item {
-                                FABFooter()
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
+                FloatingActionButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 16.dp, bottom = 16.dp),
+                    onClick = onFilterButtonClick,
+                    content = { AppIcons.Filter() }
+                )
             }
         }
     }
@@ -204,7 +215,8 @@ private fun StatisticByTimeTabLayoutPreview() {
             ),
             priceViewState = PreviewData.priceViewState,
             onMonthModelSelected = {},
-            onMonthCategoryClick = {}
+            onMonthCategoryClick = {},
+            onFilterButtonClick = {}
         )
     }
 }
@@ -223,7 +235,8 @@ private fun StatisticByTimeTabLayoutEmptyPreview() {
             ),
             priceViewState = PreviewData.priceViewState,
             onMonthModelSelected = {},
-            onMonthCategoryClick = {}
+            onMonthCategoryClick = {},
+            onFilterButtonClick = {}
         )
     }
 }
