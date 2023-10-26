@@ -55,5 +55,10 @@ fun MotSwitchPreview() {
 
 @Composable
 private fun MotSwitchPreviewData(checked: Boolean) {
-    ListItem({ MotSwitch(checked = checked, onCheckedChange = {}) })
+    ListItem({
+        MotSwitch(
+            checked = checked,
+            onCheckedChange = {},
+        )
+    })
 }

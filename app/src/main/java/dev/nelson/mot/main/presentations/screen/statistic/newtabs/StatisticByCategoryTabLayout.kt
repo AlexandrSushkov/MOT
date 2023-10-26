@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -27,11 +28,13 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedCategoryViewState
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.theme.AppDimens
 import dev.utils.preview.MotPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +47,10 @@ fun StatisticByCategoryTabLayout(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         if (selectedCategoryViewState.selectedTimeModel.paymentToMonth.isEmpty()) {
-            EmptyListPlaceholder(modifier = Modifier.fillMaxSize())
+            AppListPlaceholder(
+                modifier = Modifier.fillMaxSize(),
+                iconContent = { AppIcons.LineChart(Modifier.size(AppDimens.list_placeholder_icon_size)) }
+            )
         } else {
             Column(
                 modifier = Modifier

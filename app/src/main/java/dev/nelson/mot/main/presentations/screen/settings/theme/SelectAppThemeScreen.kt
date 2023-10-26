@@ -68,7 +68,7 @@ private fun SelectAppThemeLayout(
                             onClick = { onThemeSelected.invoke(it) }
                         )
                     },
-                    headlineContent = { Text(it.javaClass.name) }
+                    headlineContent = { Text(it.javaClass.simpleName) }
                 )
             }
         }

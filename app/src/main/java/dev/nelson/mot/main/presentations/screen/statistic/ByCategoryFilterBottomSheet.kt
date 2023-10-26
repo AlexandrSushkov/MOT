@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.main.domain.usecase.statistic.StatisticByCategoryPerMonthModel
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
@@ -28,14 +28,14 @@ import dev.utils.preview.MotPreview
 @Composable
 fun ByCategoryFilterBottomSheet(
     model: List<StatisticByCategoryPerMonthModel>,
-    onItemSelected: (StatisticByCategoryPerMonthModel) -> Unit,
-    selectedMonthModel: StatisticByCategoryPerMonthModel
+    selectedMonthModel: StatisticByCategoryPerMonthModel? = null,
+    onItemSelected: (StatisticByCategoryPerMonthModel) -> Unit
 ) {
     val layColumnState = rememberLazyListState()
 
     Surface {
         if (model.isEmpty()) {
-            EmptyListPlaceholder(
+            AppListPlaceholder(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 48.dp)
@@ -74,8 +74,15 @@ private fun ByCategoryFilterBottomSheetPreview() {
     AppTheme {
         ByCategoryFilterBottomSheet(
             model = modelList,
-            onItemSelected = {},
             selectedMonthModel = modelList.first()
-        )
+        ) {}
+    }
+}
+
+@MotPreview
+@Composable
+private fun EmptyByCategoryFilterBottomSheetPreview() {
+    AppTheme {
+        ByCategoryFilterBottomSheet(model = emptyList()) {}
     }
 }

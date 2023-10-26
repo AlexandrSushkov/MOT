@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +46,7 @@ import dev.nelson.mot.core.ui.MotSwitch
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.widget.AppButtons
 import dev.nelson.mot.core.ui.widget.AppIconButtons
+import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.core.ui.widget.AppToolbar
 import dev.nelson.mot.main.presentations.widgets.MotAlertDialog
 import dev.nelson.mot.main.util.StringUtils
@@ -217,7 +216,7 @@ private fun SettingsScreenLayout(
                     headlineContent = { Text(text = stringResource(R.string.app_theme_text)) },
                     trailingContent = {
                         Text(
-                            text = viewState.selectedAppTheme.javaClass.name,
+                            text = viewState.selectedAppTheme.javaClass.simpleName,
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
@@ -297,10 +296,7 @@ private fun SettingsScreenLayout(
                                     onClick = { /* Icon button's click event */ },
                                     modifier = Modifier.tooltipAnchor()
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Info,
-                                        contentDescription = "info icon"
-                                    )
+                                    AppIcons.Info()
                                 }
                             }
                         }

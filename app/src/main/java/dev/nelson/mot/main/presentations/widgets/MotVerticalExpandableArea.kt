@@ -145,7 +145,7 @@ fun MotVerticalExpandableArea(
                     content = {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = "Expandable Arrow",
+                            contentDescription = if (payment.isExpanded) "Collapse Arrow" else "Expand Arrow",
                             modifier = Modifier.rotate(arrowRotationDegree)
                         )
                     }

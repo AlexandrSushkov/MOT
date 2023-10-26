@@ -37,13 +37,15 @@ import com.github.tehras.charts.piechart.PieChartData
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.PriceText
 import dev.nelson.mot.core.ui.view_state.PriceViewState
+import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.main.presentations.screen.statistic.SelectedTimeViewState
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByCategoryModel
 import dev.nelson.mot.main.presentations.screen.statistic.StatisticByMonthModel
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.compose.PreviewData
+import dev.theme.AppDimens
 import dev.theme.lightChartColors
 import dev.utils.preview.MotPreview
 
@@ -53,9 +55,9 @@ fun StatisticByTimeTabLayout(
     scrollBehavior: TopAppBarScrollBehavior,
     selectedTimeViewState: SelectedTimeViewState,
     model: List<StatisticByMonthModel>,
+    priceViewState: PriceViewState,
     onMonthModelSelected: (StatisticByMonthModel) -> Unit,
-    onMonthCategoryClick: (StatisticByCategoryModel) -> Unit,
-    priceViewState: PriceViewState
+    onMonthCategoryClick: (StatisticByCategoryModel) -> Unit
 ) {
     val switchState = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -64,7 +66,10 @@ fun StatisticByTimeTabLayout(
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (selectedTimeViewState.selectedTimeModel.categoriesModelList.isEmpty()) {
-            EmptyListPlaceholder(modifier = Modifier.fillMaxSize())
+            AppListPlaceholder(
+                modifier = Modifier.fillMaxSize(),
+                iconContent = { AppIcons.PieChart(Modifier.size(AppDimens.list_placeholder_icon_size)) }
+            )
         } else {
             Column(
                 modifier = Modifier
@@ -197,9 +202,9 @@ private fun StatisticByTimeTabLayoutPreview() {
                 selectedTimeModel = modelList,
                 selectedTimePieChartData = PieChartData(slices)
             ),
+            priceViewState = PreviewData.priceViewState,
             onMonthModelSelected = {},
-            onMonthCategoryClick = {},
-            priceViewState = PreviewData.priceViewState
+            onMonthCategoryClick = {}
         )
     }
 }
@@ -216,9 +221,9 @@ private fun StatisticByTimeTabLayoutEmptyPreview() {
             selectedTimeViewState = SelectedTimeViewState(
                 selectedTimeModel = PreviewData.statisticByMonthModelEmptyPreviewData
             ),
+            priceViewState = PreviewData.priceViewState,
             onMonthModelSelected = {},
-            onMonthCategoryClick = {},
-            priceViewState = PreviewData.priceViewState
+            onMonthCategoryClick = {}
         )
     }
 }

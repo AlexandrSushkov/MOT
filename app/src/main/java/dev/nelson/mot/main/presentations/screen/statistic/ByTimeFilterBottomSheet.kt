@@ -17,21 +17,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.widget.AppIcons
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.utils.preview.MotPreview
 
 @Composable
 fun ByTimeFilterBottomSheet(
     model: List<StatisticByMonthModel>,
-    selectedMonthModel: StatisticByMonthModel,
+    selectedMonthModel: StatisticByMonthModel? = null,
     onItemSelected: (StatisticByMonthModel) -> Unit
 ) {
     val layColumnState = rememberLazyListState()
 
     Surface {
         if (model.isEmpty()) {
-            EmptyListPlaceholder(
+            AppListPlaceholder(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 48.dp)
@@ -67,5 +67,13 @@ private fun ByTimeFilterBottomSheetPreview() {
             model = modelList,
             selectedMonthModel = modelList.first()
         ) {}
+    }
+}
+
+@MotPreview
+@Composable
+private fun EmptyTimeFilterBottomSheetPreview() {
+    AppTheme {
+        ByTimeFilterBottomSheet(model = emptyList()) {}
     }
 }

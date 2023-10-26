@@ -14,9 +14,15 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.EditCalendar
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.LineAxis
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material.icons.filled.PieChartOutline
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -243,6 +249,58 @@ object AppIcons {
             contentDescription = stringResource(R.string.content_description_close_icon)
         )
     }
+
+    @Composable
+    fun EmptyList(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current
+    ) {
+        Icon(
+            Icons.Default.Notes,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_close_icon)
+        )
+    }
+
+    @Composable
+    fun Error(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current
+    ) {
+        Icon(
+            Icons.Default.ErrorOutline,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_error_icon)
+        )
+    }
+
+    @Composable
+    fun PieChart(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current
+    ) {
+        Icon(
+            Icons.Default.PieChartOutline,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_pie_chart_icon)
+        )
+    }
+
+    @Composable
+    fun LineChart(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current
+    ) {
+        Icon(
+            Icons.Default.LineAxis,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_line_chart_icon)
+        )
+    }
 }
 
 @MotPreview
@@ -273,6 +331,10 @@ private fun MotIconsPreview() {
                 item { Surface { AppIcons.Search(modifier) } }
                 item { Surface { AppIcons.Back(modifier) } }
                 item { Surface { AppIcons.Close(modifier) } }
+                item { Surface { AppIcons.EmptyList(modifier) } }
+                item { Surface { AppIcons.Error(modifier) } }
+                item { Surface { AppIcons.PieChart(modifier) } }
+                item { Surface { AppIcons.LineChart(modifier) } }
             }
         )
     }

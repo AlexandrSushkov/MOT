@@ -13,12 +13,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
@@ -65,7 +64,7 @@ import dev.nelson.mot.core.ui.widget.AppToolbar
 import dev.nelson.mot.main.data.model.MotPaymentListItemModel
 import dev.nelson.mot.main.presentations.screen.payments.actions.OpenPaymentDetailsAction
 import dev.nelson.mot.main.presentations.shared.CategoriesListBottomSheet
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.FABFooter
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
@@ -75,6 +74,7 @@ import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
+import dev.theme.AppDimens
 import dev.utils.MotTransitions
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.launch
@@ -333,7 +333,10 @@ fun PaymentList(
         is Success -> {
             val paymentList = paymentListResult.successOr(emptyList())
             if (paymentList.isEmpty()) {
-                EmptyListPlaceholder(Modifier.fillMaxSize())
+                AppListPlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    iconContent = { AppIcons.EmptyList(Modifier.size(AppDimens.list_placeholder_icon_size)) }
+                )
             } else {
                 Column(
                     modifier = Modifier.ifNotNull(scrollBehavior) {
@@ -390,10 +393,10 @@ fun PaymentList(
 
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                EmptyListPlaceholder(
-                    Modifier.align(Alignment.Center),
-                    Icons.Default.Error,
-                    "error"
+                AppListPlaceholder(
+                    modifier = Modifier.align(Alignment.Center),
+                    iconContent = { AppIcons.Error(Modifier.size(AppDimens.list_placeholder_icon_size)) },
+                    text = stringResource(id = R.string.text_error)
                 )
             }
         }

@@ -121,7 +121,7 @@ fun MotDismissibleListItem(
                         duration = ANIMATION_DURATION,
                         easing = AnticipateOvershootInterpolator().toEasing()
                     ),
-                    label = "icon Scale Animation"
+                    label = "icon scale animation"
                 )
 
                 Box(

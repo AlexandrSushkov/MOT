@@ -11,8 +11,8 @@ sealed class MotAppTheme {
 
         fun fromString(name: String): MotAppTheme {
             return when (name) {
-                Light.javaClass.name -> Light
-                Dark.javaClass.name -> Dark
+                Light.javaClass.simpleName -> Light
+                Dark.javaClass.simpleName -> Dark
                 else -> System
             }
         }

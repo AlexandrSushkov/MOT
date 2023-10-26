@@ -31,7 +31,7 @@ import dev.nelson.mot.core.ui.AppTheme
 import dev.nelson.mot.core.ui.widget.AppIconButtons
 import dev.nelson.mot.core.ui.widget.AppIcons
 import dev.nelson.mot.core.ui.widget.AppToolbar
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.util.StringUtils
 import dev.nelson.mot.main.util.extention.emojiFlag
 import dev.nelson.mot.main.util.extention.filterDefaultCountries
@@ -127,7 +127,7 @@ private fun CountryPickerLayout(
                 }
             }
             if (viewState.countries.isEmpty()) {
-                EmptyListPlaceholder(
+                AppListPlaceholder(
                     modifier = Modifier.fillMaxSize(),
                     text = stringResource(R.string.no_countries_found_result)
                 )

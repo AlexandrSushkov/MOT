@@ -16,8 +16,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DismissDirection
@@ -61,7 +59,7 @@ import dev.nelson.mot.core.ui.widget.AppSnackbar
 import dev.nelson.mot.core.ui.widget.AppToolbar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
-import dev.nelson.mot.main.presentations.widgets.EmptyListPlaceholder
+import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
 import dev.nelson.mot.main.util.MotUiState.Error
@@ -71,6 +69,7 @@ import dev.nelson.mot.main.util.compose.PreviewData
 import dev.nelson.mot.main.util.constant.Constants
 import dev.nelson.mot.main.util.extention.ifNotNull
 import dev.nelson.mot.main.util.successOr
+import dev.theme.AppDimens
 import dev.utils.MotTransitions
 import dev.utils.preview.MotPreviewScreen
 import kotlinx.coroutines.delay
@@ -190,7 +189,10 @@ fun CategoryList(
         is Success -> {
             val categories = categoriesListUiState.successOr(emptyList())
             if (categories.isEmpty()) {
-                EmptyListPlaceholder(Modifier.fillMaxSize())
+                AppListPlaceholder(
+                    modifier = Modifier.fillMaxSize(),
+                    iconContent = { AppIcons.EmptyList(Modifier.size(AppDimens.list_placeholder_icon_size)) }
+                )
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -280,10 +282,10 @@ fun CategoryList(
 
         is Error -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                EmptyListPlaceholder(
-                    Modifier.align(Alignment.Center),
-                    Icons.Default.Error,
-                    stringResource(R.string.text_error)
+                AppListPlaceholder(
+                    modifier = Modifier.align(Alignment.Center),
+                    iconContent = { AppIcons.Error(Modifier.size(AppDimens.list_placeholder_icon_size)) },
+                    text = stringResource(R.string.text_error)
                 )
             }
         }
@@ -321,6 +323,7 @@ fun CategoryListItem(
                 category.id?.let {
                     if (it > 0) {
                         IconToggleButton(
+                            modifier = Modifier.size(48.dp),
                             checked = category.isFavorite,
                             onCheckedChange = { isChecked ->
                                 onFavoriteClick.invoke(category, isChecked)

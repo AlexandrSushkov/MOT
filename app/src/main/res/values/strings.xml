@@ -22,7 +22,7 @@
     <string name="text_edit" translatable="false">Edit</string>
     <string name="text_save" translatable="false">Save</string>
     <string name="text_undo">Undo</string>
-    <string name="text_empty">No data yet.</string>
+    <string name="text_no_content">No data yet.</string>
     <string name="text_error">Error</string>
     <string name="import_database_dialog_message" translatable="false">Are you sure you want to import this database?</string>
     <string name="database_exported_successfully_dialog_message" translatable="false">Database was exported successfully.\nPlease, check Downloads folder.</string>
