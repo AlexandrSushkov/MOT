@@ -210,7 +210,7 @@ class PaymentDetailsViewModel @Inject constructor(
     private val String.isValidFormattableAmount
         get(): Boolean = isNotBlank() &&
 //        && isDigitsOnly()
-            length <= 7
+                length <= 7
 
     /**
      * If [input] only include digits, it returns a formatted amount.

@@ -9,6 +9,7 @@
     <string name="content_description_add_icon" translatable="false">Add</string>
     <string name="content_description_favorite_checked_icon" translatable="false">Favorite</string>
     <string name="content_description_favorite_unchecked_icon" translatable="false">Favorite</string>
+    <string name="content_description_payments_icon" translatable="false">Payments</string>
     <string name="content_description_filter_icon" translatable="false">Filter</string>
     <string name="content_description_done_icon" translatable="false">Done</string>
     <string name="content_description_date_icon" translatable="false">Date</string>
@@ -17,6 +18,7 @@
     <string name="content_description_back_icon" translatable="false">Back</string>
     <string name="content_description_close_icon" translatable="false">Close</string>
     <string name="content_description_settings_icon" translatable="false">Settings</string>
+    <string name="content_description_statistic_icon" translatable="false">Statistic</string>
     <string name="content_description_empty_list_icon" translatable="false">Empty List</string>
     <string name="content_description_error_icon" translatable="false">Error</string>
     <string name="content_description_pie_chart_icon" translatable="false">Pie Chart</string>

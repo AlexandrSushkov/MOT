@@ -59,6 +59,7 @@ import dev.nelson.mot.core.ui.widget.AppSnackbar
 import dev.nelson.mot.core.ui.widget.AppToolbar
 import dev.nelson.mot.main.data.model.Category
 import dev.nelson.mot.main.data.model.MotListItemModel
+import dev.nelson.mot.main.presentations.widgets.AppDialog
 import dev.nelson.mot.main.presentations.widgets.AppListPlaceholder
 import dev.nelson.mot.main.presentations.widgets.MotSingleLineText
 import dev.nelson.mot.main.util.MotUiState
@@ -89,7 +90,7 @@ fun CategoryListScreen(
     val deleteItemsCount by viewModel.deleteItemsCount.collectAsState(Constants.ZERO)
 
     if (showEditCategoryDialog) {
-        EditCategoryDialog(
+        AppDialog.EditCategoryDialog(
             categoryToEditId = categoryToEditId,
             categoryNameState = categoryNameState,
             closeEditCategoryDialog = { viewModel.closeEditCategoryDialog() },
@@ -457,20 +458,6 @@ private fun CategoryListLayoutPreviewData(
             snackbarVisibleState = snackbarVisibleState,
             deleteItemsCount = 2,
             undoDeleteClickEvent = {}
-        )
-    }
-}
-
-@MotPreviewScreen
-@Composable
-private fun EditCategoryDialogPreview() {
-    AppTheme {
-        EditCategoryDialog(
-            categoryToEditId = null,
-            categoryNameState = TextFieldValue(),
-            onCategoryNameChanged = {},
-            closeEditCategoryDialog = {},
-            onSaveCategoryClick = {}
         )
     }
 }

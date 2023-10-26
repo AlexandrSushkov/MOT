@@ -85,7 +85,6 @@ fun PaymentDetailsScreen(
     val categories by viewModel.categoriesState.collectAsState(initial = emptyList())
     val selectedCategory by viewModel.selectedCategoryState.collectAsState(null)
     val onShowDateDialog by viewModel.showDatePickerDialogState.collectAsState(false)
-
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.surface
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = dateViewState.mills)
@@ -134,6 +133,7 @@ fun PaymentDetailsScreen(
         paymentNameState = viewModel.paymentNameState,
         costState = viewModel.costState,
         dateViewState = dateViewState,
+        selectedCategory = selectedCategory,
         messageState = viewModel.messageState,
         categories = categories,
         onNameChange = { viewModel.onPaymentNameChanged(it) },
@@ -142,29 +142,7 @@ fun PaymentDetailsScreen(
         onDateClick = { viewModel.onDateClick() },
         onCategoryClick = { viewModel.onCategorySelected(it) },
         onSaveClick = { viewModel.onSaveClick() },
-        selectedCategory = selectedCategory
     )
-}
-
-@MotPreview
-@Composable
-fun PaymentDetailsLayoutPreview() {
-    AppTheme {
-        PaymentDetailsLayout(
-            paymentNameState = MutableStateFlow(TextFieldValue()),
-            costState = MutableStateFlow(TextFieldValue()),
-            dateViewState = DateViewState(),
-            selectedCategory = PreviewData.categoryPreview,
-            messageState = MutableStateFlow(TextFieldValue()),
-            categories = emptyList(),
-            onNameChange = {},
-            onCostChange = {},
-            onMessageChange = {},
-            onSaveClick = {},
-            onCategoryClick = {},
-            onDateClick = {}
-        )
-    }
 }
 
 @OptIn(
@@ -196,7 +174,6 @@ fun PaymentDetailsLayout(
     val paymentNameFieldValueState by paymentNameState.collectAsState(TextFieldValue())
     val costFieldValueState by costState.collectAsState(TextFieldValue())
     val messageFieldValueState by messageState.collectAsState(TextFieldValue())
-
     val modalBottomSheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -360,12 +337,15 @@ fun PaymentDetailsLayout(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 AppButtons.Outlined(
+                    enabled = categories.isNotEmpty(),
                     onClick = {
-                        coroutineScope.launch {
-                            keyboardController?.hide()
-                            delay(Constants.DEFAULT_ANIMATION_DELAY)
-                            focusManager.clearFocus()
-                            showBottomSheet = true
+                        if (categories.isNotEmpty()) {
+                            coroutineScope.launch {
+                                keyboardController?.hide()
+                                delay(Constants.DEFAULT_ANIMATION_DELAY)
+                                focusManager.clearFocus()
+                                showBottomSheet = true
+                            }
                         }
                     }
                 ) {
@@ -387,5 +367,47 @@ fun PaymentDetailsLayout(
                 }
             }
         }
+    }
+}
+
+@MotPreview
+@Composable
+private fun PaymentDetailsLayoutPreview() {
+    AppTheme {
+        PaymentDetailsLayout(
+            paymentNameState = MutableStateFlow(TextFieldValue()),
+            costState = MutableStateFlow(TextFieldValue()),
+            dateViewState = DateViewState(),
+            selectedCategory = PreviewData.categoryPreview,
+            messageState = MutableStateFlow(TextFieldValue()),
+            categories = PreviewData.categoriesSelectListItemsPreview,
+            onNameChange = {},
+            onCostChange = {},
+            onMessageChange = {},
+            onSaveClick = {},
+            onCategoryClick = {},
+            onDateClick = {}
+        )
+    }
+}
+
+@MotPreview
+@Composable
+private fun PaymentDetailsLayoutEmptyCategoriesPreview() {
+    AppTheme {
+        PaymentDetailsLayout(
+            paymentNameState = MutableStateFlow(TextFieldValue()),
+            costState = MutableStateFlow(TextFieldValue()),
+            dateViewState = DateViewState(),
+            selectedCategory = PreviewData.noCategoryPreview,
+            messageState = MutableStateFlow(TextFieldValue()),
+            categories = emptyList(),
+            onNameChange = {},
+            onCostChange = {},
+            onMessageChange = {},
+            onSaveClick = {},
+            onCategoryClick = {},
+            onDateClick = {}
+        )
     }
 }

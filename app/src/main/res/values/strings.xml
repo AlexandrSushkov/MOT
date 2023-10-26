@@ -4,6 +4,7 @@
     <string name="payment" translatable="false">Payment</string>
     <string name="payments" translatable="false">Payments</string>
     <string name="add_new_payment" translatable="false">Add New Payment</string>
+    <string name="add_category" translatable="false">Add Category</string>
     <string name="recent_payments" translatable="false">Recent Payments</string>
     <string name="categories" translatable="false">Categories</string>
     <string name="category" translatable="false">Category</string>

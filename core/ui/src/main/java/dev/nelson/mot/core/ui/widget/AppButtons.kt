@@ -75,11 +75,13 @@ object AppButtons {
     @Composable
     fun Outlined(
         modifier: Modifier = Modifier,
+        enabled: Boolean = true,
         onClick: () -> Unit,
         content: @Composable RowScope.() -> Unit
     ) {
         OutlinedButton(
             modifier = modifier,
+            enabled = enabled,
             onClick = onClick,
             content = content
         )

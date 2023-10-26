@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Close
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LineAxis
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.PieChartOutline
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Search
@@ -41,6 +43,19 @@ import dev.nelson.mot.core.ui.R
 import dev.utils.preview.MotPreview
 
 object AppIcons {
+
+    @Composable
+    fun Payments(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current,
+    ) {
+        Icon(
+            Icons.Default.Payments,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_filter_icon)
+        )
+    }
 
     @Composable
     fun Filter(
@@ -65,6 +80,19 @@ object AppIcons {
             modifier = modifier,
             tint = tint,
             contentDescription = stringResource(R.string.content_description_save_icon)
+        )
+    }
+
+    @Composable
+    fun Statistic(
+        modifier: Modifier = Modifier,
+        tint: Color = LocalContentColor.current
+    ) {
+        Icon(
+            Icons.Default.BarChart,
+            modifier = modifier,
+            tint = tint,
+            contentDescription = stringResource(R.string.content_description_settings_icon)
         )
     }
 
@@ -315,8 +343,10 @@ private fun MotIconsPreview() {
         LazyVerticalGrid(
             columns = GridCells.Fixed(5),
             content = {
+                item { Surface { AppIcons.Payments(modifier) } }
                 item { Surface { AppIcons.Filter(modifier) } }
                 item { Surface { AppIcons.Save(modifier) } }
+                item { Surface { AppIcons.Statistic(modifier) } }
                 item { Surface { AppIcons.Settings(modifier) } }
                 item { Surface { AppIcons.Drawer(modifier) } }
                 item { Surface { AppIcons.Category(modifier) } }

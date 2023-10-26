@@ -29,6 +29,8 @@ object PreviewData {
             return Category(categoryNames[randomPosition])
         }
 
+    val noCategoryPreview: Category = Category("No category")
+
     val categoryEntityPreview = Category(categoryNames.first()).toCategoryEntity()
 
     val paymentItemPreview
