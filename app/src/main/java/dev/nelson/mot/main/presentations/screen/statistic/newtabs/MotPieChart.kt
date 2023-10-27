@@ -101,7 +101,7 @@ fun MotPieChart(
                         }
 
                         override fun onValueSelected(e: Entry?, h: Highlight?) {
-                            val categoryId = (e as? PieEntry)?.label?.toInt()
+                            val categoryId = (e as? PieEntry)?.label?.toIntOrNull()
                             categoryId?.let {
                                 onPieEntrySelected.invoke(it)
                                 initialViewState.selectedTimeModel
