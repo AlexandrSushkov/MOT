@@ -1,5 +1,6 @@
 package dev.nelson.mot.core.ui.widget
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -157,6 +158,21 @@ object AppIconButtons {
             }
         }
     }
+
+    @Composable
+    fun Search(
+        modifier: Modifier = Modifier,
+        onClick: () -> Unit
+    ) {
+        PlainTooltipBox(tooltip = { Text(text = stringResource(id = R.string.tooltip_search_text)) }) {
+            IconButton(
+                modifier = modifier.tooltipAnchor(),
+                onClick = onClick
+            ) {
+                AppIcons.Search()
+            }
+        }
+    }
 }
 
 @MotPreview
@@ -167,20 +183,23 @@ private fun MotIconsPreview() {
         .padding(16.dp)
         .aspectRatio(1f)
     AppTheme {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(5),
-            content = {
-                item { Surface { AppIconButtons.Settings(modifier) {} } }
-                item { Surface { AppIconButtons.Save(modifier) {} } }
-                item { Surface { AppIconButtons.Filter(modifier) {} } }
-                item { Surface { AppIconButtons.Drawer(modifier) {} } }
-                item { Surface { AppIconButtons.Back(modifier) {} } }
-                item { Surface { AppIconButtons.Close(modifier) {} } }
-                item { Surface { AppIconButtons.Category(modifier) {} } }
-                item { Surface { AppIconButtons.Calendar(modifier) {} } }
-                item { Surface { AppIconButtons.EditCalendar(modifier) {} } }
-                item { Surface { AppIconButtons.Delete(modifier) {} } }
-            }
-        )
+        Surface {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(5),
+                content = {
+                    item { AppIconButtons.Settings(modifier) {} }
+                    item { AppIconButtons.Save(modifier) {} }
+                    item { AppIconButtons.Filter(modifier) {} }
+                    item { AppIconButtons.Drawer(modifier) {} }
+                    item { AppIconButtons.Back(modifier) {} }
+                    item { AppIconButtons.Close(modifier) {} }
+                    item { AppIconButtons.Category(modifier) {} }
+                    item { AppIconButtons.Calendar(modifier) {} }
+                    item { AppIconButtons.EditCalendar(modifier) {} }
+                    item { AppIconButtons.Delete(modifier) {} }
+                    item { AppIconButtons.Search(modifier) {} }
+                }
+            )
+        }
     }
 }

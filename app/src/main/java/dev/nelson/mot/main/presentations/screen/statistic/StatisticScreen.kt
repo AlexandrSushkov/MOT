@@ -108,7 +108,8 @@ fun StatisticScreen(
 }
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class
 )
 @Composable
 private fun StatisticLayout(
@@ -154,12 +155,15 @@ private fun StatisticLayout(
 
         val displayCornerRadius = getDisplayCornerRadius()
 
-        ModalBottomSheet(onDismissRequest = { showBottomSheet = false },
+        ModalBottomSheet(
+            onDismissRequest = { showBottomSheet = false },
             sheetState = modalBottomSheetState,
             shape = RoundedCornerShape(
-                topStart = displayCornerRadius, topEnd = displayCornerRadius
+                topStart = displayCornerRadius,
+                topEnd = displayCornerRadius
             ),
-            dragHandle = { BottomSheetDefaults.DragHandle() }) {
+            dragHandle = { BottomSheetDefaults.DragHandle() }
+        ) {
             if (pagerState.currentPage == 0) {
                 ByTimeFilterBottomSheet(
                     model = statByMonthList,
@@ -174,14 +178,16 @@ private fun StatisticLayout(
                 }
             } else {
                 ByCategoryFilterBottomSheet(
-                    model = statByCategoryList, onItemSelected = {
+                    model = statByCategoryList,
+                    selectedMonthModel = selectedCategoryViewState.selectedTimeModel,
+                    onItemSelected = {
                         onCategoryModelSelected(it)
                         coroutineScope.launch { modalBottomSheetState.hide() }.invokeOnCompletion {
                             if (!modalBottomSheetState.isVisible) {
                                 showBottomSheet = false
                             }
                         }
-                    }, selectedMonthModel = selectedCategoryViewState.selectedTimeModel
+                    }
                 )
             }
         }
@@ -198,7 +204,7 @@ private fun StatisticLayout(
                     scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer
                 )
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -214,56 +220,73 @@ private fun StatisticLayout(
                 tabWidthStateList
             }
 
-            TabRow(modifier = Modifier.fillMaxWidth(),
+            TabRow(
+                modifier = Modifier.fillMaxWidth(),
                 selectedTabIndex = pagerState.currentPage,
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 indicator = { tabPositions ->
-                    Box(modifier = Modifier
-                        .customTabIndicatorOffset(
-                            currentTabPosition = tabPositions[pagerState.currentPage],
-                            tabWidth = tabWidths[pagerState.currentPage]
-                        )
-                        .height(4.dp)
-                        .width(with(LocalDensity.current) { textWidth.value.toDp() })
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
-                        )
-                        .onGloballyPositioned { coordinates ->
-                            textWidth.value = coordinates.size.width
-                        })
+                    Box(
+                        modifier = Modifier
+                            .customTabIndicatorOffset(
+                                currentTabPosition = tabPositions[pagerState.currentPage],
+                                tabWidth = tabWidths[pagerState.currentPage]
+                            )
+                            .height(4.dp)
+                            .width(with(LocalDensity.current) { textWidth.value.toDp() })
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
+                            )
+                            .onGloballyPositioned { coordinates ->
+                                textWidth.value = coordinates.size.width
+                            }
+                    )
                 },
                 tabs = {
                     statisticTabs.forEachIndexed { index, statisticTab ->
-                        Tab(text = {
-                            Text(text = statisticTab.title, onTextLayout = { textLayoutResult ->
-                                tabWidths[index] = with(density) {
-                                    textLayoutResult.size.width.toDp()
+                        Tab(
+                            text = {
+                                Text(
+                                    text = statisticTab.title,
+                                    onTextLayout = { textLayoutResult ->
+                                        tabWidths[index] = with(density) {
+                                            textLayoutResult.size.width.toDp()
+                                        }
+                                    }
+                                )
+                            },
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
                                 }
-                            })
-                        }, selected = pagerState.currentPage == index, onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
                             }
-                        })
+                        )
                     }
-                })
+                }
+            )
             HorizontalPager(
-                modifier = Modifier.fillMaxSize(), state = pagerState, userScrollEnabled = false
+                modifier = Modifier.fillMaxSize(),
+                state = pagerState,
+                userScrollEnabled = false
             ) { tabId ->
                 when (statisticTabs[tabId]) {
-                    is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(scrollBehavior = scrollBehavior,
+                    is MotStatistic2Tab.ByTime -> StatisticByTimeTabLayout(
+                        scrollBehavior = scrollBehavior,
                         selectedTimeViewState = selectedTimeViewState,
                         model = statByMonthList,
                         onMonthModelSelected = onMonthModelSelected,
                         onMonthCategoryClick = onMonthCategoryClick,
                         priceViewState = priceViewState,
-                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } })
+                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } }
+                    )
 
-                    is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(scrollBehavior = scrollBehavior,
+                    is MotStatistic2Tab.ByCategory -> StatisticByCategoryTabLayout(
+                        scrollBehavior = scrollBehavior,
                         selectedCategoryViewState = selectedCategoryViewState,
                         priceViewState = priceViewState,
-                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } })
+                        onFilterButtonClick = { coroutineScope.launch { showBottomSheet = true } }
+                    )
                 }
             }
         }

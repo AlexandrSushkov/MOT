@@ -141,7 +141,7 @@ fun PaymentDetailsScreen(
         onMessageChange = { viewModel.onMessageChanged(it) },
         onDateClick = { viewModel.onDateClick() },
         onCategoryClick = { viewModel.onCategorySelected(it) },
-        onSaveClick = { viewModel.onSaveClick() },
+        onSaveClick = { viewModel.onSaveClick() }
     )
 }
 

@@ -25,6 +25,7 @@
     <string name="content_description_line_chart_icon" translatable="false">Line Chart</string>
 
     <string name="tooltip_settings_text" translatable="false">Settings</string>
+    <string name="tooltip_search_text" translatable="false">Search</string>
     <string name="tooltip_close_text" translatable="false">Close</string>
     <string name="tooltip_category_text" translatable="false">Category</string>
     <string name="tooltip_edit_calendar_text" translatable="false">Edit date</string>
